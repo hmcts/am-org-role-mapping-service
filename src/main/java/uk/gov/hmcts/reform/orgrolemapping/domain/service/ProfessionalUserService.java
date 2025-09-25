@@ -47,6 +47,7 @@ public class ProfessionalUserService {
 
     public static final String PROCESS_4_NAME = "PRM Process 4 - Find Users with Stale Organisations";
     public static final String PROCESS_5_NAME = "PRM Process 5 - Find User Changes";
+    public static final String PROCESS_6_BATCH_NAME = "PRM Process 6 - Refresh users - Batch mode";
 
     private final PrdService prdService;
 
@@ -358,24 +359,29 @@ public class ProfessionalUserService {
         StringBuilder errorMessageBuilder = new StringBuilder();
         int successfulJobCount = 0;
         int failedJobCount = 0;
-        String processName = "PRM Process 6 - Refresh users - Batch mode";
-        log.info("Starting {}", processName);
-        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
+        log.info("Starting {}", PROCESS_6_BATCH_NAME);
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS_6_BATCH_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
-
-        while (userRefreshQueueRepository.getActiveUserRefreshQueueCount() >= 1) {
-            try {
+        try {
+            while (userRefreshQueueRepository.getActiveUserRefreshQueueCount() >= 1) {
                 boolean success = refreshUsers(processMonitorDto);
                 if (success) {
                     successfulJobCount++;
                 } else {
                     failedJobCount++;
                 }
-            } catch (Exception e) {
-                errorMessageBuilder.append(e.getMessage());
-                failedJobCount++;
-                log.error("Error occurred while processing user refresh queue", e);
             }
+            if (successfulJobCount == 0 && failedJobCount == 0) {
+                processMonitorDto.addProcessStep("No entities to process");
+                log.info("Completed {}. No entities to process", PROCESS_6_BATCH_NAME);
+            }
+        } catch (ServiceException ex) {
+            errorMessageBuilder.append(ex.getMessage());
+            String message = String.format("Error occurred while processing user refresh queue: %s",
+                    ex.getMessage());
+            log.error(message, ex);
+            processMonitorDto.addProcessStep(message);
+            failedJobCount++;
         }
 
         markProcessStatus(processMonitorDto,
@@ -450,6 +456,10 @@ public class ProfessionalUserService {
             userRefreshQueueRepository.updateRetry(
                     userId, userRetryOneIntervalMin, userRetryTwoIntervalMin, userRetryThreeIntervalMin
             );
+            // to avoid another round trip to the database, use the current retry attempt.
+            if (userRefreshQueueEntity.getRetry() == 3) {
+                throw new ServiceException("Retry limit reached");
+            }
         }
 
         return isSuccess;

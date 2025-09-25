@@ -338,7 +338,9 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         doThrow(ServiceException.class).when(mockUserRefreshQueueRepository)
                 .clearUserRefreshRecord(any(), any(), any());
 
-        professionalUserService.refreshUsers(processMonitorDto);
+        ServiceException exception = assertThrows(ServiceException.class, () ->
+            professionalUserService.refreshUsers(processMonitorDto)
+        );
 
         List<UserRefreshQueueEntity> userRefreshQueueEntities
                 = userRefreshQueueRepository.findAll();

@@ -79,6 +79,31 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         runTest(2, true, true, EndStatus.PARTIAL_SUCCESS);
     }
 
+    /**
+     *  Retry.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_version1.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_retry.sql"
+    })
+    void testCreateRole_retry() throws JsonProcessingException {
+        runTest(1, false, false, EndStatus.FAILED);
+        assertRetry(1);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_version1.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_retryLimit.sql"
+    })
+    void testCreateRole_retryLimit() throws JsonProcessingException {
+        runTest(1, false, false, EndStatus.FAILED);
+        assertRetry(4);
+    }
+
     protected void testCreateRoleAssignment(boolean orgRole, boolean groupRole) {
         runTest(1, orgRole, groupRole, EndStatus.SUCCESS);
     }

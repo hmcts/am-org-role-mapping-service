@@ -29,6 +29,7 @@ import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -408,6 +409,26 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
                 userRefreshQueueEntities.stream()
                         .filter(entity -> entity.getActive()).count(),
                 "UserRefreshQueueEntity number of active records mismatch");
+    }
+
+    protected void assertRetry(int retryCount) {
+        var userRefreshQueueEntities = userRefreshQueueRepository.findAll();
+        var userRefreshQueueEntity = userRefreshQueueEntities.getFirst();
+        assertEquals(retryCount, userRefreshQueueEntity.getRetry(),
+                "UserRefreshQueueEntity.retry mismatch");
+        assertTrue(userRefreshQueueEntity.getActive(),
+                "UserRefreshQueueEntity.active mismatch");
+        if (retryCount < 4) {
+            assertTrue(assertLastUpdatedNow(userRefreshQueueEntity.getRetryAfter()),
+                    "UserRefreshQueueEntity.retryAfter mismatch");
+        } else {
+            assertNull(userRefreshQueueEntity.getRetryAfter(),
+                    "UserRefreshQueueEntity.retryAfter is not null");
+        }
+    }
+
+    private boolean assertLastUpdatedNow(LocalDateTime lastUpdated) {
+        return lastUpdated.isAfter(LocalDateTime.now().minusMinutes(1));
     }
 
     protected void assertAccessTypes(String accessTypeId, String organisationProfileId,
