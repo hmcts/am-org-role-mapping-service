@@ -14,6 +14,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRoleE
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentGroup;
+import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.ExtraTestAdditionalRoles;
+import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.ExtraTestAppointments;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -116,29 +118,6 @@ class JudicialAccessProfileTest {
     @Nested
     @DisplayName("HasAppointmentCode Tests")
     class HasAppointmentCode {
-
-        // test enum for future edge cases when validating Appointments
-        public enum ExtraTestAppointments implements AppointmentEnum {
-
-            APPOINTMENT_WITH_MULTIPLE_CODES("Appointment With Multiple Codes", List.of("code-1", "code-2"));
-
-            private final String name;
-            private final List<String> codes;
-
-            ExtraTestAppointments(String name, List<String> codes) {
-                this.name = name;
-                this.codes = codes;
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public List<String> getCodes() {
-                return codes;
-            }
-
-        }
 
         @ParameterizedTest
         @EnumSource(value = Appointment.class)
@@ -251,30 +230,6 @@ class JudicialAccessProfileTest {
     @Nested
     @DisplayName("HasValidAdditionalRole Tests")
     class HasValidAdditionalRole {
-
-        // test enum for future edge cases when validating Additional Roles
-        public enum ExtraTestAdditionalRoles implements AdditionalRoleEnum {
-
-            ANY_OTHER_ROLE("Any Other Role", List.of("any-code")),
-            ROLE_WITH_MULTIPLE_CODES("Role With Multiple Codes", List.of("code-1", "code-2"));
-
-            private final String name;
-            private final List<String> codes;
-
-            ExtraTestAdditionalRoles(String name, List<String> codes) {
-                this.name = name;
-                this.codes = codes;
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public List<String> getCodes() {
-                return codes;
-            }
-
-        }
 
         @ParameterizedTest
         @NullAndEmptySource
