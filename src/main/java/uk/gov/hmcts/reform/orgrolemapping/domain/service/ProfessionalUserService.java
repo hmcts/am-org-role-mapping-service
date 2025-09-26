@@ -364,13 +364,19 @@ public class ProfessionalUserService {
         processEventTracker.trackEventStarted(processMonitorDto);
         try {
             processMonitorDto.addProcessStep("attempting first retrieveUsers");
-            while (userRefreshQueueRepository.getActiveUserRefreshQueueCount() >= 1) {
-                boolean success = refreshUsers(processMonitorDto);
-                if (success) {
-                    successfulJobCount++;
-                } else {
-                    failedJobCount++;
+            boolean anyEntitiesInQueue = true;
+            while (anyEntitiesInQueue) {
+                UserRefreshQueueEntity userRefreshQueueEntity
+                        = userRefreshQueueRepository.retrieveSingleActiveRecord();
+                if (userRefreshQueueEntity != null) {
+                    boolean success = refreshUsers(processMonitorDto, userRefreshQueueEntity);
+                    if (success) {
+                        successfulJobCount++;
+                    } else {
+                        failedJobCount++;
+                    }
                 }
+                anyEntitiesInQueue = userRefreshQueueEntity != null;
             }
             if (successfulJobCount == 0 && failedJobCount == 0) {
                 processMonitorDto.addProcessStep("No entities to process");
@@ -414,6 +420,11 @@ public class ProfessionalUserService {
         UserRefreshQueueEntity userRefreshQueueEntity
                 = userRefreshQueueRepository.retrieveSingleActiveRecord();
 
+        return refreshUsers(processMonitorDto, userRefreshQueueEntity);
+    }
+
+    private boolean refreshUsers(ProcessMonitorDto processMonitorDto,
+                                UserRefreshQueueEntity userRefreshQueueEntity) throws ServiceException {
         if (userRefreshQueueEntity == null) {
             processMonitorDto.addProcessStep("No entities to process");
             log.info("{} - No entities to process", processMonitorDto.getProcessType());
