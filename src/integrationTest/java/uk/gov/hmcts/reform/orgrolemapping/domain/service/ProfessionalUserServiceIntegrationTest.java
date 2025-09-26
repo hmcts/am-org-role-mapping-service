@@ -28,11 +28,13 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
@@ -41,6 +43,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -189,6 +192,101 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         assertNotNull(userRefreshEntity.getRetryAfter());
     }
 
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+        scripts = {"classpath:sql/insert_multiple_organisations_profiles.sql"})
+    void shouldInsertMultipleUserIntoUserRefreshQueue_AndClearOrganisationRefreshQueue_MultipleOrgEntity() {
+        ProfessionalUser professionalUser = buildProfessionalUser(1);
+        UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
+        UsersByOrganisationRequest usersByOrganisationRequestOrg1 = new UsersByOrganisationRequest(List.of("123"));
+        UsersByOrganisationResponse responseOrg1 =
+            buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1", false);
+
+        when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null),eq(usersByOrganisationRequestOrg1)))
+            .thenReturn(ResponseEntity.ok(responseOrg1));
+
+        ProfessionalUser professionalUser2 = buildProfessionalUser(2);
+        UsersOrganisationInfo usersOrganisationInfo2 = buildUsersOrganisationInfo(1234, professionalUser2);
+        UsersByOrganisationRequest usersByOrganisationRequestOrg2 = new UsersByOrganisationRequest(List.of("1234"));
+        UsersByOrganisationResponse responseOrg2 =
+            buildUsersByOrganisationResponse(usersOrganisationInfo2, "1", "1", false);
+        when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null),eq(usersByOrganisationRequestOrg2)))
+            .thenReturn(ResponseEntity.ok(responseOrg2));
+
+        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
+
+        assertEquals(2, userRefreshQueueRepository.findAll().size());
+
+        List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
+            = organisationRefreshQueueRepository.findAll();
+        assertFalse(organisationRefreshQueueEntities.get(0).getActive());
+        assertFalse(organisationRefreshQueueEntities.get(1).getActive());
+        List<UserRefreshQueueEntity> userRefreshQueueEntities = userRefreshQueueRepository.findAll();
+        UserRefreshQueueEntity userRefreshEntity1 = userRefreshQueueEntities.get(0);
+
+        assertEquals("1", userRefreshEntity1.getUserId());
+        assertNotNull(userRefreshEntity1.getLastUpdated());
+        assertNotNull(userRefreshEntity1.getUserLastUpdated());
+        assertNotNull(userRefreshEntity1.getDeleted());
+        assertEquals("[]", userRefreshEntity1.getAccessTypes());
+        assertEquals("123", userRefreshEntity1.getOrganisationId());
+        assertEquals("ACTIVE", userRefreshEntity1.getOrganisationStatus());
+        assertTrue(Arrays.asList(userRefreshEntity1.getOrganisationProfileIds()).contains(SOLICITOR_PROFILE));
+        assertEquals(0, userRefreshEntity1.getRetry());
+        assertNotNull(userRefreshEntity1.getRetryAfter());
+
+        UserRefreshQueueEntity userRefreshEntity2 = userRefreshQueueEntities.get(1);
+        assertEquals("2", userRefreshEntity2.getUserId());
+        assertNotNull(userRefreshEntity2.getLastUpdated());
+        assertNotNull(userRefreshEntity2.getUserLastUpdated());
+        assertNotNull(userRefreshEntity2.getDeleted());
+        assertEquals("[]", userRefreshEntity2.getAccessTypes());
+        assertEquals("1234", userRefreshEntity2.getOrganisationId());
+        assertEquals("ACTIVE", userRefreshEntity2.getOrganisationStatus());
+        assertTrue(Arrays.asList(userRefreshEntity2.getOrganisationProfileIds()).contains(SOLICITOR_PROFILE));
+        assertEquals(0, userRefreshEntity2.getRetry());
+        assertNotNull(userRefreshEntity2.getRetryAfter());
+    }
+
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+        scripts = {"classpath:sql/insert_organisation_profiles.sql"})
+    void shouldInsertOneUserIntoUserRefreshQueue_ById() {
+        ProfessionalUser professionalUser = buildProfessionalUser(1);
+        UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
+        UsersByOrganisationResponse response =
+            buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1", false);
+
+        when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
+            .thenReturn(ResponseEntity.ok(response));
+
+        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById("123");
+
+        assertEquals(1, userRefreshQueueRepository.findAll().size());
+
+        List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
+            = organisationRefreshQueueRepository.findAll();
+        assertFalse(organisationRefreshQueueEntities.get(0).getActive());
+
+        List<UserRefreshQueueEntity> userRefreshQueueEntities = userRefreshQueueRepository.findAll();
+        UserRefreshQueueEntity userRefreshEntity = userRefreshQueueEntities.get(0);
+
+        assertEquals("1", userRefreshEntity.getUserId());
+        assertNotNull(userRefreshEntity.getLastUpdated());
+        assertNotNull(userRefreshEntity.getUserLastUpdated());
+        assertNotNull(userRefreshEntity.getDeleted());
+        assertEquals("[]", userRefreshEntity.getAccessTypes());
+        assertEquals("123", userRefreshEntity.getOrganisationId());
+        assertEquals("ACTIVE", userRefreshEntity.getOrganisationStatus());
+        assertTrue(Arrays.asList(userRefreshEntity.getOrganisationProfileIds()).contains(SOLICITOR_PROFILE));
+        assertEquals(0, userRefreshEntity.getRetry());
+        assertNotNull(userRefreshEntity.getRetryAfter());
+    }
+
+
+
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
@@ -266,19 +364,15 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
                 .thenThrow(ServiceException.class);
 
-        ServiceException exception = assertThrows(ServiceException.class, () ->
-                professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue()
-        );
-
-        assertEquals("Retry limit reached", exception.getMessage());
+        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
 
         assertEquals(0, userRefreshQueueRepository.findAll().size());
 
         List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
                 = organisationRefreshQueueRepository.findAll();
         assertTrue(organisationRefreshQueueEntities.get(0).getActive());
-        assertEquals(4, organisationRefreshQueueEntities.get(0).getRetry());
-        assertNull(organisationRefreshQueueEntities.get(0).getRetryAfter());
+        assertEquals(1, organisationRefreshQueueEntities.get(0).getRetry());
+        assertNotNull(organisationRefreshQueueEntities.get(0).getRetryAfter());
     }
 
     @Test
@@ -331,6 +425,10 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
         assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
         assertEquals(1, userRefreshQueueRepository.findAll().size());
+        assertEquals(1, batchLastRunTimestampRepository.findAll().size());
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+            .isEqualTo(EndStatus.SUCCESS);
     }
 
     @Test

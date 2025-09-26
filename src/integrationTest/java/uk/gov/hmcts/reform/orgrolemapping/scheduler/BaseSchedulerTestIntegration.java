@@ -67,12 +67,19 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
     static final String DUMMY_AUTH_TOKEN = "DUMMY_AUTH_TOKEN";
     static final String DUMMY_S2S_TOKEN = "DUMMY_S2S_TOKEN";
 
+    public static final UUID STUB_ID_RAS_CREATE_ROLEASSIGNMENTS
+        = UUID.fromString("0bfabe25-fd57-4f8a-9882-911b53857258");
+
     public static final UUID STUB_ID_PRD_RETRIEVE_USERS
         = UUID.fromString("47f05020-f89c-46ea-93f4-063f09ba96c0");
 
     protected static final String MORE_AVAILABLE = "moreAvailable";
     protected static final String LAST_RECORD_IN_PAGE = "lastRecordInPage";
     protected static final String SEARCH_AFTER = "searchAfter";
+
+    public static final UUID STUB_ID_RAS_RETRIEVE_USERSBYORG
+            = UUID.fromString("8468dbb3-14b9-4fd2-b9d8-0620a8fc1e94");
+
     public static final String JURISDICTION_ID_CIVIL = "CIVIL";
     public static final String JURISDICTION_ID_PUBLICLAW = "PUBLICLAW";
 
@@ -186,7 +193,23 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
         log.info("   Body: {}", loggedResponse.getBodyAsString());
         log.info("-----------------------------------------------------");
     }
-    
+
+    protected void stubRasCreateRoleAssignment(EndStatus endStatus) {
+        HttpHeaders headers = new HttpHeaders()
+                .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE));
+
+        int httpStatus = EndStatus.FAILED.equals(endStatus)
+                ? HttpStatus.UNAUTHORIZED.value() : HttpStatus.OK.value();
+
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+                "/am/role-assignments"))
+                .withId(STUB_ID_RAS_CREATE_ROLEASSIGNMENTS)
+                .willReturn(aResponse()
+                        .withStatus(httpStatus)
+                        .withHeaders(headers)
+                        .withBody("{}")));
+    }
+
     protected void stubPrdRetrieveUsers(List<String> fileNames,
         String moreAvailable, String lastRecordInPage, String pageSize, String searchAfter) {
         stubPrdRetrieveUsers(

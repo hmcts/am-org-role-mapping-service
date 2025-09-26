@@ -172,21 +172,18 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
             + "when retry = 0 then 1 "
             + "when retry = 1 then 2 "
             + "when retry = 2 then 3 "
+            + "when retry = 4 then 0 "
             + "else 4 "
             + "end, "
             + "retry_after = case "
-            + "when retry = 0 then now() + (interval '1' Minute) * :retryOneIntervalMin "
-            + "when retry = 1 then now() + (interval '1' Minute) * :retryTwoIntervalMin "
-            + "when retry = 2 then now() + (interval '1' Minute) * :retryThreeIntervalMin "
+            + "when retry = 0 then now() + (interval '1' Minute) * CAST(:retryOneIntervalMin AS INTEGER) "
+            + "when retry = 1 then now() + (interval '1' Minute) * CAST(:retryTwoIntervalMin AS INTEGER) "
+            + "when retry = 2 then now() + (interval '1' Minute) * CAST(:retryThreeIntervalMin AS INTEGER) "
+            + "when retry = 4 then now() "
             + "else NULL "
             + "end "
             + "where user_id = :userId", nativeQuery = true)
     void updateRetry(String userId, String retryOneIntervalMin,
                      String retryTwoIntervalMin, String retryThreeIntervalMin);
-
-    @Query(value = "select count(*) from user_refresh_queue where active = true and (retry_after < now()"
-            + "or retry_after is null)",
-            nativeQuery = true)
-    Long getActiveUserRefreshQueueCount();
 
 }

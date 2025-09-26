@@ -7,8 +7,8 @@
   ],
   "users": [
     {
-      "userIdentifier": "user1",
-      "firstName": "User1",
+      "userIdentifier": "user11",
+      "firstName": "User11",
       "lastName": "admin",
       "email": "user1.admin@hmcts.net",
       "lastUpdated": "2023-09-19T15:36:33.653",
@@ -22,8 +22,8 @@
       ]
     },
     {
-      "userIdentifier": "user2",
-      "firstName": "User2",
+      "userIdentifier": "user12",
+      "firstName": "User12",
       "lastName": "admin",
       "email": "user1.admin@hmcts.net",
       "lastUpdated": "2023-09-19T15:36:33.653",
