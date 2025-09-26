@@ -9,12 +9,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
@@ -308,58 +306,23 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     })
     void testRetryFailed() {
 
-        Assertions.assertThrows(ServiceException.class, () ->
-            // verify that the organisations are attempted to be updated 3 times
-            runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation4_scenario_01.json"),
-                EndStatus.FAILED, 3)
-        );
+
+        // verify that the organisations are attempted to be updated 9 (3 x 3 retries) times
+        runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation4_scenario_01.json"),
+            EndStatus.FAILED, 9);
 
         // verify that the OrganisationRefreshQueue contains 1 record, 1 active, 4 retries
-        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 1, 4);
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 1, 1);
 
         // Verify no active users in the refresh queue
         assertTotalUserRefreshQueueEntitiesInDb(0);
-    }
-
-    /**
-     * Partial Success - Failed.
-     */
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
-        "classpath:sql/prm/organisation_refresh_queue/insert_organisation1.sql",
-        "classpath:sql/prm/organisation_refresh_queue/insert_organisation4.sql",
-        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-        "classpath:sql/prm/user_refresh_queue/insert_user1organisation1.sql"
-    })
-    void testRetryPartialSuccess() {
-
-        Assertions.assertThrows(ServiceException.class, () ->
-                // verify that the organisations are attempted to be updated 3 times
-                runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_01.json",
-                                "/SchedulerTests/PrdUsersByOrganisation/userOrganisation4_scenario_01.json"),
-                        EndStatus.PARTIAL_SUCCESS, 2)
-        );
-
-        // verify that the OrganisationRefreshQueue contains 2 records, 2 active, 4 retries
-        assertTotalOrganisationRefreshQueueEntitiesInDb(2, 2, 5);
-
-        // Verify 1 active user in the refresh queue
-        assertTotalUserRefreshQueueEntitiesInDb(1);
     }
 
     private void runTest(List<String> fileNames, EndStatus endStatus, int noOfCallsToPrd) {
 
         // GIVEN
         logBeforeStatus();
-        if (EndStatus.PARTIAL_SUCCESS.equals(endStatus)) {
-            // Initial call that succeeds
-            stubPrdRetrieveUsersByOrg(fileNames, "false", null, EndStatus.SUCCESS);
-            // Add a second call that fails
-            stubPrdRetrieveUsersByOrg(fileNames, "false", null, EndStatus.FAILED);
-        } else {
-            stubPrdRetrieveUsersByOrg(fileNames, "false", null, endStatus);
-        }
+        stubPrdRetrieveUsersByOrg(fileNames, "false", null, endStatus);
 
         // WHEN
         ProcessMonitorDto processMonitorDto = prmScheduler
@@ -494,7 +457,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertEquals(TEST_PAGE_SIZE, event.getRequest().getQueryParams().get("pageSize").firstValue(),
             "Response pageSize mismatch");
         // verify response status
-        int httpStatus = EndStatus.FAILED.equals(endStatus)
+        int httpStatus = !EndStatus.SUCCESS.equals(endStatus)
             ? HttpStatus.UNAUTHORIZED.value() : HttpStatus.OK.value();
         assertEquals(httpStatus, event.getResponse().getStatus(),
             "Response status mismatch");

@@ -338,9 +338,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         doThrow(ServiceException.class).when(mockUserRefreshQueueRepository)
                 .clearUserRefreshRecord(any(), any(), any());
 
-        ServiceException exception = assertThrows(ServiceException.class, () ->
-            professionalUserService.refreshUsers(processMonitorDto)
-        );
+        professionalUserService.refreshUsers(processMonitorDto);
 
         List<UserRefreshQueueEntity> userRefreshQueueEntities
                 = userRefreshQueueRepository.findAll();
@@ -366,19 +364,15 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         when(prdService.fetchUsersByOrganisation(any(), any(String.class), any(String.class), any()))
                 .thenThrow(ServiceException.class);
 
-        ServiceException exception = assertThrows(ServiceException.class, () ->
-                professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue()
-        );
-
-        assertEquals("Retry limit reached", exception.getMessage());
+        professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
 
         assertEquals(0, userRefreshQueueRepository.findAll().size());
 
         List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
                 = organisationRefreshQueueRepository.findAll();
         assertTrue(organisationRefreshQueueEntities.get(0).getActive());
-        assertEquals(4, organisationRefreshQueueEntities.get(0).getRetry());
-        assertNull(organisationRefreshQueueEntities.get(0).getRetryAfter());
+        assertEquals(1, organisationRefreshQueueEntities.get(0).getRetry());
+        assertNotNull(organisationRefreshQueueEntities.get(0).getRetryAfter());
     }
 
     @Test

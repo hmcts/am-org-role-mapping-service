@@ -237,11 +237,6 @@ public class ProfessionalUserService {
             organisationRefreshQueueRepository.updateRetry(
                     organisationIdentifier, retryOneIntervalMin, retryTwoIntervalMin, retryThreeIntervalMin
             );
-
-            // to avoid another round trip to the database, use the current retry attempt.
-            if (organisationRefreshQueueEntity.getRetry() == 3) {
-                throw new ServiceException("Retry limit reached");
-            }
         }
         return errorMessageBuilder.toString();
     }
@@ -468,10 +463,6 @@ public class ProfessionalUserService {
             userRefreshQueueRepository.updateRetry(
                     userId, userRetryOneIntervalMin, userRetryTwoIntervalMin, userRetryThreeIntervalMin
             );
-            // to avoid another round trip to the database, use the current retry attempt.
-            if (userRefreshQueueEntity.getRetry() == 3) {
-                throw new ServiceException("Retry limit reached");
-            }
         }
 
         return isSuccess;

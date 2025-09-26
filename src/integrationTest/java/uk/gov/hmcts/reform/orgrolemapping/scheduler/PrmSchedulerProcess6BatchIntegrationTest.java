@@ -101,7 +101,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
     })
     void testCreateRole_retryLimit() throws JsonProcessingException {
         runTest(1, false, false, EndStatus.FAILED);
-        assertRetry(4);
+        assertRetry(1);
     }
 
     protected void testCreateRoleAssignment(boolean orgRole, boolean groupRole) {
