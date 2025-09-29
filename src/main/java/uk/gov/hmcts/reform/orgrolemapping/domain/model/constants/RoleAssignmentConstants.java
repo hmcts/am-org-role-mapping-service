@@ -16,6 +16,7 @@ public final class RoleAssignmentConstants {
         public static final class Name {
 
             public static final String BASE_LOCATION = "baseLocation";
+            public static final String BOOKABLE = "bookable";
             public static final String CONTRACT_TYPE = "contractType";
             public static final String JURISDICTION = "jurisdiction";
             public static final String PRIMARY_LOCATION = "primaryLocation";
@@ -29,6 +30,7 @@ public final class RoleAssignmentConstants {
 
             public static final String FEE_PAID = "Fee-Paid";
             public static final String SALARIED = "Salaried";
+            public static final String VOLUNTARY = "Voluntary";
 
         }
 
@@ -40,6 +42,10 @@ public final class RoleAssignmentConstants {
         // COMMON
         public static final String CASE_ALLOCATOR = "case-allocator";
         public static final String TASK_SUPERVISOR = "task-supervisor";
+
+        // HEARINGS
+        public static final String HEARING_MANAGER = "hearing-manager";
+        public static final String HEARING_VIEWER = "hearing-viewer";
 
         // JUDICIAL
         public static final String FEE_PAID_JUDGE = "fee-paid-judge";
