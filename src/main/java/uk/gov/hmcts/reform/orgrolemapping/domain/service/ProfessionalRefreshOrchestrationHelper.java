@@ -111,8 +111,6 @@ public class ProfessionalRefreshOrchestrationHelper {
 
         refreshSingleUser(userRefreshQueue.get(), accessTypes);
 
-        // Process any further record(s) recursively
-        //processActiveUserRefreshQueue(accessTypes);
     }
 
     public void refreshSingleUser(UserRefreshQueueEntity userRefreshQueue, AccessTypesEntity accessTypes) {

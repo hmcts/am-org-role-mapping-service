@@ -30,6 +30,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 public class ValidationUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(ValidationUtil.class);
+    private static final String INCORRECT_DATE_FORMAT_MESSAGE = "Incorrect date format %s, "
+        + "the correct format is yyyy-MM-dd'T'HH:mm";
 
     private ValidationUtil() {
     }
@@ -57,7 +59,7 @@ public class ValidationUtil {
         LOG.debug("validateDateTime");
         if (strDate.length() < 16) {
             throw new BadRequestException(String.format(
-                    "Incorrect date format %s",
+                    INCORRECT_DATE_FORMAT_MESSAGE,
                     strDate
             ));
         }
@@ -71,7 +73,7 @@ public class ValidationUtil {
             }
         } catch (ParseException e) {
             throw new BadRequestException(String.format(
-                    "Incorrect date format %s",
+                INCORRECT_DATE_FORMAT_MESSAGE,
                     strDate
             ));
         }
@@ -151,7 +153,7 @@ public class ValidationUtil {
             LocalDateTime.parse(strDate, DateTimeFormatter.ofPattern(pattern));
         } catch (DateTimeParseException e) {
             throw new BadRequestException(
-                String.format("Incorrect date format %s", pattern));
+                String.format(INCORRECT_DATE_FORMAT_MESSAGE, pattern));
         }
     }
 }
