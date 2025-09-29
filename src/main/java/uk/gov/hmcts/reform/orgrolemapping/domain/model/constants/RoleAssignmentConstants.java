@@ -30,6 +30,7 @@ public final class RoleAssignmentConstants {
 
             public static final String FEE_PAID = "Fee-Paid";
             public static final String SALARIED = "Salaried";
+            public static final String VOLUNTARY = "Voluntary";
 
         }
 
