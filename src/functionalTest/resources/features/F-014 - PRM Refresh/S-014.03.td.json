@@ -1,0 +1,24 @@
+{
+  "_guid_": "S-014.03",
+  "title": "successful refresh of professional user - single user no prd",
+  "_extends_": "F-014-Base-Root",
+  "specs": [
+    "an active IDAM profile with full permissions"
+  ],
+  "method": "POST",
+  "uri": "/am/role-mapping/professional/refresh",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Refresh User - Single User Mode No PRD",
+  "request": {
+    "queryParams": {
+      "userId": "b5a4ad13-4e6a-4b1b-9c41-29ed273744a3"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body" : {
+      "Message" : "Role assignments have been refreshed successfully"
+    }
+  }
+}
