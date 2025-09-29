@@ -318,6 +318,40 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertTotalUserRefreshQueueEntitiesInDb(0);
     }
 
+    /**
+     * Partial Success - Failed.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation1.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation4.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user1organisation1.sql"
+    })
+    void testPartialSuccess() {
+        // verify that the organisations are attempted to be updated with a failure for org 4
+        runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_01.json",
+                        "/SchedulerTests/PrdUsersByOrganisation/userOrganisation4_scenario_01.json"),
+                EndStatus.PARTIAL_SUCCESS, 10);
+
+        // verify that the OrganisationRefreshQueue contains 2 records, 1 active, retry=1 (end value)
+        assertTotalOrganisationRefreshQueueEntitiesInDb(2, 1, 1);
+
+        // Verify 5 active user in the refresh queue
+        assertTotalUserRefreshQueueEntitiesInDb(5);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+                NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+                NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+                NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user11", ORGANISATION_ID_4, SOLICITOR_ACCESS_TYPE,
+                NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user12", ORGANISATION_ID_4, OGD_ACCESS_TYPE,
+                NEW_USER_LAST_UPDATED, true, false);
+    }
+
     private void runTest(List<String> fileNames, EndStatus endStatus, int noOfCallsToPrd) {
 
         // GIVEN

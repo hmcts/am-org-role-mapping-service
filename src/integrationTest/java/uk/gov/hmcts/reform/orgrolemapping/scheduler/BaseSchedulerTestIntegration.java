@@ -35,6 +35,7 @@ import java.util.UUID;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.absent;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
@@ -255,17 +256,48 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
             .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE))
             .plus(new HttpHeader(MORE_AVAILABLE, moreAvailable));
 
-        int httpStatus = EndStatus.FAILED.equals(endStatus)
-            ? HttpStatus.UNAUTHORIZED.value() : HttpStatus.OK.value();
-
-        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
-            "/refdata/internal/v2/organisations/users"))
-            .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
-            .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
-            .willReturn(aResponse()
-                .withStatus(httpStatus)
-                .withHeaders(headers)
-                .withBody(body)));
+        if (EndStatus.SUCCESS.equals(endStatus)) {
+            WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+                    "/refdata/internal/v2/organisations/users"))
+                    .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
+                    .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
+                    .willReturn(aResponse()
+                            .withStatus(HttpStatus.OK.value())
+                            .withHeaders(headers)
+                            .withBody(body)));
+        } else if (EndStatus.FAILED.equals(endStatus)) {
+            WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+                    "/refdata/internal/v2/organisations/users"))
+                    .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
+                    .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
+                    .willReturn(aResponse()
+                            .withStatus(HttpStatus.UNAUTHORIZED.value())
+                            .withHeaders(headers)
+                            .withBody(body)));
+        } else if (EndStatus.PARTIAL_SUCCESS.equals(endStatus)) {
+            WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+                    "/refdata/internal/v2/organisations/users"))
+                    .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
+                    .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
+                    .withRequestBody(equalToJson("""
+                            {"organisationIdentifiers": ["1"]}
+                            """))
+                    .willReturn(aResponse()
+                            .withStatus(HttpStatus.OK.value())
+                            .withHeaders(headers)
+                            .withBody(body)));
+            WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+                    "/refdata/internal/v2/organisations/users"))
+                    .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
+                    .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
+                    .withRequestBody(equalToJson("""
+                            {"organisationIdentifiers": ["4"]}
+                            """))
+                    .willReturn(aResponse()
+                            .withStatus(HttpStatus.UNAUTHORIZED.value())
+                            .withHeaders(headers)
+                            .withBody(body)));
+        }
     }
 
     protected Map<String,String> getAccessTypesMap(String accessTypes) {
