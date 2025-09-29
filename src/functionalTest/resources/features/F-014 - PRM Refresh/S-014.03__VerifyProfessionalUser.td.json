@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-014.01__VerifyProfessionalUser",
+  "_guid_": "S-014.03__VerifyProfessionalUser",
   "_extends_": "FetchProfessionalUsersById__PositiveResponse_Base",
 
   "specs": [
