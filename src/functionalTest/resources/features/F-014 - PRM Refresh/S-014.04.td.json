@@ -11,7 +11,7 @@
   "operationName": "Refresh Invalid User - Single User Mode No PRD",
   "request": {
     "queryParams": {
-      "userId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      "userId": "eccd490f-a40c-4a19-b063-7b107bc6480n"
     }
   },
 
