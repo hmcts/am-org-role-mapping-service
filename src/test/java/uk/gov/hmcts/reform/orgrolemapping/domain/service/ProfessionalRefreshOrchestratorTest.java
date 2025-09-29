@@ -230,8 +230,16 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
                 .when(roleAssignmentService).createRoleAssignment(any());
 
-        String accessType = "[\n  {\n \"jurisdictionId\": \"1\",\n\"organisationProfileId\": \"1\",\n"
-                +  "    \"accessTypeId\": \"1\",\n\"enabled\": true\n }\n]";
+        String accessType = """
+     [
+     {
+      "jurisdictionId": "1",
+     "organisationProfileId": "1",
+     "accessTypeId": "1",
+     "enabled": true
+     }
+    ]
+    """;
 
         doReturn(accessType)
                 .when(objectMapper).writeValueAsString(any());
