@@ -292,7 +292,7 @@ end;
 rule "v3_0_employment_employment_judge_fee_paid_joh"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
-    $jap: JudicialAccessProfile(!hasAppointmentCode(AppointmentGroup.ANY_TRIBUNAL_MEMBER),
+    $jap: JudicialAccessProfile(eval(!hasAppointmentCode(AppointmentGroup.ANY_TRIBUNAL_MEMBER)),
                                 isFeePaid(),
                                 hasValidEndDate(),
                                 hasValidAuthorisation(Jurisdiction.EMPLOYMENT))
