@@ -231,15 +231,15 @@ class ProfessionalRefreshOrchestratorTest {
                 .when(roleAssignmentService).createRoleAssignment(any());
 
         String accessType = """
-     [
-     {
-      "jurisdictionId": "1",
-     "organisationProfileId": "1",
-     "accessTypeId": "1",
-     "enabled": true
-     }
-    ]
-    """;
+            [
+            {
+             "jurisdictionId": "1",
+             "organisationProfileId": "1",
+             "accessTypeId": "1",
+             "enabled": true
+             }
+             ]
+              """;
 
         doReturn(accessType)
                 .when(objectMapper).writeValueAsString(any());
