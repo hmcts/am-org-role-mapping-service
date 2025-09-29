@@ -18,8 +18,6 @@ public final class JudicialOfficeHolder {
                 = "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried";
             public static final String VICE_PRESIDENT_SALARIED
                 = "EMPLOYMENT Vice President-Salaried";
-            public static final String VICE_PRESIDENT_ET_SCOTLAND_SALARIED
-                = "EMPLOYMENT Vice President Employment Tribunals (Scotland)-Salaried";
             public static final String REGIONAL_EMPLOYMENT_JUDGE_SALARIED
                 = "EMPLOYMENT Regional Employment Judge-Salaried";
 
