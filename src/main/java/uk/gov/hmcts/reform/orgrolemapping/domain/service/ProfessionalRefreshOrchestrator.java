@@ -22,7 +22,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_ROL
 @Slf4j
 public class ProfessionalRefreshOrchestrator {
 
-    public static final String NO_ACCESS_TYPES_FOUND = "No access types found in database";
+    public static final String NO_ACCESS_TYPES_FOUND = "NO_ACCESS_TYPES_FOUND";
     public static final String PRD_USER_NOT_FOUND = "User with ID %s not found in PRD";
     public static final String EXPECTED_SINGLE_PRD_USER = "Expected single user for ID %s, found %s";
     private final AccessTypesRepository accessTypesRepository;

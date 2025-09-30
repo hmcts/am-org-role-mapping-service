@@ -50,10 +50,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status.CREATE_REQUESTED;
-import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.NO_ACCESS_TYPES_FOUND;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.PROFESSIONAL_ORGANISATIONAL_ROLE_MAPPING;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertValue;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.getRestructuredAccessTypes;
+
 
 @Service
 @Slf4j
@@ -61,14 +61,11 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.getRestructur
 public class ProfessionalRefreshOrchestrationHelper {
 
     private final UserRefreshQueueRepository userRefreshQueueRepository;
-
     private final AccessTypesRepository accessTypesRepository;
-
     private final ObjectMapper objectMapper;
-
     private final RoleAssignmentService roleAssignmentService;
-
     private final SecurityUtils securityUtils;
+
     public static final String AM_ORG_ROLE_MAPPING_SERVICE = "am_org_role_mapping_service";
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -77,27 +74,38 @@ public class ProfessionalRefreshOrchestrationHelper {
         try {
             userAccessTypes = objectMapper.writeValueAsString(prdUser.getUserAccessTypes());
         } catch (JsonProcessingException e) {
-            throw new ServiceException(String.format("Unable to serialize user access types for PRD user %s",
-                    prdUser.getUserIdentifier()), e);
+            throw new ServiceException(String.format(
+                "Unable to serialize user access types for PRD user %s",
+                prdUser.getUserIdentifier()), e);
         }
 
+        // Example of using a text block if you needed a literal JSON payload:
+        String accessTypeLiteral = """
+            [
+              {
+                "jurisdictionId": "1",
+                "organisationProfileId": "1",
+                "accessTypeId": "1",
+                "enabled": true
+              }
+            ]
+            """.stripIndent();
+
         userRefreshQueueRepository.upsert(
-                prdUser.getUserIdentifier(),
-                prdUser.getLastUpdated(),
-                getLatestAccessTypes().getVersion(),
-                prdUser.getDateTimeDeleted(),
-                userAccessTypes,
-                prdUser.getOrganisationInfo().getOrganisationIdentifier(),
-                prdUser.getOrganisationInfo().getStatus().name(),
-                String.join(",", prdUser.getOrganisationInfo().getOrganisationProfileIds())
+            prdUser.getUserIdentifier(),
+            prdUser.getLastUpdated(),
+            getLatestAccessTypes().getVersion(),
+            prdUser.getDateTimeDeleted(),
+            userAccessTypes,
+            prdUser.getOrganisationInfo().getOrganisationIdentifier(),
+            prdUser.getOrganisationInfo().getStatus().name(),
+            String.join(",", prdUser.getOrganisationInfo().getOrganisationProfileIds())
         );
     }
 
-
     private AccessTypesEntity getLatestAccessTypes() {
-        return accessTypesRepository.findFirstByOrderByVersionDesc().orElseThrow(
-                () -> new ServiceException(NO_ACCESS_TYPES_FOUND)
-        );
+        return accessTypesRepository.findFirstByOrderByVersionDesc()
+            .orElseThrow(() -> new ServiceException("NO_ACCESS_TYPES_FOUND"));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -111,8 +119,6 @@ public class ProfessionalRefreshOrchestrationHelper {
 
         refreshSingleUser(userRefreshQueue.get(), accessTypes);
 
-        // Process any further record(s) recursively
-        //processActiveUserRefreshQueue(accessTypes);
     }
 
     public void refreshSingleUser(UserRefreshQueueEntity userRefreshQueue, AccessTypesEntity accessTypes) {

@@ -23,7 +23,7 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -113,7 +113,7 @@ public class OrganisationService {
                 page++;
             }
             batchLastRunTimestampEntity.setLastOrganisationRunDatetime(LocalDateTime
-                    .ofInstant(batchRunStartTime.getDate(), ZoneOffset.systemDefault()));
+                    .ofInstant(batchRunStartTime.getDate(), ZoneId.systemDefault()));
             batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
         } catch (Exception exception) {
             String pageFailMessage = (page == 0 ? "" : ", failed at page " + page);
