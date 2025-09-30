@@ -219,8 +219,8 @@ public class ProfessionalRefreshOrchestrationHelper {
         String groupRoleName = role.getGroupRoleName();
         String caseGroupIdTemplate = role.getCaseGroupIdTemplate();
         if (role.isGroupAccessEnabled()
-            && StringUtils.isNotBlank(groupRoleName)
-            && StringUtils.isNotBlank(caseGroupIdTemplate)) {
+                && StringUtils.isNotBlank(groupRoleName)
+                && StringUtils.isNotBlank(caseGroupIdTemplate)) {
 
             String caseAccessGroupId =
                     generateCaseAccessGroupId(caseGroupIdTemplate, userRefreshQueue.getOrganisationId());
@@ -242,8 +242,8 @@ public class ProfessionalRefreshOrchestrationHelper {
 
     private boolean isAccessEnabled(OrganisationProfileAccessType accessType, List<UserAccessType> userAccessTypes) {
         return accessType.isAccessMandatory()
-               || accessType.isAccessDefault() && !isActiveAccessTypes(userAccessTypes)
-               || isActiveAccessTypes(userAccessTypes);
+                || accessType.isAccessDefault() && !isActiveAccessTypes(userAccessTypes)
+                || isActiveAccessTypes(userAccessTypes);
     }
 
     private boolean isActiveAccessTypes(List<UserAccessType> accessTypes) {
