@@ -24,7 +24,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder
 public class JudicialAccessProfile implements Serializable, UserAccessProfile {
 
     private String userId;
-    private String roleId; // appointment code
     private ZonedDateTime beginTime;
     private ZonedDateTime endTime;
     private List<String> ticketCodes;
@@ -32,6 +31,7 @@ public class JudicialAccessProfile implements Serializable, UserAccessProfile {
     private String baseLocationId;
     private String contractTypeId;
     private String appointment;
+    private String appointmentCode;
     private String serviceCode;
     private String appointmentType;
     private String primaryLocationId;
@@ -57,7 +57,7 @@ public class JudicialAccessProfile implements Serializable, UserAccessProfile {
 
     @JsonIgnore
     public boolean hasAppointmentCode(AppointmentEnum appointment) {
-        return roleId != null && appointment.getCodes().contains(roleId);
+        return appointmentCode != null && appointment.getCodes().contains(appointmentCode);
     }
 
     @JsonIgnore

@@ -202,6 +202,7 @@ public class AssignmentRequestBuilder {
                     .baseLocationId(appointment.getBaseLocationId())
                     .ticketCodes(stringListToDistinctList(ticketCodes))
                     .appointment(appointment.getAppointment())
+                    .appointmentCode(appointment.getRoleNameId())
                     .contractTypeId(appointment.getContractTypeId())
                     .appointmentType(getAppointmentTypeFromAppointment(appointment))
                     .authorisations(associatedAuthorisations)

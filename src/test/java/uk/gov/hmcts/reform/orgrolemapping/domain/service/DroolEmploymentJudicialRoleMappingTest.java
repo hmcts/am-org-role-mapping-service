@@ -238,7 +238,7 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
-            judicialAccessProfile.setRoleId(appointmentCode);
+            judicialAccessProfile.setAppointmentCode(appointmentCode);
             judicialAccessProfile.setAppointmentType(appointmentType);
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BHA1")));
             judicialAccessProfile.setRegionId(regionIn);

@@ -204,14 +204,14 @@ class JudicialAccessProfileTest {
 
         }
 
-        private void assertAppointmentCodeChecker(String japRoleId,
+        private void assertAppointmentCodeChecker(String appointmentCode,
                                                   AppointmentEnum testAppointment,
                                                   boolean expectedHasAppointmentCode,
                                                   String testDescription) {
 
             // GIVEN
             JudicialAccessProfile judicialAccessProfile = JudicialAccessProfile.builder()
-                .roleId(japRoleId)
+                .appointmentCode(appointmentCode)
                 .build();
 
             // WHEN / THEN

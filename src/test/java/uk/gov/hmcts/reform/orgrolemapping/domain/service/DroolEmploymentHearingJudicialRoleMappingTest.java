@@ -498,7 +498,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
         judicialAccessProfiles.add(
                 JudicialAccessProfile.builder()
                         .appointment(appointment)
-                        .roleId(appointmentCode)
+                        .appointmentCode(appointmentCode)
                         .appointmentType(appointmentType)
                         .userId(userId)
                         .roles(List.of(additionalRole.getJurisdictionRoleName()))
@@ -527,9 +527,8 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
         // Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
-        List<String> roleNameResults = roleAssignments.stream().map(RoleAssignment::getRoleName).toList();
-        assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
 
+        List<String> roleNameResults = roleAssignments.stream().map(RoleAssignment::getRoleName).toList();
 
         log.info("""
                     Results:
@@ -541,6 +540,11 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
             roleNameResults,
             writeValueAsPrettyJson(roleAssignments)
         );
+
+        // assert expected number of role assignments match ...
+        assertEquals(expectedRoleNames.size(), roleAssignments.size());
+        // ... then check all are present
+        assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
 
         // assertions
         roleAssignments.forEach(r -> {

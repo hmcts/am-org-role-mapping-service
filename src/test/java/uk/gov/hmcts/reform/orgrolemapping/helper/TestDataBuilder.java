@@ -418,13 +418,13 @@ public class TestDataBuilder {
     public static JudicialAccessProfile buildJudicialAccessProfile() {
         JudicialAccessProfile.JudicialAccessProfileBuilder builder = JudicialAccessProfile.builder();
         builder.userId(id_1);
-        builder.roleId("84");
         builder.contractTypeId("5");
         builder.beginTime(ZonedDateTime.now(ZoneOffset.UTC).plusDays(1));
         builder.endTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1));
         builder.baseLocationId("1");
         builder.primaryLocationId("primary location");
         builder.appointment("2");
+        builder.appointmentCode("84");
         builder.regionId("3");
         builder.ticketCodes(List.of("373"));
         builder.authorisations(Collections.singletonList(
@@ -477,33 +477,6 @@ public class TestDataBuilder {
         return objectMapper.readValue(
                 new File("src/main/resources/judicialBookingSample.json"),
                 JudicialBooking.class);
-    }
-
-    public static JudicialAccessProfile buildJudicialAccessProfileWithParams(List<String> ticketCodes,
-                                                                             String appointment,
-                                                                             String appointmentType,
-                                                                             String locationId,
-                                                                             List<Authorisation> authorisations,
-                                                                             ZonedDateTime beginTime,
-                                                                             ZonedDateTime endTime,
-                                                                             List<String> roles,
-                                                                             String serviceCode) {
-        return JudicialAccessProfile.builder()
-                .userId(id_1)
-                .roleId("1")
-                .regionId("2")
-                .contractTypeId("3")
-                .appointment(appointment)
-                .appointmentType(appointmentType)
-                .baseLocationId(locationId)
-                .primaryLocationId(locationId)
-                .ticketCodes(ticketCodes)
-                .authorisations(authorisations)
-                .beginTime(beginTime)
-                .endTime(endTime)
-                .roles(roles)
-                .serviceCode(serviceCode)
-                .build();
     }
 
     public static JudicialProfileV2 buildJudicialProfileWithParamsV2(
