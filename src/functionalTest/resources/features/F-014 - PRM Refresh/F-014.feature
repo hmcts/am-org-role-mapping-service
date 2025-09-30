@@ -4,7 +4,7 @@ Feature: F-014 : Refresh Professional User
   Background:
     Given an appropriate test context as detailed in the test data source
 
-  @Ignore
+ 
   @S-014.01
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: successful refresh of professional user - single user
