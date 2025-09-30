@@ -1,15 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -18,24 +12,31 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.OrganisationService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalUserService;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @RunWith(MockitoJUnitRunner.class)
 class SchedulerTest {
 
     @Mock
-    private CaseDefinitionService caseDefinitionService = mock(CaseDefinitionService.class);
+    private CaseDefinitionService caseDefinitionService;
 
     @Mock
-    private OrganisationService organisationService = mock(OrganisationService.class);
+    private OrganisationService organisationService;
 
     @Mock
-    private ProfessionalUserService professionalUserService = mock(ProfessionalUserService.class);
+    private ProfessionalUserService professionalUserService;
 
+    @InjectMocks
     private Scheduler scheduler;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        scheduler = new Scheduler(caseDefinitionService, organisationService, professionalUserService);
     }
 
     // PRM Process 1
@@ -48,6 +49,7 @@ class SchedulerTest {
         ProcessMonitorDto returnedProcessMonitorDto = scheduler.findAndUpdateCaseDefinitionChanges();
 
         assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
         verify(caseDefinitionService, times(1)).findAndUpdateCaseDefinitionChanges();
     }
 
@@ -114,6 +116,23 @@ class SchedulerTest {
         assertNotNull(returnedProcessMonitorDto);
         assertEquals(processMonitorDto, returnedProcessMonitorDto);
         verify(professionalUserService, times(1)).findUserChangesAndInsertIntoUserRefreshQueue();
+    }
+
+    // PRM Process 6
+    @Test
+    void processUserRefreshQueueTest() {
+        ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
+
+        // arrange
+        when(professionalUserService.refreshUsersBatchMode()).thenReturn(processMonitorDto);
+
+        // act
+        ProcessMonitorDto returnedProcessMonitorDto = scheduler.processUserRefreshQueue();
+
+        // assert
+        assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
+        verify(professionalUserService, times(1)).refreshUsersBatchMode();
     }
 
 }
