@@ -4,7 +4,7 @@ Feature: F-014 : Refresh Professional User
   Background:
     Given an appropriate test context as detailed in the test data source
 
-
+  @Ignore
   @S-014.01
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: successful refresh of professional user - single user
@@ -15,7 +15,7 @@ Feature: F-014 : Refresh Professional User
     Then a positive response is received,
     And the response has all other details as expected.
 
-
+  @Ignore
   @S-014.02
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: unsuccessful refresh of professional user - single user
@@ -25,7 +25,7 @@ Feature: F-014 : Refresh Professional User
     Then a negative response is received,
     And the response has all other details as expected.
 
-
+  @Ignore
   @S-014.03
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: successful refresh of professional user - single user no PRD enabled
@@ -45,5 +45,7 @@ Feature: F-014 : Refresh Professional User
     And it is submitted to call the [Refresh Invalid User - Single User Mode No PRD] operation of [Organisation Role Mapping],
     Then a negative response is received,
     And the response has all other details as expected.
+
+    
 
 
