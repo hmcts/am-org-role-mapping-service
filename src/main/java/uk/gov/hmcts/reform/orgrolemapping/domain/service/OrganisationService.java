@@ -23,7 +23,7 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -48,7 +48,8 @@ public class OrganisationService {
     private final String pageSize;
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final ProcessEventTracker processEventTracker;
-    private String tolerance;
+
+    private final String tolerance;
     private static final String P2 = "P2";
     private static final String P3 = "P3";
 
@@ -97,23 +98,21 @@ public class OrganisationService {
 
             page = 1;
             Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
-            OrganisationsResponse organisationsResponse = prdService
-                    .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
-            writeAllToOrganisationRefreshQueue(organisationsResponse.getOrganisations(),
-                    accessTypeMinVersion, P3, processMonitorDto);
-
-            page = 2;
-            boolean moreAvailable = organisationsResponse.getMoreAvailable();
-            while (moreAvailable) {
+            OrganisationsResponse organisationsResponse;
+            boolean moreAvailable;
+            do {
                 organisationsResponse = prdService
-                        .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
+                        .retrieveOrganisations(formattedSince, page, Integer.parseInt(pageSize)).getBody();
+                if (organisationsResponse == null) {
+                    throw new ServiceException("OrganisationsResponse is null");
+                }
                 writeAllToOrganisationRefreshQueue(organisationsResponse.getOrganisations(),
                         accessTypeMinVersion, P3, processMonitorDto);
                 moreAvailable = organisationsResponse.getMoreAvailable();
                 page++;
-            }
+            } while (moreAvailable);
             batchLastRunTimestampEntity.setLastOrganisationRunDatetime(LocalDateTime
-                    .ofInstant(batchRunStartTime.getDate(), ZoneOffset.systemDefault()));
+                    .ofInstant(batchRunStartTime.getDate(), ZoneId.systemDefault()));
             batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
         } catch (Exception exception) {
             String pageFailMessage = (page == 0 ? "" : ", failed at page " + page);

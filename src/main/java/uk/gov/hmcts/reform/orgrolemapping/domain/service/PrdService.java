@@ -24,6 +24,8 @@ import java.util.Optional;
 public class PrdService {
 
     private final PRDFeignClient prdFeignClient;
+    //Uncomment this to run with your stubs
+    // for testing purpose private final PRDFeignClientFallback prdFeignClient;
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
     public ResponseEntity<OrganisationByProfileIdsResponse> fetchOrganisationsByProfileIds(
@@ -62,7 +64,12 @@ public class PrdService {
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
     public ResponseEntity<GetRefreshUserResponse> retrieveUsers(
             String lastUpdatedSince, Integer pageSize, String searchAfter) {
-        return prdFeignClient.retrieveUsers(lastUpdatedSince, pageSize, searchAfter);
+        return prdFeignClient.getRefreshUsers(null, lastUpdatedSince, pageSize, searchAfter);
+    }
+
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
+    public ResponseEntity<GetRefreshUserResponse> getRefreshUser(String userId) {
+        return prdFeignClient.getRefreshUsers(userId, null, null, null);
     }
 
 }

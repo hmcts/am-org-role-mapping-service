@@ -28,7 +28,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         LocalDateTime.parse("2023-09-19T15:36:33.653Z", DTF);
     private static final String SINCE = "1999-12-31T23:57:00";
     private static final String ACTIVE = "ACTIVE";
-    private static final String INACTIVE = "INACTIVE";
+    private static final String BLOCKED = "BLOCKED";
     private static final String ORGANISATION_ID_3 = "3";
     private static final Integer TOLERANCE_MINUTES = 1;
 
@@ -91,7 +91,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         // verify the last user run date time has been updated
         assertBatchLastRunTimestampEntity(true);
         // verify that user1 is NOT updated
-        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_3, INACTIVE,
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_3, BLOCKED,
             new String[] {"SOLICITOR_PROFILE"}, 1,
             OLD_USER_LAST_UPDATED, false, false);
         // verify that user2 is updated
@@ -190,7 +190,7 @@ class PrmSchedulerProcess5IntegrationTest extends BaseSchedulerTestIntegration {
         assertEquals(organisationId, userRefreshQueueEntity.get().getOrganisationId(),
             "UserRefreshQueueEntity organisationId mismatch for userId: " + userId);
         assertEquals(organisationStatus, userRefreshQueueEntity.get().getOrganisationStatus(),
-            "UserRefreshQueueEntity oragnisationStatus mismatch for userId: " + userId);
+            "UserRefreshQueueEntity organisationStatus mismatch for userId: " + userId);
         assertEquals(accessTypeMinVersion, userRefreshQueueEntity.get().getAccessTypesMinVersion(),
             "UserRefreshQueueEntity accessTypesMinVersio mismatch for userId: " + userId);
         assertEquals(isUpdated,

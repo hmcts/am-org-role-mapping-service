@@ -12,6 +12,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RestructuredAccessTypes {
-
     private Set<OrganisationProfile> organisationProfiles;
 }
+

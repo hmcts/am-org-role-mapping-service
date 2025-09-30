@@ -1,0 +1,12 @@
+{
+  "_guid_": "ProfessionalUser",
+  "userIdentifier": "${[scenarioContext][testData][request][queryParams][userId]}",
+  "lastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+  "organisationInfo": {
+    "organisationIdentifier": "[[ANYTHING_PRESENT]]",
+    "status": "ACTIVE",
+    "lastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+    "organisationProfileIds": "[[ANYTHING_PRESENT]]"
+  },
+  "userAccessTypes": "[[ANYTHING_PRESENT]]"
+}
