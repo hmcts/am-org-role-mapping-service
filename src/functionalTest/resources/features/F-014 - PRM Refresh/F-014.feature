@@ -15,7 +15,6 @@ Feature: F-014 : Refresh Professional User
     Then a positive response is received,
     And the response has all other details as expected.
 
-  @Ignore
   @S-014.02
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: unsuccessful refresh of professional user - single user
@@ -25,7 +24,7 @@ Feature: F-014 : Refresh Professional User
     Then a negative response is received,
     And the response has all other details as expected.
 
-  @Ignore
+  
   @S-014.03
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: successful refresh of professional user - single user no PRD enabled
