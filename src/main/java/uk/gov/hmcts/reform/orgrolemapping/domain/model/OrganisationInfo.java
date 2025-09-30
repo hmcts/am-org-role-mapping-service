@@ -1,13 +1,14 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Builder;
-import lombok.Data;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.OrganisationStatus;
+
 import java.time.LocalDateTime;
 import java.util.List;
 

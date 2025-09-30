@@ -8,7 +8,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class AccessTypesRepositoryIntegrationTest extends BaseTestIntegration {
+class AccessTypesRepositoryIntegrationTest extends BaseTestIntegration {
 
     @Autowired
     private AccessTypesRepository accessTypesRepository;
