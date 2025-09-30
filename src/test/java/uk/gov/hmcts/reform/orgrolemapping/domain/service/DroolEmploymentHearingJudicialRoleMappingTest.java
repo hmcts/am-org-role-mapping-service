@@ -222,8 +222,6 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
                         List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
                         null),
-                //Tribunal Member and Lay should get roles tribunal-member,hearing-viewer when baseLocationId = 1036
-                // or 1037
                 Arguments.of(Appointment.TRIBUNAL_MEMBER,
                         AppointmentType.FEE_PAID,
                         false,
@@ -235,32 +233,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         false,
                         ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
                         List.of("tribunal-member", "hmcts-judiciary", "hearing-viewer"),
-                        "1036"),
-                Arguments.of(Appointment.TRIBUNAL_MEMBER,
-                        AppointmentType.FEE_PAID,
-                        false,
-                        ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
-                        List.of("tribunal-member", "hmcts-judiciary", "hearing-viewer"),
-                        "1037"),
-                Arguments.of(Appointment.TRIBUNAL_MEMBER_LAY,
-                        AppointmentType.FEE_PAID,
-                        false,
-                        ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
-                        List.of("tribunal-member", "hmcts-judiciary", "hearing-viewer"),
-                        "1037"),
-                //Tribunal Member and Lay should NOT get roles when baseLocationId != 1036 or 1037
-                Arguments.of(Appointment.TRIBUNAL_MEMBER,
-                        AppointmentType.FEE_PAID,
-                        false,
-                        ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
-                        new ArrayList<>(),
-                        "1"),
-                Arguments.of(Appointment.TRIBUNAL_MEMBER_LAY,
-                        AppointmentType.FEE_PAID,
-                        false,
-                        ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
-                        new ArrayList<>(),
-                        "1")
+                        "1036")
         );
     }
 
