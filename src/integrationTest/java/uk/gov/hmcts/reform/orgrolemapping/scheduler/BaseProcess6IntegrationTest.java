@@ -30,6 +30,7 @@ import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -306,7 +307,6 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         testCreateRoleAssignment(false, false);
     }
 
-
     /**
      * accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = Y.
      */
@@ -411,6 +411,26 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
                 "UserRefreshQueueEntity number of active records mismatch");
     }
 
+    protected void assertRetry(int retryCount) {
+        var userRefreshQueueEntities = userRefreshQueueRepository.findAll();
+        var userRefreshQueueEntity = userRefreshQueueEntities.getFirst();
+        assertEquals(retryCount, userRefreshQueueEntity.getRetry(),
+                "UserRefreshQueueEntity.retry mismatch");
+        assertTrue(userRefreshQueueEntity.getActive(),
+                "UserRefreshQueueEntity.active mismatch");
+        if (retryCount < 4) {
+            assertTrue(assertLastUpdatedNow(userRefreshQueueEntity.getRetryAfter()),
+                    "UserRefreshQueueEntity.retryAfter mismatch");
+        } else {
+            assertNull(userRefreshQueueEntity.getRetryAfter(),
+                    "UserRefreshQueueEntity.retryAfter is not null");
+        }
+    }
+
+    private boolean assertLastUpdatedNow(LocalDateTime lastUpdated) {
+        return lastUpdated.isAfter(LocalDateTime.now().minusMinutes(1));
+    }
+
     protected void assertAccessTypes(String accessTypeId, String organisationProfileId,
                                      String jurisdictionId, boolean enabled) {
         var userRefreshQueueEntities = userRefreshQueueRepository.findAll();
@@ -488,7 +508,8 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         String prefix = isGroupRole ? "Group" : "Operational";
         assertEquals(ActorIdType.IDAM, roleAssignment.getActorIdType(),
                 prefix + " actor type mismatch");
-        assertEquals("USERX", roleAssignment.getActorId(),
+        assertTrue(roleAssignment.getActorId().contains("USERX")
+                || roleAssignment.getActorId().contains("USERY"),
                 prefix + " actorId mismatch");
         assertEquals(isGroupRole ? "GroupRole1" : "OrgRole1", roleAssignment.getRoleName(),
                 prefix + " role name mismatch");
@@ -511,7 +532,7 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         assertNull(roleAssignment.getNotes(),
                 prefix + " notes mismatch");
         assertEquals(JacksonUtils.convertObjectIntoJsonNode("BEFTA_JURISDICTION_2"),
-                roleAssignment.getAttributes().get("jurisdiction"),
+                        roleAssignment.getAttributes().get("jurisdiction"),
                 prefix + " jurisdiction mismatch");
         assertEquals(JacksonUtils.convertObjectIntoJsonNode("FT_CaseAccessGroups"),
                 roleAssignment.getAttributes().get("caseType"),

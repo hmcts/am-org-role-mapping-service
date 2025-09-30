@@ -35,6 +35,7 @@ import java.util.UUID;
 import static com.github.tomakehurst.wiremock.client.WireMock.absent;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
@@ -68,17 +69,19 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
     static final String DUMMY_S2S_TOKEN = "DUMMY_S2S_TOKEN";
 
     public static final UUID STUB_ID_RAS_CREATE_ROLEASSIGNMENTS
-            = UUID.fromString("0bfabe25-fd57-4f8a-9882-911b53857258");
+        = UUID.fromString("0bfabe25-fd57-4f8a-9882-911b53857258");
     public static final UUID STUB_ID_PRD_REFRESH_USER
             = UUID.fromString("491482e1-a8ec-4170-b986-177259e152cd");
-
     public static final UUID STUB_ID_PRD_RETRIEVE_USERS
         = UUID.fromString("47f05020-f89c-46ea-93f4-063f09ba96c0");
 
     protected static final String MORE_AVAILABLE = "moreAvailable";
     protected static final String LAST_RECORD_IN_PAGE = "lastRecordInPage";
     protected static final String SEARCH_AFTER = "searchAfter";
-    
+
+    public static final UUID STUB_ID_RAS_RETRIEVE_USERSBYORG
+            = UUID.fromString("8468dbb3-14b9-4fd2-b9d8-0620a8fc1e94");
+
     public static final String JURISDICTION_ID_CIVIL = "CIVIL";
     public static final String JURISDICTION_ID_PUBLICLAW = "PUBLICLAW";
 
@@ -282,18 +285,48 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
             .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE))
             .plus(new HttpHeader(MORE_AVAILABLE, moreAvailable));
 
-        int httpStatus = EndStatus.FAILED.equals(endStatus)
-            ? HttpStatus.UNAUTHORIZED.value() : HttpStatus.OK.value();
-
-        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
-            "/refdata/internal/v2/organisations/users"))
-            .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
-            .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
-            .inScenario("once")
-            .willReturn(aResponse()
-                .withStatus(httpStatus)
-                .withHeaders(headers)
-                .withBody(body)));
+        if (EndStatus.SUCCESS.equals(endStatus)) {
+            WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+                    "/refdata/internal/v2/organisations/users"))
+                    .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
+                    .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
+                    .willReturn(aResponse()
+                            .withStatus(HttpStatus.OK.value())
+                            .withHeaders(headers)
+                            .withBody(body)));
+        } else if (EndStatus.FAILED.equals(endStatus)) {
+            WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+                    "/refdata/internal/v2/organisations/users"))
+                    .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
+                    .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
+                    .willReturn(aResponse()
+                            .withStatus(HttpStatus.UNAUTHORIZED.value())
+                            .withHeaders(headers)
+                            .withBody(body)));
+        } else if (EndStatus.PARTIAL_SUCCESS.equals(endStatus)) {
+            WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+                    "/refdata/internal/v2/organisations/users"))
+                    .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
+                    .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
+                    .withRequestBody(equalToJson("""
+                            {"organisationIdentifiers": ["1"]}
+                            """))
+                    .willReturn(aResponse()
+                            .withStatus(HttpStatus.OK.value())
+                            .withHeaders(headers)
+                            .withBody(body)));
+            WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(
+                    "/refdata/internal/v2/organisations/users"))
+                    .withId(STUB_ID_PRD_RETRIEVE_USERSBYORG)
+                    .withQueryParam("pageSize", equalTo(TEST_PAGE_SIZE))
+                    .withRequestBody(equalToJson("""
+                            {"organisationIdentifiers": ["4"]}
+                            """))
+                    .willReturn(aResponse()
+                            .withStatus(HttpStatus.UNAUTHORIZED.value())
+                            .withHeaders(headers)
+                            .withBody(body)));
+        }
     }
 
     protected Map<String,String> getAccessTypesMap(String accessTypes) {
