@@ -136,6 +136,15 @@ withPipeline(type, product, component) {
   // Sync environment specific branches with master branch
   syncBranchesWithMaster(branchesToSync)
 
+  afterAlways('test') {
+    // jenkins may fail to copy artifacts after some failures
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/checkstyle/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/test/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/test-results/test/*.xml'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/test-results/integration/*.xml'
+  }
+
   before('functionalTest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
   }
