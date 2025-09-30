@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -305,7 +306,6 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
     void testCreateRole_nnyn() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
     }
-    
 
     /**
      * accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = Y.
@@ -457,6 +457,17 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         logObject("userRefreshQueueRepository: BEFORE", userRefreshQueueRepository.findAll());
     }
 
+    protected void verifyNoOfCallsToPrd(int noOfCalls) {
+        var allCallEvents = logWiremockPostCalls(STUB_ID_PRD_REFRESH_USER);
+        // verify number of calls
+        assertEquals(noOfCalls, allCallEvents.size(),
+                "Unexpected number of calls to PRD service");
+        ServeEvent event  = allCallEvents.get(0);
+        // verify response status
+        assertEquals(HttpStatus.OK.value(), event.getResponse().getStatus(),
+                "Response status mismatch");
+    }
+
     protected void verifyNoOfCallsToRas(int noOfCalls) {
         var allCallEvents = logWiremockPostCalls(STUB_ID_RAS_CREATE_ROLEASSIGNMENTS);
         // verify single call
@@ -524,7 +535,7 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
                         roleAssignment.getAttributes().get("jurisdiction"),
                 prefix + " jurisdiction mismatch");
         assertEquals(JacksonUtils.convertObjectIntoJsonNode("FT_CaseAccessGroups"),
-                        roleAssignment.getAttributes().get("caseType"),
+                roleAssignment.getAttributes().get("caseType"),
                 prefix + " caseType mismatch");
         if (isGroupRole) {
             assertEquals(JacksonUtils.convertObjectIntoJsonNode("BEFTA_MASTER:ORG1"),

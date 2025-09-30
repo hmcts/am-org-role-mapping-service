@@ -32,8 +32,8 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 import java.util.List;
 import java.util.UUID;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.absent;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -70,7 +70,8 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
 
     public static final UUID STUB_ID_RAS_CREATE_ROLEASSIGNMENTS
         = UUID.fromString("0bfabe25-fd57-4f8a-9882-911b53857258");
-
+    public static final UUID STUB_ID_PRD_REFRESH_USER
+            = UUID.fromString("491482e1-a8ec-4170-b986-177259e152cd");
     public static final UUID STUB_ID_PRD_RETRIEVE_USERS
         = UUID.fromString("47f05020-f89c-46ea-93f4-063f09ba96c0");
 
@@ -239,6 +240,34 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
                 .withStatus(HttpStatus.OK.value())
                 .withHeaders(headers)
                 .withBody(body)));
+    }
+
+    protected void stubPrdRefreshUser(List<String> fileNames, String userId,
+                                        String moreAvailable, String lastRecordInPage) {
+        stubPrdRefreshUser(
+                "{ \"users\": " + jsonHelper.readJsonArrayFromFiles(fileNames)
+                        + ", \"moreAvailable\": " + moreAvailable
+                        + ", \"lastRecordInPage\": " + lastRecordInPage
+                        + " }", userId
+        );
+    }
+
+    protected void stubPrdRefreshUser(String body, String userId) {
+        HttpHeaders headers = new HttpHeaders()
+                .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE))
+                .plus(new HttpHeader("userId", userId));
+
+        WIRE_MOCK_SERVER.stubFor(get(urlPathMatching(
+                "/refdata/internal/v1/organisations/users"))
+                .withId(STUB_ID_PRD_REFRESH_USER)
+                .withQueryParam("userId", equalTo(userId))
+                .withQueryParam("since", absent())
+                .withQueryParam("pageSize", absent())
+                .withQueryParam("searchAfter", absent())
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeaders(headers)
+                        .withBody(body)));
     }
 
     protected void stubPrdRetrieveUsersByOrg(List<String> fileNames,
