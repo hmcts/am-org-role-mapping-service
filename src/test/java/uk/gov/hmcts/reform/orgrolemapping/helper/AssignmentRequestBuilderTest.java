@@ -158,6 +158,7 @@ class AssignmentRequestBuilderTest {
                         assertNotNull(appointment.getTicketCodes());
                         assertEquals(2, appointment.getTicketCodes().size());
                         assertNotNull(appointment.getAppointment());
+                        assertNotNull(appointment.getAppointmentCode());
                     });
             assertEquals(2, judicialAccessProfiles.size());
         }
@@ -184,6 +185,7 @@ class AssignmentRequestBuilderTest {
                         assertNotNull(appointment.getTicketCodes());
                         assertEquals(0, appointment.getTicketCodes().size());
                         assertNotNull(appointment.getAppointment());
+                        assertNotNull(appointment.getAppointmentCode());
                     });
             assertEquals(2, judicialAccessProfiles.size());
         }
@@ -214,6 +216,7 @@ class AssignmentRequestBuilderTest {
                         assertEquals(2, appointment.getTicketCodes().size());
                         Assertions.assertThat(List.of("374","372")).hasSameElementsAs(appointment.getTicketCodes());
                         assertNotNull(appointment.getAppointment());
+                        assertNotNull(appointment.getAppointmentCode());
                     });
             assertEquals(2, judicialAccessProfiles.size());
         }
@@ -262,6 +265,7 @@ class AssignmentRequestBuilderTest {
 
             var builder = AppointmentV2.builder()
                 .appointment(appId)
+                .roleNameId(appId + "_code")
                 .appointmentId(appId)
                 .contractTypeId(CONTRACT_TYPE_ID)
                 .appointmentType("To-Be-Replaced")
@@ -782,6 +786,7 @@ class AssignmentRequestBuilderTest {
                     () -> assertNotNull(accessProfile.getBaseLocationId()),
                     () -> assertNotNull(accessProfile.getTicketCodes()),
                     () -> assertNotNull(accessProfile.getAppointment()),
+                    () -> assertNotNull(accessProfile.getAppointmentCode()),
                     () -> accessProfile.getAuthorisations()
                             .forEach(ConvertUserProfileToJudicialAccessProfileV2::assertCommonAuthorisationFields)
             );
