@@ -1,13 +1,15 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
@@ -17,15 +19,21 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_ROLE_REFRESH;
 
 @RunWith(MockitoJUnitRunner.class)
 class ProfessionalRefreshOrchestratorTest {
@@ -48,6 +56,8 @@ class ProfessionalRefreshOrchestratorTest {
     private ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
     @InjectMocks
     private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
+    @Captor
+    private ArgumentCaptor<ProcessMonitorDto> processMonitorDtoArgumentCaptor;
 
     @BeforeEach
     void setUp() {
@@ -90,10 +100,7 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(userRefreshQueueEntity)
                 .when(userRefreshQueueRepository).findByUserId(any());
 
-        ResponseEntity<Object> responseEntity = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
-
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertNotNull(responseEntity);
+        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(userId));
     }
 
     @Test
@@ -132,10 +139,7 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(userRefreshQueueEntity)
                 .when(userRefreshQueueRepository).findByUserId(any());
 
-        ResponseEntity<Object> responseEntity = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
-
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertNotNull(responseEntity);
+        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(userId));
     }
 
     @Test
@@ -175,10 +179,7 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(userRefreshQueueEntity)
                 .when(userRefreshQueueRepository).findByUserId(any());
 
-        ResponseEntity<Object> responseEntity = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
-
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertNotNull(responseEntity);
+        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(userId));
     }
 
     @Test
@@ -218,10 +219,7 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(userRefreshQueueEntity)
                 .when(userRefreshQueueRepository).findByUserId(any());
 
-        ResponseEntity<Object> responseEntity = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
-
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertNotNull(responseEntity);
+        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(userId));
     }
 
     @Test
@@ -249,9 +247,15 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(TestDataBuilder.buildUserRefreshQueueEntity(userId))
                 .when(userRefreshQueueRepository).findByUserId(any());
 
-        ResponseEntity<Object> responseEntity = professionalRefreshOrchestrator.refreshProfessionalUser(userId);
+        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(userId));
+    }
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertNotNull(responseEntity);
+    private void assertResponse(ResponseEntity<Object> actualResponse) {
+        assertNotNull(actualResponse);
+        assertNotNull(actualResponse.getBody());
+        assertEquals(actualResponse.getBody(), Map.of("Message", SUCCESS_ROLE_REFRESH));
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+            .isEqualTo(EndStatus.SUCCESS);
     }
 }

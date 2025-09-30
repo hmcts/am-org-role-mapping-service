@@ -113,7 +113,14 @@ public class ProfessionalRefreshOrchestrationHelper {
 
     private void generateRoleAssignments(UserRefreshQueueEntity userRefreshQueue, AccessTypesEntity accessTypes) {
         if (userRefreshQueue.getAccessTypesMinVersion() > accessTypes.getVersion().intValue()) {
-            return;
+            String errorMessage = String.format(
+                    "User %s has access types version %d which is higher than the latest version %d",
+                    userRefreshQueue.getUserId(),
+                    userRefreshQueue.getAccessTypesMinVersion(),
+                    accessTypes.getVersion().intValue()
+            );
+            log.error(errorMessage);
+            throw new ServiceException(errorMessage);
         }
         AssignmentRequest assignmentRequest =
                 createAssignmentRequest(userRefreshQueue, accessTypes);
@@ -212,8 +219,8 @@ public class ProfessionalRefreshOrchestrationHelper {
         String groupRoleName = role.getGroupRoleName();
         String caseGroupIdTemplate = role.getCaseGroupIdTemplate();
         if (role.isGroupAccessEnabled()
-            && StringUtils.isNotBlank(groupRoleName)
-            && StringUtils.isNotBlank(caseGroupIdTemplate)) {
+                && StringUtils.isNotBlank(groupRoleName)
+                && StringUtils.isNotBlank(caseGroupIdTemplate)) {
 
             String caseAccessGroupId =
                     generateCaseAccessGroupId(caseGroupIdTemplate, userRefreshQueue.getOrganisationId());
@@ -235,8 +242,12 @@ public class ProfessionalRefreshOrchestrationHelper {
 
     private boolean isAccessEnabled(OrganisationProfileAccessType accessType, List<UserAccessType> userAccessTypes) {
         return accessType.isAccessMandatory()
-               || accessType.isAccessDefault() && userAccessTypes == null
-               || userAccessTypes != null && userAccessTypes.stream()
+                || accessType.isAccessDefault() && !isActiveAccessTypes(userAccessTypes)
+                || isActiveAccessTypes(userAccessTypes);
+    }
+
+    private boolean isActiveAccessTypes(List<UserAccessType> accessTypes) {
+        return accessTypes != null && accessTypes.stream()
                 .anyMatch(userAccessType -> Boolean.TRUE.equals(userAccessType.getEnabled()));
     }
 
