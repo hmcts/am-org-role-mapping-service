@@ -8,7 +8,7 @@ Feature: F-014 : Refresh Professional User
   # P1. All flags = true => expected 2 roles generated
   @S-014.01
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
-  Scenario: successful refresh of professional user - single user -PRD enabled
+  Scenario: successful refresh of professional user - single user
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify professional user] as in [S-014.01__VerifyProfessionalUser],
     When a request is prepared with appropriate values,
@@ -41,7 +41,7 @@ Feature: F-014 : Refresh Professional User
     And the response has all other details as expected.
 
     
-  # N2 User found without PRD access types - 0 roles generated
+  # N2 User found without PRD access types - 0 roles generated positive scenario 200 returned
   @S-014.04
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: unsuccessful refresh of professional user - single user no PRD

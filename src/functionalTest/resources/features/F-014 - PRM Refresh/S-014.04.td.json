@@ -1,6 +1,6 @@
 {
   "_guid_": "S-014.04",
-  "title": "unsuccessful refresh of professional user - single user no prd",
+  "title": "successful refresh of professional user - single user no prd",
   "_extends_": "F-014-Base-Root",
   "specs": [
     "an active IDAM profile with full permissions"
@@ -16,17 +16,9 @@
   },
 
   "expectedResponse": {
-    "_extends_": "Common_Response",
-    "responseCode" : 404,
-    "responseMessage" : "Not Found",
-    "headers": {
-      "_extends_": "Common_404_Response_Headers"
-    },
+    "_extends_": "Common_200_Response",
     "body" : {
-      "errorCode" : 4,
-      "errorMessage" : "Resource not found",
-      "errorDescription" : "Resource not found User with ID xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx not found in PRD",
-      "timeStamp": "[[ANYTHING_PRESENT]]"
+      "Message" : "Role assignments have been refreshed successfully"
     }
   }
 }
