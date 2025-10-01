@@ -1,0 +1,20 @@
+{
+  "_guid_": "QueryRoleAssignments__PositiveResponse_Base",
+  "_extends_": "QueryRoleAssignments__Base",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+
+
+        ]
+    }
+  }
+}

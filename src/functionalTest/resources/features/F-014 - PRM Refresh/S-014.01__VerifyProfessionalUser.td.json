@@ -3,7 +3,7 @@
   "_extends_": "FetchProfessionalUsersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify professional user"
+    "to verify professional user has userAccessTypes enabled"
   ],
 
   "request": {
@@ -17,7 +17,17 @@
     "body": {
       "users": [
         {
-          "_extends_": "ProfessionalUser"
+          "_extends_": "ProfessionalUser",
+          "organisationInfo": {
+            "status": "ACTIVE",
+            "organisationProfileIds" : [ "SOLICITOR_PROFILE" ]
+          },
+          "userAccessTypes": [ {
+            "jurisdictionId" : "[[ANYTHING_PRESENT]]",
+            "organisationProfileId" : "SOLICITOR_PROFILE",
+            "accessTypeId" : "[[ANYTHING_PRESENT]]",
+            "enabled" : true
+          } ]
         }
       ]
     }
