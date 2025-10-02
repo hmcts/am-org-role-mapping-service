@@ -36,7 +36,7 @@ Feature: F-014 : Refresh Professional User
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: successful refresh of professional user - single user no PRD enabled
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify professional user] as in [S-014.03__VerifyProfessionalUser],
+    And a successful call [to verify professional user has userAccessTypes disabled] as in [S-014.03__VerifyProfessionalUser],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Refresh User - Single User Mode No PRD] operation of [Organisation Role Mapping],
     Then a positive response is received,

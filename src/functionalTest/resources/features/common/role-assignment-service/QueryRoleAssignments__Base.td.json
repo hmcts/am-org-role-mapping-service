@@ -3,6 +3,8 @@
 
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "productName": "Role Assignment Service",
+  "operationName": "Query Role Assignments",
   "request": {
     "headers": {
       "_extends_": "Common_Request_Headers",
