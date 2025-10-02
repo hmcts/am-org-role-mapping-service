@@ -1,0 +1,10 @@
+{
+  "_guid_": "CaseworkerRole__Base",
+
+  "role_id": "OVERRIDE",
+  "role": "OVERRIDE",
+
+  "created_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+  "last_updated_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+  "is_primary": "[[ANYTHING_PRESENT]]"
+}

@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_17_CICA",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "17",
+  "role": "CICA Caseworker"
+}

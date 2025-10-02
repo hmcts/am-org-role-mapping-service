@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
@@ -28,7 +28,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
 
     static String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
@@ -104,6 +104,34 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         List.of("Employment Judge"),
                         List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
                         null),
+                Arguments.of("Employment Judge (sitting in retirement)",
+                        "Fee Paid",
+                        false,
+                        true,
+                        List.of("Employment Judge"),
+                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
+                        null),
+                Arguments.of("Recorder",
+                        "Fee Paid",
+                        false,
+                        true,
+                        List.of("Employment Judge"),
+                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
+                        null),
+                Arguments.of("Regional Tribunal Judge",
+                        "Fee Paid",
+                        false,
+                        true,
+                        List.of("Employment Judge"),
+                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
+                        null),
+                Arguments.of("Tribunal Judge",
+                        "Fee Paid",
+                        false,
+                        true,
+                        List.of("Employment Judge"),
+                        List.of("fee-paid-judge", "hmcts-judiciary", "hearing-viewer"),
+                        null),
                 //Tribunal Member and Lay should get roles tribunal-member,hearing-viewer when baseLocationId = 1036
                 // or 1037
                 Arguments.of("Tribunal Member",
@@ -148,7 +176,15 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         true,
                         List.of("Tribunal Member Lay"),
                         new ArrayList<>(),
-                        "1")
+                        "1"),
+                Arguments.of("",
+                        "Salaried",
+                        false,
+                        true,
+                        List.of("Acting Regional Employment Judge"),
+                        List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
+                                "specific-access-approver-judiciary", "hearing-viewer"),
+                        null)
         );
     }
 
@@ -189,14 +225,7 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
         );
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(
-                        List.of(FeatureFlag.builder().flagName("employment_wa_1_0").status(true).build(),
-                                FeatureFlag.builder().flagName("employment_wa_1_1").status(true).build(),
-                                FeatureFlag.builder().flagName("employment_wa_1_2").status(true).build(),
-                                FeatureFlag.builder().flagName("employment_wa_1_3").status(true).build(),
-                                FeatureFlag.builder().flagName("sscs_hearing_1_0").status(hearingFlag).build())
-                );
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags(hearingFlag));
 
         List<String> roleNameResults =
                 roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList());
@@ -246,5 +275,18 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
             actualWorkTypes = r.getAttributes().get("workTypes").asText();
         }
         assertEquals(expectedWorkTypes, actualWorkTypes);
+    }
+
+    private List<FeatureFlag> setFeatureFlags(boolean hearingFlag) {
+        List<FeatureFlag> featureFlags = new ArrayList<>(getAllFeatureFlagsToggleByJurisdiction("EMPLOYMENT", true));
+
+        featureFlags.add(
+                FeatureFlag.builder()
+                        .flagName("sscs_hearing_1_0")
+                        .status(hearingFlag)
+                        .build()
+        );
+
+        return featureFlags;
     }
 }

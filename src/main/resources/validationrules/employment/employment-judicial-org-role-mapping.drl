@@ -31,7 +31,8 @@ $joh: JudicialOfficeHolder(office in ( "EMPLOYMENT President of Tribunal-Salarie
                                         "EMPLOYMENT Tribunal Member-Fee-Paid",
                                         "EMPLOYMENT Tribunal Member Lay-Fee-Paid",
                                         "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
-                                        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried"))
+                                        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
+                                        "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    if ($joh.getOffice().contains("Salaried")) {
@@ -67,7 +68,8 @@ when
                                          "EMPLOYMENT Vice President-Salaried",
                                          "EMPLOYMENT Regional Employment Judge-Salaried",
                                          "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
-                                         "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried"))
+                                         "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
+                                         "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -102,7 +104,8 @@ when
                                         "EMPLOYMENT Regional Employment Judge-Salaried",
                                         "EMPLOYMENT Employment Judge-Salaried",
                                         "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
-                                        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried"))
+                                        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
+                                        "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -136,7 +139,8 @@ when
                                         "EMPLOYMENT Vice President-Salaried",
                                         "EMPLOYMENT Regional Employment Judge-Salaried",
                                         "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
-                                        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried"))
+                                        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
+                                        "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -174,7 +178,8 @@ when
                                         "EMPLOYMENT Regional Employment Judge-Salaried",
                                         "EMPLOYMENT President of Tribunal-Salaried",
                                         "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
-                                        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried"))
+                                        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
+                                        "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -212,7 +217,8 @@ when
                                          "EMPLOYMENT President of Tribunal-Salaried",
                                          "EMPLOYMENT Employment Judge-Salaried",
                                          "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
-                                         "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried"))
+                                         "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
+                                         "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));

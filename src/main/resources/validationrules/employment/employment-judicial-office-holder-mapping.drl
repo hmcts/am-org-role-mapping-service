@@ -243,11 +243,14 @@ end;
 
 /*
  * "EMPLOYMENT Employment Judge" business role mapping to JOH.
+ * Made obsolete in DTSAM-861 - rule will be disabled when EMPLOYMENT_WA_1_5 is enabled.
+ * To be removed in DTSAM-879.
  */
 rule "employment_employment_judge_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
    $f2: FeatureFlag(flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_2.getValue())
+   $f3: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_5.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment in ("Employment Judge","Employment Judge (Sitting in Retirement)"),
                                appointmentType == "Fee Paid",
@@ -277,6 +280,44 @@ then
       .build());
       logMsg("Rule : employment_employment_judge_fee_paid_joh");
 end;
+
+/*
+ * "EMPLOYMENT Employment Judge" business role mapping to JOH.
+ */
+rule "v1_5_employment_employment_judge_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_5.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointment in ("Employment Judge",
+                                            "Employment Judge (Sitting in Retirement)",
+                                            "Employment Judge (sitting in retirement)",
+                                            "Recorder",
+                                            "Regional Tribunal Judge",
+                                            "Tribunal Judge"
+                                            ),
+                               appointmentType == "Fee Paid",
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BHA1") ))
+then
+  // Solution to work around issue with Scottish judges with region 12 not being
+  // able to see Scottish cases set up with region 11.
+  String regionId = "12".equals($jap.getRegionId()) ? "11" : $jap.getRegionId();
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("EMPLOYMENT Employment Judge-Fee-Paid")
+      .jurisdiction("EMPLOYMENT")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId(regionId)
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : v1_5_employment_employment_judge_fee_paid_joh");
+end;
+
 
 /*
  * "EMPLOYMENT Tribunal Member" business role mapping to JOH.
@@ -354,3 +395,33 @@ then
       logMsg("Rule : employment_tribunal_member_lay_fee_paid_joh");
 end;
 
+/*
+ * "EMPLOYMENT Acting Regional Employment Judge" business role mapping to JOH.
+ */
+rule "employment_acting_regional_employment_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_4.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointmentType in ("Salaried", "SPTW"),
+                               (roles != null && roles.contains("Acting Regional Employment Judge")),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (validateAuthorisation(authorisations, "BHA1") ))
+then
+  // Solution to work around issue with Scottish judges with region 12 not being
+  // able to see Scottish cases set up with region 11.
+  String regionId = "12".equals($jap.getRegionId()) ? "11" : $jap.getRegionId();
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("EMPLOYMENT Acting Regional Employment Judge-Salaried")
+      .jurisdiction("EMPLOYMENT")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId(regionId)
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : employment_acting_regional_employment_judge_salaried_joh");
+end;

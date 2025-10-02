@@ -25,7 +25,7 @@ public class JRDTopicConsumerNew {
 
     @Bean
     @Qualifier("jrdConsumer")
-    @ConditionalOnExpression("${amqp.jrd.enabled} && ${amqp.jrd.newAsb}")
+    @ConditionalOnExpression("${amqp.jrd.enabled}")
     CompletableFuture<Void> startJRDProcessorClient()
             throws InterruptedException {
 
