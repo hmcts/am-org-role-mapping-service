@@ -56,7 +56,6 @@ Feature: F-014 : Refresh Professional User
     And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Refresh Invalid User - Single User Mode No PRD] operation of [Organisation Role Mapping],
-    And it is submitted to call the [Refresh User - Single User Mode No PRD] operation of [Organisation Role Mapping],
     Then a positive response is received,
     And the response has all other details as expected.
     And a successful call [to verify role assignments are correct for test userId] as in [S-014.04__VerifyRoleAssignments],
