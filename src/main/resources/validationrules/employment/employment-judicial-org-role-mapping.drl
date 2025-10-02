@@ -76,8 +76,7 @@ when
                                         "EMPLOYMENT Regional Employment Judge-Salaried",
                                         "EMPLOYMENT Employment Judge-Salaried",
                                         Office.Employment.EMPLOYMENT_JUDGE_FEE_PAID,
-                                        "EMPLOYMENT Tribunal Member-Fee-Paid",
-                                        "EMPLOYMENT Tribunal Member Lay-Fee-Paid",
+                                        Office.Employment.TRIBUNAL_MEMBER_FEE_PAID,
                                         "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
                                         "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
                                         "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
@@ -364,10 +363,13 @@ end;
 
 /*
  * EMPLOYMENT "tribunal-member" Org role mapping.
+ * Made obsolete in DTSAM-994 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.
  */
 rule "employment_tribunal_member_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in ("EMPLOYMENT Tribunal Member-Fee-Paid",
                                          "EMPLOYMENT Tribunal Member Lay-Fee-Paid"))
 then
@@ -392,4 +394,37 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : employment_tribunal_member_org_role");
+end;
+
+/*
+ * EMPLOYMENT "tribunal-member" Org role mapping for v3_0.
+ */
+rule "v3_0_employment_tribunal_member_org_role"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+    $joh: JudicialOfficeHolder(office in (Office.Employment.TRIBUNAL_MEMBER_FEE_PAID))
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.FEE_PAID));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.EMPLOYMENT.getName()));
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("hearing_work"));
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($joh.getUserId())
+            .roleCategory(RoleCategory.JUDICIAL)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.TRIBUNAL_MEMBER)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .beginTime($joh.getBeginTime())
+            .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+            .attributes(attribute)
+            .authorisations($joh.getTicketCodes())
+            .build()
+        );
+        logMsg("Rule : v3_0_employment_tribunal_member_org_role");
 end;
