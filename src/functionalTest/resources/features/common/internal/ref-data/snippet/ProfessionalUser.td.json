@@ -8,5 +8,5 @@
     "lastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
     "organisationProfileIds": "[[ANYTHING_PRESENT]]"
   },
-  "userAccessTypes": "[[ANYTHING_PRESENT]]"
+  "userAccessTypes": []
 }
