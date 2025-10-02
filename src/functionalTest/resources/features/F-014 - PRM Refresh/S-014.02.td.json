@@ -1,14 +1,18 @@
 {
   "_guid_": "S-014.02",
   "title": "unsuccessful refresh of professional user - single user",
-  "_extends_": "F-014-Base-Root",
+  "_extends_": "RefreshProfessionalUserRoleAssignments__Base",
+
   "specs": [
     "an active IDAM profile with full permissions"
   ],
-  "method": "POST",
-  "uri": "/am/role-mapping/professional/refresh",
-  "productName": "Organisation Role Mapping",
-  "operationName": "Refresh Invalid User - Single User Mode",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+
   "request": {
     "queryParams": {
       "userId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
@@ -16,17 +20,9 @@
   },
 
   "expectedResponse": {
-    "_extends_": "Common_Response",
-    "responseCode" : 404,
-    "responseMessage" : "Not Found",
-    "headers": {
-      "_extends_": "Common_404_Response_Headers"
-    },
+    "_extends_": "ORM_404_Response",
     "body" : {
-      "errorCode" : 4,
-      "errorMessage" : "Resource not found",
-      "errorDescription" : "Resource not found User with ID xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx not found in PRD",
-      "timeStamp": "[[ANYTHING_PRESENT]]"
+      "errorDescription" : "Resource not found User with ID xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx not found in PRD"
     }
   }
 }
