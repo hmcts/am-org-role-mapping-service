@@ -22,7 +22,6 @@
     }
   },
     "expectedResponse": {
-      "_extends_": "Common_200_Response",
       "body": {
         "roleAssignmentResponse": [
           {
@@ -38,8 +37,6 @@
             "grantType": "STANDARD",
             "roleCategory": "PROFESSIONAL",
             "readOnly": false,
-            "beginTime": "[[ANYTHING_PRESENT]]",
-            "endTime": "[[ANYTHING_PRESENT]]",
             "created": "[[ANYTHING_PRESENT]]",
             "attributes": {
               "caseType": "FT_CaseAccessGroups",
@@ -58,8 +55,6 @@
             "grantType": "STANDARD",
             "roleCategory": "PROFESSIONAL",
             "readOnly": false,
-            "beginTime": "[[ANYTHING_PRESENT]]",
-            "endTime": "[[ANYTHING_PRESENT]]",
             "created": "[[ANYTHING_PRESENT]]",
             "attributes": {
               "caseType": "FT_CaseAccessGroups",
