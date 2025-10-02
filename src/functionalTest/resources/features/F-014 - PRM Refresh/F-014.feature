@@ -10,7 +10,7 @@ Feature: F-014 : Refresh Professional User
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: successful refresh of professional user - single user - All flags true and PRD enabled true
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify professional user has userAccessTypes enabled] as in [QueryRoleAssignments],
+    And a successful call [to verify professional user has userAccessTypes enabled] as in [S-014.01_VerifyRoleAssignments],
     And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Refresh User - Single User Mode] operation of [Organisation Role Mapping],
