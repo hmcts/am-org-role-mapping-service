@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-014.01__VerifyRoleAssignments",
+  "_guid_": "S-014.04__VerifyRoleAssignments",
   "_extends_": "QueryRoleAssignments__PositiveResponse_Base",
   "specs": [
     "to verify role assignments are correct for test userId"
@@ -23,9 +23,7 @@
   },
     "expectedResponse": {
       "body": {
-        "roleAssignmentResponse": [
-
-        ]
+        "roleAssignmentResponse": []
       }
     }
   }
