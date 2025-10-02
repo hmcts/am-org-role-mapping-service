@@ -1,68 +1,69 @@
 {
   "_guid_": "S-014.01_VerifyRoleAssignments",
   "_extends_": "QueryRoleAssignments__PositiveResponse_Base",
-
   "specs": [
     "to verify role assignments are correct for test userId"
   ],
-  "method": "POST",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
   "request": {
-    "headers": {
-      "sort": "roleName",
-      "direction": "ASC",
-      "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
-    },
     "body": {
-      "queryRequests":[
+      "queryRequests": [
         {
-          "actorId": ["${[scenarioContext][parentContext][testData][request][queryParams][userId]}"],
-          "roleType":["ORGANISATION"],
-          "roleCategory":["PROFESSIONAL"]
+          "actorId": [
+            "${[scenarioContext][parentContext][testData][request][queryParams][userId]}"
+          ],
+          "roleType": [
+            "ORGANISATION"
+          ],
+          "roleCategory": [
+            "PROFESSIONAL"
+          ]
         }
       ]
-  },
-  "expectedResponse": {
-    "body": {
-      "roleAssignmentResponse": [{
-        "id" : "[[ANYTHING_PRESENT]]",
-        "actorIdType" : "IDAM",
-        "actorId" : "${[scenarioContext][parentContext][testData][request][queryParams][userId]}",
-        "roleType" : "ORGANISATION",
-        "roleName" : "Role1",
-        "classification" : "RESTRICTED",
-        "grantType" : "STANDARD",
-        "roleCategory" : "PROFESSIONAL",
-        "readOnly" : false,
-        "beginTime" : "[[ANYTHING_PRESENT]]",
-        "endTime" : "[[ANYTHING_PRESENT]]",
-        "created" : "[[ANYTHING_PRESENT]]",
-        "attributes" : {
-          "caseType": "FT_CaseAccessGroups",
-          "substantive": "Y",
-          "jurisdiction": "BEFTA_MASTER",
-          "caseAccessGroupId": "BEFTA_MASTER:${[scenarioContext][siblingContexts][S-014.01__VerifyProfessionalUser][testData][actualResponse][body][users][0][organisationInfo][organisationIdentifier]}"
-        }
-      }, {
-        "id" : "[[ANYTHING_PRESENT]]",
-        "actorIdType" : "IDAM",
-        "actorId" : "${[scenarioContext][parentContext][testData][request][queryParams][userId]}",
-        "roleType" : "ORGANISATION",
-        "roleName" : "Role1",
-        "classification" : "RESTRICTED",
-        "grantType" : "STANDARD",
-        "roleCategory" : "PROFESSIONAL",
-        "readOnly" : false,
-        "beginTime" : "[[ANYTHING_PRESENT]]",
-        "endTime" : "[[ANYTHING_PRESENT]]",
-        "created" : "[[ANYTHING_PRESENT]]",
-        "attributes" : {
-          "caseType": "FT_CaseAccessGroups",
-          "substantive": "Y",
-          "jurisdiction": "BEFTA_MASTER"
-        }
+    },
+    "expectedResponse": {
+      "body": {
+        "roleAssignmentResponse": [
+          {
+            "id": "[[ANYTHING_PRESENT]]",
+            "actorIdType": "IDAM",
+            "actorId": "${[scenarioContext][parentContext][testData][request][queryParams][userId]}",
+            "roleType": "ORGANISATION",
+            "roleName": "Role1",
+            "classification": "RESTRICTED",
+            "grantType": "STANDARD",
+            "roleCategory": "PROFESSIONAL",
+            "readOnly": false,
+            "beginTime": "[[ANYTHING_PRESENT]]",
+            "endTime": "[[ANYTHING_PRESENT]]",
+            "created": "[[ANYTHING_PRESENT]]",
+            "attributes": {
+              "caseType": "FT_CaseAccessGroups",
+              "substantive": "Y",
+              "jurisdiction": "BEFTA_MASTER",
+              "caseAccessGroupId": "BEFTA_MASTER:${[scenarioContext][siblingContexts][S-014.01__VerifyProfessionalUser][testData][actualResponse][body][users][0][organisationInfo][organisationIdentifier]}"
+            }
+          },
+          {
+            "id": "[[ANYTHING_PRESENT]]",
+            "actorIdType": "IDAM",
+            "actorId": "${[scenarioContext][parentContext][testData][request][queryParams][userId]}",
+            "roleType": "ORGANISATION",
+            "roleName": "Role1",
+            "classification": "RESTRICTED",
+            "grantType": "STANDARD",
+            "roleCategory": "PROFESSIONAL",
+            "readOnly": false,
+            "beginTime": "[[ANYTHING_PRESENT]]",
+            "endTime": "[[ANYTHING_PRESENT]]",
+            "created": "[[ANYTHING_PRESENT]]",
+            "attributes": {
+              "caseType": "FT_CaseAccessGroups",
+              "substantive": "Y",
+              "jurisdiction": "BEFTA_MASTER"
+            }
+          }
+        ]
       }
-      ]
     }
   }
 }
