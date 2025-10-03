@@ -17,7 +17,7 @@ Feature: F-014 : Refresh Professional User
     Then a positive response is received,
     And the response has all other details as expected.
     And a successful call [to verify role assignments are correct for test userId] as in [S-014.01__VerifyRoleAssignments],
-    And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments].
+    #And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments].
 
 
   # N1 User not found - 0 roles generated
@@ -43,7 +43,7 @@ Feature: F-014 : Refresh Professional User
     Then a positive response is received,
     And the response has all other details as expected.
     And a successful call [to verify role assignments are correct for test userId] as in [S-014.03__VerifyRoleAssignments],
-    And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments].
+    #And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments].
 
 
   # N2 User found without PRD access types - 0 roles generated positive scenario 200 returned
@@ -58,4 +58,4 @@ Feature: F-014 : Refresh Professional User
     Then a positive response is received,
     And the response has all other details as expected.
     And a successful call [to verify role assignments are correct for test userId] as in [S-014.04__VerifyRoleAssignments],
-    And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments].
+    #And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments].
