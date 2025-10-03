@@ -2,17 +2,22 @@
   "_guid_": "S-032",
   "title": "must successfully create judicial role mappings for User having multiple Judicial bookings",
   "_extends_": "F-004_Test_Data_Base",
+
   "specs": [
-    "contains the actorIds of the user having existing judicial role assignments",
-    "contains the actorIds of the user for which above booking is created"
+    "a judicial profile that supports judicial bookings",
+
+    "contains the actorId of the user having existing judicial role assignments",
+    "contains the actorId of the user for which above bookings are created",
+
+    "contains multiple booked judge/fee-paid role-assignments"
   ],
-  "method": "POST",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+
   "users": {
     "invokingUser": {
       "_extends_": "AmJRDUser2"
     }
   },
+
   "request": {
     "body": {
       "actorId": ["${[scenarioContext][testData][users][invokingUser][id]}"],
@@ -22,12 +27,13 @@
       }
     }
   },
+
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body" : {
       "roleAssignmentResponse" : [
       {
-        "__elementId__": "roleName,attributes.jurisdiction"
+        "__elementId__": "roleName,attributes.jurisdiction,attributes.region"
       },
       {
         "id" : "[[ANYTHING_PRESENT]]",
@@ -45,9 +51,9 @@
         "attributes" : {
           "substantive" : "Y",
           "contractType" : "Fee-Paid",
-          "primaryLocation" : "[[ANYTHING_PRESENT]]",
+          "primaryLocation" : "10",
           "jurisdiction" : "SSCS",
-          "region" : "[[ANYTHING_PRESENT]]",
+          "region" : "2",
           "workTypes" : "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
         },
         "authorisations" : "[[ANYTHING_PRESENT]]"
@@ -68,9 +74,9 @@
         "attributes" : {
           "substantive" : "Y",
           "contractType" : "Fee-Paid",
-          "primaryLocation" : "[[ANYTHING_PRESENT]]",
+          "primaryLocation" : "15",
           "jurisdiction" : "SSCS",
-          "region" : "[[ANYTHING_PRESENT]]",
+          "region" : "3",
           "workTypes" : "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
         },
         "authorisations" : "[[ANYTHING_PRESENT]]"

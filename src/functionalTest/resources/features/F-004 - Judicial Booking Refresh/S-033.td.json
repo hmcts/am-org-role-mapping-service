@@ -2,17 +2,22 @@
   "_guid_": "S-033",
   "title": "must successfully create judicial role mappings for User having no judicial booking",
   "_extends_": "F-004_Test_Data_Base",
+
   "specs": [
-    "contains the actorIds of the user having existing judicial role assignments",
-    "contains the actorIds of the user for which above booking is created"
+    "a judicial profile that supports judicial bookings",
+
+    "contains the actorId of the user having existing judicial role assignments",
+    "contains the actorId of the user for which no bookings exist",
+
+    "contains no booked judge/fee-paid role-assignments"
   ],
-  "method": "POST",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+
   "users": {
     "invokingUser": {
       "_extends_": "AmJRDUser2"
     }
   },
+
   "request": {
     "body": {
       "actorId": ["${[scenarioContext][testData][users][invokingUser][id]}"],
@@ -22,6 +27,7 @@
       }
     }
   },
+
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body" : {
