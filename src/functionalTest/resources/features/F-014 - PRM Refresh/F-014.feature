@@ -4,21 +4,6 @@ Feature: F-014 : Refresh Professional User
   Background:
     Given an appropriate test context as detailed in the test data source
 
-# P2 CCD 3 flags = true (but PRD enabled = false) => expected 2 roles generated
-  @S-014.03
-  @FeatureToggle(EV:PRM_FTA_ENABLED=on)
-  Scenario: successful refresh of professional user - single user - All flags true and PRD enabled false
-    Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify professional user has userAccessTypes disabled] as in [S-014.03__VerifyProfessionalUser],
-    And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments],
-    When a request is prepared with appropriate values,
-    And it is submitted to call the [Refresh Professional User Role Assignments] operation of [Organisation Role Mapping],
-    Then a positive response is received,
-    And the response has all other details as expected.
-    And a successful call [to verify role assignments are correct for test userId] as in [S-014.03__VerifyRoleAssignments],
-    #And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments].
-
-
   # P1. All flags = true => expected 2 roles generated
   @S-014.01
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
@@ -31,6 +16,21 @@ Feature: F-014 : Refresh Professional User
     Then a positive response is received,
     And the response has all other details as expected.
     And a successful call [to verify role assignments are correct for test userId] as in [S-014.01__VerifyRoleAssignments],
+    And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments].
+
+
+# P2 CCD 3 flags = true (but PRD enabled = false) => expected 2 roles generated
+  @S-014.03
+  @FeatureToggle(EV:PRM_FTA_ENABLED=on)
+  Scenario: successful refresh of professional user - single user - All flags true and PRD enabled false
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to verify professional user has userAccessTypes disabled] as in [S-014.03__VerifyProfessionalUser],
+    And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Refresh Professional User Role Assignments] operation of [Organisation Role Mapping],
+    Then a positive response is received,
+    And the response has all other details as expected.
+    And a successful call [to verify role assignments are correct for test userId] as in [S-014.03__VerifyRoleAssignments],
     And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments].
 
 

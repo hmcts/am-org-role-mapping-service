@@ -39,10 +39,10 @@
             "readOnly": false,
             "created": "[[ANYTHING_PRESENT]]",
             "attributes": {
-              "caseType": "FT_CaseAccessGroups",
+              "caseAccessGroupId": "BEFTA_MASTER:${[scenarioContext][siblingContexts][S-014.01__VerifyProfessionalUser][testData][actualResponse][body][users][0][organisationInfo][organisationIdentifier]}",
               "substantive": "Y",
               "jurisdiction": "BEFTA_MASTER",
-              "caseAccessGroupId": "BEFTA_MASTER:${[scenarioContext][siblingContexts][S-014.01__VerifyProfessionalUser][testData][actualResponse][body][users][0][organisationInfo][organisationIdentifier]}"
+              "caseType": "FT_CaseAccessGroups"
             }
           },
           {
@@ -57,9 +57,9 @@
             "readOnly": false,
             "created": "[[ANYTHING_PRESENT]]",
             "attributes": {
-              "caseType": "FT_CaseAccessGroups",
               "substantive": "Y",
-              "jurisdiction": "BEFTA_MASTER"
+              "jurisdiction": "BEFTA_MASTER",
+              "caseType": "FT_CaseAccessGroups"
             }
           }
         ]
