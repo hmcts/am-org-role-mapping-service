@@ -61,11 +61,20 @@ public class TopicConsumer {
         byte[] body = messageContext.getMessage().getBody().toBytes();
         log.info("Delivery Count is : {}", messageContext.getMessage().getDeliveryCount());
         UserRequest request = deserializer.deserializeBytes(body);
-        log.debug("Parsing message from {} with size :: {}", userType.name(), request.getUserIds().size());
+
+        if (userType != null && request != null && request.getUserIds() != null) {
+            log.debug("Parsing message from {} with size :: {}", userType.name(), request.getUserIds().size());
+        } else {
+            log.debug("Either userType, request or request's userIds is null");
+        }
 
         ResponseEntity<Object> response = bulkAssignmentOrchestrator.createBulkAssignmentsRequest(request, userType);
 
-        log.debug("Role Assignment Service Response {}: {}", userType.name(), response.getStatusCode());
+        if (userType != null && response != null) {
+            log.debug("Role Assignment Service Response {}: {}", userType.name(), response.getStatusCode());
+        } else {
+            log.debug("Either userType or response is null");
+        }
 
         messageContext.complete();
     }

@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.befta;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.gov.hmcts.befta.BeftaTestDataLoader;
 import uk.gov.hmcts.befta.DefaultTestAutomationAdapter;
 import uk.gov.hmcts.befta.player.BackEndFunctionalTestScenarioContext;
 import uk.gov.hmcts.befta.util.EnvironmentVariableUtils;
@@ -18,6 +19,11 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
     private static final Logger logger = LoggerFactory.getLogger(OrgRoleMappingAmTestAutomationAdapter.class);
 
     public static final String EMAIL_TEMPLATE = "ORM-func-test-user-%s@justice.gov.uk";
+
+    @Override
+    public BeftaTestDataLoader getDataLoader() {
+        return new OrmTestDataLoader();
+    }
 
     @Override
     public Object calculateCustomValue(BackEndFunctionalTestScenarioContext scenarioContext, Object key) {

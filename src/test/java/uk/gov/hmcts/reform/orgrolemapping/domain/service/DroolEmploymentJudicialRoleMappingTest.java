@@ -1,10 +1,11 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
@@ -26,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsAggregator;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
     static Map<String, String> employmentExpectedRoleNameWorkTypesMap = new HashMap<>();
 
@@ -105,7 +106,9 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         "EMPLOYMENT Vice President-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
                 + "hmcts-judiciary,specific-access-approver-judiciary",
         "EMPLOYMENT Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
-                + "hmcts-judiciary,specific-access-approver-judiciary"
+                + "hmcts-judiciary,specific-access-approver-judiciary",
+        "EMPLOYMENT Acting Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
+                + "hmcts-judiciary,specific-access-approver-judiciary",
     })
     void shouldReturnPresidentOfTribunalVicePresidentRegionalEmploymentJudgeSalariedRoles(String setOffice,
                                          @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
@@ -234,11 +237,8 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         });
     }
 
-    private static List<FeatureFlag> setFeatureFlags() {
-        return List.of(FeatureFlag.builder().flagName("employment_wa_1_0").status(true).build(),
-                FeatureFlag.builder().flagName("employment_wa_1_1").status(true).build(),
-                FeatureFlag.builder().flagName("employment_wa_1_2").status(true).build(),
-                FeatureFlag.builder().flagName("employment_wa_1_3").status(true).build());
+    private List<FeatureFlag> setFeatureFlags() {
+        return getAllFeatureFlagsToggleByJurisdiction("EMPLOYMENT", true);
     }
 
 }

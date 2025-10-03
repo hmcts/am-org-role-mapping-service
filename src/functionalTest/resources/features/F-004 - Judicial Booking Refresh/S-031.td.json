@@ -1,0 +1,64 @@
+{
+  "_guid_": "S-031",
+  "title": "must successfully create judicial role assignments for a user having single judicial booking",
+  "_extends_": "F-004_Test_Data_Base",
+
+  "specs": [
+    "a judicial profile that supports judicial bookings",
+
+    "contains the actorId of the user having existing judicial role assignments",
+    "contains the actorId of the user for which above booking is created",
+
+    "contains one booked judge/fee-paid role-assignment"
+  ],
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmJRDUser2"
+    }
+  },
+
+  "request": {
+    "body": {
+      "actorId": ["${[scenarioContext][testData][users][invokingUser][id]}"],
+      "roleName" : ["judge"],
+      "attributes": {
+          "contractType": ["Fee-Paid"]
+      }
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body" : {
+      "roleAssignmentResponse" : [
+        {
+          "__elementId__": "roleName,attributes.jurisdiction"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "[[ANYTHING_PRESENT]]",
+          "roleType" : "ORGANISATION",
+          "roleName" : "judge",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "JUDICIAL",
+          "readOnly" : false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "Y",
+            "contractType" : "Fee-Paid",
+            "primaryLocation" : "10",
+            "jurisdiction" : "SSCS",
+            "region" : "2",
+            "workTypes" : "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        }
+      ]
+    }
+  }
+}

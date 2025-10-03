@@ -1,0 +1,33 @@
+{ 
+   "_guid_": "CaseworkerDetails",
+
+  "id": "OVERRIDE",
+  "case_allocator": "OVERRIDE",
+  "task_supervisor": "OVERRIDE",
+
+  "first_name": "[[ANYTHING_PRESENT]]",
+  "last_name": "[[ANYTHING_PRESENT]]",
+  "region_id": "[[ANY_INTEGER_NOT_NULLABLE]]",
+  "user_type": "[[ANYTHING_PRESENT]]",
+  "user_type_id": "[[ANY_INTEGER_NOT_NULLABLE]]",
+  "suspended": "false",
+  "staff_admin": "N",
+  "created_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+  "last_updated_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+  "email_id": "[[ANYTHING_PRESENT]]",
+  "region": "[[ANYTHING_PRESENT]]",
+
+  "base_location": [
+    {
+      "created_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "last_updated_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "location_id": "[[ANY_INTEGER_NOT_NULLABLE]]",
+      "location": "[[ANYTHING_PRESENT]]",
+      "is_primary": true
+    }
+  ],
+
+  "role": [],
+  "skills": [],
+  "work_area": []
+}

@@ -1,0 +1,37 @@
+{
+  "_guid_": "S-033",
+  "title": "must successfully create judicial role mappings for User having no judicial booking",
+  "_extends_": "F-004_Test_Data_Base",
+
+  "specs": [
+    "a judicial profile that supports judicial bookings",
+
+    "contains the actorId of the user having existing judicial role assignments",
+    "contains the actorId of the user for which no bookings exist",
+
+    "contains no booked judge/fee-paid role-assignments"
+  ],
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmJRDUser2"
+    }
+  },
+
+  "request": {
+    "body": {
+      "actorId": ["${[scenarioContext][testData][users][invokingUser][id]}"],
+      "roleName" : ["judge"],
+      "attributes": {
+        "contractType": ["Fee-Paid"]
+      }
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body" : {
+      "roleAssignmentResponse" : []
+    }
+  }
+}
