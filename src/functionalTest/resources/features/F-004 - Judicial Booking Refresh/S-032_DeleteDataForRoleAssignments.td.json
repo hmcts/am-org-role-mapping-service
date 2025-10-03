@@ -10,7 +10,7 @@
   ],
   "users": {
     "invokingUser": {
-      "_extends_": "AmJRDUser1"
+      "_extends_": "AmJRDUser2"
     }
   },
   "request": {
@@ -21,10 +21,7 @@
     },
     "pathVariables": {
       "process": "judicial-organisational-role-mapping",
-      "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
-    },
-    "body": {
-      "_extends_": "JRDTribunalJudgeFeepaidUserForBooking"
+      "reference": "${[scenarioContext][parentContext][testData][users][invokingUser][id]}"
     }
   },
 

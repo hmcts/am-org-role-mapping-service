@@ -10,7 +10,7 @@
   ],
   "users": {
     "invokingUser": {
-      "_extends_": "AmJRDUser1"
+      "_extends_": "AmJRDUser2"
     }
   },
   "request": {
@@ -19,7 +19,7 @@
       "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]"
     },
     "pathVariables": {
-      "userId": "${[scenarioContext][parentContext][childContexts][S-031_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}"
+      "userId": "${[scenarioContext][parentContext][testData][users][invokingUser][id]}"
     }
   },
   "expectedResponse": {

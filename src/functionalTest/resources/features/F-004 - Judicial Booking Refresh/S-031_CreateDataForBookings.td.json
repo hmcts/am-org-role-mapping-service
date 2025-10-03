@@ -10,7 +10,7 @@
 
   "users": {
     "invokingUser": {
-      "_extends_": "AmJRDUser1"
+      "_extends_": "AmJRDUser2"
     }
   },
   "request": {
@@ -22,7 +22,7 @@
     },
     "body": {
       "bookingRequest": {
-        "userId": "${[scenarioContext][parentContext][childContexts][S-031_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}",
+        "userId": "${[scenarioContext][parentContext][testData][users][invokingUser][id]}",
         "locationId": "10",
         "regionId": "2",
         "beginDate": "${[scenarioContext][customValues][today]}",

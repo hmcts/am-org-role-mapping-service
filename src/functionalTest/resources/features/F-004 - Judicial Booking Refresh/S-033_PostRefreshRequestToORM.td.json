@@ -9,7 +9,7 @@
   ],
   "users": {
     "invokingUser": {
-      "_extends_": "AmJRDUser1"
+      "_extends_": "AmJRDUser2"
     }
   },
   "request": {
@@ -21,7 +21,9 @@
     },
     "body": {
       "refreshRequest": {
-        "userIds": "${[scenarioContext][parentContext][childContexts][S-033_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
+        "userIds": [
+          "${[scenarioContext][parentContext][testData][users][invokingUser][id]}"
+        ]
       }
     }
   },
