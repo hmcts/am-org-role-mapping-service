@@ -71,6 +71,7 @@ public class ProfessionalRefreshOrchestrator {
 
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
+        processMonitorDto.appendToLastProcessStep(" : COMPLETED");
         return ResponseEntity.ok().body(Map.of("Message", SUCCESS_ROLE_REFRESH));
     }
 
