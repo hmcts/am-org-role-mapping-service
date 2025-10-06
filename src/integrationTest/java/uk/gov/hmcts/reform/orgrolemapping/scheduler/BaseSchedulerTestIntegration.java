@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.tomakehurst.wiremock.admin.model.ServeEventQuery;
 import com.github.tomakehurst.wiremock.http.HttpHeader;
@@ -14,12 +15,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
+import uk.gov.hmcts.reform.idam.client.models.TokenResponse;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
+import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfile;
@@ -29,6 +35,7 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.IdamRepository;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,12 +45,16 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.APPLICATION_JSON;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.*;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.OBJECT_MAPPER;
 import static uk.gov.hmcts.reform.orgrolemapping.scheduler.BaseSchedulerTestIntegration.TEST_ENVIRONMENT;
 import static uk.gov.hmcts.reform.orgrolemapping.scheduler.BaseSchedulerTestIntegration.TEST_PAGE_SIZE;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.MAPPER;
@@ -97,10 +108,22 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
     public static final UUID STUB_ID_PRD_RETRIEVE_ORGANISATIONS
         = UUID.fromString("f4f89a01-39fb-48ca-9c2a-a49f749d07af");
 
+    public static final UUID STUB_ID_S2S_DETAILS
+            = UUID.fromString("491482e1-a8ec-4170-b986-177259e153ce");
+
+    public static final UUID STUB_ID_S2S_LEASE
+            = UUID.fromString("491482e1-a8ec-4170-b986-177259e153cf");
+
+    public static final UUID STUB_ID_IDAM_TOKEN
+            = UUID.fromString("9553040b-7d37-4bae-9fa8-e5e9fdd7fd26");
+
+    public static final UUID STUB_ID_IDAM_USERINFO
+            = UUID.fromString("491482e1-a8ec-4170-b986-177259e154cf");
+
     protected final JsonHelper jsonHelper = new JsonHelper();
     protected final WiremockFixtures wiremockFixtures = new WiremockFixtures();
 
-    @InjectMocks
+    @MockBean
     private SecurityUtils securityUtils;
 
     @MockBean
@@ -109,16 +132,21 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
     @MockBean
     private IdamRepository idamRepository;
 
+    @Mock
+    private Authentication authentication;
+
+    @Mock
+    private SecurityContext securityContext;
+
+
     @BeforeEach
     public void setUp() throws Exception {
-
-        // NB: THis is a test for a scheduled job so there will be no SecurityContext loaded from a request
-        SecurityContextHolder.clearContext();
+        doReturn(authentication).when(securityContext).getAuthentication();
+        SecurityContextHolder.setContext(securityContext);
+        setSecurityAuthorities(authentication, ROLE_CASEWORKER);
 
         doReturn(DUMMY_AUTH_TOKEN).when(idamRepository).getUserToken();
         doReturn(DUMMY_S2S_TOKEN).when(authTokenGenerator).generate();
-
-        wiremockFixtures.resetRequests();
     }
 
     @SneakyThrows
@@ -414,5 +442,62 @@ public class BaseSchedulerTestIntegration extends BaseTestIntegration {
                 .withHeaders(headers)
                 .withBody(body)));
     }
+
+    protected static void stubS2SCall() {
+        WIRE_MOCK_SERVER.stubFor(get(urlEqualTo("/details"))
+                .withId(STUB_ID_S2S_DETAILS)
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBody(S2S_ORM)));
+
+         WIRE_MOCK_SERVER.stubFor(post(urlEqualTo("/lease"))
+                .withId(STUB_ID_S2S_LEASE)
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBody(DUMMY_S2S_TOKEN)));
+    }
+
+    public void stubIdamCall() throws JsonProcessingException {
+
+        WIRE_MOCK_SERVER.stubFor(get(urlPathMatching("/o/userinfo"))
+                .withId(STUB_ID_IDAM_USERINFO)
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBody(OBJECT_MAPPER.writeValueAsString(getUserInfoResponse()))
+                        .withTransformers("external_user-token-response")));
+
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching("/o/token"))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                        .withBody(OBJECT_MAPPER.writeValueAsString(getTokenResponse()))));
+    }
+
+    private TokenResponse getTokenResponse() {
+        return new TokenResponse(
+                "user1",
+                "expiresInValue",
+                "idTokenValue",
+                "refreshTokenValue",
+                "scopeValue",
+                "tokenTypeValue");
+    }
+
+    private Map<String, Object> getUserInfoResponse() {
+        LinkedHashMap<String,Object> data1 = new LinkedHashMap<>();
+
+        data1.put("id","%s");
+        data1.put("uid","%s");
+        data1.put("forename","Super");
+        data1.put("surname","User");
+        data1.put("email","dummy@email.com");
+        data1.put("roles", List.of("%s"));
+
+        return data1;
+    }
+
 
 }

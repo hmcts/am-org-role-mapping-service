@@ -2,20 +2,11 @@ package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
-import jakarta.inject.Inject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.util.ReflectionTestUtils;
-import uk.gov.hmcts.reform.idam.client.models.UserInfo;
-import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
@@ -26,7 +17,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
-import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import java.io.IOException;
@@ -38,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doReturn;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_ROLE_REFRESH;
 
 abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration {
@@ -47,32 +36,6 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
 
     @Autowired
     private UserRefreshQueueRepository userRefreshQueueRepository;
-
-    @Mock
-    private Authentication authentication;
-
-    @Mock
-    private SecurityContext securityContext;
-
-    @Inject
-    private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        doReturn(authentication).when(securityContext).getAuthentication();
-        SecurityContextHolder.setContext(securityContext);
-        UserInfo userInfo = UserInfo.builder()
-                .uid("6b36bfc6-bb21-11ea-b3de-0242ac130006")
-                .sub("emailId@a.com")
-                .build();
-        ReflectionTestUtils.setField(
-                jwtGrantedAuthoritiesConverter,
-                "userInfo", userInfo
-        );
-        MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
-        wiremockFixtures.resetRequests();
-    }
-
 
     /**
      *  accessDefault = N, accessMandatory = N, groupAccessEnabled = N, PRDenabled = N.
