@@ -49,7 +49,9 @@ public class ProfessionalRefreshOrchestrator {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(
                 "PRM Process 6 - Refresh User - Single User Mode");
         processEventTracker.trackEventStarted(processMonitorDto);
-        log.info("Single User refreshProfessionalUser for {}", userId);
+        String message = String.format("Single User refreshProfessionalUser for userId=%s", userId);
+        log.info(message);
+        processMonitorDto.addProcessStep(message);
         GetRefreshUserResponse getRefreshUserResponse;
         try {
             getRefreshUserResponse = Objects.requireNonNull(prdService.getRefreshUser(userId).getBody());
@@ -59,7 +61,7 @@ public class ProfessionalRefreshOrchestrator {
 
         if (getRefreshUserResponse.getUsers().size() > 1) {
             throw new ServiceException(String.format(EXPECTED_SINGLE_PRD_USER, userId,
-                getRefreshUserResponse.getUsers().size()));
+                    getRefreshUserResponse.getUsers().size()));
         }
 
         professionalRefreshOrchestrationHelper.upsertUserRefreshQueue(getRefreshUserResponse.getUsers().get(0));
