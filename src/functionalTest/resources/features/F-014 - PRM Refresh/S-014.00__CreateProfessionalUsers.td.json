@@ -1,0 +1,39 @@
+{
+  "_guid_": "S-014.00__CreateProfessionalUsers.td",
+  "productName": "Professional Reference Data",
+  "operationName": "Create Professional User",
+  "method": "POST",
+  "uri": "{{PRD_URL}}/refdata/internal/v1/organisations/{orgId}/users/",
+  "specs": [
+    "to create a user in professional reference data"
+  ],
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "_extends_" : "CreateProfessionalUser__Input"
+    },
+    "pathVariables": {
+      "orgId": "${[scenarioContext][parentContext][testData][expectedResponse][body][organisationIdentifier]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_201_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "message": "Professional User Created",
+      "organisationIdentifier" : "[[ANYTHING_PRESENT]]"
+    }
+  }
+}
