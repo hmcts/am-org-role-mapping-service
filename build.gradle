@@ -370,7 +370,7 @@ dependencies {
     implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.2.2'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.8'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.5'
-    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.13.0'
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.0'
     implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '3.0.4'
     implementation 'commons-io:commons-io:20030203.000550'
