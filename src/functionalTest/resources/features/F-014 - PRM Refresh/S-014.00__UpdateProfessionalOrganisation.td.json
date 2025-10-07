@@ -22,9 +22,9 @@
       "name": "GA-TestOrganisation",
       "status": "ACTIVE",
       "statusMessage": "activeorganisation",
-      "sraId": "SRA111111112",
+      "sraId": "SRA1190981112",
       "sraRegulated": "string",
-      "companyNumber": "GA1234",
+      "companyNumber": "GA1883",
       "companyUrl": "string",
       "superUser": {
         "firstName": "ga-User0",
