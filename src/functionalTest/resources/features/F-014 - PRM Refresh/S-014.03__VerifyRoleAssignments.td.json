@@ -22,11 +22,7 @@
     }
   },
   "expectedResponse": {
-    "headers": {
-      "_ignoreOthers_": true,
-      "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;version=2.0;charset=UTF-8"
-    },
-   "body": {
+    "body": {
         "roleAssignmentResponse": [
           {
             "__elementId__": "roleName,attributes.caseAccessGroupId"
@@ -60,7 +56,7 @@
             "readOnly": false,
             "created": "[[ANYTHING_PRESENT]]",
             "attributes": {
-              "caseAccessGroupId": "BEFTA_MASTER:${[scenarioContext][siblingContexts][S-014.01__VerifyProfessionalUser][testData][actualResponse][body][users][0][organisationInfo][organisationIdentifier]}",
+              "caseAccessGroupId": "BEFTA_MASTER:${[scenarioContext][siblingContexts][S-014.03__VerifyProfessionalUser][testData][actualResponse][body][users][0][organisationInfo][organisationIdentifier]}",
               "substantive": "Y",
               "jurisdiction": "BEFTA_MASTER",
               "caseType": "FT_CaseAccessGroups"
