@@ -60,7 +60,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.writeValueAsP
     "orm.environment=" + TEST_ENVIRONMENT,
     "testing.support.enabled=true"
 })
-public class BaseSchedulerTestIntegration extends BaseTestIntegration {
+abstract class BaseSchedulerTestIntegration extends BaseTestIntegration {
 
     static final String TEST_ENVIRONMENT = "local";
     static final String TEST_PAGE_SIZE = "3";
