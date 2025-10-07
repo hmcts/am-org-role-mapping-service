@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-014.00__CreateProfessionalUsers.td",
+  "_guid_": "S-014.00__CreateProfessionalUsers",
   "productName": "Professional Reference Data",
   "operationName": "Create Professional User",
   "method": "POST",
@@ -19,7 +19,16 @@
       "Content-Type": "application/json"
     },
     "body": {
-      "_extends_" : "CreateProfessionalUser__Input"
+      "firstName": "GA-Test-User1",
+      "lastName": "GA-Test-User1-Lastname",
+      "email": "GA-Test-User1@hmcts.net",
+      "roles": [
+        "jrd-system-user",
+        "prd-admin",
+        "pui-user-manager",
+        "cwd-system-user"
+      ],
+      "resendInvite": true
     },
     "pathVariables": {
       "orgId": "${[scenarioContext][siblingContexts][S-014.00__CreateProfessionalOrganisation][testData][actualResponse][body][organisationIdentifier]}"
