@@ -22,7 +22,7 @@
       "_extends_" : "CreateProfessionalUser__Input"
     },
     "pathVariables": {
-      "orgId": "${[scenarioContext][parentContext][testData][expectedResponse][body][organisationIdentifier]}"
+      "orgId": "${[scenarioContext][siblingContexts][S-014.00__CreateProfessionalOrganisation][testData][actualResponse][body][organisationIdentifier]}"
     }
   },
   "expectedResponse": {
@@ -32,7 +32,6 @@
       "Content-Type": "application/json"
     },
     "body": {
-      "message": "Professional User Created",
       "organisationIdentifier" : "[[ANYTHING_PRESENT]]"
     }
   }
