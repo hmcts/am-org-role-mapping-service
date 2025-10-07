@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-014.00__CreateUserConfiguredAccess.td",
+  "_guid_": "S-014.00__CreateUserConfiguredAccess",
   "productName": "Professional Reference Data",
   "operationName": "Create User Configured Access For Professional User",
   "method": "POST",
