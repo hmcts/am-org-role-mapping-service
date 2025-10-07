@@ -26,10 +26,13 @@
       "_ignoreOthers_": true,
       "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;version=2.0;charset=UTF-8"
     },
-    "body": {
-      "roleAssignmentResponse": {
-        "_contains_": [
+   "body": {
+        "roleAssignmentResponse": [
           {
+            "__elementId__": "roleName,attributes.caseAccessGroupId"
+          },
+          {
+            "id": "[[ANYTHING_PRESENT]]",
             "actorIdType": "IDAM",
             "actorId": "${[scenarioContext][parentContext][testData][request][queryParams][userId]}",
             "roleType": "ORGANISATION",
@@ -46,6 +49,7 @@
             }
           },
           {
+            "id": "[[ANYTHING_PRESENT]]",
             "actorIdType": "IDAM",
             "actorId": "${[scenarioContext][parentContext][testData][request][queryParams][userId]}",
             "roleType": "ORGANISATION",
@@ -62,9 +66,7 @@
               "caseType": "FT_CaseAccessGroups"
             }
           }
-        ],
-        "_size_": 2
+        ]
       }
     }
   }
-}
