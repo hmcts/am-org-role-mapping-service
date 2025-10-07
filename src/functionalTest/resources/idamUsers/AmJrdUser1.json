@@ -12,7 +12,8 @@
       "cwd-system-user",
       "jrd-system-user",
       "org-role-cwd-system-user",
-      "judiciary"
+      "judiciary",
+      "prd-admmin"
     ],
     "accountStatus": "ACTIVE",
     "recordType": "LIVE"
