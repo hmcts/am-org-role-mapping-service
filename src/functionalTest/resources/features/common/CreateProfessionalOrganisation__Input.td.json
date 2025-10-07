@@ -1,6 +1,6 @@
 {
   "_guid_": "CreateProfessionalOrganisation__Input",
-  "OrganisationCreationRequest":
+  "arrayInMap":
     {
       "name": "GA-TestOrganisation",
       "status": "ACTIVE",

@@ -63,7 +63,6 @@
       "Content-Type": "application/json"
     },
     "body": {
-      "message": "Professional Organisation Created",
       "organisationIdentifier" : "[[ANYTHING_PRESENT]]"
     }
   }

@@ -1,6 +1,6 @@
 {
   "_guid_": "CreateProfessionalUser__Input",
-  "arrayInMap": [
+  "arrayInMap":
     {
       "firstName": "GA-Test-User1",
       "lastName": "GA-Test-User1-Lastname",
@@ -13,6 +13,6 @@
       ],
       "resendInvite": true
     }
-  ]
+
 
 }
