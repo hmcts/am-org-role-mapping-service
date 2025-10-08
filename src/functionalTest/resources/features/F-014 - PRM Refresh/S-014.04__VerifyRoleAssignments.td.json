@@ -1,0 +1,30 @@
+{
+  "_guid_": "S-014.04__VerifyRoleAssignments",
+  "_extends_": "QueryRoleAssignments__PositiveResponse_Base",
+  "specs": [
+    "to verify role assignments are correct for test userId"
+  ],
+  "request": {
+    "body": {
+      "queryRequests": [
+        {
+          "actorId": [
+            "${[scenarioContext][parentContext][testData][request][queryParams][userId]}"
+          ],
+          "roleType": [
+            "ORGANISATION"
+          ],
+          "roleCategory": [
+            "PROFESSIONAL"
+          ]
+        }
+      ]
+    }
+  },
+    "expectedResponse": {
+      "body": {
+        "roleAssignmentResponse": []
+      }
+    }
+  }
+

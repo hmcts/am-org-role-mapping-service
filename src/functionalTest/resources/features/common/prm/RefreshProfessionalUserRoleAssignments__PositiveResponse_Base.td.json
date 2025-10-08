@@ -1,0 +1,21 @@
+{
+  "_guid_": "RefreshProfessionalUserRoleAssignments__PositiveResponse_Base",
+  "_extends_": "RefreshProfessionalUserRoleAssignments__Base",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "headers": {
+      "Content-Type" : "application/vnd.uk.gov.hmcts.am-org-role-mapping-service.map-professional-assignments+json;version=1.0;charset=UTF-8"
+    },
+
+    "body" : {
+      "Message" : "Role assignments have been refreshed successfully"
+    }
+  }
+}
