@@ -37,7 +37,6 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
-import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -122,6 +121,15 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         wiremockFixtures.resetRequests();
         wiremockFixtures.stubIdamCall();
         processMonitorDto = new ProcessMonitorDto("PRM Process 6 - Refresh users - Batch mode [Test]");
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+            scripts = {"classpath:sql/insert_new_user_refresh_queue.sql"})
+    void shouldDeleteNoneFromUserRefreshQueueTest() {
+        professionalUserService.deleteActiveUserRefreshRecords();
+
+        assertEquals(1, userRefreshQueueRepository.findAll().size());
     }
 
     @Test
@@ -249,7 +257,6 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         assertNotNull(userRefreshEntity2.getRetryAfter());
     }
 
-
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
         scripts = {"classpath:sql/insert_organisation_profiles.sql"})
@@ -285,8 +292,6 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         assertNotNull(userRefreshEntity.getRetryAfter());
     }
 
-
-
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
@@ -300,6 +305,15 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         assertTrue(userRefreshQueueEntities.get(0).getActive());
         assertEquals(1, userRefreshQueueEntities.get(0).getRetry());
         assertTrue(userRefreshQueueEntities.get(0).getRetryAfter().isAfter(LocalDateTime.now()));
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+            scripts = {"classpath:sql/insert_old_user_refresh_queue.sql"})
+    void shouldDeleteOneFromUserRefreshQueueTest() {
+        professionalUserService.deleteActiveUserRefreshRecords();
+
+        assertEquals(0, userRefreshQueueRepository.findAll().size());
     }
 
     @Test

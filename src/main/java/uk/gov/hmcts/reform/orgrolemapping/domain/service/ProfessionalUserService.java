@@ -73,6 +73,7 @@ public class ProfessionalUserService {
     private final String userRetryTwoIntervalMin;
     private final String userRetryThreeIntervalMin;
 
+    private final String activeUserRefreshDays;
     private final String pageSize;
     private final String tolerance;
 
@@ -111,8 +112,30 @@ public class ProfessionalUserService {
         this.userRetryTwoIntervalMin = professionalUserServiceConfig.getUserRetryTwoIntervalMin();
         this.userRetryThreeIntervalMin = professionalUserServiceConfig.getUserRetryThreeIntervalMin();
 
+        this.activeUserRefreshDays = professionalUserServiceConfig.getActiveUserRefreshDays();
         this.pageSize = professionalUserServiceConfig.getPageSize();
         this.tolerance = professionalUserServiceConfig.getTolerance();
+    }
+
+    @Transactional
+    public ProcessMonitorDto deleteActiveUserRefreshRecords() {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Cleanup Process - User");
+        processEventTracker.trackEventStarted(processMonitorDto);
+
+        try {
+            processMonitorDto.addProcessStep("Deleting inactive user refresh queue entities "
+                    + "last updated before " + activeUserRefreshDays + " days");
+            userRefreshQueueRepository
+                    .deleteActiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(activeUserRefreshDays);
+
+        } catch (Exception exception) {
+            processMonitorDto.markAsFailed(exception.getMessage());
+            processEventTracker.trackEventCompleted(processMonitorDto);
+            throw exception;
+        }
+        processMonitorDto.markAsSuccess();
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
     }
 
     public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(String organisationId) {
