@@ -7,8 +7,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CCDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -20,7 +18,7 @@ class CCDServiceTest {
     CCDService sut = new CCDService(ccdFeignClient);
 
     @Test
-    void fetchAccessTypes() throws IOException {
+    void fetchAccessTypes() {
         AccessTypesResponse accessTypes = TestDataBuilder.buildAccessTypesResponse();
         doReturn(ResponseEntity.status(HttpStatus.OK).body(accessTypes)).when(ccdFeignClient).getAccessTypes();
 

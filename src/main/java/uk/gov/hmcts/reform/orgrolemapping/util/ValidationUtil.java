@@ -56,10 +56,7 @@ public class ValidationUtil {
     public static void validateDateTime(String strDate, String timeParam) {
         LOG.debug("validateDateTime");
         if (strDate.length() < 16) {
-            throw new BadRequestException(String.format(
-                    "Incorrect date format %s",
-                    strDate
-            ));
+            throw new BadRequestException(incorrectDateFormat(strDate));
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DATE_PATTERN);
         simpleDateFormat.setLenient(false);
@@ -70,10 +67,7 @@ public class ValidationUtil {
                 LOG.debug(javaDate.toString());
             }
         } catch (ParseException e) {
-            throw new BadRequestException(String.format(
-                    "Incorrect date format %s",
-                    strDate
-            ));
+            throw new BadRequestException(incorrectDateFormat(strDate));
         }
         assert javaDate != null;
         if (javaDate.before(new Date())) {
@@ -151,7 +145,11 @@ public class ValidationUtil {
             LocalDateTime.parse(strDate, DateTimeFormatter.ofPattern(pattern));
         } catch (DateTimeParseException e) {
             throw new BadRequestException(
-                String.format("Incorrect date format %s", pattern));
+                    incorrectDateFormat(pattern));
         }
+    }
+
+    private static String incorrectDateFormat(String strDate) {
+        return String.format("Incorrect date format %s", strDate);
     }
 }

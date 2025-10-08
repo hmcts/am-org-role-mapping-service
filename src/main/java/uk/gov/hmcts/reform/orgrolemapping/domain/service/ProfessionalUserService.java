@@ -73,7 +73,6 @@ public class ProfessionalUserService {
     private final String userRetryTwoIntervalMin;
     private final String userRetryThreeIntervalMin;
 
-    private final String activeUserRefreshDays;
     private final String pageSize;
     private final String tolerance;
 
@@ -112,7 +111,6 @@ public class ProfessionalUserService {
         this.userRetryTwoIntervalMin = professionalUserServiceConfig.getUserRetryTwoIntervalMin();
         this.userRetryThreeIntervalMin = professionalUserServiceConfig.getUserRetryThreeIntervalMin();
 
-        this.activeUserRefreshDays = professionalUserServiceConfig.getActiveUserRefreshDays();
         this.pageSize = professionalUserServiceConfig.getPageSize();
         this.tolerance = professionalUserServiceConfig.getTolerance();
     }
