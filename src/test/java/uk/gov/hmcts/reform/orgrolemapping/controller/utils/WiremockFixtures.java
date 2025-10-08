@@ -9,6 +9,7 @@ import com.nimbusds.jose.JOSEException;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.azure.core.http.ContentType.APPLICATION_JSON;
@@ -22,6 +23,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.controller.BaseTest.WIRE_MOCK_S
 import static uk.gov.hmcts.reform.orgrolemapping.util.KeyGenerator.getRsaJwk;
 
 public class WiremockFixtures {
+
+    public static final String RAS_CREATE_ASSIGNMENTS_URL = "/am/role-assignments";
 
     public static final ObjectMapper OBJECT_MAPPER = new Jackson2ObjectMapperBuilder()
             .modules(new Jdk8Module(), new JavaTimeModule())
@@ -53,6 +56,29 @@ public class WiremockFixtures {
 
     }
 
+    public void stubIdamCall() throws JsonProcessingException {
+
+        WIRE_MOCK_SERVER.stubFor(get(urlPathMatching("/o/userinfo"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBody(OBJECT_MAPPER.writeValueAsString(getUserInfoResponse()))
+                        .withTransformers("external_user-token-response")));
+    }
+
+    private Map<String, Object> getUserInfoResponse() {
+        LinkedHashMap<String,Object> data1 = new LinkedHashMap<>();
+
+        data1.put("id","%s");
+        data1.put("uid","%s");
+        data1.put("forename","Super");
+        data1.put("surname","User");
+        data1.put("email","dummy@email.com");
+        data1.put("roles", List.of("%s"));
+
+        return data1;
+    }
+
     private Map<String, Object> getOpenIdResponse() {
         LinkedHashMap<String,Object> data1 = new LinkedHashMap<>();
         data1.put("issuer", "http://localhost:" + WIRE_MOCK_SERVER.port() + "/o");
@@ -74,7 +100,7 @@ public class WiremockFixtures {
     }
 
     public void stubRoleAssignments(String body, int returnHttpStatus) {
-        WIRE_MOCK_SERVER.stubFor(WireMock.post(urlEqualTo("/am/role-assignments"))
+        WIRE_MOCK_SERVER.stubFor(WireMock.post(urlEqualTo(RAS_CREATE_ASSIGNMENTS_URL))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(body)

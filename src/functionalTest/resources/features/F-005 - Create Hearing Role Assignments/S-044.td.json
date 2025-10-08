@@ -1,0 +1,64 @@
+{
+  "_guid_": "S-044",
+  "title": "must successfully create organisational role mapping for SSCS CTSC role assignments (hearing-viewer, hearing-manager)",
+  "_extends_": "F-005_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published for CTSC role assignments"
+  ],
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC"
+    },
+    "body": {
+      "actorId": ["c3a68d80-0451-432d-9b31-b5322e41a35b"],
+      "roleName": ["hearing-viewer", "hearing-manager", "listed-hearing-viewer"]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body" : {
+      "roleAssignmentResponse" : [
+        {
+          "__elementId__": "roleName"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "hearing-manager",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "CTSC",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "N",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "SSCS"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "hearing-viewer",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "CTSC",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "N",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "SSCS"
+          }
+        }
+      ]
+    }
+  }
+}

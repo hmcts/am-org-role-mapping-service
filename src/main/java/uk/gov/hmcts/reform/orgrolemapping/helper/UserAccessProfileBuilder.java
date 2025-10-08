@@ -4,14 +4,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.launchdarkly.shaded.org.jetbrains.annotations.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
@@ -150,31 +149,6 @@ public class UserAccessProfileBuilder {
 
         });
         return new ArrayList<>(caseWorkerProfiles);
-    }
-
-    public static List<JudicialProfile> buildJudicialProfile(JRDUserRequest userRequest, String resource) {
-
-        Set<JudicialProfile> judicialProfilesProfiles = new LinkedHashSet<>();
-
-
-        userRequest.getSidamIds().forEach(userId -> {
-            try (InputStream inputStream =
-                         UserAccessProfileBuilder.class.getClassLoader()
-                                 .getResourceAsStream(resource)) {
-                assert inputStream != null;
-                ObjectMapper objectMapper = getObjectMapper();
-                JudicialProfile judicialProfile = objectMapper.readValue(inputStream, JudicialProfile.class);
-                judicialProfile.setSidamId(userId);
-                judicialProfilesProfiles.add(judicialProfile);
-
-
-            } catch (Exception e) {
-                throw new BadRequestException("Either the user request is not valid or sample json is missing.");
-            }
-
-
-        });
-        return new ArrayList<>(judicialProfilesProfiles);
     }
 
     public static List<JudicialProfileV2> buildJudicialProfileV2(JRDUserRequest userRequest, String resource) {

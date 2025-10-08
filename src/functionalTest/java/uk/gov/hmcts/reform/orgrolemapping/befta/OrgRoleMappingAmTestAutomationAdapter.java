@@ -2,9 +2,12 @@ package uk.gov.hmcts.reform.orgrolemapping.befta;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.gov.hmcts.befta.BeftaTestDataLoader;
 import uk.gov.hmcts.befta.DefaultTestAutomationAdapter;
 import uk.gov.hmcts.befta.player.BackEndFunctionalTestScenarioContext;
 import uk.gov.hmcts.befta.util.EnvironmentVariableUtils;
+import uk.gov.hmcts.reform.orgrolemapping.befta.utils.TokenUtils;
+import uk.gov.hmcts.reform.orgrolemapping.befta.utils.UserTokenProviderConfig;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -16,6 +19,11 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
     private static final Logger logger = LoggerFactory.getLogger(OrgRoleMappingAmTestAutomationAdapter.class);
 
     public static final String EMAIL_TEMPLATE = "ORM-func-test-user-%s@justice.gov.uk";
+
+    @Override
+    public BeftaTestDataLoader getDataLoader() {
+        return new OrmTestDataLoader();
+    }
 
     @Override
     public Object calculateCustomValue(BackEndFunctionalTestScenarioContext scenarioContext, Object key) {
@@ -66,8 +74,31 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                 return null;
             case ("tomorrow"):
                 return LocalDate.now().plusDays(1);
+            case ("yesterday"):
+                return LocalDate.now().minusDays(1);
+            case ("generateS2STokenForOrm"):
+                return new TokenUtils().generateServiceToken(buildOrmSpecificConfig());
+            case ("generateS2STokenForXui"):
+                return new TokenUtils().generateServiceToken(buildXuiSpecificConfig());
             default:
                 return super.calculateCustomValue(scenarioContext, key);
         }
     }
+
+    private UserTokenProviderConfig buildOrmSpecificConfig() {
+        UserTokenProviderConfig config = new UserTokenProviderConfig();
+        config.setMicroService("am_org_role_mapping_service");
+        config.setSecret(System.getenv("AM_ORG_ROLE_MAPPING_SERVICE_SECRET"));
+        config.setS2sUrl(EnvironmentVariableUtils.getRequiredVariable("IDAM_S2S_URL"));
+        return config;
+    }
+
+    private UserTokenProviderConfig buildXuiSpecificConfig() {
+        UserTokenProviderConfig config = new UserTokenProviderConfig();
+        config.setMicroService("xui_webapp");
+        config.setSecret(System.getenv("XUI_WEBAPP_S2S_SECRET"));
+        config.setS2sUrl(EnvironmentVariableUtils.getRequiredVariable("IDAM_S2S_URL"));
+        return config;
+    }
+
 }

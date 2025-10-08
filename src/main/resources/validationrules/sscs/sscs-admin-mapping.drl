@@ -279,18 +279,24 @@ end;
 
 /*
  * SSCS admin "dwp" Org role mapping.
+ * Rule moved to "sscs-other-mapping.drl", hence made obsolete in DTSAM-506 - disabled by SSCS_WA_1_5 flag.
+ * To be removed in DTSAM-510.
  */
 
 rule "sscs_dwp_ogd_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $f2: FeatureFlag(flagName == FeatureFlagEnum.SSCS_WA_1_2.getValue())
+  $f3: FeatureFlag(status == false && flagName == FeatureFlagEnum.SSCS_WA_1_5.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("14"), serviceCode == "BBA3", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("applications,hearing_work,routine_work,priority,pre_hearing"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+   if (!$f2.isStatus()) {
+     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+   }
 
   insert(
       RoleAssignment.builder()
@@ -309,18 +315,24 @@ end;
 
 /*
  * SSCS admin "hmrc" Org role mapping.
+ * Rule moved to "sscs-other-mapping.drl", hence made obsolete in DTSAM-506 - disabled by SSCS_WA_1_5 flag.
+ * To be removed in DTSAM-510.
  */
 
 rule "sscs_hmrc_ogd_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.SSCS_WA_1_0.getValue())
+  $f2: FeatureFlag(flagName == FeatureFlagEnum.SSCS_WA_1_2.getValue())
+  $f3: FeatureFlag(status == false && flagName == FeatureFlagEnum.SSCS_WA_1_5.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("15"), serviceCode == "BBA3", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("SSCS"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("applications,hearing_work,routine_work,priority,pre_hearing"));
-   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+   if (!$f2.isStatus()) {
+     attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+   }
 
   insert(
       RoleAssignment.builder()

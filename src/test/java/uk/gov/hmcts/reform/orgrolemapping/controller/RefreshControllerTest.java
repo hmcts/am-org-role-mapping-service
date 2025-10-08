@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequest
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 
 class RefreshControllerTest {
@@ -30,28 +32,34 @@ class RefreshControllerTest {
     @Mock
     private JudicialRefreshOrchestrator judicialRefreshOrchestrator;
 
+    @Mock
+    private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
+
     @InjectMocks
-    private final RefreshController sut = new RefreshController(refreshOrchestrator, judicialRefreshOrchestrator);
+    private final RefreshController sut =
+        new RefreshController(refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator);
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
     void refreshRoleAssignmentRecords() {
+
+        // GIVEN
+        long jobId = 1L;
         UserRequest userRequest = TestDataBuilder.buildUserRequest();
 
-        ResponseEntity<Object> response =
-                ResponseEntity.status(HttpStatus.CREATED).body(userRequest);
+        // WHEN
+        ResponseEntity<Object> response = sut.refresh(jobId, userRequest);
 
-        Mockito.when(refreshOrchestrator.refresh(any(),any()))
-                .thenReturn(response);
+        // THEN
+        assertNotNull(response);
+        assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
 
-        assertEquals(response, sut.refresh(1L, UserRequest.builder().build()));
-
-        Mockito.verify(refreshOrchestrator, Mockito.times(1))
-                .validate(any(), any());
+        Mockito.verify(refreshOrchestrator, Mockito.times(1)).validate(jobId, userRequest);
+        Mockito.verify(refreshOrchestrator, Mockito.times(1)).refreshAsync(jobId, userRequest);
     }
 
     @Test
@@ -106,5 +114,16 @@ class RefreshControllerTest {
 
         assertEquals(response, sut.judicialRefresh("",
                 JudicialRefreshRequest.builder().build()));
+    }
+
+    @Test
+    void refreshProfessionalRoleAssignments() {
+        ResponseEntity<Object> response = ResponseEntity.status(HttpStatus.OK).body(Map.of("Message",
+            "Role assignments have been refreshed successfully"));
+        Mockito.when(professionalRefreshOrchestrator.refreshProfessionalUser(any())).thenReturn(response);
+
+        assertEquals(response, sut.professionalRefresh(UUID.randomUUID().toString()));
+        Mockito.verify(professionalRefreshOrchestrator, Mockito.times(1))
+            .refreshProfessionalUser(any());
     }
 }

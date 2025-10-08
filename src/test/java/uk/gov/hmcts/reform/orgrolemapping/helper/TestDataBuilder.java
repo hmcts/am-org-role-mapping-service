@@ -11,8 +11,10 @@ import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
+import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.Appointment;
+import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
@@ -20,17 +22,23 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersOrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
@@ -57,10 +65,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import static uk.gov.hmcts.reform.orgrolemapping.helper.CDDFallbackResponseBuilder.ACCESS_TYPES_SAMPLE;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.GET_REFRESH_USERS_SAMPLE_MULTI_USER;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.GET_REFRESH_USERS_SAMPLE_SINGLE_USER;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.ORGANISATIONS_BY_PROFILE_IDS_SAMPLE;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.RETRIEVE_ORGANISATIONS_SAMPLE;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.USERS_BY_ORGANISATION_SAMPLE;
+
 @Setter
 public class TestDataBuilder {
 
-    private static String id_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
+    public static String id_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
     public static String id_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
     private static String id_3 = "invalid_id";
 
@@ -255,8 +270,6 @@ public class TestDataBuilder {
         return caseWorkerProfiles;
     }
 
-
-
     public static JsonNode buildAttributesFromFile() {
         try (InputStream inputStream =
                      AssignmentRequestBuilder.class.getClassLoader().getResourceAsStream("attributes.json")) {
@@ -289,7 +302,6 @@ public class TestDataBuilder {
                         false))
                 .build();
     }
-
 
     public static AssignmentRequest buildAssignmentRequest(Status requestStatus, Status roleStatus,
                                                            Boolean replaceExisting) {
@@ -414,15 +426,6 @@ public class TestDataBuilder {
         return JRDUserRequest.builder().sidamIds(Set.of(id_1, id_2)).build();
     }
 
-    public static JudicialProfile buildJudicialProfile() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());
-        return objectMapper.readValue(
-                new File("src/main/resources/judicialProfileSample.json"),
-                JudicialProfile.class);
-    }
-
     public static JudicialProfileV2 buildJudicialProfileV2() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -467,21 +470,6 @@ public class TestDataBuilder {
                 .build();
     }
 
-    public static JudicialProfile buildJudicialProfileWithParams(
-            List<Appointment> appointments, List<Authorisation> authorisations) {
-        return JudicialProfile.builder()
-                .sidamId("111")
-                .objectId("fa88df1d-4204-4039-8e2a-fa11d4c643ec")
-                .knownAs("Penney")
-                .surname("Azcarate")
-                .fullName("Penney Azcarate")
-                .postNominals("The Honourable")
-                .emailId("EMP42867@ejudiciary.net")
-                .appointments(appointments)
-                .authorisations(authorisations)
-                .build();
-    }
-
     public static JudicialProfileV2 buildJudicialProfileWithParamsV2(
             List<AppointmentV2> appointments, List<AuthorisationV2> authorisations) {
         return JudicialProfileV2.builder()
@@ -510,27 +498,6 @@ public class TestDataBuilder {
                 .appointments(appointments)
                 .authorisations(authorisations)
                 .roles(roles)
-                .build();
-    }
-
-    public static Appointment buildAppointmentWithParams(String epimms, String isPrinciple, String appointment,
-                                                         String appointmentType, LocalDate startDate, LocalDate endDate,
-                                                         List<String> roles, String serviceCode) {
-        return Appointment.builder()
-                .baseLocationId("827")
-                .epimmsId(epimms)
-                .courtName("Fairfax County Courthouse")
-                .cftRegionID("NULL")
-                .cftRegion("South East")
-                .locationId("1")
-                .location("South East")
-                .isPrincipalAppointment(isPrinciple)
-                .appointment(appointment)
-                .appointmentType(appointmentType)
-                .startDate(startDate)
-                .endDate(endDate)
-                .roles(roles)
-                .serviceCode(serviceCode)
                 .build();
     }
 
@@ -570,22 +537,6 @@ public class TestDataBuilder {
                 .toList();
     }
 
-    public static Authorisation buildAuthorisationWithParams(String jurisdiction,
-                                                             String ticketCode,
-                                                             String ticketDescription,
-                                                             List<String> serviceCodes,
-                                                             LocalDateTime startDate,
-                                                             LocalDateTime endDate) {
-        return Authorisation.builder()
-                .jurisdiction(jurisdiction)
-                .ticketCode(ticketCode)
-                .ticketDescription(ticketDescription)
-                .startDate(startDate)
-                .endDate(endDate)
-                .serviceCodes(serviceCodes)
-                .build();
-    }
-
     public static AuthorisationV2 buildAuthorisationWithParamsV2(String jurisdiction,
                                                              String ticketCode,
                                                              String ticketDescription,
@@ -600,73 +551,6 @@ public class TestDataBuilder {
                 .endDate(endDate)
                 .serviceCodes(serviceCodes)
                 .build();
-    }
-
-    public static List<Authorisation> buildListOfAuthorisations(int setNumber) {
-        Authorisation auth = TestDataBuilder.buildAuthorisationWithParams("Authorisation Civil", "294",
-                "Civil Authorisation", Collections.singletonList("AAA6"), null, null);
-
-        Authorisation auth2 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Family", "313",
-                "Court of Protection", Collections.singletonList("ABA7"), null, null);
-
-        Authorisation auth3 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Tribunals", "374",
-                "First Tier - Health, Education and Social Care", null, LocalDateTime.now().minusYears(20L), null);
-
-        Authorisation auth4 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Tribunals", "342",
-                "Mental Health", Collections.singletonList("BCA2"),
-                LocalDateTime.now().minusYears(15L), LocalDateTime.now().plusYears(1L));
-
-        Authorisation auth5 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Family", "315",
-                "Private Law", Collections.singletonList("ABA5"),
-                LocalDateTime.now().minusYears(9L), LocalDateTime.now().plusYears(14L));
-
-        Authorisation auth6 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Family", "316",
-                "Public Law", Collections.singletonList("ABA3"),
-                LocalDateTime.now().minusYears(9L), LocalDateTime.now().plusYears(14L));
-
-        Authorisation auth7 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Tribunals", "356",
-                "Restricted Patients Panel", null,
-                LocalDateTime.now().minusYears(7L), LocalDateTime.now().plusYears(1L));
-
-        Authorisation auth8 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Family", "317",
-                "Section 9-1 Family", null,
-                LocalDateTime.now().minusYears(3L), LocalDateTime.now().plusYears(3L));
-
-        Authorisation auth9 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Civil", "290",
-                "Administrative Court", null,
-                LocalDateTime.now().minusYears(3L), LocalDateTime.now().plusYears(3L));
-
-        Authorisation auth10 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Civil", "300",
-                "Section 9(1) Chancery", null, null, null);
-
-        Authorisation auth11 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Family", "301",
-                "Section 9(1) Queens Bench", null, null, null);
-
-        Authorisation auth12 = TestDataBuilder.buildAuthorisationWithParams("Authorisation Tribunals", "372",
-                "Upper - Immigration and Asylum", null, LocalDateTime.now().minusYears(10L),
-                LocalDateTime.now().minusYears(2L));
-
-        List<Authorisation> authorisationList;
-
-        switch (setNumber) {
-            case 1:
-                authorisationList = Arrays.asList(auth, auth2, auth3, auth4, auth5, auth6, auth7, auth8);
-                break;
-            case 2:
-                authorisationList = Arrays.asList(auth, auth3, auth4, auth5, auth6);
-                break;
-            case 3:
-                authorisationList = Arrays.asList(auth, auth3, auth4, auth9,  auth12);
-                break;
-            case 4:
-                authorisationList = Arrays.asList(auth, auth5, auth10, auth11);
-                break;
-            default:
-                authorisationList = Collections.singletonList(auth);
-        }
-
-        return authorisationList;
-
     }
 
     public static List<AuthorisationV2> buildListOfAuthorisationsV2(int setNumber) {
@@ -736,6 +620,39 @@ public class TestDataBuilder {
 
     }
 
+    public static AccessTypesEntity buildAccessTypesEntity() {
+        AccessTypesEntity accessTypesEntity = new AccessTypesEntity();
+        accessTypesEntity.setVersion(11L);
+        accessTypesEntity.setAccessTypes("{ \"organisationProfiles\":\n[{\"organisationProfileId\": "
+                + "\"SOLICITOR_PROFILE\",\n \"jurisdictions\":\n[{\"jurisdictionId\": \"BEFTA_JURISDICTION_1\",\n"
+                + "      \"accessTypes\": [{\"accessTypeId\": \"1\",\"accessMandatory\": true,\"accessDefault\": true"
+                + ",\n \"roles\": [{\"caseTypeId\": \"23\",\"organisationalRoleName\": \"organisationRoleName1\","
+                + "\"groupRoleName\": \"groupname1\",\"caseGroupIdTemplate\": \"CIVIL:all:CIVIL:AS1:$ORGID$\","
+                + "\"groupAccessEnabled\": true}\n ]}]},\n {\"jurisdictionId\": \"BEFTA_JURISDICTION_2\",\n"
+                + " \"accessTypes\": [{\"accessTypeId\": \"2\",\"accessMandatory\": true,"
+                + "\"accessDefault\": true,\n \"roles\": [{\"caseTypeId\": \"23\",\"organisationalRoleName\": "
+                + "\"organisationRoleName2\",\"groupRoleName\": \"groupname2\",\"caseGroupIdTemplate\": "
+                + "\"IA:all:IA:AS1:$ORGID$\",\"groupAccessEnabled\": true}]}]}\n   ]}]}");
+        return accessTypesEntity;
+    }
+
+    public static Object buildUserRefreshQueueEntity(String userId) {
+        UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
+        userRefreshQueueEntity.setUserId(userId);
+        userRefreshQueueEntity.setAccessTypesMinVersion(10);
+        userRefreshQueueEntity.setDeleted(null);
+        userRefreshQueueEntity.setOrganisationStatus("abc");
+        userRefreshQueueEntity.setOrganisationId("OrgId");
+        userRefreshQueueEntity.setActive(true);
+        userRefreshQueueEntity.setOrganisationProfileIds(new String[]{"SOLICITOR_PROFILE","2"});
+        userRefreshQueueEntity.setAccessTypes(
+                "[{ \"jurisdictionId\": \"BEFTA_JURISDICTION_1\",\"organisationProfileId\": \"SOLICITOR_PROFILE\","
+                        + "\"accessTypeId\": \"1\",\"enabled\": true} ,{ \"jurisdictionId\": \"BEFTA_JURISDICTION_2\","
+                        + "\"organisationProfileId\": \"SOLICITOR_PROFILE\",\"accessTypeId\": \"2\","
+                        + "\"enabled\": true}]");
+        return userRefreshQueueEntity;
+    }
+
     public static class VarargsAggregator implements ArgumentsAggregator {
         @Override
         public Object aggregateArguments(ArgumentsAccessor accessor, ParameterContext context)
@@ -746,4 +663,59 @@ public class TestDataBuilder {
                     .toArray(String[]::new);
         }
     }
+
+    public static AccessTypesResponse buildAccessTypesResponse() {
+        return CDDFallbackResponseBuilder.buildAccessTypesResponse(ACCESS_TYPES_SAMPLE);
+    }
+
+    public static GetRefreshUserResponse buildGetRefreshUsersResponse() {
+        return PRDFallbackResponseBuilder.buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_MULTI_USER);
+    }
+
+    public static GetRefreshUserResponse buildGetRefreshUsersResponse(String userId) {
+        return PRDFallbackResponseBuilder.buildGetRefreshUsersResponse(GET_REFRESH_USERS_SAMPLE_SINGLE_USER, userId);
+    }
+
+    public static GetRefreshUserResponse buildGetRefreshUsersResponse(List<RefreshUser> users,
+                                                                      String lastRecord,
+                                                                      boolean moreAvailable) {
+        return GetRefreshUserResponse.builder()
+            .users(users)
+            .lastRecordInPage(lastRecord)
+            .moreAvailable(moreAvailable)
+            .build();
+    }
+
+    public static OrganisationByProfileIdsResponse buildOrganisationByProfileIdsResponse() {
+        return PRDFallbackResponseBuilder.buildOrganisationByProfileIdsResponse(ORGANISATIONS_BY_PROFILE_IDS_SAMPLE);
+    }
+
+    public static OrganisationsResponse buildOrganisationsResponse() {
+        return PRDFallbackResponseBuilder.buildOrganisationsResponse(RETRIEVE_ORGANISATIONS_SAMPLE);
+    }
+
+    public static UsersByOrganisationResponse buildUsersByOrganisationResponse() {
+        return PRDFallbackResponseBuilder.buildUsersByOrganisationResponse(USERS_BY_ORGANISATION_SAMPLE);
+    }
+
+    public static UsersOrganisationInfo buildUsersOrganisationInfo(int i, List<ProfessionalUser> users) {
+        return UsersOrganisationInfo.builder()
+            .organisationIdentifier("" + i)
+            .status("ACTIVE")
+            .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
+            .users(users)
+            .build();
+    }
+
+    public static ProfessionalUser buildProfessionalUser(int i) {
+        return ProfessionalUser.builder()
+            .userIdentifier("" + i)
+            .firstName("fName " + i)
+            .lastName("lName " + i)
+            .email("user" + i + "@mail.com")
+            .lastUpdated(LocalDateTime.now())
+            .deleted(LocalDateTime.now())
+            .build();
+    }
+
 }

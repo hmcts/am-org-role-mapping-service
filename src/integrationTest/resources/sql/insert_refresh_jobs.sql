@@ -9,4 +9,4 @@ VALUES(3, 'LEGAL_OPERATIONS', 'IA', 'NEW', NULL, 2, NULL);
 INSERT INTO public.refresh_jobs (job_id, role_category, jurisdiction, status, user_ids, linked_job_id, created)
 VALUES(4, 'LEGAL_OPERATIONS', 'IA', 'COMPLETED', NULL, 2, NULL);
 
-
+ALTER SEQUENCE JOB_ID_SEQ RESTART WITH 5;

@@ -7,9 +7,10 @@ import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import groovy.util.logging.Slf4j;
+import jakarta.annotation.PreDestroy;
 import org.apache.http.client.fluent.Executor;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,14 +21,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDMessagingConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
-import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
@@ -45,21 +41,8 @@ import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 @PactFolder("pacts")
 public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
 
-    @MockBean
-    CRDTopicConsumer topicConsumer;
-
-    @MockBean
-    JRDTopicConsumer jrdTopicConsumer;
-
     @Autowired
     DataSource dataSource;
-
-
-    @MockBean
-    CRDMessagingConfiguration crdMessagingConfiguration;
-
-    @MockBean
-    JRDMessagingConfiguration jrdMessagingConfiguration;
 
     @MockBean
     JRDTopicPublisher jrdPublisher;
@@ -79,7 +62,7 @@ public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
         Thread.sleep(2000);
     }
 
-    @After
+    @AfterEach
     void teardown() {
         Executor.closeIdleConnections();
     }

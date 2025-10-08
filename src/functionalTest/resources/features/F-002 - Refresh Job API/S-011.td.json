@@ -1,0 +1,21 @@
+{
+  "_guid_": "S-011",
+  "title": "must successfully refresh staff user org roles for a job",
+  "_extends_": "F-002_Test_Data_Base",
+
+  "specs": [
+    "contains an existing job details"
+  ],
+  "request": {
+    "queryParams": {
+      "jobId": "${[scenarioContext][childContexts][S-011_InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
+    },
+    "body": {
+      "userIds" : ["b878398b-c7ae-4f4c-95cc-298ca2d287ac"]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_202_Response",
+    "body" : null
+  }
+}

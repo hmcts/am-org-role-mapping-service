@@ -1,0 +1,40 @@
+{
+  "_guid_": "S-007.09b_AAA6",
+  "title": "must successfully create org role mapping for CTSC Team Leader + Case allocator (AAA6)",
+  "_extends_": "S-007.09_AAA6",
+  "specs": [
+    "contains the actorId of the user just published who has CTSC Team Leader role + Case allocator (AAA6)"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "3c444761-5f86-49f4-80ab-3816802c6962"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "CIVIL",
+            "substantive": "N"
+          },
+          "authorisations": [
+            "SKILL:AAA7:DAMAGES_CCMC_CMC_MANAGEMENT",
+            "SKILL:AAA6:MONEY_CLAIMS_CCMC_CMC_MANAGEMENT"
+          ]
+        }
+      ]
+    }
+  }
+}

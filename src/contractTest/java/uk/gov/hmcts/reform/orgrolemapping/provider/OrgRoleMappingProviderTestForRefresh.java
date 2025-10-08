@@ -26,6 +26,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.JRDService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialBookingService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -39,7 +40,7 @@ import java.util.List;
 @PactBroker(scheme = "${PACT_BROKER_SCHEME:http}",
         host = "${PACT_BROKER_URL:localhost}", port = "${PACT_BROKER_PORT:9292}",
         consumerVersionSelectors = {@VersionSelector(tag = "master")})
-@TestPropertySource(properties = {"spring.cache.type=none", "launchdarkly.sdk.environment=pr"})
+@TestPropertySource(properties = {"spring.cache.type=none", "orm.environment=pr"})
 @Import(ProviderTestConfiguration.class)
 @IgnoreNoPactsToVerify
 public class OrgRoleMappingProviderTestForRefresh {
@@ -63,6 +64,9 @@ public class OrgRoleMappingProviderTestForRefresh {
     private JudicialRefreshOrchestrator judicialRefreshOrchestrator;
 
     @Autowired
+    private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
+
+    @Autowired
     JudicialBookingService judicialBookingService;
 
     @Autowired
@@ -83,7 +87,7 @@ public class OrgRoleMappingProviderTestForRefresh {
         //uncomment to force publishing of pacts results to central server
         //System.getProperties().setProperty("pact.verifier.publishResults", "true");
         testTarget.setControllers(new RefreshController(
-                refreshOrchestrator, judicialRefreshOrchestrator
+                refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator
         ));
         if (context != null) {
             context.setTarget(testTarget);
@@ -102,7 +106,7 @@ public class OrgRoleMappingProviderTestForRefresh {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 
         Mockito.when(jrdService.fetchJudicialProfiles(Mockito.any()))
-                .thenReturn(new ResponseEntity<>(List.of(TestDataBuilder.buildJudicialProfile()), headers,
+                .thenReturn(new ResponseEntity<>(List.of(TestDataBuilder.buildJudicialProfileV2()), headers,
                         HttpStatus.OK));
 
         Mockito.when(judicialBookingService.fetchJudicialBookings(Mockito.any()))

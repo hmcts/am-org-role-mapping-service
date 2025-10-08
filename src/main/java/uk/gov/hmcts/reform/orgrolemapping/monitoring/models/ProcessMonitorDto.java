@@ -2,7 +2,10 @@ package uk.gov.hmcts.reform.orgrolemapping.monitoring.models;
 
 import lombok.Getter;
 
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -12,7 +15,9 @@ public class ProcessMonitorDto {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private EndStatus endStatus;
+    @Size(max = 8192, message = "The value cannot exceed 32768 characters")
     private String endDetail;
+    private List<String> processSteps = new ArrayList<>();
 
     public ProcessMonitorDto(String processType) {
         this.id = UUID.randomUUID();
@@ -32,6 +37,16 @@ public class ProcessMonitorDto {
         applyResult(EndStatus.FAILED, endDetail);
     }
 
+    public void addProcessStep(String step) {
+        this.processSteps.add(step);
+    }
+
+    public void appendToLastProcessStep(String appendix) {
+        String last = processSteps.get(processSteps.size() - 1);
+        processSteps.remove(processSteps.size() - 1);
+        processSteps.add(last + appendix);
+    }
+
     /**
      * This method is used to apply the result of the process.
      * @param endStatus the end status of the process
@@ -42,5 +57,5 @@ public class ProcessMonitorDto {
         this.endStatus = endStatus;
         this.endDetail = endDetail;
     }
-}
 
+}

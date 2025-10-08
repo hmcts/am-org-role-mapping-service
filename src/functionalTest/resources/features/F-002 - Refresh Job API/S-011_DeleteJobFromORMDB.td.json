@@ -1,0 +1,32 @@
+{
+  "_guid_": "S-011_DeleteJobFromORMDB",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Fetch Job Details",
+  "method": "DELETE",
+  "uri": "/am/testing-support/jobs/{jobId}",
+  "specs": [
+    "to delete job details from ORM DB"
+  ],
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "${[scenarioContext][customValues][generateS2STokenForOrm]}",
+      "Content-Type": "application/json"
+    },
+    "pathVariables": {
+      "jobId": "${[scenarioContext][parentContext][childContexts][S-011_FetchJobDetailsFromORM][testData][actualResponse][body][jobId]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_204_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    }
+  }
+}

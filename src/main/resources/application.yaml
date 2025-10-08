@@ -125,8 +125,8 @@ feign:
   client:
     config:
       default:
-        connectTimeout: 5000
-        readTimeout: 5000
+        connectTimeout: 15000
+        readTimeout: 15000
         loggerLevel: BASIC
       crdclient:
         url: ${CASE_WORKER_REF_APP_URL:http://localhost:8095}
@@ -134,10 +134,12 @@ feign:
         url: ${ROLE_ASSIGNMENT_APP_URL:http://localhost:4096}
       jrdClient:
         url: ${JUDICIAL_REF_APP_URL:http://localhost:8091}
-        v2Active: true
-        v2FilterAuthorisationsByAppointmentId: true
       jbsClient:
         url: ${JUDICIAL_BOOKING_APP_URL:http://localhost:4097}
+      prdClient:
+        url: ${PROFESSIONAL_REF_APP_URL:http://localhost:8090}
+      ccdClient:
+        url: ${CCD_DEF_STORE_APP_URL:http://localhost:4451}
 
 swaggerUrl: "${AM_ORG_ROLE_MAPPING_SWAGGER_AM_URL:localhost:4098}"
 OrgRoleMappingUrl: ${TEST_URL:http://localhost:4098}
@@ -156,20 +158,27 @@ amqp:
     topic: ${JRD_TOPIC_NAME:test}
     subscription: ${JRD_SUBSCRIPTION_NAME:test}
 
+# NB: LD is not used but legacy configuration is retained, see /config/EnvironmentConfiguration.java
 launchdarkly:
   sdk:
-    key: ${LD_SDK_KEY:}
-    environment: ${LAUNCH_DARKLY_ENV:local}
-    user: am-${LAUNCH_DARKLY_ENV:local}
-  runOnStartup: ${RUN_LD_ON_STARTUP:false}
+    environment: ${LAUNCH_DARKLY_ENV:}
+
+orm:
+  environment: ${ORM_ENV:local}
 
 refresh:
   Job:
     update: ${REFRESH_JOB:}
+    updateOverride: ${REFRESH_JOB_ALLOW_UPDATE:false}
     pageSize: ${REFRESH_JOB_PAGE_SIZE:400}
     sortDirection: ${REFRESH_JOB_SORT_DIR:ASC}
     sortColumn: ${REFRESH_JOB_SORT_COL:}
     authorisedServices: am_org_role_mapping_service,am_role_assignment_refresh_batch
+    includeJudicialBookings: ${REFRESH_JOB_INCLUDE_BOOKINGS:false}
+  BulkAssignment:
+    includeJudicialBookings: ${REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS:false}
+  judicial:
+    filterSoftDeletedUsers: ${REFRESH_JUDICIAL_FILTER_SOFT_DELETED_USERS:false}
 
 testing:
   support:
@@ -187,17 +196,37 @@ springdoc:
     operationsSorter: method
   writer-with-order-by-keys: true
 
-
 professional:
   refdata:
-    pageSize: ${PROFESSIONAL_REFDATA_PAGE_SIZE:100}
+      pageSize: ${PROFESSIONAL_REFDATA_PAGE_SIZE:100}
   role:
     mapping:
       scheduling:
         enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}
+        findAndUpdateCaseDefinitionChanges:
+          cron: ${CRON_P1_FIND_CASE_DEFINITION_CHANGES:*/30 * * * * *}
+        findOrganisationsWithStaleProfiles:
+          cron: ${CRON_P2_ORGS_STALE_PROFILES:*/30 * * * * *}
+        findOrganisationChanges:
+          cron: ${CRON_P3_ORG_CHANGES:*/30 * * * * *}
+        findUsersWithStaleOrganisations:
+          cron: ${CRON_P4_USERS_STALE_ORGS:*/30 * * * * *}
+          retryOneIntervalMin: ${RETRY_ONE_INTERVAL_MIN:2}
+          retryTwoIntervalMin: ${RETRY_TWO_INTERVAL_MIN:15}
+          retryThreeIntervalMin: ${RETRY_THREE_INTERVAL_MIN:60}
+        findUserChanges:
+          cron: ${CRON_P5_USER_CHANGES:*/30 * * * * *}
+        userRefresh:
+          cron: ${USER_REFRESH_CRON:*/5 * * * * *}
+          retryOneIntervalMin: ${RETRY_ONE_INTERVAL_MIN:2}
+          retryTwoIntervalMin: ${RETRY_TWO_INTERVAL_MIN:15}
+          retryThreeIntervalMin: ${RETRY_THREE_INTERVAL_MIN:60}
         organisationRefreshCleanup:
           cron: ${ORG_REFRESH_CLEANUP_CRON:*/5 * * * * *}
           activeOrganisationRefreshDays: ${ORG_REFRESH_CLEANUP_DAYS:90}
         userRefreshCleanup:
           cron: ${USER_REFRESH_CLEANUP_CRON:*/5 * * * * *}
           activeUserRefreshDays: ${USER_REFRESH_CLEANUP_DAYS:90}
+
+groupAccess:
+  lastRunTimeTolerance: ${TOLERANCE:180}

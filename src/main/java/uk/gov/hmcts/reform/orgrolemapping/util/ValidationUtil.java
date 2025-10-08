@@ -1,7 +1,10 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -13,8 +16,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
@@ -141,5 +144,14 @@ public class ValidationUtil {
                     .toList();
             return seen.putIfAbsent(keys, Boolean.TRUE) == null;
         };
+    }
+
+    public static void validateDateTimeFormat(String pattern, String strDate) {
+        try {
+            LocalDateTime.parse(strDate, DateTimeFormatter.ofPattern(pattern));
+        } catch (DateTimeParseException e) {
+            throw new BadRequestException(
+                String.format("Incorrect date format %s", pattern));
+        }
     }
 }
