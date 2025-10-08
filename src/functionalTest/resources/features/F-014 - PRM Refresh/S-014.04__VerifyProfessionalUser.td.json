@@ -1,9 +1,9 @@
 {
-  "_guid_": "S-014.01__VerifyProfessionalUser",
+  "_guid_": "S-014.04__VerifyProfessionalUser",
   "_extends_": "FetchProfessionalUsersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify professional user has userAccessTypes enabled"
+    "to verify professional user has userAccessTypes disabled"
   ],
 
   "request": {
@@ -22,12 +22,7 @@
             "status": "ACTIVE",
             "organisationProfileIds" : [ "SOLICITOR_PROFILE" ]
           },
-          "userAccessTypes": [ {
-            "jurisdictionId" : "[[ANYTHING_PRESENT]]",
-            "organisationProfileId" : "SOLICITOR_PROFILE",
-            "accessTypeId" : "[[ANYTHING_PRESENT]]",
-            "enabled" : true
-          } ]
+          "userAccessTypes": []
         }
       ]
     }
