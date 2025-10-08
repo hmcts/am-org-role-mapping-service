@@ -1,0 +1,24 @@
+{
+  "password": "Password123",
+  "user": {
+    "id": "eccd490f-a40c-4a19-b063-7b107bc6480m",
+    "email": "gaTestUser2@hmcts.net",
+    "forename": "gaTestUser2",
+    "surname": "gatestUser2Lastname",
+    "displayName": "gaTestUser2",
+    "roleNames": [
+      "cwd-admin",
+      "cwd-system-user",
+      "org-role-cwd-system-user",
+      "jrd-system-user",
+      "prd-admin"
+    ],
+    "ssoId": "testing-support",
+    "ssoProvider": "string",
+    "accountStatus": "ACTIVE",
+    "recordType": "LIVE"
+  }
+}
+
+
+
