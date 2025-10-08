@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.domain.UserRefreshQueueValue;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
-import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 
 @RestController
 @ConditionalOnProperty(name = "testing.support.enabled", havingValue = "true")
