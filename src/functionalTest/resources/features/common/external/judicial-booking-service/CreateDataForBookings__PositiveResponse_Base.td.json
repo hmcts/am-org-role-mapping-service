@@ -1,0 +1,24 @@
+{
+  "_guid_": "CreateDataForBookings__PositiveResponse_Base",
+  "_extends_": "CreateDataForBookings__Base",
+
+  "specs": [
+    "to create single booking for this user"
+  ],
+
+  "expectedResponse": {
+    "_extends_": "Common_201_Response",
+    "body": {
+      "bookingResponse":{
+        "id": "[[ANYTHING_PRESENT]]",
+        "userId": "[[ANYTHING_PRESENT]]",
+        "locationId": "${[scenarioContext][testData][request][body][bookingRequest][locationId]}",
+        "regionId": "${[scenarioContext][testData][request][body][bookingRequest][regionId]}",
+        "beginTime": "${[scenarioContext][testData][request][body][bookingRequest][beginDate]}T00:00:00Z",
+        "endTime": "${[scenarioContext][customValues][tomorrow]}T00:00:00Z",
+        "created":"[[ANYTHING_PRESENT]]",
+        "log":"Booking record is successfully created"
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "_guid_": "CreateDataForBookings__Base",
+
+  "productName": "Judicial Booking Service",
+  "operationName": "to create a booking",
+
+  "method": "POST",
+  "uri": "{{JUDICIAL_BOOKING_URL}}/am/bookings",
+
+  "request": {
+    "headers": {
+      "_extends_": "Common_Request_Headers"
+    },
+    "body": {
+      "bookingRequest": {
+        "userId": "OVERRIDE_ME",
+        "locationId": "OVERRIDE_ME",
+        "regionId": "OVERRIDE_ME",
+        "beginDate": "${[scenarioContext][customValues][today]}",
+        "endDate": "${[scenarioContext][customValues][today]}"
+      }
+    }
+  }
+}

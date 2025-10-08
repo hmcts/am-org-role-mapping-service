@@ -1,0 +1,24 @@
+{
+  "_guid_": "RefreshJudicialUserRoleAssignments__Base",
+ 
+  "productName": "Organisation Role Mapping",
+  "operationName": "Post Judicial Refresh Request",
+ 
+  "method": "POST",
+  "uri": "/am/role-mapping/judicial/refresh",
+ 
+  "specs": [
+    "to refresh a judicial user's role assignments"
+  ],
+
+  "request": {
+    "headers": {
+      "_extends_": "Common_Request_Headers"
+    },
+    "body": {
+      "refreshRequest": {
+        "userIds": [ ]
+      }
+    }
+  }
+}

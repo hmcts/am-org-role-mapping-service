@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertHelper.MultiRegion;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -59,9 +61,6 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         assertEquals(ActorIdType.IDAM, r.getActorIdType());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
         assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
-        if (!r.getRoleName().equals("fee-paid-judge")) {
-            assertNull(r.getAttributes().get("bookable"));
-        }
 
         String primaryLocation = null;
         if (r.getAttributes().get("primaryLocation") != null) {
@@ -90,6 +89,20 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         }
         assertEquals(expectedWorkTypes, actualWorkTypes);
     }
+
+    static void assertRoleAssignmentAttributeBookable(RoleAssignment r, String ticketCode) {
+
+        if (r.getRoleName().equals("fee-paid-judge")) {
+            if (ticketCode != null && ticketCode.equals("368")) {
+                assertTrue(r.getAttributes().get("bookable").asText().contains("true"));
+            } else {
+                assertNull(r.getAttributes().get("bookable"));
+            }
+        } else {
+            assertNull(r.getAttributes().get("bookable"));
+        }
+    }
+
 
     @ParameterizedTest
     @CsvSource({
@@ -158,8 +171,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         List<String> expectedRoleList = Arrays.stream(expectedRoles.split(",")).toList();
@@ -175,6 +187,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
             assertCommonRoleAssignmentAttributes(r, roleNameToRegionsMap);
+            assertRoleAssignmentAttributeBookable(r,null);
         });
 
         // verify regions add to map
@@ -190,80 +203,89 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,1,false",
+        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,1,false,true",
         // NB: only testing multi-region when using fallback region
-        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,6,true",
-        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,7,true",
-        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,false,1,false",
-        // ^ judge RA will be created if a booking created
-        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary',false,false,1,false",
+        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,6,true,true",
+        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,judge,hmcts-judiciary',true,true,7,true,true",
+        // ^ judge RA will be created if a booking created && ticketCode == 368
+        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary',true,false,1,false,false",
+        // ^ judge RA will not be created, despite having a booking, JOH doesn't have ticketCode == 368
+        "SSCS Tribunal Judge-Fee Paid,'fee-paid-judge,hmcts-judiciary',false,false,1,false,false",
         // ^ judge RA will not be created as there is no booking
 
         "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
-            + "'fee-paid-judge,judge,hmcts-judiciary',true,true,1,false",
+            + "'fee-paid-judge,judge,hmcts-judiciary',true,true,1,false,true",
         // NB: only testing multi-region when using fallback region
         "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
-            + "'fee-paid-judge,judge,hmcts-judiciary',true,true,6,true",
+            + "'fee-paid-judge,judge,hmcts-judiciary',true,true,6,true,true",
         "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
-            + "'fee-paid-judge,judge,hmcts-judiciary',true,true,7,true",
-        "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
-            + "'fee-paid-judge,judge,hmcts-judiciary',true,false,1,false",
+            + "'fee-paid-judge,judge,hmcts-judiciary',true,true,7,true,true",
         // ^ judge RA will be created if a booking created
         "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
-            + "'fee-paid-judge,hmcts-judiciary',false,false,1,false",
+            + "'fee-paid-judge,hmcts-judiciary',true,false,1,false,false",
+        // ^ judge RA will not be created, despite having a booking, JOH doesn't have ticketCode == 368
+        "SSCS Judge of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
+            + "'fee-paid-judge,hmcts-judiciary',false,false,1,false,false",
         // ^ judge RA will not be created as there is no booking
 
-        "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,1,false",
-        "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,6,true",
-        "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,7,true",
+        "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,1,false,false",
+        "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,6,true,false",
+        "SSCS Tribunal Member Medical-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,7,true,false",
 
-        "SSCS Tribunal Member Optometrist-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,1,false",
-        "SSCS Tribunal Member Optometrist-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,6,true",
-        "SSCS Tribunal Member Optometrist-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,7,true",
+        "SSCS Tribunal Member Optometrist-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,1,false,false",
+        "SSCS Tribunal Member Optometrist-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,6,true,false",
+        "SSCS Tribunal Member Optometrist-Fee Paid,'fee-paid-medical,hmcts-judiciary',false,false,7,true,false",
 
-        "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,1,false",
-        "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,6,true",
-        "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,7,true",
+        "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,1,false,false",
+        "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,6,true,false",
+        "SSCS Tribunal Member Disability-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,7,true,false",
 
-        "SSCS Member of the First-tier Tribunal Lay-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,1,false",
-        "SSCS Member of the First-tier Tribunal Lay-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,6,true",
-        "SSCS Member of the First-tier Tribunal Lay-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,7,true",
+        "SSCS Member of the First-tier Tribunal Lay-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,1,false"
+                + ",false",
+        "SSCS Member of the First-tier Tribunal Lay-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,6,true"
+                + ",false",
+        "SSCS Member of the First-tier Tribunal Lay-Fee Paid,'fee-paid-disability,hmcts-judiciary',false,false,7,true"
+                + ",false",
 
-        "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,1,false",
-        "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,6,true",
-        "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,7,true",
+        "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,1,false,false",
+        "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,6,true,false",
+        "SSCS Tribunal Member-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,7,true,false",
 
-        "SSCS Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,1,false",
-        "SSCS Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,6,true",
-        "SSCS Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,7,true",
+        "SSCS Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,1,false,false",
+        "SSCS Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,6,true,false",
+        "SSCS Tribunal Member Lay-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,7,true,false",
 
-        "SSCS Tribunal Member Service-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,1,false",
-        "SSCS Tribunal Member Service-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,6,true",
-        "SSCS Tribunal Member Service-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,7,true",
+        "SSCS Tribunal Member Service-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,1,false,false",
+        "SSCS Tribunal Member Service-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,6,true,false",
+        "SSCS Tribunal Member Service-Fee Paid,'fee-paid-tribunal-member,hmcts-judiciary',false,false,7,true,false",
 
         "SSCS Member of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
-                + "'fee-paid-disability,hmcts-judiciary',false,false,1,false",
+                + "'fee-paid-disability,hmcts-judiciary',false,false,1,false,false",
         "SSCS Member of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
-                + "'fee-paid-disability,hmcts-judiciary',false,false,6,true",
+                + "'fee-paid-disability,hmcts-judiciary',false,false,6,true,false",
         "SSCS Member of the First-tier Tribunal (sitting in retirement)-Fee Paid,"
-                + "'fee-paid-disability,hmcts-judiciary',false,false,7,true",
+                + "'fee-paid-disability,hmcts-judiciary',false,false,7,true,false",
 
-        "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false,false,1,false",
-        "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false,false,6,true",
-        "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false,false,7,true",
+        "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false,false,1,false,false",
+        "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false,false,6,true,false",
+        "SSCS Tribunal Member Financially Qualified,'fee-paid-financial,hmcts-judiciary',false,false,7,true,false",
 
-        "SSCS Member of the First-tier Tribunal-Fee Paid,'fee-paid-financial,hmcts-judiciary',false,false,1,false",
-        "SSCS Member of the First-tier Tribunal-Fee Paid,'fee-paid-financial,hmcts-judiciary',false,false,6,true",
-        "SSCS Member of the First-tier Tribunal-Fee Paid,'fee-paid-financial,hmcts-judiciary',false,false,7,true",
+        "SSCS Member of the First-tier Tribunal-Fee Paid,'fee-paid-financial,hmcts-judiciary',false,false,1,false"
+                + ",false",
+        "SSCS Member of the First-tier Tribunal-Fee Paid,'fee-paid-financial,hmcts-judiciary',false,false,6,true,false",
+        "SSCS Member of the First-tier Tribunal-Fee Paid,'fee-paid-financial,hmcts-judiciary',false,false,7,true,false",
     })
     void shouldReturnFeePaidRoles(String setOffice, String expectedRoles,
                                   boolean withBooking, boolean johFallback,
-                                  String regionId, boolean expectMultiRegion) throws IOException {
+                                  String regionId, boolean expectMultiRegion,
+                                  boolean with368Ticket) throws IOException {
 
         judicialOfficeHolders.forEach(joh -> {
             joh.setOffice(setOffice);
             joh.setRegionId(regionId);
-            joh.setTicketCodes(List.of("368"));
+            if (with368Ticket) {
+                joh.setTicketCodes(List.of("368"));
+            }
         });
 
         if (withBooking) {
@@ -289,8 +311,7 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         List<String> expectedRoleList = Arrays.stream(expectedRoles.split(",")).toList();
@@ -307,6 +328,9 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
             assertCommonRoleAssignmentAttributes(r, roleNameToRegionsMap);
+            String ticket = judicialOfficeHolders.stream().iterator().next().getTicketCodes() == null ? null :
+                    judicialOfficeHolders.stream().iterator().next().getTicketCodes().iterator().next();
+            assertRoleAssignmentAttributeBookable(r, ticket);
         });
 
         // verify regions add to map
@@ -318,6 +342,15 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
                 regionId, // fallback if not multi-region scenario
                 setExpectedBookingRegionId(regionId, withBooking, johFallback)
         );
+    }
+
+
+    private static List<FeatureFlag> setFeatureFlags() {
+        List<String> flags = List.of("sscs_wa_1_0", "sscs_wa_1_1", "sscs_wa_1_2", "sscs_wa_1_3");
+
+        return flags.stream()
+                .map(flag -> FeatureFlag.builder().flagName(flag).status(true).build())
+                .collect(Collectors.toList());
     }
 
     private String setExpectedBookingRegionId(String regionId, boolean withBooking, boolean johFallback) {

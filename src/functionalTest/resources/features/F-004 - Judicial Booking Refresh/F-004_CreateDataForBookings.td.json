@@ -1,17 +1,19 @@
 {
-  "_guid_": "S-032_CreateDataForNewBookings",
-  "_extends_": "F-004_CreateDataForBookings",
+  "_guid_": "F-004_CreateDataForBookings",
+  "_extends_": "CreateDataForBookings__PositiveResponse_Base",
 
-  "specs": [
-    "to create extra booking for this user"
-  ],
- 
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmJRDUser2"
+    }
+  },
+
   "request": {
     "body": {
       "bookingRequest": {
         "userId": "${[scenarioContext][parentContext][testData][users][invokingUser][id]}",
-        "locationId": "15",
-        "regionId": "3",
+        "locationId": "10",
+        "regionId": "2",
         "beginDate": "${[scenarioContext][customValues][today]}",
         "endDate": "${[scenarioContext][customValues][today]}"
       }
