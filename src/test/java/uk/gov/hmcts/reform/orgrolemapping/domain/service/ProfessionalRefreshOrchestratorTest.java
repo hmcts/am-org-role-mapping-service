@@ -38,6 +38,17 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_ROL
 @RunWith(MockitoJUnitRunner.class)
 class ProfessionalRefreshOrchestratorTest {
 
+    private static final String USERID = "21334a2b-79ce-44eb-9168-2d49a744be9d";
+    private static final String ACCESSTYPE = """
+                [
+                  {
+                    "jurisdictionId": "1",
+                    "organisationProfileId": "1",
+                    "accessTypeId": "1",
+                    "enabled": true
+                 }
+                ]
+                """;
     @Mock
     private AccessTypesRepository accessTypesRepository;
     @Mock
@@ -73,17 +84,7 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
                 .when(roleAssignmentService).createRoleAssignment(any());
 
-        String accessType = """
-                [
-                  {
-                 "jurisdictionId": "1",
-                "organisationProfileId": "1",
-                    "accessTypeId": "1",
-                "enabled": true
-                 }
-                ]""";
-
-        doReturn(accessType)
+        doReturn(ACCESSTYPE)
                 .when(objectMapper).writeValueAsString(any());
 
         Optional<AccessTypesEntity> accessTypesEntity = Optional.of(new AccessTypesEntity());
@@ -92,15 +93,14 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(accessTypesEntity)
                .when(accessTypesRepository).findFirstByOrderByVersionDesc();
 
-        String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
-        userRefreshQueueEntity.setUserId(userId);
+        userRefreshQueueEntity.setUserId(USERID);
         userRefreshQueueEntity.setAccessTypesMinVersion(10);
 
         doReturn(userRefreshQueueEntity)
                 .when(userRefreshQueueRepository).findByUserId(any());
 
-        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(userId));
+        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(USERID));
     }
 
     @Test
@@ -111,17 +111,7 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
                 .when(roleAssignmentService).createRoleAssignment(any());
 
-        String accessType = """
-                [
-                  {
-                 "jurisdictionId": "1",
-                "organisationProfileId": "1",
-                    "accessTypeId": "1",
-                "enabled": true
-                 }
-                ]""";
-
-        doReturn(accessType)
+        doReturn(ACCESSTYPE)
                 .when(objectMapper).writeValueAsString(any());
 
         Optional<AccessTypesEntity> accessTypesEntity = Optional.of(new AccessTypesEntity());
@@ -130,16 +120,15 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(accessTypesEntity)
                 .when(accessTypesRepository).findFirstByOrderByVersionDesc();
 
-        String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
-        userRefreshQueueEntity.setUserId(userId);
+        userRefreshQueueEntity.setUserId(USERID);
         userRefreshQueueEntity.setAccessTypesMinVersion(10);
         userRefreshQueueEntity.setDeleted(LocalDateTime.now());
 
         doReturn(userRefreshQueueEntity)
                 .when(userRefreshQueueRepository).findByUserId(any());
 
-        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(userId));
+        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(USERID));
     }
 
     @Test
@@ -150,17 +139,7 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
                 .when(roleAssignmentService).createRoleAssignment(any());
 
-        String accessType = """
-                [
-                  {
-                 "jurisdictionId": "1",
-                "organisationProfileId": "1",
-                    "accessTypeId": "1",
-                "enabled": true
-                 }
-                ]""";
-
-        doReturn(accessType)
+        doReturn(ACCESSTYPE)
                 .when(objectMapper).writeValueAsString(any());
 
         Optional<AccessTypesEntity> accessTypesEntity = Optional.of(new AccessTypesEntity());
@@ -169,55 +148,15 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(accessTypesEntity)
                 .when(accessTypesRepository).findFirstByOrderByVersionDesc();
 
-        String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
-        userRefreshQueueEntity.setUserId(userId);
+        userRefreshQueueEntity.setUserId(USERID);
         userRefreshQueueEntity.setAccessTypesMinVersion(10);
         userRefreshQueueEntity.setDeleted(null);
         userRefreshQueueEntity.setOrganisationStatus("abcdefg");
         doReturn(userRefreshQueueEntity)
                 .when(userRefreshQueueRepository).findByUserId(any());
 
-        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(userId));
-    }
-
-    @Test
-    void refreshProfessionalRoleAssignmentRecordsExitStep4() throws IOException {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
-                .when(prdService).getRefreshUser(any());
-
-        doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
-                .when(roleAssignmentService).createRoleAssignment(any());
-
-        String accessType = """
-                [
-                  {
-                 "jurisdictionId": "1",
-                "organisationProfileId": "1",
-                    "accessTypeId": "1",
-                "enabled": true
-                 }
-                ]""";
-
-        doReturn(accessType)
-                .when(objectMapper).writeValueAsString(any());
-
-        Optional<AccessTypesEntity> accessTypesEntity = Optional.of(new AccessTypesEntity());
-
-        accessTypesEntity.get().setVersion(11L);
-        doReturn(accessTypesEntity)
-                .when(accessTypesRepository).findFirstByOrderByVersionDesc();
-
-        String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
-        UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
-        userRefreshQueueEntity.setUserId(userId);
-        userRefreshQueueEntity.setAccessTypesMinVersion(10);
-        userRefreshQueueEntity.setDeleted(null);
-        userRefreshQueueEntity.setOrganisationStatus("abcdefg");
-        doReturn(userRefreshQueueEntity)
-                .when(userRefreshQueueRepository).findByUserId(any());
-
-        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(userId));
+        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(USERID));
     }
 
     @Test
@@ -228,18 +167,7 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
                 .when(roleAssignmentService).createRoleAssignment(any());
 
-        String accessType = """
-                [  
-                {
-                    "jurisdictionId": "1",
-                    "organisationProfileId": "1",
-                    "accessTypeId": "1",
-                    "enabled": true 
-                }
-                ]
-                """;
-
-        doReturn(accessType)
+        doReturn(ACCESSTYPE)
                 .when(objectMapper).writeValueAsString(any());
 
 
@@ -248,12 +176,10 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(accessTypesEntity)
                 .when(accessTypesRepository).findFirstByOrderByVersionDesc();
 
-
-        String userId = "21334a2b-79ce-44eb-9168-2d49a744be9d";
-        doReturn(TestDataBuilder.buildUserRefreshQueueEntity(userId))
+        doReturn(TestDataBuilder.buildUserRefreshQueueEntity(USERID))
                 .when(userRefreshQueueRepository).findByUserId(any());
 
-        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(userId));
+        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(USERID));
     }
 
     private void assertResponse(ResponseEntity<Object> actualResponse) {
