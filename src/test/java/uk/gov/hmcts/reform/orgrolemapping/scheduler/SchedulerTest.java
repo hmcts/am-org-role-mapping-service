@@ -135,4 +135,36 @@ class SchedulerTest {
         verify(professionalUserService, times(1)).refreshUsersBatchMode();
     }
 
+    // PRM Cleanup - User Refresh Queue
+    @Test
+    void deleteActiveUserRefreshRecordsTest() {
+        ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
+
+        // GIVEN
+        when(professionalUserService.deleteActiveUserRefreshRecords()).thenReturn(processMonitorDto);
+
+        // WHEN
+        ProcessMonitorDto returnedProcessMonitorDto = scheduler.deleteActiveUserRefreshRecords();
+
+        // THEN
+        assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
+        verify(professionalUserService, times(1)).deleteActiveUserRefreshRecords();
+    }
+
+    @Test
+    void deleteActiveOrganisationRefreshRecordsTest() {
+        ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
+
+        // GIVEN
+        when(organisationService.deleteActiveOrganisationRefreshRecords()).thenReturn(processMonitorDto);
+
+        // WHEN
+        ProcessMonitorDto returnedProcessMonitorDto = scheduler.deleteActiveOrganisationRefreshRecords();
+
+        // THEN
+        assertNotNull(returnedProcessMonitorDto);
+        assertEquals(processMonitorDto, returnedProcessMonitorDto);
+        verify(organisationService, times(1)).deleteActiveOrganisationRefreshRecords();
+    }
 }
