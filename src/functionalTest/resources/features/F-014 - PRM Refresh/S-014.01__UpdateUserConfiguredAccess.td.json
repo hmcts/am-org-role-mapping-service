@@ -23,7 +23,7 @@
       "userId": "${[scenarioContext][parentContext][testData][expectedResponse][body][organisationIdentifier]}"
     },
     "body": {
-      "_extends_" : "CreateUserConfiguredAccess__Input"
+      "_extends_" : "CreateUserConfiguredAccess__Enabled"
     }
   },
   "expectedResponse": {

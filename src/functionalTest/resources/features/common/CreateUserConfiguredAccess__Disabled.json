@@ -1,5 +1,5 @@
 {
-  "_guid_": "CreateUserConfiguredAccess__Input",
+  "_guid_": "CreateUserConfiguredAccess__Disabled",
   "arrayInMap": [
     {
       "firstName": "GA-Test-User1",
@@ -13,7 +13,7 @@
           "jurisdictionId": "BEFTA_MASTER",
           "organisationProfileId": "SOLICITOR_PROFILE",
           "accessTypeId": "BEFTA_SOLICITOR_1",
-          "enabled": true
+          "enabled": false
         }
       ],
       "resendInvite": true
