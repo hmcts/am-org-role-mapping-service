@@ -9,7 +9,7 @@
   ],
   "users": {
     "invokingUser": {
-      "_extends_": "AmBeftaUser1"
+      "_extends_": "AmPRDUser1"
     }
   },
   "request": {
@@ -19,13 +19,13 @@
       "Content-Type": "application/json"
     },
     "body": {
-
   "name": "GA-TestOrganisation",
   "status": "ACTIVE",
   "statusMessage": "activeorganisation",
   "sraId": "SRA111111112",
   "sraRegulated": "string",
   "companyNumber": "GA1234",
+
   "companyUrl": "string",
   "superUser": {
     "firstName": "ga-User0",

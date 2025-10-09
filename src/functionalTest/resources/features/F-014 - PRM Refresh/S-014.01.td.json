@@ -4,25 +4,12 @@
   "_extends_": "RefreshProfessionalUserRoleAssignments__PositiveResponse_Base",
 
   "specs": [
-    "an active IDAM profile with full permissions",
-    "an active PRD Profile"
+    "Prd admin access"
   ],
 
   "users": {
     "PrdUser1": {
       "_extends_": "AmPRDUser1"
-    }
-  },
-
-  "request": {
-    "queryParams": {
-      "userId": "eccd490f-a40c-4a19-b063-7b107bc6480p"
-    }
-  },
-
-  "expectedResponse": {
-    "body" : {
-      "Message" : "Role assignments have been refreshed successfully"
     }
   }
 }
