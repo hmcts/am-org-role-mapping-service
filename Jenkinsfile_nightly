@@ -54,6 +54,10 @@ def secrets = [
 
 withNightlyPipeline(type, product, component) {
 
+// extra dynamic users for PRD tests
+env.TEST_AM_PRD_USER1_BEFTA = "TEST_AM_ORM_BEFTA_PRD_USER1_AAT@test.local"
+env.TEST_AM_PRD_USER1_BEFTA_PASSWORD = env.TEST_AM_USER2_BEFTA_PWD
+
 // Vars needed for functional and smoke tests run against AKS
 env.IDAM_URL = "https://idam-api.aat.platform.hmcts.net"
 env.IDAM_API_URL_BASE = "https://idam-api.aat.platform.hmcts.net"

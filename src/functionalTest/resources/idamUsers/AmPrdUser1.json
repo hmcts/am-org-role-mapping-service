@@ -1,0 +1,14 @@
+{
+  "password": "[[$TEST_AM_PRD_USER1_BEFTA_PASSWORD]]",
+  "user": {
+    "email": "[[$TEST_AM_PRD_USER1_BEFTA]]",
+    "forename": "AM-ORM-PRD",
+    "surname": "FTA",
+    "displayName": "AM-ORM PRD FTA",
+    "roleNames": [
+      "prd-admin"
+    ],
+    "accountStatus": "ACTIVE",
+    "recordType": "LIVE"
+  }
+}

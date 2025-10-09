@@ -4,8 +4,15 @@
   "_extends_": "RefreshProfessionalUserRoleAssignments__PositiveResponse_Base",
 
   "specs": [
-    "an active IDAM profile with full permissions"
+    "an active IDAM profile with full permissions",
+    "an active PRD Profile"
   ],
+
+	"users": {
+		"PrdUser1": {
+      "_extends_": "AmPRDUser1"
+    }
+  },
 
   "request": {
     "queryParams": {
