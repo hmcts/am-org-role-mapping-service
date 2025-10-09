@@ -141,7 +141,7 @@ class SchedulerTest {
         ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
 
         // GIVEN
-        when(professionalUserService.deleteActiveUserRefreshRecords()).thenReturn(processMonitorDto);
+        when(professionalUserService.deleteInactiveUserRefreshRecords()).thenReturn(processMonitorDto);
 
         // WHEN
         ProcessMonitorDto returnedProcessMonitorDto = scheduler.deleteActiveUserRefreshRecords();
@@ -149,7 +149,7 @@ class SchedulerTest {
         // THEN
         assertNotNull(returnedProcessMonitorDto);
         assertEquals(processMonitorDto, returnedProcessMonitorDto);
-        verify(professionalUserService, times(1)).deleteActiveUserRefreshRecords();
+        verify(professionalUserService, times(1)).deleteInactiveUserRefreshRecords();
     }
 
     @Test
@@ -157,7 +157,7 @@ class SchedulerTest {
         ProcessMonitorDto processMonitorDto = mock(ProcessMonitorDto.class);
 
         // GIVEN
-        when(organisationService.deleteActiveOrganisationRefreshRecords()).thenReturn(processMonitorDto);
+        when(organisationService.deleteInactiveOrganisationRefreshRecords()).thenReturn(processMonitorDto);
 
         // WHEN
         ProcessMonitorDto returnedProcessMonitorDto = scheduler.deleteActiveOrganisationRefreshRecords();
@@ -165,6 +165,6 @@ class SchedulerTest {
         // THEN
         assertNotNull(returnedProcessMonitorDto);
         assertEquals(processMonitorDto, returnedProcessMonitorDto);
-        verify(organisationService, times(1)).deleteActiveOrganisationRefreshRecords();
+        verify(organisationService, times(1)).deleteInactiveOrganisationRefreshRecords();
     }
 }

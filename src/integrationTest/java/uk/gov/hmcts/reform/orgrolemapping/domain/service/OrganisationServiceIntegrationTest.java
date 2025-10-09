@@ -51,7 +51,7 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_new_organisation_profiles.sql"})
     void shouldNotDeleteNewInactiveEntryFromOrganisationRefreshQueueTest() {
-        organisationService.deleteActiveOrganisationRefreshRecords();
+        organisationService.deleteInactiveOrganisationRefreshRecords();
 
         assertEquals(1, organisationRefreshQueueRepository.findAll().size());
     }
@@ -77,7 +77,7 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_old_active_organisation_profiles.sql"})
     void shouldNotDeleteOldActiveEntryFromOrganisationRefreshQueueTest() {
-        organisationService.deleteActiveOrganisationRefreshRecords();
+        organisationService.deleteInactiveOrganisationRefreshRecords();
 
         assertEquals(1, organisationRefreshQueueRepository.findAll().size());
     }
@@ -86,7 +86,7 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_old_organisation_profiles.sql"})
     void shouldDeleteOldAndInactiveEntryFromOrganisationRefreshQueueTest() {
-        organisationService.deleteActiveOrganisationRefreshRecords();
+        organisationService.deleteInactiveOrganisationRefreshRecords();
 
         assertEquals(0, organisationRefreshQueueRepository.findAll().size());
     }

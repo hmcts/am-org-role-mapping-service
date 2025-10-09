@@ -81,14 +81,14 @@ public class OrganisationService {
     }
 
     @Transactional
-    public ProcessMonitorDto deleteActiveOrganisationRefreshRecords() {
+    public ProcessMonitorDto deleteInactiveOrganisationRefreshRecords() {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Cleanup Process - Organisation");
         processEventTracker.trackEventStarted(processMonitorDto);
         try {
             processMonitorDto.addProcessStep("Deleting inactive organisation refresh queue entities "
                     + "last updated before " + activeOrganisationRefreshDays + " days");
             organisationRefreshQueueRepository
-                    .deleteActiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
+                    .deleteInactiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
                             activeOrganisationRefreshDays);
         } catch (Exception exception) {
             processMonitorDto.markAsFailed(exception.getMessage());

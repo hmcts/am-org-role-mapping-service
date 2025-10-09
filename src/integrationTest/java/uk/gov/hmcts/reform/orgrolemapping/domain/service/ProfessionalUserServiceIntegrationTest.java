@@ -127,7 +127,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_new_user_refresh_queue.sql"})
     void shouldDeleteNoneFromUserRefreshQueueTest() {
-        professionalUserService.deleteActiveUserRefreshRecords();
+        professionalUserService.deleteInactiveUserRefreshRecords();
 
         assertEquals(1, userRefreshQueueRepository.findAll().size());
     }
@@ -311,7 +311,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_old_user_refresh_queue.sql"})
     void shouldDeleteOneFromUserRefreshQueueTest() {
-        professionalUserService.deleteActiveUserRefreshRecords();
+        professionalUserService.deleteInactiveUserRefreshRecords();
 
         assertEquals(0, userRefreshQueueRepository.findAll().size());
     }

@@ -26,12 +26,12 @@ public class Scheduler {
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.organisationRefreshCleanup.cron}")
     public ProcessMonitorDto deleteActiveOrganisationRefreshRecords() {
-        return organisationService.deleteActiveOrganisationRefreshRecords();
+        return organisationService.deleteInactiveOrganisationRefreshRecords();
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.userRefreshCleanup.cron}")
     public ProcessMonitorDto deleteActiveUserRefreshRecords() {
-        return professionalUserService.deleteActiveUserRefreshRecords();
+        return professionalUserService.deleteInactiveUserRefreshRecords();
     }
 
     // PRM Process 1

@@ -118,7 +118,7 @@ public class ProfessionalUserService {
     }
 
     @Transactional
-    public ProcessMonitorDto deleteActiveUserRefreshRecords() {
+    public ProcessMonitorDto deleteInactiveUserRefreshRecords() {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Cleanup Process - User");
         processEventTracker.trackEventStarted(processMonitorDto);
 
@@ -126,7 +126,7 @@ public class ProfessionalUserService {
             processMonitorDto.addProcessStep("Deleting inactive user refresh queue entities "
                     + "last updated before " + activeUserRefreshDays + " days");
             userRefreshQueueRepository
-                    .deleteActiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(activeUserRefreshDays);
+                    .deleteInactiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(activeUserRefreshDays);
 
         } catch (Exception exception) {
             processMonitorDto.markAsFailed(exception.getMessage());
