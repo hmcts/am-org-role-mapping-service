@@ -1,0 +1,40 @@
+{
+  "_guid_": "S-014.01__UpdateUserConfiguredAccess",
+  "productName": "Professional Reference Data",
+  "operationName": "Create User Configured Access For Professional User",
+  "method": "POST",
+  "uri": "{{PRD_URL}}/refdata/internal/v1/organisations/{orgId}/users/{userId}",
+  "specs": [
+    "to create user configured access for professional user"
+  ],
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmPRDUser1"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json"
+    },
+    "pathVariables": {
+      "orgId": "${[scenarioContext][parentContext][testData][expectedResponse][body][organisationIdentifier]}",
+      "userId": "${[scenarioContext][parentContext][testData][expectedResponse][body][organisationIdentifier]}"
+    },
+    "body": {
+      "_extends_" : "CreateUserConfiguredAccess__Input"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_201_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "message": "Professional User Created",
+      "organisationIdentifier" : "[[ANYTHING_PRESENT]]"
+    }
+  }
+}
