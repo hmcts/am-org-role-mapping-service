@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.Assert;
 import feign.FeignException;
 import feign.Request;
 import org.junit.jupiter.api.Assertions;
@@ -114,6 +115,32 @@ class ProfessionalUserServiceTest {
             processEventTracker,
             professionalUserServiceConfig
     );
+
+    @Test
+    void deleteActiveUserRefreshRecordsTest() {
+        professionalUserService.deleteActiveUserRefreshRecords();
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        verify(userRefreshQueueRepository, times(1))
+                .deleteActiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
+                        professionalUserServiceConfig.getActiveUserRefreshDays());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.SUCCESS);
+    }
+
+    @Test
+    void deleteActiveUserRefreshRecordsTestWithFailure() {
+        doThrow(ServiceException.class).when(userRefreshQueueRepository)
+                .deleteActiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
+                        professionalUserServiceConfig.getActiveUserRefreshDays());
+        Assert.assertThrows(ServiceException.class, () ->
+                professionalUserService.deleteActiveUserRefreshRecords()
+        );
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+                .isEqualTo(EndStatus.FAILED);
+    }
 
     @Nested
     @DisplayName(PROCESS_4_NAME)
@@ -813,6 +840,5 @@ class ProfessionalUserServiceTest {
         }
 
     }
-
 
 }

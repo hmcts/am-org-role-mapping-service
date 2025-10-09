@@ -1,12 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
@@ -48,6 +49,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OrganisationServiceTest {
 
+    private final String numDays = "90";
     private final PrdService prdService = Mockito.mock(PrdService.class);
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository =
             Mockito.mock(ProfileRefreshQueueRepository.class);
@@ -71,7 +73,16 @@ class OrganisationServiceTest {
             "1",
             jdbcTemplate,
             accessTypesRepository, batchLastRunTimestampRepository, databaseDateTimeRepository,
-            processEventTracker, "10");
+            processEventTracker, numDays, "10");
+
+    @Test
+    void deleteActiveOrganisationRefreshRecordsTest() {
+        organisationService.deleteActiveOrganisationRefreshRecords();
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        verify(organisationRefreshQueueRepository, times(1))
+                .deleteActiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(numDays);
+    }
 
     @Test
     void findAndInsertStaleOrganisationsIntoRefreshQueue_Test() {
@@ -189,6 +200,16 @@ class OrganisationServiceTest {
                         + "1 organisations=orgIdentifier3, : COMPLETED");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.SUCCESS);
+    }
+
+    @Test
+    void deleteActiveOrganisationRefreshRecordsTestWithFailure() {
+        doThrow(ServiceException.class).when(organisationRefreshQueueRepository)
+                .deleteActiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(numDays);
+        Assert.assertThrows(ServiceException.class, () ->
+                organisationService
+                        .deleteActiveOrganisationRefreshRecords()
+        );
     }
 
     @SuppressWarnings("unchecked")

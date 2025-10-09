@@ -49,6 +49,7 @@ public class OrganisationService {
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final ProcessEventTracker processEventTracker;
 
+    private final String activeOrganisationRefreshDays;
     private final String tolerance;
     private static final String P2 = "P2";
     private static final String P3 = "P3";
@@ -62,6 +63,9 @@ public class OrganisationService {
                                BatchLastRunTimestampRepository batchLastRunTimestampRepository,
                                DatabaseDateTimeRepository databaseDateTimeRepository,
                                ProcessEventTracker processEventTracker,
+                               @Value("${professional.role.mapping.scheduling"
+                                       + ".organisationRefreshCleanup.activeOrganisationRefreshDays}")
+                               String activeOrganisationRefreshDays,
                                @Value("${groupAccess.lastRunTimeTolerance}") String tolerance) {
         this.prdService = prdService;
         this.profileRefreshQueueRepository = profileRefreshQueueRepository;
@@ -72,7 +76,29 @@ public class OrganisationService {
         this.pageSize = pageSize;
         this.jdbcTemplate = jdbcTemplate;
         this.processEventTracker = processEventTracker;
+        this.activeOrganisationRefreshDays = activeOrganisationRefreshDays;
         this.tolerance = tolerance;
+    }
+
+    @Transactional
+    public ProcessMonitorDto deleteActiveOrganisationRefreshRecords() {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Cleanup Process - Organisation");
+        processEventTracker.trackEventStarted(processMonitorDto);
+        try {
+            processMonitorDto.addProcessStep("Deleting inactive organisation refresh queue entities "
+                    + "last updated before " + activeOrganisationRefreshDays + " days");
+            organisationRefreshQueueRepository
+                    .deleteActiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
+                            activeOrganisationRefreshDays);
+        } catch (Exception exception) {
+            processMonitorDto.markAsFailed(exception.getMessage());
+            processEventTracker.trackEventCompleted(processMonitorDto);
+            throw exception;
+        }
+
+        processMonitorDto.markAsSuccess();
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
     }
 
     @Transactional

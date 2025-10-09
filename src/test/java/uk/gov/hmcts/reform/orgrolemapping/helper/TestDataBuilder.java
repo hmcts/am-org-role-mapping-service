@@ -623,16 +623,48 @@ public class TestDataBuilder {
     public static AccessTypesEntity buildAccessTypesEntity() {
         AccessTypesEntity accessTypesEntity = new AccessTypesEntity();
         accessTypesEntity.setVersion(11L);
-        accessTypesEntity.setAccessTypes("{ \"organisationProfiles\":\n[{\"organisationProfileId\": "
-                + "\"SOLICITOR_PROFILE\",\n \"jurisdictions\":\n[{\"jurisdictionId\": \"BEFTA_JURISDICTION_1\",\n"
-                + "      \"accessTypes\": [{\"accessTypeId\": \"1\",\"accessMandatory\": true,\"accessDefault\": true"
-                + ",\n \"roles\": [{\"caseTypeId\": \"23\",\"organisationalRoleName\": \"organisationRoleName1\","
-                + "\"groupRoleName\": \"groupname1\",\"caseGroupIdTemplate\": \"CIVIL:all:CIVIL:AS1:$ORGID$\","
-                + "\"groupAccessEnabled\": true}\n ]}]},\n {\"jurisdictionId\": \"BEFTA_JURISDICTION_2\",\n"
-                + " \"accessTypes\": [{\"accessTypeId\": \"2\",\"accessMandatory\": true,"
-                + "\"accessDefault\": true,\n \"roles\": [{\"caseTypeId\": \"23\",\"organisationalRoleName\": "
-                + "\"organisationRoleName2\",\"groupRoleName\": \"groupname2\",\"caseGroupIdTemplate\": "
-                + "\"IA:all:IA:AS1:$ORGID$\",\"groupAccessEnabled\": true}]}]}\n   ]}]}");
+        accessTypesEntity.setAccessTypes("""
+                { "organisationProfiles": [
+                   {
+                      "organisationProfileId": "SOLICITOR_PROFILE",
+                      "jurisdictions": [
+                      {
+                         "jurisdictionId": "BEFTA_JURISDICTION_1",
+                         "accessTypes": [
+                         {
+                            "accessTypeId": "1",
+                            "accessMandatory": true,
+                            "accessDefault": true"
+                            "roles": [
+                            {
+                               "caseTypeId": "23",
+                               "organisationalRoleName": "organisationRoleName1",
+                               "groupRoleName": "groupname1",
+                               "caseGroupIdTemplate": "CIVIL:all:CIVIL:AS1:$ORGID$",
+                               "groupAccessEnabled": true
+                            }]
+                         }]
+                       },
+                     {
+                         "jurisdictionId": "BEFTA_JURISDICTION_2",
+                         "accessTypes": [
+                         {
+                            "accessTypeId": "2",
+                            "accessMandatory": true,"
+                            "accessDefault": true,
+                             "roles": [
+                             {
+                                "caseTypeId": "23",
+                                "organisationalRoleName": "organisationRoleName2",
+                                "groupRoleName": "groupname2",
+                                "caseGroupIdTemplate": "IA:all:IA:AS1:$ORGID$",
+                                "groupAccessEnabled": true
+                             }]
+                         }]
+                     }]
+                  }]
+                }
+                """);
         return accessTypesEntity;
     }
 
@@ -645,11 +677,20 @@ public class TestDataBuilder {
         userRefreshQueueEntity.setOrganisationId("OrgId");
         userRefreshQueueEntity.setActive(true);
         userRefreshQueueEntity.setOrganisationProfileIds(new String[]{"SOLICITOR_PROFILE","2"});
-        userRefreshQueueEntity.setAccessTypes(
-                "[{ \"jurisdictionId\": \"BEFTA_JURISDICTION_1\",\"organisationProfileId\": \"SOLICITOR_PROFILE\","
-                        + "\"accessTypeId\": \"1\",\"enabled\": true} ,{ \"jurisdictionId\": \"BEFTA_JURISDICTION_2\","
-                        + "\"organisationProfileId\": \"SOLICITOR_PROFILE\",\"accessTypeId\": \"2\","
-                        + "\"enabled\": true}]");
+        userRefreshQueueEntity.setAccessTypes("""
+                [{ 
+                   "jurisdictionId": "BEFTA_JURISDICTION_1",
+                   "organisationProfileId": "SOLICITOR_PROFILE","
+                   "accessTypeId": "1",
+                   "enabled": true
+                 },
+                 { 
+                   "jurisdictionId": "BEFTA_JURISDICTION_2","
+                   "organisationProfileId": "SOLICITOR_PROFILE",
+                   "accessTypeId": "2",
+                   "enabled": true
+                 }]
+                 """);
         return userRefreshQueueEntity;
     }
 
