@@ -56,6 +56,10 @@ def secrets = [
 // Configure branches to sync with master branch
 def branchesToSync = ['demo', 'ithc', 'perftest']
 
+// extra dynamic users for PRD tests
+env.TEST_AM_PRD_USER1_BEFTA = "TEST_AM_ORM_BEFTA_PRD_USER1_AAT@test.local"
+env.TEST_AM_PRD_USER1_BEFTA_PASSWORD = env.TEST_AM_USER2_BEFTA_PWD
+
 // Vars needed for functional and smoke tests run against AKS
 env.IDAM_URL = "https://idam-api.aat.platform.hmcts.net"
 env.IDAM_API_URL_BASE = "https://idam-api.aat.platform.hmcts.net"
@@ -129,6 +133,10 @@ withPipeline(type, product, component) {
   onPR {
     env.ROLE_ASSIGNMENT_URL = "https://ras-am-org-role-mapping-service-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.JUDICIAL_BOOKING_URL = "https://jbs-am-org-role-mapping-service-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+
+    // must have a unique username/email for dynamic users in each parallel PR build
+    env.TEST_AM_PRD_USER1_BEFTA = "TEST_AM_ORM_BEFTA_PRD_USER1_PR_${CHANGE_ID}@test.local"
+
     enableSlackNotifications('#am-master-builds')
   }
 

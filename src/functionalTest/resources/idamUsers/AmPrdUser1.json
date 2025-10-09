@@ -1,20 +1,13 @@
 {
-  "password": "Password123",
+  "password": "[[$TEST_AM_PRD_USER1_BEFTA_PASSWORD]]",
   "user": {
-    "id": "eccd490f-a40c-4a19-b063-7b107bc6480m",
-    "email": "gaTestUser2@hmcts.net",
-    "forename": "gaTestUser2",
-    "surname": "gatestUser2Lastname",
-    "displayName": "gaTestUser2",
+    "email": "[[$TEST_AM_PRD_USER1_BEFTA]]",
+    "forename": "AM-ORM-PRD",
+    "surname": "FTA",
+    "displayName": "AM-ORM PRD FTA",
     "roleNames": [
-      "cwd-admin",
-      "cwd-system-user",
-      "org-role-cwd-system-user",
-      "jrd-system-user",
       "prd-admin"
     ],
-    "ssoId": "testing-support",
-    "ssoProvider": "string",
     "accountStatus": "ACTIVE",
     "recordType": "LIVE"
   }
