@@ -24,6 +24,16 @@ public class Scheduler {
         this.professionalUserService = professionalUserService;
     }
 
+    @Scheduled(cron = "${professional.role.mapping.scheduling.organisationRefreshCleanup.cron}")
+    public ProcessMonitorDto deleteActiveOrganisationRefreshRecords() {
+        return organisationService.deleteActiveOrganisationRefreshRecords();
+    }
+
+    @Scheduled(cron = "${professional.role.mapping.scheduling.userRefreshCleanup.cron}")
+    public ProcessMonitorDto deleteActiveUserRefreshRecords() {
+        return professionalUserService.deleteActiveUserRefreshRecords();
+    }
+
     // PRM Process 1
     @Scheduled(cron = "${professional.role.mapping.scheduling.findAndUpdateCaseDefinitionChanges.cron}")
     public ProcessMonitorDto findAndUpdateCaseDefinitionChanges() {

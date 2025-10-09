@@ -221,8 +221,11 @@ professional:
           retryOneIntervalMin: ${RETRY_ONE_INTERVAL_MIN:2}
           retryTwoIntervalMin: ${RETRY_TWO_INTERVAL_MIN:15}
           retryThreeIntervalMin: ${RETRY_THREE_INTERVAL_MIN:60}
+        organisationRefreshCleanup:
+          cron: ${ORG_REFRESH_CLEANUP_CRON:*/5 * * * * *}
+          activeOrganisationRefreshDays: ${ORG_REFRESH_CLEANUP_DAYS:90}
         userRefreshCleanup:
-          cron: ${USER_REFRESH_CLEANUP_CRON:0 * * * * *}
+          cron: ${USER_REFRESH_CLEANUP_CRON:*/5 * * * * *}
           activeUserRefreshDays: ${USER_REFRESH_CLEANUP_DAYS:90}
 
 groupAccess:

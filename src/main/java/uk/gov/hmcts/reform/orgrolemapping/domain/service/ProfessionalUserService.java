@@ -48,6 +48,9 @@ public class ProfessionalUserService {
     public static final String PROCESS_4_NAME = "PRM Process 4 - Find Users with Stale Organisations";
     public static final String PROCESS_5_NAME = "PRM Process 5 - Find User Changes";
     public static final String PROCESS_6_BATCH_NAME = "PRM Process 6 - Refresh users - Batch mode";
+    private static final String PROCESS_LOG_START = "Starting {}";
+    private static final String PROCESS_LOG_COMPLETED = "Completed {}";
+    private static final String NO_ENTITIES = "No entities to process";
 
     private final PrdService prdService;
 
@@ -114,8 +117,29 @@ public class ProfessionalUserService {
         this.tolerance = professionalUserServiceConfig.getTolerance();
     }
 
+    @Transactional
+    public ProcessMonitorDto deleteActiveUserRefreshRecords() {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Cleanup Process - User");
+        processEventTracker.trackEventStarted(processMonitorDto);
+
+        try {
+            processMonitorDto.addProcessStep("Deleting inactive user refresh queue entities "
+                    + "last updated before " + activeUserRefreshDays + " days");
+            userRefreshQueueRepository
+                    .deleteActiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(activeUserRefreshDays);
+
+        } catch (Exception exception) {
+            processMonitorDto.markAsFailed(exception.getMessage());
+            processEventTracker.trackEventCompleted(processMonitorDto);
+            throw exception;
+        }
+        processMonitorDto.markAsSuccess();
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
+    }
+
     public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(String organisationId) {
-        log.info("Starting with Id {}", PROCESS_4_NAME);
+        log.info(PROCESS_LOG_START, PROCESS_4_NAME);
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS_4_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
         Optional<OrganisationRefreshQueueEntity> organisationRefreshQueueEntity =
@@ -142,7 +166,7 @@ public class ProfessionalUserService {
     }
 
     public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue() {
-        log.info("Starting {}", PROCESS_4_NAME);
+        log.info(PROCESS_LOG_START, PROCESS_4_NAME);
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS_4_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
         StringBuilder errorMessageBuilder = new StringBuilder();
@@ -171,7 +195,7 @@ public class ProfessionalUserService {
                 anyEntitiesInQueue = organisationRefreshQueueEntity != null;
             }
             if (successfulJobCount == 0 && failedJobCount == 0) {
-                processMonitorDto.addProcessStep("No entities to process");
+                processMonitorDto.addProcessStep(NO_ENTITIES);
                 log.info("Completed {}. No entities to process", PROCESS_4_NAME);
             } else {
                 addProcess4Steps(processMonitorDto, organisationInfo);
@@ -278,7 +302,7 @@ public class ProfessionalUserService {
 
     @Transactional
     public ProcessMonitorDto findUserChangesAndInsertIntoUserRefreshQueue() {
-        log.info("Starting {}", PROCESS_5_NAME);
+        log.info(PROCESS_LOG_START, PROCESS_5_NAME);
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS_5_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
 
@@ -346,7 +370,7 @@ public class ProfessionalUserService {
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
 
-        log.info("Completed {}", PROCESS_5_NAME);
+        log.info(PROCESS_LOG_COMPLETED, PROCESS_5_NAME);
         return processMonitorDto;
     }
 
@@ -354,7 +378,7 @@ public class ProfessionalUserService {
         StringBuilder errorMessageBuilder = new StringBuilder();
         int successfulJobCount = 0;
         int failedJobCount = 0;
-        log.info("Starting {}", PROCESS_6_BATCH_NAME);
+        log.info(PROCESS_LOG_START, PROCESS_6_BATCH_NAME);
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(PROCESS_6_BATCH_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
         try {
@@ -374,7 +398,7 @@ public class ProfessionalUserService {
                 anyEntitiesInQueue = userRefreshQueueEntity != null;
             }
             if (successfulJobCount == 0 && failedJobCount == 0) {
-                processMonitorDto.addProcessStep("No entities to process");
+                processMonitorDto.addProcessStep(NO_ENTITIES);
                 log.info("Completed {}. No entities to process", PROCESS_6_BATCH_NAME);
             }
         } catch (ServiceException ex) {
@@ -421,8 +445,8 @@ public class ProfessionalUserService {
     private boolean refreshUsers(ProcessMonitorDto processMonitorDto,
                                 UserRefreshQueueEntity userRefreshQueueEntity) throws ServiceException {
         if (userRefreshQueueEntity == null) {
-            processMonitorDto.addProcessStep("No entities to process");
-            log.info("{} - No entities to process", processMonitorDto.getProcessType());
+            processMonitorDto.addProcessStep(NO_ENTITIES);
+            log.info("{} - {}", processMonitorDto.getProcessType(), NO_ENTITIES);
             return true;
         }
 

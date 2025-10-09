@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.data;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -155,4 +156,13 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
     void updateRetry(String organisationId, String retryOneIntervalMin,
                      String retryTwoIntervalMin, String retryThreeIntervalMin);
 
+    @Modifying
+    @Query(value = """
+            DELETE FROM organisation_refresh_queue o 
+            WHERE o.organisation_last_updated < 
+                  (now() - ((interval '1' day) * CAST(:numDaysPassed AS INTEGER))) 
+              AND o.active = false
+              """, nativeQuery = true)
+    void deleteActiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
+            @Param("numDaysPassed") String numDaysPassed);
 }

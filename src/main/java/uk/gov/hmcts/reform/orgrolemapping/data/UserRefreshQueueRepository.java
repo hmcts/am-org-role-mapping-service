@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
+import org.springframework.data.repository.query.Param;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -185,5 +186,15 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
             + "where user_id = :userId", nativeQuery = true)
     void updateRetry(String userId, String retryOneIntervalMin,
                      String retryTwoIntervalMin, String retryThreeIntervalMin);
+
+    @Modifying
+    @Query(value = """
+            DELETE FROM user_refresh_queue o 
+            WHERE o.user_last_updated < 
+                  (now() - ((interval '1' day) * CAST(:numDaysPassed AS INTEGER)))
+              AND o.active = false
+            """, nativeQuery = true)
+    void deleteActiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
+            @Param("numDaysPassed") String numDaysPassed);
 
 }
