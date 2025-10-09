@@ -24,8 +24,10 @@ import java.util.Optional;
 public class PrdService {
 
     private final PRDFeignClient prdFeignClient;
-    //Uncomment this to run with your stubs
-    // for testing purpose private final PRDFeignClientFallback prdFeignClient;
+    /*
+      Uncomment this to run with your stubs
+      for testing purpose private final PRDFeignClientFallback prdFeignClient;
+    */
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
     public ResponseEntity<OrganisationByProfileIdsResponse> fetchOrganisationsByProfileIds(
