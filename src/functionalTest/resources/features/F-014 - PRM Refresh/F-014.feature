@@ -9,8 +9,8 @@ Feature: F-014 : Refresh Professional User
   Scenario: 00-Setup Professional Organisation & User Data
     # This scenario creates everything needed for subsequent tests
     Given a user with [Prd admin access],
-    And a successful call is made [to create an organisation in professional reference data] as in [S-014.00__CreateProfessionalOrganisation]
-    And a successful call is made [to update the organisation in professional reference data to active] as in [S-014.00__UpdateProfessionalOrganisation]
+    #And a successful call is made [to create an organisation in professional reference data] as in [S-014.00__CreateProfessionalOrganisation]
+    #And a successful call is made [to update the organisation in professional reference data to active] as in [S-014.00__UpdateProfessionalOrganisation]
     #And a successful call is made [to create a user in professional reference data] as in [S-014.00__CreateProfessionalUser]
     #And a successful call is made [to create user configured access for professional user] as in [S-014.00__CreateUserConfiguredAccess]
 
@@ -20,6 +20,8 @@ Feature: F-014 : Refresh Professional User
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: successful refresh of professional user - single user - All flags true and PRD enabled true
     Given a user with [Prd admin access],
+    And a successful call is made [to create an organisation in professional reference data] as in [S-014.00__CreateProfessionalOrganisation]
+    And a successful call is made [to update the organisation in professional reference data to active] as in [S-014.00__UpdateProfessionalOrganisation]
     #And a successful call [to update User Configured Access set it to enabled] as in [S-014.01__UpdateUserConfiguredAccess],
     And a successful call [to verify professional user has userAccessTypes enabled] as in [S-014.01__VerifyProfessionalUser],
     And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments],
