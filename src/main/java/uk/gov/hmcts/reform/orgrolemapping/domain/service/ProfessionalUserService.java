@@ -122,24 +122,34 @@ public class ProfessionalUserService {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Cleanup Process - User");
         processEventTracker.trackEventStarted(processMonitorDto);
 
-        int successfulJobCount;
+        List<String> deletedEntities = new ArrayList<>();
         try {
             processMonitorDto.addProcessStep("Deleting inactive user refresh queue entities "
                     + "last updated before " + activeUserRefreshDays + " days");
-            successfulJobCount = userRefreshQueueRepository
-                    .deleteInactiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(activeUserRefreshDays);
+            deletedEntities.addAll(userRefreshQueueRepository
+                    .deleteInactiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(activeUserRefreshDays));
         } catch (Exception exception) {
             processMonitorDto.markAsFailed(exception.getMessage());
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw exception;
         }
-        String message = successfulJobCount != 0
-                ? String.format("Deleted %s inactive user refresh queue entities",
-                successfulJobCount) : NO_ENTITIES;
-        processMonitorDto.addProcessStep(message);
+        addCleanupProcessSteps(processMonitorDto, deletedEntities);
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
+    }
+
+    private void addCleanupProcessSteps(ProcessMonitorDto processMonitorDto, List<String> userIds) {
+        if (userIds.isEmpty()) {
+            processMonitorDto.addProcessStep(NO_ENTITIES);
+            log.info("Completed {}. No entities to process", processMonitorDto.getProcessType());
+            return;
+        }
+        processMonitorDto.addProcessStep(String.format("Deleted %s inactive user refresh queue entities",
+                userIds.size()));
+        String processStep = "=" + userIds
+                .stream().map(o -> o + ",").collect(Collectors.joining());
+        processMonitorDto.appendToLastProcessStep(processStep);
     }
 
     public ProcessMonitorDto findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(String organisationId) {

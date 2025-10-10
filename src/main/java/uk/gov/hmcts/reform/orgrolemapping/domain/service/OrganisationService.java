@@ -24,6 +24,7 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -85,25 +86,35 @@ public class OrganisationService {
     public ProcessMonitorDto deleteInactiveOrganisationRefreshRecords() {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Cleanup Process - Organisation");
         processEventTracker.trackEventStarted(processMonitorDto);
-        int successfulJobCount;
+        List<String> deletedEntities = new ArrayList<>();
         try {
             processMonitorDto.addProcessStep("Deleting inactive organisation refresh queue entities "
                     + "last updated before " + activeOrganisationRefreshDays + " days");
-            successfulJobCount = organisationRefreshQueueRepository
+            deletedEntities.addAll(organisationRefreshQueueRepository
                     .deleteInactiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
-                            activeOrganisationRefreshDays);
+                            activeOrganisationRefreshDays));
         } catch (Exception exception) {
             processMonitorDto.markAsFailed(exception.getMessage());
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw exception;
         }
-        String message = successfulJobCount != 0
-                ? String.format("Deleted %s inactive organisation refresh queue entities",
-                        successfulJobCount) : NO_ENTITIES;
-        processMonitorDto.addProcessStep(message);
+        addCleanupProcessSteps(processMonitorDto, deletedEntities);
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
+    }
+
+    private void addCleanupProcessSteps(ProcessMonitorDto processMonitorDto, List<String> organisationIds) {
+        if (organisationIds.isEmpty()) {
+            processMonitorDto.addProcessStep(NO_ENTITIES);
+            log.info("Completed {}. No entities to process", processMonitorDto.getProcessType());
+            return;
+        }
+        processMonitorDto.addProcessStep(String.format("Deleted %s inactive organisation refresh queue entities",
+                organisationIds.size()));
+        String processStep = "=" + organisationIds
+                .stream().map(o -> o + ",").collect(Collectors.joining());
+        processMonitorDto.appendToLastProcessStep(processStep);
     }
 
     @Transactional
