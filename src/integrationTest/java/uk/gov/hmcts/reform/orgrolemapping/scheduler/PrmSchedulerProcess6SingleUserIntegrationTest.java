@@ -149,17 +149,19 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
 
             // THEN
             if (!HttpStatus.OK.equals(expectedStatus)) {
-                return;
-            }
-            String response = result.getResponse().getContentAsString();
+                Exception exception = result.getResolvedException();
+                assertEquals(ServiceException.class, exception.getClass());
+            } else {
+                String response = result.getResponse().getContentAsString();
 
-            logAfterStatus(response);
+                logAfterStatus(response);
 
-            // verify the response
-            assertEquals(String.format("{\"Message\":\"%s\"}", SUCCESS_ROLE_REFRESH), response);
+                // verify the response
+                assertEquals(String.format("{\"Message\":\"%s\"}", SUCCESS_ROLE_REFRESH), response);
 
-            if (expectedNumberOfRecords != 0) {
-                assertAssignmentRequest(organisation, group);
+                if (expectedNumberOfRecords != 0) {
+                    assertAssignmentRequest(organisation, group);
+                }
             }
         } catch (ServiceException e) {
             assertEquals(EndStatus.FAILED, endStatus);
