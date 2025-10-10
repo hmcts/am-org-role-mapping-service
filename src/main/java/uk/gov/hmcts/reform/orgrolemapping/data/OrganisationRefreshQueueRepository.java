@@ -163,6 +163,6 @@ public interface OrganisationRefreshQueueRepository extends JpaRepository<Organi
                   (now() - ((interval '1' day) * CAST(:numDaysPassed AS INTEGER))) 
               AND o.active = false
               """, nativeQuery = true)
-    void deleteInactiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
+    int deleteInactiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
             @Param("numDaysPassed") String numDaysPassed);
 }

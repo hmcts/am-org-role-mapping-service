@@ -122,17 +122,21 @@ public class ProfessionalUserService {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Cleanup Process - User");
         processEventTracker.trackEventStarted(processMonitorDto);
 
+        int successfulJobCount;
         try {
             processMonitorDto.addProcessStep("Deleting inactive user refresh queue entities "
                     + "last updated before " + activeUserRefreshDays + " days");
-            userRefreshQueueRepository
+            successfulJobCount = userRefreshQueueRepository
                     .deleteInactiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(activeUserRefreshDays);
-
         } catch (Exception exception) {
             processMonitorDto.markAsFailed(exception.getMessage());
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw exception;
         }
+        String message = successfulJobCount != 0 ?
+                String.format("Deleted %s inactive user refresh queue entities",
+                successfulJobCount) : NO_ENTITIES;
+        processMonitorDto.addProcessStep(message);
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;

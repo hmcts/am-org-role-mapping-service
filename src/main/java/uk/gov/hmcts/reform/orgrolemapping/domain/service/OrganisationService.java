@@ -38,6 +38,7 @@ public class OrganisationService {
 
     public static final String PROCESS_2_NAME = "PRM Process 2 - Find Organisations with Stale Profiles";
     public static final String PROCESS_3_NAME = "PRM Process 3 - Find organisation changes";
+    private static final String NO_ENTITIES = "No entities to process";
 
     private final PrdService prdService;
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository;
@@ -84,10 +85,11 @@ public class OrganisationService {
     public ProcessMonitorDto deleteInactiveOrganisationRefreshRecords() {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Cleanup Process - Organisation");
         processEventTracker.trackEventStarted(processMonitorDto);
+        int successfulJobCount;
         try {
             processMonitorDto.addProcessStep("Deleting inactive organisation refresh queue entities "
                     + "last updated before " + activeOrganisationRefreshDays + " days");
-            organisationRefreshQueueRepository
+            successfulJobCount = organisationRefreshQueueRepository
                     .deleteInactiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
                             activeOrganisationRefreshDays);
         } catch (Exception exception) {
@@ -95,7 +97,10 @@ public class OrganisationService {
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw exception;
         }
-
+        String message = successfulJobCount != 0 ?
+                String.format("Deleted %s inactive organisation refresh queue entities",
+                        successfulJobCount) : NO_ENTITIES;
+        processMonitorDto.addProcessStep(message);
         processMonitorDto.markAsSuccess();
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;

@@ -194,7 +194,7 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                   (now() - ((interval '1' day) * CAST(:numDaysPassed AS INTEGER)))
               AND o.active = false
             """, nativeQuery = true)
-    void deleteInactiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
+    int deleteInactiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
             @Param("numDaysPassed") String numDaysPassed);
 
 }
