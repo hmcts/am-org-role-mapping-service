@@ -32,6 +32,7 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
@@ -150,6 +151,7 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
             // THEN
             if (!HttpStatus.OK.equals(expectedStatus)) {
                 Exception exception = result.getResolvedException();
+                assertNotNull(exception);
                 assertEquals(ServiceException.class, exception.getClass());
             } else {
                 String response = result.getResponse().getContentAsString();
