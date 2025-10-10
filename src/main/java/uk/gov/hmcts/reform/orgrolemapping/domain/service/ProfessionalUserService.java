@@ -133,8 +133,8 @@ public class ProfessionalUserService {
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw exception;
         }
-        String message = successfulJobCount != 0 ?
-                String.format("Deleted %s inactive user refresh queue entities",
+        String message = successfulJobCount != 0
+                ? String.format("Deleted %s inactive user refresh queue entities",
                 successfulJobCount) : NO_ENTITIES;
         processMonitorDto.addProcessStep(message);
         processMonitorDto.markAsSuccess();

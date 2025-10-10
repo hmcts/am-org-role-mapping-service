@@ -195,8 +195,8 @@ class PrmSchedulerCleanupIntegrationTest extends BaseTestIntegration {
                                       EndStatus endStatus) {
         assertNotNull(processMonitorDto);
         assertEquals(endStatus, processMonitorDto.getEndStatus());
-        String message = expectedRecordsDeleted != 0 ?
-                String.format("Deleted %s inactive %s refresh queue entities",
+        String message = expectedRecordsDeleted != 0
+                ? String.format("Deleted %s inactive %s refresh queue entities",
                         expectedRecordsDeleted,
                         isUser ? "user" : "organisation"
                         ) : NO_ENTITIES;

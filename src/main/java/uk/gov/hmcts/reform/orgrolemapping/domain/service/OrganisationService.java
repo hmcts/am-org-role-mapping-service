@@ -97,8 +97,8 @@ public class OrganisationService {
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw exception;
         }
-        String message = successfulJobCount != 0 ?
-                String.format("Deleted %s inactive organisation refresh queue entities",
+        String message = successfulJobCount != 0
+                ? String.format("Deleted %s inactive organisation refresh queue entities",
                         successfulJobCount) : NO_ENTITIES;
         processMonitorDto.addProcessStep(message);
         processMonitorDto.markAsSuccess();
