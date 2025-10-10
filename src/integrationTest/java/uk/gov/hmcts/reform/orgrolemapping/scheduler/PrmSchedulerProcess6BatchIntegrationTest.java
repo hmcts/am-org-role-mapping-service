@@ -8,6 +8,7 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTest {
 
@@ -125,6 +126,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         logAfterStatus(processMonitorDto);
 
         // verify that the process monitor reports the correct status
+        assertNotNull(processMonitorDto);
         assertEquals(endStatus, processMonitorDto.getEndStatus());
 
         // Verify the number of records in the user refresh queue
