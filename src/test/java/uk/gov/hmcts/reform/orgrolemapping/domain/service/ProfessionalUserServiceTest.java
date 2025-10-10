@@ -117,24 +117,24 @@ class ProfessionalUserServiceTest {
     );
 
     @Test
-    void deleteActiveUserRefreshRecordsTest() {
-        professionalUserService.deleteActiveUserRefreshRecords();
+    void deleteInactiveUserRefreshRecordsTest() {
+        professionalUserService.deleteInactiveUserRefreshRecords();
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         verify(userRefreshQueueRepository, times(1))
-                .deleteActiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
+                .deleteInactiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
                         professionalUserServiceConfig.getActiveUserRefreshDays());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.SUCCESS);
     }
 
     @Test
-    void deleteActiveUserRefreshRecordsTestWithFailure() {
+    void deleteInactiveUserRefreshRecordsTestWithFailure() {
         doThrow(ServiceException.class).when(userRefreshQueueRepository)
-                .deleteActiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
+                .deleteInactiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
                         professionalUserServiceConfig.getActiveUserRefreshDays());
         Assert.assertThrows(ServiceException.class, () ->
-                professionalUserService.deleteActiveUserRefreshRecords()
+                professionalUserService.deleteInactiveUserRefreshRecords()
         );
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
