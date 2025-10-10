@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,7 +38,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
-import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_ROLE_REFRESH;
 
 abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration {
 
@@ -393,12 +391,6 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
 
     //#region Assertion Helpers: DB Checks
 
-    protected void assertResponse(ResponseEntity<Object> actualResponse) {
-        assertNotNull(actualResponse);
-        assertNotNull(actualResponse.getBody());
-        assertEquals(actualResponse.getBody(), Map.of("Message", SUCCESS_ROLE_REFRESH));
-    }
-
     protected void assertTotalUserRefreshQueueEntitiesInDb(int expectedNumberOfRecords,
                                                            EndStatus endStatus) {
         var userRefreshQueueEntities = userRefreshQueueRepository.findAll();
@@ -548,7 +540,7 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         return roleAssignment.getAttributes().containsKey("caseAccessGroupId");
     }
 
-    private AssignmentRequest getAssignmentRequest() {
+    protected AssignmentRequest getAssignmentRequest() {
         Map<String, AssignmentRequest> mapOfRequests;
         try {
             mapOfRequests = RoleAssignmentAssertIntegrationHelper.getMapOfRasRequests();

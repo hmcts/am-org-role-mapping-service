@@ -16,7 +16,7 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClient
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.PRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.RdFeignClientInterceptor;
 
-@FeignClient(value = "prdclient", url = "${feign.client.config.prdclient.url}",
+@FeignClient(value = "prdClient", url = "${feign.client.config.prdClient.url}",
         configuration = {FeignClientConfiguration.class, RdFeignClientInterceptor.class},
         fallback = PRDFeignClientFallback.class)
 
