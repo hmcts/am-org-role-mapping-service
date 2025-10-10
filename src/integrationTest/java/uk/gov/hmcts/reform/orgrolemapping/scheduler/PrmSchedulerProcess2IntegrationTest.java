@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
@@ -199,6 +200,7 @@ class PrmSchedulerProcess2IntegrationTest extends BaseSchedulerTestIntegration {
         logAfterStatus(processMonitorDto);
 
         // verify that the process monitor reports success
+        assertNotNull(processMonitorDto);
         assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus(),
             "Invalid process monitor end status");
     }
