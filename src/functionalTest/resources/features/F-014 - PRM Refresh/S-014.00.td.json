@@ -1,14 +1,12 @@
 {
-  "_guid_": "S-014.01",
+  "_guid_": "S-014.00",
   "title": "successful refresh of professional user - single user - All flags true and PRD enabled true",
-
 
   "specs": [
     "Prd admin access"
   ],
-
   "users": {
-    "PrdUser1": {
+    "invokingUser": {
       "_extends_": "AmPRDUser1"
     }
   }

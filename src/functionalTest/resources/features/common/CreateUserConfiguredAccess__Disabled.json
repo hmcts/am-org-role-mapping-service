@@ -1,0 +1,23 @@
+{
+  "_guid_": "CreateUserConfiguredAccess__Disabled",
+  "arrayInMap": [
+    {
+      "firstName": "GA-Test-User1",
+      "lastName": "GA-Test-User1-Lastname",
+      "email": "GA-Test-User1@hmcts.net",
+      "idamStatus": "ACTIVE",
+      "rolesAdd": [],
+      "rolesDelete": [],
+      "userAccessTypes": [
+        {
+          "jurisdictionId": "BEFTA_MASTER",
+          "organisationProfileId": "SOLICITOR_PROFILE",
+          "accessTypeId": "BEFTA_SOLICITOR_1",
+          "enabled": false
+        }
+      ],
+      "resendInvite": true
+    }
+  ]
+
+}

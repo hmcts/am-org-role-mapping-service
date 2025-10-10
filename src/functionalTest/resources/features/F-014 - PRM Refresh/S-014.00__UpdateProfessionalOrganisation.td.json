@@ -1,0 +1,70 @@
+{
+  "_guid_": "S-014.00__UpdateProfessionalOrganisation",
+  "productName": "Professional Reference Data",
+  "operationName": "Update Professional Organisation",
+  "method": "PUT",
+  "uri": "{{PRD_URL}}/refdata/internal/v1/organisations/{orgId}",
+  "specs": [
+    "to update the organisation in professional reference data to active"
+  ],
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmPRDUser1"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "name": "GA-TestOrganisation",
+      "status": "ACTIVE",
+      "statusMessage": "activeorganisation",
+      "sraId": "SRA1190981112",
+      "sraRegulated": "string",
+      "companyNumber": "GA1883",
+      "companyUrl": "string",
+      "superUser": {
+        "firstName": "ga-User0",
+        "lastName": "ga-User0Lastname",
+        "email": "gaUser0@hmcts.net"
+      },
+      "paymentAccount": [
+        "PBA12349ab"
+      ],
+      "contactInformation": [
+        {
+          "uprn": "string",
+          "addressLine1": "address1",
+          "addressLine2": "address2",
+          "addressLine3": "address3",
+          "townCity": "London",
+          "county": "string",
+          "country": "string",
+          "postCode": "EC3M 3BY",
+          "dxAddress": [
+            {
+              "dxNumber": "DX1234571",
+              "dxExchange": "dxExchange"
+            }
+          ]
+        }
+      ]
+    },
+    "pathVariables": {
+      "orgId": "${[scenarioContext][siblingContexts][S-014.00__CreateProfessionalOrganisation][testData][actualResponse][body][organisationIdentifier]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_201_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "organisationIdentifier" : "[[ANYTHING_PRESENT]]"
+    }
+  }
+}
