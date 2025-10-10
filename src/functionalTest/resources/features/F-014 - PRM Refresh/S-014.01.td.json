@@ -1,7 +1,7 @@
 {
   "_guid_": "S-014.01",
   "title": "successful refresh of professional user - single user - All flags true and PRD enabled true",
-  "_extends_": "RefreshProfessionalUserRoleAssignments__PositiveResponse_Base",
+
 
   "specs": [
     "Prd admin access"
