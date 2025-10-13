@@ -76,4 +76,9 @@ public class PrdService {
         return prdFeignClient.createOrganisation();
     }
 
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
+    public ResponseEntity<String> deleteOrganisation() {
+        return prdFeignClient.deleteOrganisation();
+    }
+
 }

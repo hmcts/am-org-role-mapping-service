@@ -65,4 +65,9 @@ public class PRDFeignClientFallback implements PRDFeignClient {
         return ResponseEntity.ok("Organisation Created");
     }
 
+    @Override
+    public ResponseEntity<String> deleteOrganisation() {
+        return ResponseEntity.ok("Organisation Deleted");
+    }
+
 }

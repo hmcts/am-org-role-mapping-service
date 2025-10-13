@@ -146,4 +146,16 @@ class PrdServiceTest {
         assertEquals("Organisation Created", responseEntity.getBody());
     }
 
+    @Test
+    void deleteOrganisationTest() {
+        doReturn(ResponseEntity.status(HttpStatus.OK).body("Organisation Deleted"))
+                .when(prdFeignClient).deleteOrganisation();
+
+        ResponseEntity<String> responseEntity = sut.deleteOrganisation();
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+        assertEquals("Organisation Deleted", responseEntity.getBody());
+    }
+
 }
