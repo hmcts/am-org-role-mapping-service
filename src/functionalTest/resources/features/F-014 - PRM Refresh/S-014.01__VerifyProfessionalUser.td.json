@@ -6,13 +6,15 @@
     }
   },
 
-
-
   "specs": [
     "to verify professional user has userAccessTypes enabled"
   ],
-
+  "method": "GET",
+  "uri": "{{PRD_URL}}/refdata/internal/v1/organisations/users",
   "request": {
+    "headers": {
+      "_extends_": "Common_Request_Headers"
+    },
     "queryParams": {
       "userId": "${[scenarioContext][parentContext][testData][request][queryParams][userId]}"
     }
