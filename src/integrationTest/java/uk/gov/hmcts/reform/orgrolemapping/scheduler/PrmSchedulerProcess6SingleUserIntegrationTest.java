@@ -91,8 +91,14 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_accessVersion() {
-        runTest(List.of("/SchedulerTests/PrdRetrieveUsers/userx_scenario_01.json"),
+        MvcResult result = runTest(List.of("/SchedulerTests/PrdRetrieveUsers/userx_scenario_01.json"),
                 1, false, false, EndStatus.FAILED);
+        
+        // Validate the exception class and message
+        assertNotNull(result);
+        assertServiceException(result.getResolvedException(),
+                String.format("User %s has access types version %d which is higher than the latest version %d",
+                        USERID, 2, 1));
     }
 
     /**
@@ -130,7 +136,7 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
     }
 
     @SneakyThrows
-    private void runTest(List<String> refreshUserfileNames, int expectedNumberOfRecords,
+    private MvcResult runTest(List<String> refreshUserfileNames, int expectedNumberOfRecords,
                          boolean organisation, boolean group, EndStatus endStatus) {
 
         // GIVEN
@@ -140,34 +146,31 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
         HttpStatus expectedStatus = endStatus.equals(EndStatus.FAILED)
                 ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK;
 
-        try {
-            // WHEN
-            MvcResult result = mockMvc.perform(post(REFRESH_URL + "?userId=" + USERID)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .headers(getHttpHeaders(S2S_XUI)))
-                    .andExpect(status().is(expectedStatus.value()))
-                    .andReturn();
+        // WHEN
+        MvcResult result = mockMvc.perform(post(REFRESH_URL + "?userId=" + USERID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHttpHeaders(S2S_XUI)))
+                .andExpect(status().is(expectedStatus.value()))
+                .andReturn();
 
-            // THEN
-            if (!HttpStatus.OK.equals(expectedStatus)) {
-                Exception exception = result.getResolvedException();
-                assertNotNull(exception);
-                assertEquals(ServiceException.class, exception.getClass());
-            } else {
-                String response = result.getResponse().getContentAsString();
+        // THEN
+        if (HttpStatus.OK.equals(expectedStatus)) {
+            String response = result.getResponse().getContentAsString();
 
-                logAfterStatus(response);
+            logAfterStatus(response);
 
-                // verify the response
-                assertEquals(String.format("{\"Message\":\"%s\"}", SUCCESS_ROLE_REFRESH), response);
+            // verify the response
+            assertEquals(String.format("{\"Message\":\"%s\"}", SUCCESS_ROLE_REFRESH), response);
 
-                if (expectedNumberOfRecords != 0) {
-                    assertAssignmentRequest(organisation, group);
-                }
+            if (expectedNumberOfRecords != 0) {
+                assertAssignmentRequest(organisation, group);
             }
-        } catch (ServiceException e) {
-            assertEquals(EndStatus.FAILED, endStatus);
+        } else {
+            assertNotNull(result);
+            assertNotNull(result.getResolvedException());
+            logAfterStatus(String.format("Exception=%s",result.getResolvedException().getMessage()));
         }
+        return result;
     }
 
     @Override
@@ -189,5 +192,11 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
         var assignment = verify(rasFeignClient, times(1))
                 .createRoleAssignment(assignmentRequestCaptor.capture(), any());
         return assignmentRequestCaptor.getValue();
+    }
+
+    private void assertServiceException(Exception exception, String errorMessage) {
+        assertNotNull(exception);
+        assertEquals(ServiceException.class, exception.getClass());
+        assertEquals(errorMessage, exception.getMessage());
     }
 }
