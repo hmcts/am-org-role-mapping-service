@@ -111,6 +111,23 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/access_types/insert_accesstypes_version1.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql"
+    })
+    void testCreateRole_tooManyUserIds() {
+        String errorMessage = String.format(
+                ProfessionalRefreshOrchestrator.EXPECTED_SINGLE_PRD_USER, USERID, 2);
+        runTest(List.of("/SchedulerTests/PrdRetrieveUsers/userx_scenario_01.json",
+                        "/SchedulerTests/PrdRetrieveUsers/userx_scenario_01.json"),
+                1, false, false, EndStatus.FAILED, USERID,
+                HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
+    }
+
+    /**
+     *  No Update - UserRefreshQueue.accessTypeVersion >  PRM Access Version.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_version1.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
