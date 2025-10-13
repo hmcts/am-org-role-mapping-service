@@ -8,7 +8,7 @@ Feature: F-014 : Refresh Professional User
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: 00-Setup Professional Organisation & User Data
     #This scenario creates everything needed for subsequent tests
-    And a user with [an active PRD Profile],
+    And a user with [Prd admin access],
     And a successful call [to create an organisation in professional reference data] as in [S-014.00__CreateProfessionalOrganisation],
     And a successful call [to update the organisation in professional reference data to active] as in [S-014.00__UpdateProfessionalOrganisation],
     And a successful call [to create a user in professional reference data] as in [S-014.00__CreateProfessionalUser],
