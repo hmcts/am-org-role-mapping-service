@@ -19,7 +19,7 @@ Feature: F-014 : Refresh Professional User
   @S-014.01
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: successful refresh of professional user - single user - All flags true and PRD enabled true
-    Given a user with [Prd admin access],
+    Given a user with [Professional admin access],
     And a successful call [to update User Configured Access set it to enabled] as in [S-014.01__UpdateUserConfiguredAccess],
     And a successful call [to verify professional user has userAccessTypes enabled] as in [S-014.01__VerifyProfessionalUser],
     And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments],
