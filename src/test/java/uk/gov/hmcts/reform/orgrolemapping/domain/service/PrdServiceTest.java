@@ -134,4 +134,16 @@ class PrdServiceTest {
         assertEquals(userId, responseEntity.getBody().getUsers().get(0).getUserIdentifier());
     }
 
+    @Test
+    void createOrganisationTest() {
+        doReturn(ResponseEntity.status(HttpStatus.OK).body("Organisation Created"))
+                .when(prdFeignClient).createOrganisation();
+
+        ResponseEntity<String> responseEntity = sut.createOrganisation();
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+        assertEquals("Organisation Created", responseEntity.getBody());
+    }
+
 }

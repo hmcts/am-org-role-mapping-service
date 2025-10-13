@@ -71,4 +71,9 @@ public class PrdService {
         return prdFeignClient.getRefreshUsers(userId, null, null, null);
     }
 
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
+    public ResponseEntity<String> createOrganisation() {
+        return prdFeignClient.createOrganisation();
+    }
+
 }

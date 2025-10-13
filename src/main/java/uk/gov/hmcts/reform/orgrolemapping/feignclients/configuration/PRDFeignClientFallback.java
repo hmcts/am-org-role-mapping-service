@@ -60,4 +60,9 @@ public class PRDFeignClientFallback implements PRDFeignClient {
         return ResponseEntity.ok(buildUsersByOrganisationResponse(USERS_BY_ORGANISATION_SAMPLE));
     }
 
+    @Override
+    public ResponseEntity<String> createOrganisation() {
+        return ResponseEntity.ok("Organisation Created");
+    }
+
 }

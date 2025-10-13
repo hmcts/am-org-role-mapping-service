@@ -57,4 +57,6 @@ public interface PRDFeignClient {
             @RequestBody UsersByOrganisationRequest usersByOrganisationRequest
     );
 
+    @PostMapping(value = "/refdata/internal/createOorganisation")
+    ResponseEntity<String> createOrganisation();
 }
