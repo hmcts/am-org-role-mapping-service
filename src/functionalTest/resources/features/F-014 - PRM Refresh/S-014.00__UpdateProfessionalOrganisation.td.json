@@ -17,7 +17,7 @@
       "Authorization": "[[DEFAULT_AUTO_VALUE]]",
       "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
       "Content-Type": "application/json",
-      "X-User-Id": "${[scenarioContext][siblingContexts][S-014.00][testData][actualResponse][body][id]}"
+      "X-User-Id": "${[scenarioContext][siblingContexts][S-014.00__CreateProfessionalOrganisation][testData][invokingUser][id]}"
     },
     "body": {
       "name": "GA-TestOrganisation",
@@ -58,7 +58,7 @@
       "orgId": "${[scenarioContext][siblingContexts][S-014.00__CreateProfessionalOrganisation][testData][actualResponse][body][organisationIdentifier]}"
     },
     "queryParams": {
-      "userId": "${[scenarioContext][parentContext][testData][users][invokingUser][id]}"
+      "userId": "${[scenarioContext][siblingContexts][S-014.00__CreateProfessionalOrganisation][testData][invokingUser][id]}"
     }
   },
   "expectedResponse": {
