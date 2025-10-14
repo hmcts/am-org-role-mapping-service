@@ -56,9 +56,6 @@
     },
     "pathVariables": {
       "orgId": "${[scenarioContext][siblingContexts][S-014.00__CreateProfessionalOrganisation][testData][actualResponse][body][organisationIdentifier]}"
-    },
-    "queryParams": {
-      "userId": "${[scenarioContext][siblingContexts][S-014.00__CreateProfessionalOrganisation][testData][invokingUser][id]}"
     }
   },
   "expectedResponse": {
