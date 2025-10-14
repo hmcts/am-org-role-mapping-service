@@ -29,7 +29,7 @@
       "superUser": {
         "firstName": "ga-User0",
         "lastName": "ga-User0Lastname",
-        "email": "${[scenarioContext][testData][invokingUser][username]"
+        "email": "${[scenarioContext][testData][invokingUser][username]}"
       },
       "paymentAccount": [
         "PBA12349ab"
