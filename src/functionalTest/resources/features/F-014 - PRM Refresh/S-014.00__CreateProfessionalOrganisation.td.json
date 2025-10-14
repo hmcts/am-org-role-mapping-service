@@ -24,7 +24,7 @@
   "statusMessage": "activeorganisation",
   "sraId": "SRA111111112",
   "sraRegulated": "string",
-  "companyNumber": "GA1234",
+      "companyNumber": "${[scenarioContext][customValues][generateAlphaNumericSize8]}",
 
   "companyUrl": "string",
   "superUser": {
