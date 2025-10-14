@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsR
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationCreationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserProfileUpdatedData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
@@ -70,6 +71,22 @@ public class PRDFeignClientFallback implements PRDFeignClient {
     @Override
     public ResponseEntity<OrganisationResponse> createOrganisation(
             OrganisationCreationRequest organisationCreationRequest) {
+        return ResponseEntity.ok(buildOrganisationResponse(ORGANISATION_SAMPLE));
+    }
+
+    @Override
+    public ResponseEntity<OrganisationResponse> updatesOrganisation(
+            OrganisationCreationRequest organisationCreationRequest,
+            String organisationIdentifier, String userId) {
+        return ResponseEntity.ok(buildOrganisationResponse(ORGANISATION_SAMPLE));
+    }
+
+    @Override
+    public ResponseEntity<OrganisationResponse> modifyRolesForExistingUserOfOrganisation(
+            UserProfileUpdatedData userProfileUpdatedData,
+            String orgId,
+            String userId,
+            String origin) {
         return ResponseEntity.ok(buildOrganisationResponse(ORGANISATION_SAMPLE));
     }
 
