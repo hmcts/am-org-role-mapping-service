@@ -66,7 +66,15 @@ public class PRDFeignClientFallback implements PRDFeignClient {
     }
 
     @Override
-    public ResponseEntity<String> deleteOrganisation() {
+    public ResponseEntity<String> addUserToOrganisation(
+            String organisationIdentifier,
+            String userId) {
+        return ResponseEntity.ok("User Added To Organisation");
+    }
+
+    @Override
+    public ResponseEntity<String> deleteOrganisation(
+            String organisationIdentifier) {
         return ResponseEntity.ok("Organisation Deleted");
     }
 

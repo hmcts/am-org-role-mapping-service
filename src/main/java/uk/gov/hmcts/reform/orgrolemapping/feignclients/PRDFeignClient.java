@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.feignclients;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,9 +58,19 @@ public interface PRDFeignClient {
             @RequestBody UsersByOrganisationRequest usersByOrganisationRequest
     );
 
-    @PostMapping(value = "/refdata/internal/createOrganisation")
+    @PostMapping(value = "/refdata/internal/v1/organisations/createOrganisation")
     ResponseEntity<String> createOrganisation();
+    // @RequestBody(required = true) OrganisationCreationRequest organisationCreationRequest
+    // );
 
-    @PostMapping(value = "/refdata/internal/deleteOrganisation")
-    ResponseEntity<String> deleteOrganisation();
+    @PostMapping(value = "/refdata/internal/v1/organisations/{orgId}/users}")
+    ResponseEntity<String> addUserToOrganisation(
+            @RequestParam(name = "orgId") String organisationIdentifier,
+            @RequestParam(name = "userId") String userId
+    );
+
+    @DeleteMapping(value = "/refdata/internal/v1/organisations/deleteOrganisation")
+    ResponseEntity<String> deleteOrganisation(
+            @RequestParam(name = "orgId") String organisationIdentifier
+    );
 }

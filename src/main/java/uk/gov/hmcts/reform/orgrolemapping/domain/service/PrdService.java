@@ -77,8 +77,16 @@ public class PrdService {
     }
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
-    public ResponseEntity<String> deleteOrganisation() {
-        return prdFeignClient.deleteOrganisation();
+    public ResponseEntity<String> addUserToOrganisation(
+            String organisationIdentifier,
+            String userId) {
+        return prdFeignClient.addUserToOrganisation(organisationIdentifier, userId);
+    }
+
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
+    public ResponseEntity<String> deleteOrganisation(
+            String organisationIdentifier) {
+        return prdFeignClient.deleteOrganisation(organisationIdentifier);
     }
 
 }

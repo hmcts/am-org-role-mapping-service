@@ -147,11 +147,26 @@ class PrdServiceTest {
     }
 
     @Test
-    void deleteOrganisationTest() {
-        doReturn(ResponseEntity.status(HttpStatus.OK).body("Organisation Deleted"))
-                .when(prdFeignClient).deleteOrganisation();
+    void addUserToOrganisationTest() {
+        String orgId = "ORGID";
+        String userId = "USERID";
+        doReturn(ResponseEntity.status(HttpStatus.OK).body("User Added To Organisation"))
+                .when(prdFeignClient).addUserToOrganisation(orgId, userId);
 
-        ResponseEntity<String> responseEntity = sut.deleteOrganisation();
+        ResponseEntity<String> responseEntity = sut.addUserToOrganisation(orgId, userId);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+        assertEquals("User Added To Organisation", responseEntity.getBody());
+    }
+
+    @Test
+    void deleteOrganisationTest() {
+        String orgId = "ID";
+        doReturn(ResponseEntity.status(HttpStatus.OK).body("Organisation Deleted"))
+                .when(prdFeignClient).deleteOrganisation(orgId);
+
+        ResponseEntity<String> responseEntity = sut.deleteOrganisation(orgId);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
