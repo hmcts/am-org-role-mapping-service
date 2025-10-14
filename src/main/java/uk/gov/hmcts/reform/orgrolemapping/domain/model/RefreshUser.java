@@ -23,6 +23,7 @@ public class RefreshUser {
 
     private String userIdentifier;
     private LocalDateTime lastUpdated;
+    private LocalDateTime deleted;
     private OrganisationInfo organisationInfo;
     private List<UserAccessType> userAccessTypes;
     @JsonInclude(JsonInclude.Include.NON_NULL)

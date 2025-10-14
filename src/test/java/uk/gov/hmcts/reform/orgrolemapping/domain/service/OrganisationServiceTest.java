@@ -76,12 +76,12 @@ class OrganisationServiceTest {
             processEventTracker, numDays, "10");
 
     @Test
-    void deleteActiveOrganisationRefreshRecordsTest() {
-        organisationService.deleteActiveOrganisationRefreshRecords();
+    void deleteInactiveOrganisationRefreshRecordsTest() {
+        organisationService.deleteInactiveOrganisationRefreshRecords();
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         verify(organisationRefreshQueueRepository, times(1))
-                .deleteActiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(numDays);
+                .deleteInactiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(numDays);
     }
 
     @Test
@@ -203,12 +203,12 @@ class OrganisationServiceTest {
     }
 
     @Test
-    void deleteActiveOrganisationRefreshRecordsTestWithFailure() {
+    void deleteInactiveOrganisationRefreshRecordsTestWithFailure() {
         doThrow(ServiceException.class).when(organisationRefreshQueueRepository)
-                .deleteActiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(numDays);
+                .deleteInactiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(numDays);
         Assert.assertThrows(ServiceException.class, () ->
                 organisationService
-                        .deleteActiveOrganisationRefreshRecords()
+                        .deleteInactiveOrganisationRefreshRecords()
         );
     }
 

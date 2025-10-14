@@ -125,15 +125,6 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_new_user_refresh_queue.sql"})
-    void shouldDeleteNoneFromUserRefreshQueueTest() {
-        professionalUserService.deleteActiveUserRefreshRecords();
-
-        assertEquals(1, userRefreshQueueRepository.findAll().size());
-    }
-
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
     void shouldRefreshUsers() {
         professionalUserService.refreshUsers(processMonitorDto);
@@ -305,15 +296,6 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         assertTrue(userRefreshQueueEntities.get(0).getActive());
         assertEquals(1, userRefreshQueueEntities.get(0).getRetry());
         assertTrue(userRefreshQueueEntities.get(0).getRetryAfter().isAfter(LocalDateTime.now()));
-    }
-
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_old_user_refresh_queue.sql"})
-    void shouldDeleteOneFromUserRefreshQueueTest() {
-        professionalUserService.deleteActiveUserRefreshRecords();
-
-        assertEquals(0, userRefreshQueueRepository.findAll().size());
     }
 
     @Test

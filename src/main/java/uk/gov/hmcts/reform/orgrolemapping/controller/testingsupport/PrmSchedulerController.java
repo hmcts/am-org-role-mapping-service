@@ -225,4 +225,44 @@ public class PrmSchedulerController {
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
 
+    @GetMapping(
+            path = "/am/testing-support/prm/deleteInactiveOrganisationRefreshRecords"
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(summary = "PRM Cleanup Process - Organisation",
+        security =
+            {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
+    @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    public ResponseEntity<Object> deleteInactiveOrganisationRefreshRecords() {
+        ProcessMonitorDto processMonitorDto = scheduler.deleteInactiveOrganisationRefreshRecords();
+        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+    }
+
+    @GetMapping(
+            path = "/am/testing-support/prm/deleteInactiveUserRefreshRecords"
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(summary = "PRM Cleanup Process - User",
+        security =
+            {
+                @SecurityRequirement(name = AUTHORIZATION),
+                @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
+    @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    public ResponseEntity<Object> deleteInactiveUserRefreshRecords() {
+        ProcessMonitorDto processMonitorDto = scheduler.deleteInactiveUserRefreshRecords();
+        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+    }
+
 }

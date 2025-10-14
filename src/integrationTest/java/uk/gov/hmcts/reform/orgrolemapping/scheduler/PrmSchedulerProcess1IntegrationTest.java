@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
@@ -312,6 +313,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
         logAfterStatus(processMonitorDto);
 
         // verify that the process monitor reports success
+        assertNotNull(processMonitorDto);
         assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
 
         // verify that the Access Types are updated (i.e. version 1) and has x organisation profile(s)
