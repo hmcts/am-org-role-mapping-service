@@ -67,7 +67,7 @@ module "prm-process-not-started-alerts" {
   trigger_threshold = "1"
   resourcegroup_name = local.sharedResourceGroup
   common_tags = var.common_tags
-  enabled = true
+  enabled = var.enable_prm_process_not_started_alerts
 }
 
 module "prm-process-not-completed-alerts" {
@@ -91,7 +91,7 @@ module "prm-process-not-completed-alerts" {
   trigger_threshold = "1"
   resourcegroup_name = local.sharedResourceGroup
   common_tags = var.common_tags
-  enabled = true
+  enabled = var.enable_prm_process_not_completed_alerts
 }
 
 module "prm-process-failure-alerts" {
@@ -115,5 +115,5 @@ module "prm-process-failure-alerts" {
   trigger_threshold = "0"
   resourcegroup_name = local.sharedResourceGroup
   common_tags = var.common_tags
-  enabled = true
+  enabled = var.enable_prm_process_failure_alerts
 }
