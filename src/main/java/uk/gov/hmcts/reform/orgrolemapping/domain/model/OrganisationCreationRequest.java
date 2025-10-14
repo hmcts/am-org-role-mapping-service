@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.Set;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -18,4 +21,19 @@ public class OrganisationCreationRequest {
 
     private String status;
 
+    private String statusMessage;
+
+    private String sraId;
+
+    private String sraRegulated;
+
+    private String companyNumber;
+
+    private String companyUrl;
+
+    private UserCreationRequest superUser;
+
+    private Set<String> paymentAccount;
+
+    private List<ContactInformationCreationRequest> contactInformation;
 }

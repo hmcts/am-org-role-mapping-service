@@ -139,8 +139,12 @@ class PrdServiceTest {
 
     @Test
     void createOrganisationTest() {
-        String orgId = "ORGID";
-        OrganisationCreationRequest request = new OrganisationCreationRequest(orgId, "Active");
+        OrganisationCreationRequest request = new OrganisationCreationRequest().builder()
+                .name("Test Org")
+                .sraId("SRA12345")
+                .companyNumber("COMP12345")
+                .contactInformation(List.of())
+                .build();
         OrganisationResponse response = TestDataBuilder.buildOrganisationResponse();
         doReturn(ResponseEntity.status(HttpStatus.OK).body(response))
                 .when(prdFeignClient).createOrganisation(request);
