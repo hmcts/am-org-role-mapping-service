@@ -32,7 +32,7 @@
         "email": "${[scenarioContext][testData][invokingUser][username]}"
       },
       "paymentAccount": [
-        "PBA12349ab"
+        "${[scenarioContext][customValues][generateUUID]}"
       ],
       "contactInformation": [
         {
