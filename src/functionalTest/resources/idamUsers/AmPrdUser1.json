@@ -7,6 +7,8 @@
     "displayName": "AM-ORM PRD FTA",
     "roleNames": [
       "prd-admin",
+      "prd-aac-system",
+      "pui-finance-manager",
       "caseworker",
       "cwd-admin",
       "cwd-system-user",
