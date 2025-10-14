@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
@@ -58,19 +59,19 @@ public interface PRDFeignClient {
             @RequestBody UsersByOrganisationRequest usersByOrganisationRequest
     );
 
-    @PostMapping(value = "/refdata/internal/v1/organisations/createOrganisation")
-    ResponseEntity<String> createOrganisation();
-    // @RequestBody(required = true) OrganisationCreationRequest organisationCreationRequest
+    @PostMapping(value = "/refdata/internal/v1/organisations")
+    ResponseEntity<OrganisationResponse> createOrganisation();
+    //    @RequestBody OrganisationCreationRequest organisationCreationRequest
     // );
 
     @PostMapping(value = "/refdata/internal/v1/organisations/{orgId}/users}")
     ResponseEntity<String> addUserToOrganisation(
-            @RequestParam(name = "orgId") String organisationIdentifier,
+            @RequestParam(name = "orgId") String organisationId,
             @RequestParam(name = "userId") String userId
     );
 
     @DeleteMapping(value = "/refdata/internal/v1/organisations/deleteOrganisation")
     ResponseEntity<String> deleteOrganisation(
-            @RequestParam(name = "orgId") String organisationIdentifier
+            @RequestParam(name = "orgId") String organisationId
     );
 }

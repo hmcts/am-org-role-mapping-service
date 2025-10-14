@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
@@ -17,6 +18,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuild
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.USERS_BY_ORGANISATION_SAMPLE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildGetRefreshUsersResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildOrganisationByProfileIdsResponse;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildOrganisationResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildOrganisationsResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.buildUsersByOrganisationResponse;
 
@@ -61,20 +63,20 @@ public class PRDFeignClientFallback implements PRDFeignClient {
     }
 
     @Override
-    public ResponseEntity<String> createOrganisation() {
-        return ResponseEntity.ok("Organisation Created");
+    public ResponseEntity<OrganisationResponse> createOrganisation() {
+        return ResponseEntity.ok(buildOrganisationResponse(RETRIEVE_ORGANISATIONS_SAMPLE));
     }
 
     @Override
     public ResponseEntity<String> addUserToOrganisation(
-            String organisationIdentifier,
+            String organisationId,
             String userId) {
         return ResponseEntity.ok("User Added To Organisation");
     }
 
     @Override
     public ResponseEntity<String> deleteOrganisation(
-            String organisationIdentifier) {
+            String organisationId) {
         return ResponseEntity.ok("Organisation Deleted");
     }
 

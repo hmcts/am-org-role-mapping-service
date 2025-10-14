@@ -29,6 +29,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
@@ -69,6 +70,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.CDDFallbackResponseBuild
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.GET_REFRESH_USERS_SAMPLE_MULTI_USER;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.GET_REFRESH_USERS_SAMPLE_SINGLE_USER;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.ORGANISATIONS_BY_PROFILE_IDS_SAMPLE;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.ORGANISATION_SAMPLE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.RETRIEVE_ORGANISATIONS_SAMPLE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuilder.USERS_BY_ORGANISATION_SAMPLE;
 
@@ -737,6 +739,10 @@ public class TestDataBuilder {
 
     public static UsersByOrganisationResponse buildUsersByOrganisationResponse() {
         return PRDFallbackResponseBuilder.buildUsersByOrganisationResponse(USERS_BY_ORGANISATION_SAMPLE);
+    }
+
+    public static OrganisationResponse buildOrganisationResponse() {
+        return PRDFallbackResponseBuilder.buildOrganisationResponse(ORGANISATION_SAMPLE);
     }
 
     public static UsersOrganisationInfo buildUsersOrganisationInfo(int i, List<ProfessionalUser> users) {

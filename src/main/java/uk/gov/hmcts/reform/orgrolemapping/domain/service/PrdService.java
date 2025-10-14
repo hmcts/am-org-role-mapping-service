@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
@@ -72,21 +73,21 @@ public class PrdService {
     }
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
-    public ResponseEntity<String> createOrganisation() {
+    public ResponseEntity<OrganisationResponse> createOrganisation() {
         return prdFeignClient.createOrganisation();
     }
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
     public ResponseEntity<String> addUserToOrganisation(
-            String organisationIdentifier,
+            String organisationId,
             String userId) {
-        return prdFeignClient.addUserToOrganisation(organisationIdentifier, userId);
+        return prdFeignClient.addUserToOrganisation(organisationId, userId);
     }
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
     public ResponseEntity<String> deleteOrganisation(
-            String organisationIdentifier) {
-        return prdFeignClient.deleteOrganisation(organisationIdentifier);
+            String organisationId) {
+        return prdFeignClient.deleteOrganisation(organisationId);
     }
 
 }
