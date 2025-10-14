@@ -24,7 +24,7 @@
       "statusMessage": "activeorganisation",
       "sraId": "SRA1190981112",
       "sraRegulated": "string",
-      "companyNumber": "GA1883",
+      "companyNumber": "${}${[scenarioContext][customValues][generateAlphaNumericSize8]}",
       "companyUrl": "string",
       "superUser": {
         "firstName": "ga-User0",
