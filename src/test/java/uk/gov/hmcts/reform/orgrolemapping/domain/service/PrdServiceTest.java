@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationCreationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
@@ -138,11 +139,12 @@ class PrdServiceTest {
     @Test
     void createOrganisationTest() {
         String orgId = "ORGID";
+        OrganisationCreationRequest request = new OrganisationCreationRequest(orgId, "Active");
         OrganisationResponse response = TestDataBuilder.buildOrganisationResponse();
         doReturn(ResponseEntity.status(HttpStatus.OK).body(response))
-                .when(prdFeignClient).createOrganisation();
+                .when(prdFeignClient).createOrganisation(request);
 
-        ResponseEntity<OrganisationResponse> responseEntity = sut.createOrganisation();
+        ResponseEntity<OrganisationResponse> responseEntity = sut.createOrganisation(request);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());

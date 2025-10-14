@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationCreationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
@@ -60,9 +61,9 @@ public interface PRDFeignClient {
     );
 
     @PostMapping(value = "/refdata/internal/v1/organisations")
-    ResponseEntity<OrganisationResponse> createOrganisation();
-    //    @RequestBody OrganisationCreationRequest organisationCreationRequest
-    // );
+    ResponseEntity<OrganisationResponse> createOrganisation(
+            @RequestBody OrganisationCreationRequest organisationCreationRequest
+    );
 
     @PostMapping(value = "/refdata/internal/v1/organisations/{orgId}/users}")
     ResponseEntity<String> addUserToOrganisation(

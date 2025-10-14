@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationCreationRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationRequest;
@@ -63,7 +64,8 @@ public class PRDFeignClientFallback implements PRDFeignClient {
     }
 
     @Override
-    public ResponseEntity<OrganisationResponse> createOrganisation() {
+    public ResponseEntity<OrganisationResponse> createOrganisation(
+            OrganisationCreationRequest organisationCreationRequest) {
         return ResponseEntity.ok(buildOrganisationResponse(RETRIEVE_ORGANISATIONS_SAMPLE));
     }
 
