@@ -1,0 +1,47 @@
+{
+  "_guid_": "S-014.00__CreateProfessionalUsers",
+  "productName": "Professional Reference Data",
+  "operationName": "Create Professional User",
+  "method": "POST",
+  "uri": "{{PRD_URL}}/refdata/internal/v1/organisations/{orgId}/users/",
+  "specs": [
+    "to create a user in professional reference data"
+  ],
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmPRDUser1"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "firstName": "GA-Test-User1",
+      "lastName": "GA-Test-User1-Lastname",
+      "email": "GA-Test-User1@hmcts.net",
+      "roles": [
+        "jrd-system-user",
+        "prd-admin",
+        "pui-user-manager",
+        "cwd-system-user"
+      ],
+      "resendInvite": true
+    },
+    "pathVariables": {
+      "orgId": "${[scenarioContext][siblingContexts][S-014.00__CreateProfessionalOrganisation][testData][actualResponse][body][organisationIdentifier]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_201_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "organisationIdentifier" : "[[ANYTHING_PRESENT]]"
+    }
+  }
+}
