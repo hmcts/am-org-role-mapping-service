@@ -1,5 +1,5 @@
 @F-004 @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
-Feature: F-004 : Refresh Role Assignments for Judicial Users
+Feature: F-004 : Judicial Refresh Request (with/without Bookings)
 
   Background:
     Given an appropriate test context as detailed in the test data source
@@ -17,7 +17,8 @@ Feature: F-004 : Refresh Role Assignments for Judicial Users
     And the request [contains the actorId of the user for which above booking is created],
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response [contains one booked judge/fee-paid role-assignment]
+    And the response [contains a bookable fee-paid-judge role-assignment],
+    And the response [contains one booked judge/fee-paid role-assignment],
     And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-004_DeleteDataForRoleAssignments].
 
@@ -35,7 +36,8 @@ Feature: F-004 : Refresh Role Assignments for Judicial Users
     And the request [contains the actorId of the user for which above bookings are created],
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response [contains multiple booked judge/fee-paid role-assignments]
+    And the response [contains a bookable fee-paid-judge role-assignment],
+    And the response [contains multiple booked judge/fee-paid role-assignments],
     And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-004_DeleteDataForRoleAssignments].
 
@@ -51,9 +53,7 @@ Feature: F-004 : Refresh Role Assignments for Judicial Users
     And the request [contains the actorId of the user for which no bookings exist],
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response [contains no booked judge/fee-paid role-assignments]
+    And the response [contains a bookable fee-paid-judge role-assignment],
+    And the response [contains no booked judge/fee-paid role-assignments],
     And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-004_DeleteDataForRoleAssignments].
-
-#  Expected Roles: fee-paid-judge and hmcts-judiciary
-

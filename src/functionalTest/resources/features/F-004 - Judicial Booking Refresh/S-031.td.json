@@ -9,6 +9,7 @@
     "contains the actorId of the user having existing judicial role assignments",
     "contains the actorId of the user for which above booking is created",
 
+    "contains a bookable fee-paid-judge role-assignment",
     "contains one booked judge/fee-paid role-assignment"
   ],
 
@@ -21,9 +22,9 @@
   "request": {
     "body": {
       "actorId": ["${[scenarioContext][testData][users][invokingUser][id]}"],
-      "roleName" : ["judge"],
+      "roleName" : ["judge", "fee-paid-judge"],
       "attributes": {
-          "contractType": ["Fee-Paid"]
+        "contractType": ["Fee-Paid"]
       }
     }
   },
@@ -33,12 +34,36 @@
     "body" : {
       "roleAssignmentResponse" : [
         {
-          "__elementId__": "roleName,attributes.jurisdiction"
+          "__elementId__": "roleName,attributes.jurisdiction,attributes.region"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "fee-paid-judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "bookable" : "true",
+            "substantive": "N",
+            "contractType": "Fee-Paid",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region" : "[[ANYTHING_PRESENT]]",
+            "workTypes": "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
         },
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType" : "IDAM",
-          "actorId" : "[[ANYTHING_PRESENT]]",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType" : "ORGANISATION",
           "roleName" : "judge",
           "classification" : "PUBLIC",

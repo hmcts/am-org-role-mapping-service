@@ -177,8 +177,8 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
     And the request [contains the actorId of the user for which above booking is created],
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response [contains no booked judge/fee-paid role-assignments]
-    And the response [contains multiple roles due to SSCS multi-region expanion for Wales and South West]
+    And the response [contains a non-bookable fee-paid-judge role-assignment],
+    And the response [contains no booked judge/fee-paid role-assignments],
     And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-163_DeleteDataForRoleAssignments],
     And a successful call [to delete existing bookings corresponding to the test actorId] as in [S-163_DeleteDataForBookings].
@@ -195,8 +195,8 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
     And the request [contains the actorId of the user for which above booking is created],
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
-    And the response [contains bookable fee-paid-judge role-assignment]
-    And the response [contains booked judge/fee-paid role-assignments]
+    And the response [contains a bookable fee-paid-judge role-assignment],
+    And the response [contains booked judge/fee-paid role-assignments],
     And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-164_DeleteDataForRoleAssignments],
     And a successful call [to delete existing bookings corresponding to the test actorId] as in [S-164_DeleteDataForBookings].
