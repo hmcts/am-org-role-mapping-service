@@ -22,7 +22,7 @@
   "name": "GA-TestOrganisation",
   "status": "ACTIVE",
   "statusMessage": "activeorganisation",
-  "sraId": "SRA111111112",
+  "sraId": "${[scenarioContext][customValues][generateUUID]}",
   "sraRegulated": "string",
   "companyNumber": "${[scenarioContext][customValues][generateAlphaNumericSize8]}",
   "companyUrl": "string",
