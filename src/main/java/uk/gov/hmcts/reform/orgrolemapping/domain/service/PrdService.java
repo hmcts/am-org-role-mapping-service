@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.DeleteOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
@@ -75,8 +76,7 @@ public class PrdService {
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
     public ResponseEntity<OrganisationResponse> createOrganisation(
-            OrganisationCreationRequest organisationCreationRequest
-    ) {
+            OrganisationCreationRequest organisationCreationRequest) {
         return prdFeignClient.createOrganisation(organisationCreationRequest);
     }
 
@@ -88,7 +88,7 @@ public class PrdService {
     }
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500, multiplier = 3))
-    public ResponseEntity<String> deleteOrganisation(
+    public ResponseEntity<DeleteOrganisationResponse> deleteOrganisation(
             String organisationId) {
         return prdFeignClient.deleteOrganisation(organisationId);
     }

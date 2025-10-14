@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.DeleteOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
@@ -93,6 +94,10 @@ public class PRDFallbackResponseBuilder {
         } catch (Exception e) {
             throw new BadRequestException("Invalid sample json file or missing for buildUsersByOrganisationResponse.");
         }
+    }
+
+    public static DeleteOrganisationResponse buildDeleteOrganisationResponse(int statusCode, String message) {
+        return new DeleteOrganisationResponse(statusCode, message);
     }
 
 }

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
+import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
@@ -22,6 +23,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AuthorisationV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.DeleteOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
@@ -743,6 +745,11 @@ public class TestDataBuilder {
 
     public static OrganisationResponse buildOrganisationResponse() {
         return PRDFallbackResponseBuilder.buildOrganisationResponse(ORGANISATION_SAMPLE);
+    }
+
+    public static DeleteOrganisationResponse buildDeleteOrganisationResponse() {
+        return PRDFallbackResponseBuilder.buildDeleteOrganisationResponse(HttpStatus.OK.value(),
+            "Organisation deleted successfully");
     }
 
     public static UsersOrganisationInfo buildUsersOrganisationInfo(int i, List<ProfessionalUser> users) {

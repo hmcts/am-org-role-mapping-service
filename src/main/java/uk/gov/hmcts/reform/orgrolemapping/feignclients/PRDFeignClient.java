@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.DeleteOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
@@ -72,7 +73,7 @@ public interface PRDFeignClient {
     );
 
     @DeleteMapping(value = "/refdata/internal/v1/organisations/deleteOrganisation")
-    ResponseEntity<String> deleteOrganisation(
+    ResponseEntity<DeleteOrganisationResponse> deleteOrganisation(
             @RequestParam(name = "orgId") String organisationId
     );
 }

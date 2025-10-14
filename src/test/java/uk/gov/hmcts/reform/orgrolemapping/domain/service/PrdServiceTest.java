@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.DeleteOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
@@ -168,14 +169,15 @@ class PrdServiceTest {
     @Test
     void deleteOrganisationTest() {
         String orgId = "ID";
-        doReturn(ResponseEntity.status(HttpStatus.OK).body("Organisation Deleted"))
+        DeleteOrganisationResponse response = TestDataBuilder.buildDeleteOrganisationResponse();
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(response))
                 .when(prdFeignClient).deleteOrganisation(orgId);
 
-        ResponseEntity<String> responseEntity = sut.deleteOrganisation(orgId);
+        ResponseEntity<DeleteOrganisationResponse> responseEntity = sut.deleteOrganisation(orgId);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals("Organisation Deleted", responseEntity.getBody());
+        assertEquals(response, responseEntity.getBody());
     }
 
 }
