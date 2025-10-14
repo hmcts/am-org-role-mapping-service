@@ -30,8 +30,8 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
     public Object calculateCustomValue(BackEndFunctionalTestScenarioContext scenarioContext, Object key) {
         //the docAMUrl is is referring the self link in PR
         switch (key.toString()) {
-            case ("generateAlphaNumericSize8"):
-                return RandomStringUtils.randomAlphanumeric(8);
+            case ("generateAlphaNumericSize7"):
+                return RandomStringUtils.randomAlphanumeric(7);
             case ("generateUUID"):
                 return UUID.randomUUID();
             case ("generateEmailId"):

@@ -24,7 +24,7 @@
   "statusMessage": "activeorganisation",
   "sraId": "${[scenarioContext][customValues][generateUUID]}",
   "sraRegulated": "string",
-  "companyNumber": "${[scenarioContext][customValues][generateAlphaNumericSize8]}",
+  "companyNumber": "${[scenarioContext][customValues][generateAlphaNumericSize7]}",
   "companyUrl": "string",
   "superUser": {
     "firstName": "ga-User0",
@@ -32,7 +32,7 @@
     "email": "${[scenarioContext][testData][invokingUser][username]}"
   },
   "paymentAccount": [
-    "PBA${[scenarioContext][customValues][generateUUID]}"
+    "PBA${[scenarioContext][customValues][generateAlphaNumericSize7]}"
   ],
   "contactInformation": [
     {
