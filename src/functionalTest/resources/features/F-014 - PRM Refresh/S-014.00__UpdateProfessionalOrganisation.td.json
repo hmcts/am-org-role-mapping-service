@@ -16,8 +16,7 @@
     "headers": {
       "Authorization": "[[DEFAULT_AUTO_VALUE]]",
       "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
-      "Content-Type": "application/json",
-      "X-User-Id": "${[scenarioContext][siblingContexts][S-014.00__CreateProfessionalOrganisation][testData][invokingUser][id]}"
+      "Content-Type": "application/json"
     },
     "body": {
       "name": "GA-TestOrganisation",
@@ -30,7 +29,7 @@
       "superUser": {
         "firstName": "ga-User0",
         "lastName": "ga-User0Lastname",
-        "email": "gaUser0@hmcts.net"
+        "email": "${[scenarioContext][testData][invokingUser][username]"
       },
       "paymentAccount": [
         "PBA12349ab"
