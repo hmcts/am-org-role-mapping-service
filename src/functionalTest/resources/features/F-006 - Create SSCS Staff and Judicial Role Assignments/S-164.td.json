@@ -12,7 +12,9 @@
     "contains the actorId of the user for which above booking is created",
 
     "contains bookable fee-paid-judge role-assignment",
-    "contains booked judge/fee-paid role-assignments"
+    "contains booked judge/fee-paid role-assignments",
+
+    "contains multiple roles due to SSCS multi-region expanion for Wales and South West"
   ],
 
   "users": {
@@ -51,7 +53,7 @@
     "body" : {
       "roleAssignmentResponse" : [
         {
-          "__elementId__": "roleName,attributes.jurisdiction"
+          "__elementId__": "roleName,attributes.jurisdiction,attributes.region"
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
@@ -72,7 +74,31 @@
             "contractType": "Fee-Paid",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
+            "region" : "6",
+            "workTypes": "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "fee-paid-judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "bookable" : "true",
+            "substantive": "N",
+            "contractType": "Fee-Paid",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region" : "7",
             "workTypes": "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
