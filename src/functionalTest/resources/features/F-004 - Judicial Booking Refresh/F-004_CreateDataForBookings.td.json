@@ -12,8 +12,8 @@
     "body": {
       "bookingRequest": {
         "userId": "${[scenarioContext][parentContext][testData][users][invokingUser][id]}",
-        "locationId": "10",
-        "regionId": "2",
+        "regionId": "3",
+        "locationId": "13",
         "beginDate": "${[scenarioContext][customValues][today]}",
         "endDate": "${[scenarioContext][customValues][today]}"
       }
