@@ -16,7 +16,8 @@
     "headers": {
       "Authorization": "[[DEFAULT_AUTO_VALUE]]",
       "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "X-User-Id": "${[scenarioContext][siblingContexts][S-014.00][testData][actualResponse][body][id]}"
     },
     "body": {
       "name": "GA-TestOrganisation",
