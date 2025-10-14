@@ -53,9 +53,9 @@
             "bookable" : "true",
             "substantive": "N",
             "contractType": "Fee-Paid",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
+            "region" : "2",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "workTypes": "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
@@ -76,9 +76,9 @@
           "attributes" : {
             "substantive" : "Y",
             "contractType" : "Fee-Paid",
-            "primaryLocation" : "10",
             "jurisdiction" : "SSCS",
-            "region" : "2",
+            "region" : "3",
+            "primaryLocation" : "13",
             "workTypes" : "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
@@ -99,9 +99,9 @@
           "attributes" : {
             "substantive" : "Y",
             "contractType" : "Fee-Paid",
-            "primaryLocation" : "15",
             "jurisdiction" : "SSCS",
-            "region" : "3",
+            "region" : "4",
+            "primaryLocation" : "14",
             "workTypes" : "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"

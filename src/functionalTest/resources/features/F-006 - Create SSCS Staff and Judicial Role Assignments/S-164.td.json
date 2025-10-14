@@ -51,7 +51,7 @@
     "body" : {
       "roleAssignmentResponse" : [
         {
-          "__elementId__": "roleName,attributes.jurisdiction,attributes.region"
+          "__elementId__": "roleName"
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
@@ -131,9 +131,9 @@
           "attributes" : {
             "substantive" : "Y",
             "contractType" : "Fee-Paid",
-            "primaryLocation" : "10",
             "jurisdiction" : "SSCS",
-            "region" : "2",
+            "region" : "3",
+            "primaryLocation" : "13",
             "workTypes" : "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
