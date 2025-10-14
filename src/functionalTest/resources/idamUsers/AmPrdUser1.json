@@ -6,7 +6,13 @@
     "surname": "FTA",
     "displayName": "AM-ORM PRD FTA",
     "roleNames": [
-      "prd-admin"
+      "prd-admin",
+      "caseworker",
+      "cwd-admin",
+      "cwd-system-user",
+      "jrd-system-user",
+      "org-role-cwd-system-user",
+      "judiciary"
     ],
     "accountStatus": "ACTIVE",
     "recordType": "LIVE"
