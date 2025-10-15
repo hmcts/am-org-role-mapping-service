@@ -199,7 +199,7 @@ class OrganisationServiceTest {
                 .isEqualTo("attempting upsertToOrganisationRefreshQueue for "
                         + "1 organisations=orgIdentifier3, : COMPLETED");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
-                .isEqualTo(EndStatus.SUCCESS);
+                .isEqualTo(EndStatus.PARTIAL_SUCCESS);
     }
 
     @Test

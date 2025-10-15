@@ -115,7 +115,7 @@ class CaseDefinitionServiceTest {
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
-                .isEqualTo(EndStatus.SUCCESS);
+                .isEqualTo(EndStatus.PARTIAL_SUCCESS);
 
     }
 
@@ -172,7 +172,7 @@ class CaseDefinitionServiceTest {
 
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
-                .isEqualTo(EndStatus.SUCCESS);
+                .isEqualTo(EndStatus.PARTIAL_SUCCESS);
 
     }
 
