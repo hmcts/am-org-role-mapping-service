@@ -166,7 +166,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-162_DeleteDataForRoleAssignments].
 
   @S-163
-  @FeatureToggle(DB:sscs_wa_1_1=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
+  #@FeatureToggle(DB:sscs_wa_1_1=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   Scenario: must successfully create organisational role mapping for fee-paid judge but not permit bookings when no ticketCode=368
     Given a user with [a judicial profile for SSCS that does not support judicial bookings (i.e. no ticketCode=368)],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-163_DeleteDataForRoleAssignments],
@@ -184,7 +184,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
     And a successful call [to delete existing bookings corresponding to the test actorId] as in [S-163_DeleteDataForBookings].
 
   @S-164
-  @FeatureToggle(DB:sscs_wa_1_1=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
+  #@FeatureToggle(DB:sscs_wa_1_1=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   Scenario: must successfully create organisational role mapping for fee-paid judge with bookings when ticketCode=368
     Given a user with [a judicial profile for SSCS that supports judicial bookings (i.e. ticketCode=368)],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-164_DeleteDataForRoleAssignments],
