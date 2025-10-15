@@ -57,7 +57,7 @@ module "prm-process-not-started-alerts" {
  
   alert_name = "am-${each.value.key}-not-started-alert"
   alert_desc = "Triggers when ${each.value.processName} has not started the expected time frame in am-${local.local_env}."
-  app_insights_query = "customEvents | where cloud_RoleName = 'am-org-role-mapping-service' and cloud_RoleInstance startswith 'am-org-role-mapping-service-java' | where name == '${each.value.processName} - Started' | limit 1"
+  app_insights_query = "customEvents | where cloud_RoleName == 'am-org-role-mapping-service' and cloud_RoleInstance startswith 'am-org-role-mapping-service-java' | where name == '${each.value.processName} - Started' | limit 1"
   custom_email_subject = "Alert: ${each.value.processName} has not started in expected time frame in am-${local.local_env}"
   frequency_in_minutes = each.value.frequencyInMinutes
   time_window_in_minutes = each.value.timeWindowInMinutes
@@ -81,7 +81,7 @@ module "prm-process-not-completed-alerts" {
  
   alert_name = "am-${each.value.key}-not-completed-alert"
   alert_desc = "Triggers when ${each.value.processName} has started but not completed am-${local.local_env}."
-  app_insights_query = "customEvents | where cloud_RoleName = 'am-org-role-mapping-service' and cloud_RoleInstance startswith 'am-org-role-mapping-service-java' | where name startswith '${each.value.processName}' | where timestamp >= ago(60m) | order by timestamp asc | extend prevName = prev(name) | where prevName == '${each.value.processName} - Started' and name == '${each.value.processName}' - Completed'"
+  app_insights_query = "customEvents | where cloud_RoleName == 'am-org-role-mapping-service' and cloud_RoleInstance startswith 'am-org-role-mapping-service-java' | where name startswith '${each.value.processName}' | where timestamp >= ago(60m) | order by timestamp asc | extend prevName = prev(name) | where prevName == '${each.value.processName} - Started' and name == '${each.value.processName}' - Completed'"
   custom_email_subject = "Alert: ${each.value.processName} has not completed am-${local.local_env}"
   frequency_in_minutes = each.value.frequencyInMinutes
   time_window_in_minutes = each.value.timeWindowInMinutes
@@ -105,7 +105,7 @@ module "prm-process-failure-alerts" {
  
   alert_name = "am-${each.value.key}-failure-alert"
   alert_desc = "Triggers when ${each.value.processName} fails am-${local.local_env}."
-  app_insights_query = "customEvents | where cloud_RoleName = 'am-org-role-mapping-service' and cloud_RoleInstance startswith 'am-org-role-mapping-service-java' | where name == '${each.value.processName} - Failed'"
+  app_insights_query = "customEvents | where cloud_RoleName == 'am-org-role-mapping-service' and cloud_RoleInstance startswith 'am-org-role-mapping-service-java' | where name == '${each.value.processName} - Failed'"
   custom_email_subject = "Alert: ${each.value.processName} failed in am-${var.env}"
   frequency_in_minutes = each.value.frequencyInMinutes
   time_window_in_minutes = each.value.timeWindowInMinutes
