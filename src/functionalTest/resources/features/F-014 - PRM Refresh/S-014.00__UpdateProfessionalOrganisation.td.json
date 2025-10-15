@@ -19,7 +19,7 @@
       "Content-Type": "application/json"
     },
     "body": {
-      "name": "GA-TestOrganisation",
+      "name": "GA-TestOrganisation00",
       "status": "ACTIVE",
       "statusMessage": "activeorganisation",
       "sraId": "${[scenarioContext][customValues][generateUUID]}",
@@ -27,8 +27,8 @@
       "companyNumber": "${[scenarioContext][customValues][generateAlphaNumericSize7]}",
       "companyUrl": "string",
       "superUser": {
-        "firstName": "ga-User0",
-        "lastName": "ga-User0Lastname",
+        "firstName": "ga-TestUser00",
+        "lastName": "ga-TestUser00Lastname",
         "email": "${[scenarioContext][testData][invokingUser][username]}"
       },
       "paymentAccount": [
