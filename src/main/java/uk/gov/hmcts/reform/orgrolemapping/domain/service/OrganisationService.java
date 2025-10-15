@@ -162,7 +162,7 @@ public class OrganisationService {
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw exception;
         }
-        processMonitorDto.markAsSuccess();
+        processMonitorDto.markAsPartialSuccess("Test partial");
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
     }
@@ -209,7 +209,7 @@ public class OrganisationService {
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw e;
         }
-        processMonitorDto.markAsSuccess();
+        processMonitorDto.markAsFailed("Test failure");
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
     }

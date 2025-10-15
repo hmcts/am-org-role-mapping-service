@@ -223,6 +223,7 @@ public class ProfessionalUserService {
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw ex;
         }
+        failedJobCount += 9; // test failure
         markProcessStatus(processMonitorDto,
             successfulJobCount, failedJobCount,
             errorMessageBuilder.toString());

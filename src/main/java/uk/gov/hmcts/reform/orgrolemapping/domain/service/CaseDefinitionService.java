@@ -67,7 +67,7 @@ public class CaseDefinitionService {
             processEventTracker.trackEventCompleted(processMonitorDto);
             throw e;
         }
-        processMonitorDto.markAsSuccess();
+        processMonitorDto.markAsPartialSuccess("Test partial");
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
     }
