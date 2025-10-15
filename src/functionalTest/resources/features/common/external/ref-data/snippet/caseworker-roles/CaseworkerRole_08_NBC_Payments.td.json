@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_08_NBC_Payments",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "8",
+  "role": "National Business Centre Payments Team"
+}

@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_19_IBCA",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "19",
+  "role": "IBCA Caseworker"
+}

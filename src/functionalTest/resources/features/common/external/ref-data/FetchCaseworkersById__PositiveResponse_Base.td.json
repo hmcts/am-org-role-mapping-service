@@ -1,0 +1,23 @@
+{
+  "_guid_": "FetchCaseworkersById__PositiveResponse_Base",
+  "_extends_": "FetchCaseworkersById__Base",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmCRDUser1"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "arrayInMap": [
+        {
+          "__ordering__": "unordered",
+          "__elementId__": "id"
+        }
+      ]
+    }
+  }
+
+}

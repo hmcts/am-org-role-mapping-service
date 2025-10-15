@@ -1,0 +1,7 @@
+{
+  "_guid_": "WorkArea_AAA7_Civil",
+  "_extends_": "WorkArea__Base",
+
+  "service_code": "AAA7",
+  "area_of_work": "Damages"
+}

@@ -1,8 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.BooleanUtils;
+import jakarta.inject.Inject;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -50,10 +51,8 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
-import javax.inject.Inject;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -70,6 +69,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -149,9 +149,6 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     private RequestMappingService<UserAccessProfile> requestMappingService;
 
     @MockBean
-    private FeatureConditionEvaluator featureConditionEvaluation;
-
-    @MockBean
     private SecurityUtils securityUtils;
 
     @Mock
@@ -178,7 +175,6 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
         doReturn(authentication).when(securityContext).getAuthentication();
         SecurityContextHolder.setContext(securityContext);
-        doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         wiremockFixtures.resetRequests();
     }
@@ -213,7 +209,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
-        assertEquals(0, refreshJob.getUserIds().length);
+        assertNull(refreshJob.getUserIds());
         assertNotNull(refreshJob.getLog());
     }
 
@@ -336,7 +332,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
-        assertEquals(0, refreshJob.getUserIds().length);
+        assertNull(refreshJob.getUserIds());
         assertNotNull(refreshJob.getLog());
     }
 
@@ -457,7 +453,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
+                .andExpect(status().is(202)) // NB: no failure in refresh API as CRD call is in a background process
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -498,7 +494,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
-        assertEquals(0, refreshJob.getUserIds().length);
+        assertNull(refreshJob.getUserIds());
         assertNotNull(refreshJob.getLog());
     }
 

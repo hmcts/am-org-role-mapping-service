@@ -1,0 +1,39 @@
+{
+  "_guid_": "S-012.12b",
+  "title": "must successfully create org role mapping for Regional Centre Team Leader",
+  "_extends_": "S-012.12",
+  "specs": [
+    "contains the actorId of the user just published who has Regional Centre Team Leader role + Case Allocator"
+  ],
+  "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "request": {
+    "pathVariables": {
+      "actorId": "17b1479a-95fb-40f6-9d45-1207ac0a3651"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "ST_CIC"
+          }
+        }
+      ]
+    }
+  }
+}
