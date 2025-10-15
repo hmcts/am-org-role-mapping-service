@@ -1,3 +1,0 @@
-enable_prm_process_not_started_alerts = true
-enable_prm_process_not_completed_alerts = true
-enable_prm_process_failure_alerts = true
