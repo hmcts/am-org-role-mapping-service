@@ -105,7 +105,7 @@ module "prm-process-failure-alerts" {
  
   alert_name = "am-${each.value.key}-failure-alert"
   alert_desc = "Triggers when ${each.value.processName} fails am-${local.local_env}."
-  app_insights_query = "customEvents | where cloud_RoleName == 'am-org-role-mapping-service' and cloud_RoleInstance startswith 'am-org-role-mapping-service-java' | where name == '${each.value.processName} - Failed'"
+  app_insights_query = "customEvents | where cloud_RoleName == 'am-org-role-mapping-service' and cloud_RoleInstance startswith 'am-org-role-mapping-service-java' | where name startswith '${each.value.processName}' and (name endswith ' - Partial Success' or name endswith ' - Failed')"
   custom_email_subject = "Alert: ${each.value.processName} failed in am-${var.env}"
   frequency_in_minutes = each.value.frequencyInMinutes
   time_window_in_minutes = each.value.timeWindowInMinutes
