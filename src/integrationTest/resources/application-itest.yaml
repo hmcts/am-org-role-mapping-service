@@ -32,5 +32,7 @@ feign:
 professional:
   role:
     mapping:
+      refreshApi:
+        enabled: true
       scheduling:
         enabled: false
