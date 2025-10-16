@@ -10,9 +10,9 @@ Feature: F-014 : Refresh Professional User
     #This scenario creates everything needed for subsequent tests
     And a user with [Prd admin access],
     And a successful call [to create an organisation in professional reference data] as in [S-014.00__CreateProfessionalOrganisation],
-    And a successful call [to delete organisation created as test data] as in [S-014.00__DeleteDataForProfessionalOrganisation],
-    And a successful call [to update the organisation in professional reference data to active] as in [S-014.00__UpdateProfessionalOrganisation],
     And a successful call [to create a user in professional reference data] as in [S-014.00__CreateProfessionalUser],
+    And a successful call [to update the organisation in professional reference data to active] as in [S-014.00__UpdateProfessionalOrganisation],
+
     #And a successful call is made [to create user configured access for professional user] as in [S-014.00__CreateUserConfiguredAccess],
 
 
@@ -74,5 +74,5 @@ Feature: F-014 : Refresh Professional User
   @S-014.5
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: Delete and Clean Up Professional Organisation test data
-   # Given a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments]
-   # And a successful call [to delete organisation created as test data] as in [S-014.00__DeleteDataForProfessionalOrganisation]
+    Given a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments]
+    And a successful call [to delete organisation created as test data] as in [S-014.00__DeleteDataForProfessionalOrganisation],

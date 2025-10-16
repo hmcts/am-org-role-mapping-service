@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-014.00__CreateProfessionalUsers",
+  "_guid_": "S-014.00__CreateProfessionalUser",
   "productName": "Professional Reference Data",
   "operationName": "Create Professional User",
   "method": "POST",
@@ -19,9 +19,9 @@
       "Content-Type": "application/json"
     },
     "body": {
-      "firstName": "GA-Test-User1",
-      "lastName": "GA-Test-User1-Lastname",
-      "email": "GA-Test-User1@hmcts.net",
+      "firstName": "GA-Test-User001",
+      "lastName": "GA-Test-User001-Lastname",
+      "email": "GA-Test-User001@hmcts.net",
       "roles": [
         "jrd-system-user",
         "prd-admin",
