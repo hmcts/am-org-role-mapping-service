@@ -71,15 +71,15 @@ end;
 rule "v3_0_employment_hmcts_judiciary_org_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
-    $joh: JudicialOfficeHolder(office in ( "EMPLOYMENT President of Tribunal-Salaried",
-                                        "EMPLOYMENT Vice President-Salaried",
-                                        "EMPLOYMENT Regional Employment Judge-Salaried",
-                                        "EMPLOYMENT Employment Judge-Salaried",
-                                        Office.Employment.EMPLOYMENT_JUDGE_FEE_PAID,
-                                        Office.Employment.TRIBUNAL_MEMBER_FEE_PAID,
-                                        "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
-                                        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
-                                        "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
+    $joh: JudicialOfficeHolder(office in ( Office.Employment.PRESIDENT_OF_TRIBUNAL_SALARIED,
+                                           Office.Employment.PRESIDENT_ET_SCOTLAND_SALARIED,
+                                           Office.Employment.VICE_PRESIDENT_SALARIED,
+                                           Office.Employment.REGIONAL_EMPLOYMENT_JUDGE_SALARIED,
+                                           Office.Employment.ACTING_REGIONAL_EMPLOYMENT_JUDGE_SALARIED,
+                                           Office.Employment.EMPLOYMENT_JUDGE_SALARIED,
+                                           Office.Employment.EMPLOYMENT_JUDGE_FEE_PAID,
+                                           Office.Employment.TRIBUNAL_MEMBER_FEE_PAID
+                                           ))
 then
     Map<String,JsonNode> attribute = new HashMap<>();
     if ($joh.isSalaried()) {
@@ -108,10 +108,13 @@ end;
 
 /*
  * EMPLOYMENT "task-supervisor" Org role mapping.
+ * Made obsolete in DTSAM-995 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.
  */
 rule "employment_task_supervisor_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+  $f1: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in ( "EMPLOYMENT President of Tribunal-Salaried",
                                          "EMPLOYMENT Vice President-Salaried",
                                          "EMPLOYMENT Regional Employment Judge-Salaried",
@@ -142,11 +145,49 @@ then
 end;
 
 /*
+ * EMPLOYMENT "task-supervisor" Org role mapping for v3_0.
+ */
+rule "v3_0_employment_task_supervisor_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
+  $joh: JudicialOfficeHolder(office in ( Office.Employment.PRESIDENT_OF_TRIBUNAL_SALARIED,
+                                         Office.Employment.PRESIDENT_ET_SCOTLAND_SALARIED,
+                                         Office.Employment.VICE_PRESIDENT_SALARIED,
+                                         Office.Employment.REGIONAL_EMPLOYMENT_JUDGE_SALARIED,
+                                         Office.Employment.ACTING_REGIONAL_EMPLOYMENT_JUDGE_SALARIED
+                                         ))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.EMPLOYMENT.getName()));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("task-supervisor")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v3_0_employment_task_supervisor_org_role");
+end;
+
+/*
  * EMPLOYMENT "case-allocator" Org role mapping.
+ * Made obsolete in DTSAM-995 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.
  */
 rule "employment_case_allocator_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+  $f1: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in ( "EMPLOYMENT President of Tribunal-Salaried",
                                         "EMPLOYMENT Vice President-Salaried",
                                         "EMPLOYMENT Regional Employment Judge-Salaried",
@@ -178,11 +219,50 @@ then
 end;
 
 /*
+ * EMPLOYMENT "case-allocator" Org role mapping for v3_0.
+ */
+rule "v3_0_employment_case_allocator_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
+  $joh: JudicialOfficeHolder(office in ( Office.Employment.PRESIDENT_OF_TRIBUNAL_SALARIED,
+                                         Office.Employment.PRESIDENT_ET_SCOTLAND_SALARIED,
+                                         Office.Employment.VICE_PRESIDENT_SALARIED,
+                                         Office.Employment.REGIONAL_EMPLOYMENT_JUDGE_SALARIED,
+                                         Office.Employment.ACTING_REGIONAL_EMPLOYMENT_JUDGE_SALARIED,
+                                         Office.Employment.EMPLOYMENT_JUDGE_SALARIED
+                                        ))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.EMPLOYMENT.getName()));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("case-allocator")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v3_0_employment_case_allocator_org_role");
+end;
+
+/*
  * EMPLOYMENT "specific-access-approver-judiciary" Org role mapping.
+ * Made obsolete in DTSAM-995 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.
  */
 rule "employment_specific_access_approver_judiciary_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+  $f1: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in ( "EMPLOYMENT President of Tribunal-Salaried",
                                         "EMPLOYMENT Vice President-Salaried",
                                         "EMPLOYMENT Regional Employment Judge-Salaried",
@@ -217,17 +297,60 @@ then
 end;
 
 /*
+ * EMPLOYMENT "specific-access-approver-judiciary" Org role mapping for v3_0.
+ */
+rule "v3_0_employment_specific_access_approver_judiciary_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
+  $joh: JudicialOfficeHolder(office in ( Office.Employment.PRESIDENT_OF_TRIBUNAL_SALARIED,
+                                         Office.Employment.PRESIDENT_ET_SCOTLAND_SALARIED,
+                                         Office.Employment.VICE_PRESIDENT_SALARIED,
+                                         Office.Employment.REGIONAL_EMPLOYMENT_JUDGE_SALARIED,
+                                         Office.Employment.ACTING_REGIONAL_EMPLOYMENT_JUDGE_SALARIED
+                                        ))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.EMPLOYMENT.getName()));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   if (!$joh.getOffice().equals(Office.Employment.PRESIDENT_OF_TRIBUNAL_SALARIED)) {
+    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("specific-access-approver-judiciary")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v3_0_employment_specific_access_approver_judiciary_org_role");
+end;
+
+/*
  * EMPLOYMENT "leadership-judge" Org role mapping.
+ * Made obsolete in DTSAM-995 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.
  */
 rule "employment_leadership_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+  $f1: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in ( "EMPLOYMENT Vice President-Salaried",
-                                        "EMPLOYMENT Regional Employment Judge-Salaried",
-                                        "EMPLOYMENT President of Tribunal-Salaried",
-                                        "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
-                                        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
-                                        "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
+                                         "EMPLOYMENT Regional Employment Judge-Salaried",
+                                         "EMPLOYMENT President of Tribunal-Salaried",
+                                         "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
+                                         "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
+                                         "EMPLOYMENT Acting Regional Employment Judge-Salaried"
+                                        ))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
@@ -255,11 +378,51 @@ then
 end;
 
 /*
+ * EMPLOYMENT "leadership-judge" Org role mapping for v3_0.
+ */
+rule "v3_0_employment_leadership_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
+  $joh: JudicialOfficeHolder(office in ( Office.Employment.PRESIDENT_OF_TRIBUNAL_SALARIED,
+                                         Office.Employment.PRESIDENT_ET_SCOTLAND_SALARIED,
+                                         Office.Employment.VICE_PRESIDENT_SALARIED,
+                                         Office.Employment.REGIONAL_EMPLOYMENT_JUDGE_SALARIED,
+                                         Office.Employment.ACTING_REGIONAL_EMPLOYMENT_JUDGE_SALARIED))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.EMPLOYMENT.getName()));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   if (!$joh.getOffice().equals(Office.Employment.PRESIDENT_OF_TRIBUNAL_SALARIED)) {
+    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("leadership-judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v3_0_employment_leadership_judge_org_role");
+end;
+
+/*
  * EMPLOYMENT "judge" Org role mapping.
+ * Made obsolete in DTSAM-995 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.
  */
 rule "employment_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+  $f1: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in ( "EMPLOYMENT Vice President-Salaried",
                                          "EMPLOYMENT Regional Employment Judge-Salaried",
                                          "EMPLOYMENT President of Tribunal-Salaried",
@@ -292,6 +455,46 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : employment_judge_org_role");
+end;
+
+/*
+ * EMPLOYMENT "judge" Org role mapping for v3_0.
+ */
+rule "v3_0_employment_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
+  $joh: JudicialOfficeHolder(office in ( Office.Employment.PRESIDENT_OF_TRIBUNAL_SALARIED,
+                                         Office.Employment.PRESIDENT_ET_SCOTLAND_SALARIED,
+                                         Office.Employment.VICE_PRESIDENT_SALARIED,
+                                         Office.Employment.REGIONAL_EMPLOYMENT_JUDGE_SALARIED,
+                                         Office.Employment.ACTING_REGIONAL_EMPLOYMENT_JUDGE_SALARIED,
+                                         Office.Employment.EMPLOYMENT_JUDGE_SALARIED
+                                         ))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.EMPLOYMENT.getName()));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   if (!$joh.getOffice().equals(Office.Employment.PRESIDENT_OF_TRIBUNAL_SALARIED)) {
+    attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   }
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,applications,amendments"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("judge")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v3_0_employment_judge_org_role");
 end;
 
 /*
@@ -401,7 +604,7 @@ end;
  */
 rule "v3_0_employment_tribunal_member_org_role"
 when
-    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
     $joh: JudicialOfficeHolder(office in (Office.Employment.TRIBUNAL_MEMBER_FEE_PAID))
 then
     Map<String,JsonNode> attribute = new HashMap<>();
