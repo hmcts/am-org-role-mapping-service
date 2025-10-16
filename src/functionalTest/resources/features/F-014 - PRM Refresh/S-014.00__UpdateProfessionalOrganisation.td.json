@@ -27,8 +27,8 @@
       "companyNumber": "${[scenarioContext][customValues][generateAlphaNumericSize7]}",
       "companyUrl": "string",
       "superUser": {
-        "firstName": "ga-TestUser00",
-        "lastName": "ga-TestUser00Lastname",
+        "firstName": "ga-TestUser001",
+        "lastName": "ga-TestUser001Lastname",
         "email": "${[scenarioContext][testData][invokingUser][username]}"
       },
       "paymentAccount": [

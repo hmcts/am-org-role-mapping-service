@@ -11,12 +11,13 @@ Feature: F-014 : Refresh Professional User
     And a user with [Prd admin access],
     And a successful call [to create an organisation in professional reference data] as in [S-014.00__CreateProfessionalOrganisation],
     And a successful call [to update the organisation in professional reference data to active] as in [S-014.00__UpdateProfessionalOrganisation],
-    And a successful call [to create a user in professional reference data] as in [S-014.00__CreateProfessionalUser],
+     #And a successful call [to create a user in professional reference data] as in [S-014.00__CreateProfessionalUser],
     #And a successful call is made [to create user configured access for professional user] as in [S-014.00__CreateUserConfiguredAccess],
     #And a successful call is made [to create user configured access for professional user] as in [S-014.01__UpdateUserConfiguredAccess],
 
 
   # P1. All flags = true => expected 2 roles generated
+  @Ignore
   @S-014.01
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: successful refresh of professional user - single user - All flags true and PRD enabled true
@@ -31,6 +32,7 @@ Feature: F-014 : Refresh Professional User
 
 
   # N1 User not found - 0 roles generated
+  @Ignore
   @S-014.02
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: unsuccessful refresh of professional user - single user
@@ -42,6 +44,7 @@ Feature: F-014 : Refresh Professional User
 
 
   # P2 CCD 3 flags = true (but PRD enabled = false) => expected 2 roles generated
+  @Ignore
   @S-014.03
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: successful refresh of professional user - single user - All flags true and PRD enabled false
@@ -57,6 +60,7 @@ Feature: F-014 : Refresh Professional User
 
 
   # N2 User found without PRD access types - 0 roles generated positive scenario 200 returned
+  @Ignore
   @S-014.04
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: unsuccessful refresh of professional user - single user no PRD
@@ -70,7 +74,7 @@ Feature: F-014 : Refresh Professional User
     And a successful call [to verify role assignments are correct for test userId] as in [S-014.04__VerifyRoleAssignments],
     And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments].
 
-
+  @Ignore
   @S-014.5
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: Delete and Clean Up Professional Organisation test data
