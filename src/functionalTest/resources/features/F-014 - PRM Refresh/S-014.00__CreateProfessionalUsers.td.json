@@ -41,7 +41,7 @@
       "Content-Type": "application/json"
     },
     "body": {
-      "organisationIdentifier" : "[[ANYTHING_PRESENT]]"
+      "userId" : "[[ANYTHING_PRESENT]]"
     }
   }
 }
