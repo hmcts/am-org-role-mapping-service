@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.config.ProfessionalUserServiceConfig;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
@@ -37,15 +39,18 @@ public class RefreshController {
     @Autowired
     public RefreshController(RefreshOrchestrator refreshOrchestrator,
                              JudicialRefreshOrchestrator judicialRefreshOrchestrator,
-                             ProfessionalRefreshOrchestrator professionalRefreshOrchestrator) {
+                             ProfessionalRefreshOrchestrator professionalRefreshOrchestrator,
+                             ProfessionalUserServiceConfig professionalUserServiceConfig) {
         this.refreshOrchestrator = refreshOrchestrator;
         this.judicialRefreshOrchestrator = judicialRefreshOrchestrator;
         this.professionalRefreshOrchestrator = professionalRefreshOrchestrator;
+        this.professionalUserServiceConfig = professionalUserServiceConfig;
     }
 
     RefreshOrchestrator refreshOrchestrator;
     JudicialRefreshOrchestrator judicialRefreshOrchestrator;
     ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
+    ProfessionalUserServiceConfig professionalUserServiceConfig;
 
     @PostMapping(
             path = "/am/role-mapping/refresh",
@@ -152,6 +157,9 @@ public class RefreshController {
         content = @Content()
     )
     public ResponseEntity<Object> professionalRefresh(@RequestParam String userId) {
+        if (!professionalUserServiceConfig.isRefreshApiEnabled()) {
+            throw new ForbiddenException("PROFESSIONAL_REFRESH_API_ENABLED is false");
+        }
         return professionalRefreshOrchestrator.refreshProfessionalUser(userId);
     }
 

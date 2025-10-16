@@ -9,7 +9,10 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.config.ProfessionalUserServiceConfig;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
@@ -22,6 +25,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 
 class RefreshControllerTest {
@@ -35,9 +39,13 @@ class RefreshControllerTest {
     @Mock
     private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
 
+    @Mock
+    private ProfessionalUserServiceConfig professionalUserServiceConfig;
+
     @InjectMocks
     private final RefreshController sut =
-        new RefreshController(refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator);
+        new RefreshController(refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator,
+                professionalUserServiceConfig);
 
     @BeforeEach
     void setUp() {
@@ -120,10 +128,23 @@ class RefreshControllerTest {
     void refreshProfessionalRoleAssignments() {
         ResponseEntity<Object> response = ResponseEntity.status(HttpStatus.OK).body(Map.of("Message",
             "Role assignments have been refreshed successfully"));
+        Mockito.when(professionalUserServiceConfig.isRefreshApiEnabled()).thenReturn(true);
         Mockito.when(professionalRefreshOrchestrator.refreshProfessionalUser(any())).thenReturn(response);
 
         assertEquals(response, sut.professionalRefresh(UUID.randomUUID().toString()));
         Mockito.verify(professionalRefreshOrchestrator, Mockito.times(1))
             .refreshProfessionalUser(any());
+    }
+
+    @Test
+    void refreshProfessionalRoleAssignments_disbled() {
+        Mockito.when(professionalUserServiceConfig.isRefreshApiEnabled()).thenReturn(false);
+
+        Exception exception = assertThrows(ForbiddenException.class, () -> {
+            sut.professionalRefresh(UUID.randomUUID().toString());
+        });
+        assertEquals(ForbiddenException.class, exception.getClass());
+        assertEquals(String.format(Constants.FORBIDDEN + ": %s",
+                "PROFESSIONAL_REFRESH_API_ENABLED is false"), exception.getMessage());
     }
 }
