@@ -22,7 +22,7 @@ ext['snakeyaml.version'] = '2.4'
 def versions = [
         junit          : '5.11.3',
         junitPlatform  : '1.11.3',
-        lombok         : '1.18.38',
+        lombok         : '1.18.42',
         pitest         : '1.20.3',
         reformLogging  : '6.1.9',
         reformS2sClient: '5.3.3',
@@ -329,7 +329,7 @@ dependencies {
     implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.12'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE'
     implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.82'
-    implementation group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: '1.81'
+    implementation group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: '1.82'
     implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '2.5.1'
 
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
@@ -362,7 +362,7 @@ dependencies {
 
     //Azure service bus libraries
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.12.0'
-    implementation group: 'com.azure', name: 'azure-core', version: '1.56.1'
+    implementation group: 'com.azure', name: 'azure-core', version: '1.57.0'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.15'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.7.11'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.10.0'
@@ -476,7 +476,7 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
     dependencies {
-        dependency("org.bouncycastle:bcprov-jdk18on:1.81")
+        dependency("org.bouncycastle:bcprov-jdk18on:1.82")
         dependency("org.bouncycastle:bcpkix-jdk18on:1.82")
     }
 }
