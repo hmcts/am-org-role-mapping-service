@@ -19,7 +19,7 @@
       "Content-Type": "application/json"
     },
     "body": {
-  "name": "GA-TestOrganisation00",
+  "name": "GA-TestOrganisation001",
   "status": "ACTIVE",
   "statusMessage": "activeorganisation",
   "sraId": "${[scenarioContext][customValues][generateUUID]}",
@@ -29,7 +29,7 @@
   "superUser": {
     "firstName": "ga-TestUser001",
     "lastName": "ga-TestUser001Lastname",
-    "email": "${[scenarioContext][testData][invokingUser][username]}"
+    "email": "TEST_AM_ORM_BEFTA_PRD_USER1_PR_2493@test.local"
   },
   "paymentAccount": [
     "PBA${[scenarioContext][customValues][generateAlphaNumericSize7]}"
