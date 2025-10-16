@@ -57,6 +57,7 @@ java:
     REFRESH_JOB:
     TESTING_SUPPORT_ENABLED: false
     APPLICATION_LOGGING_LEVEL: INFO
+    PROFESSIONAL_REFRESH_API_ENABLED: false
 
 #subcharts conditions
 orm:
