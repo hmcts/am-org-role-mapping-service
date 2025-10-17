@@ -54,6 +54,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefr
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.PRD_USER_NOT_FOUND;
 
 @TestPropertySource(properties = {
+    "professional.role.mapping.refreshApi.enabled=true",
     "refresh.Job.authorisedServices=" + S2S_XUI
 })
 class RefreshControllerProfessionalRefreshIntegrationTest extends BaseTestIntegration {
@@ -97,7 +98,6 @@ class RefreshControllerProfessionalRefreshIntegrationTest extends BaseTestIntegr
 
     @Mock
     private SecurityContext securityContext;
-
 
     @BeforeEach
     public void setUp() throws Exception {
