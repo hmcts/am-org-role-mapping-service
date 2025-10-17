@@ -1,0 +1,20 @@
+{
+  "_guid_": "S-163_PostRefreshRequestToORM",
+  "_extends_": "RefreshJudicialUserRoleAssignments__PositiveResponse_Base",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmJRDUser1"
+    }
+  },
+
+  "request": {
+    "body": {
+      "refreshRequest": {
+        "userIds": [
+          "${[scenarioContext][parentContext][testData][users][invokingUser][id]}"
+        ]
+      }
+    }
+  }
+}
