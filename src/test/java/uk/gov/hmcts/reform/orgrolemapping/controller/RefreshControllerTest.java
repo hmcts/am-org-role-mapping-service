@@ -9,7 +9,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.orgrolemapping.config.ProfessionalUserServiceConfig;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
@@ -36,13 +35,9 @@ class RefreshControllerTest {
     @Mock
     private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
 
-    @Mock
-    private ProfessionalUserServiceConfig professionalUserServiceConfig;
-
     @InjectMocks
     private final RefreshController sut =
-        new RefreshController(refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator,
-                professionalUserServiceConfig);
+        new RefreshController(refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator);
 
     @BeforeEach
     void setUp() {

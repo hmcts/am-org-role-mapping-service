@@ -20,7 +20,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import uk.gov.hmcts.reform.orgrolemapping.config.ProfessionalUserServiceConfig;
 import uk.gov.hmcts.reform.orgrolemapping.controller.RefreshController;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CRDService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JRDService;
@@ -68,9 +67,6 @@ public class OrgRoleMappingProviderTestForRefresh {
     private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
 
     @Autowired
-    private ProfessionalUserServiceConfig professionalUserServiceConfig;
-
-    @Autowired
     JudicialBookingService judicialBookingService;
 
     @Autowired
@@ -91,8 +87,7 @@ public class OrgRoleMappingProviderTestForRefresh {
         //uncomment to force publishing of pacts results to central server
         //System.getProperties().setProperty("pact.verifier.publishResults", "true");
         testTarget.setControllers(new RefreshController(
-                refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator,
-                professionalUserServiceConfig
+                refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator
         ));
         if (context != null) {
             context.setTarget(testTarget);
