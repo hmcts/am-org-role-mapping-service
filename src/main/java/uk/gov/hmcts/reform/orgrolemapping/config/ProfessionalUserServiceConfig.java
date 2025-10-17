@@ -51,7 +51,7 @@ public class ProfessionalUserServiceConfig {
             @Value("${groupAccess.lastRunTimeTolerance}")
             String tolerance,
             @Value("${professional.role.mapping.refreshApi.enabled}")
-            boolean refreshApiEnabled) {
+            String refreshApiEnabled) {
         this.orgRetryOneIntervalMin = orgRetryOneIntervalMin;
         this.orgRetryTwoIntervalMin = orgRetryTwoIntervalMin;
         this.orgRetryThreeIntervalMin = orgRetryThreeIntervalMin;
@@ -61,6 +61,6 @@ public class ProfessionalUserServiceConfig {
         this.activeUserRefreshDays = activeUserRefreshDays;
         this.pageSize = pageSize;
         this.tolerance = tolerance;
-        this.refreshApiEnabled = refreshApiEnabled;
+        this.refreshApiEnabled = Boolean.parseBoolean(refreshApiEnabled);
     }
 }
