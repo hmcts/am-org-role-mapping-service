@@ -14,7 +14,9 @@ Feature: F-014 : Refresh Professional User
      #And a successful call [to create a user in professional reference data] as in [S-014.00__CreateProfessionalUser],
     #And a successful call is made [to create user configured access for professional user] as in [S-014.00__CreateUserConfiguredAccess],
     #And a successful call is made [to create user configured access for professional user] as in [S-014.01__UpdateUserConfiguredAccess],
-
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Refresh Professional User Role Assignments] operation of [Organisation Role Mapping],
+    Then a positive response is received.
 
   # P1. All flags = true => expected 2 roles generated
   @S-014.01 @Ignore
