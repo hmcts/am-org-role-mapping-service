@@ -50,7 +50,7 @@ public class ProfessionalUserServiceConfig {
             String pageSize,
             @Value("${groupAccess.lastRunTimeTolerance}")
             String tolerance,
-            @Value("${professional.role.mapping.refreshApi.enabled}")
+            //@Value("${professional.role.mapping.refreshApi.enabled}")
             boolean refreshApiEnabled) {
         this.orgRetryOneIntervalMin = orgRetryOneIntervalMin;
         this.orgRetryTwoIntervalMin = orgRetryTwoIntervalMin;
