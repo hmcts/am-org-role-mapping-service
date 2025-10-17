@@ -100,8 +100,6 @@ am-role-assignment-service:
             alias: ROLE_ASSIGNMENT_IDAM_CLIENT_SECRET
           - name: role-assignment-service-IDAM-ADMIN-SECRET
             alias: ROLE_ASSIGNMENT_IDAM_ADMIN_PASSWORD
-          - name: role-assignment-service-LD-SDK-KEY
-            alias: LD_SDK_KEY
     environment:
       ROLE_ASSIGNMENT_DB_HOST: "{{ .Release.Name }}-postgresql"
       ROLE_ASSIGNMENT_DB_USERNAME: "{{ .Values.postgresql.auth.username}}"
@@ -113,11 +111,9 @@ am-role-assignment-service:
       ROLE_ASSIGNMENT_IDAM_ADMIN_USERID: "ras-validation-system@hmcts.net"
       APPLICATION_LOGGING_LEVEL: INFO
       BYPASS_ORG_DROOL_RULE: true
-      # TODO: switch over from `LAUNCH_DARKLY_ENV` to `RAS_ENV` after DTSAM-492 hmcts/am-role-assignment-service#2334
-      LAUNCH_DARKLY_ENV: pr
+      RAS_ENV: pr
       ENABLE_DB_MIGRATE: true
       RUN_DB_MIGRATION_ON_STARTUP: true
-      RUN_LD_ON_STARTUP: true
 
 am-judicial-booking-service:
   java:

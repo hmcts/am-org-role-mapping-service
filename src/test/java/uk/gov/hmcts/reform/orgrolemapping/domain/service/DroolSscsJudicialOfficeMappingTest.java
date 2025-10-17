@@ -2,10 +2,11 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
@@ -31,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
     static final String ALL_APPOINTMENTS_CSV = """
@@ -45,6 +46,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         Regional Medical Member,Salaried
         Tribunal Judge,Fee Paid
         Judge of the First-tier Tribunal (sitting in retirement),Fee Paid
+        Chairman,Fee Paid
+        Deputy District Judge (MC)- Fee paid,Fee Paid
+        Employment Judge,Fee Paid
+        Recorder,Fee Paid
         Tribunal Member Medical,Fee Paid
         Tribunal Member Optometrist,Fee Paid
         Tribunal Member Disability,Fee Paid
@@ -113,6 +118,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Judge,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
         "Judge of the First-tier Tribunal (sitting in retirement),"
             + "Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
+        "Chairman,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
+        "Deputy District Judge (MC)- Fee paid,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
+        "Employment Judge,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
+        "Recorder,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
         "Tribunal Member Medical,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary','371'",
         "Tribunal Member Optometrist,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary','371'",
         "Tribunal Member Disability,Fee Paid,BBA3,'fee-paid-disability,hmcts-judiciary','371'",
@@ -318,6 +327,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
         "Judge of the First-tier Tribunal (sitting in retirement)",
+        "Chairman",
+        "Deputy District Judge (MC)- Fee paid",
+        "Employment Judge",
+        "Recorder",
         "Tribunal Member Medical",
         "Tribunal Member Disability",
         "Member of the First-tier Tribunal Lay",
@@ -361,7 +374,11 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Member Service,AAA",
         "Tribunal Member,AAA",
         "Tribunal Judge,AAA",
-        "Judge of the First-tier Tribunal (sitting in retirement),AAA"
+        "Judge of the First-tier Tribunal (sitting in retirement),AAA",
+        "Chairman,AAA",
+        "Deputy District Judge (MC)- Fee paid,AAA",
+        "Employment Judge,AAA",
+        "Recorder,AAA"
     })
     void shouldNotReturnTribunalFeePaidRolesExpiredEndDate(String appointment,
                                                            String serviceCode) {
@@ -425,7 +442,11 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Member Service,AAA",
         "Tribunal Member,AAA",
         "Tribunal Judge,AAA",
-        "Judge of the First-tier Tribunal (sitting in retirement),AAA"
+        "Judge of the First-tier Tribunal (sitting in retirement),AAA",
+        "Chairman,AAA",
+        "Deputy District Judge (MC)- Fee paid,AAA",
+        "Employment Judge,AAA",
+        "Recorder,AAA"
     })
     void shouldNotReturnFeePaidRolesExpiredDateAndWServiceCode(String appointment,
                                                                String serviceCode) {
@@ -645,7 +666,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
         // if expecting a booking verify we got its region
         if ("Fee Paid".equals(appointmentType)
-            && List.of("Tribunal Judge", "Judge of the First-tier Tribunal (sitting in retirement)")
+            && List.of("Tribunal Judge", "Judge of the First-tier Tribunal (sitting in retirement)",
+                        "Chairman", "Deputy District Judge (MC)- Fee paid", "Employment Judge", "Recorder")
                 .contains(appointment)) {
             assertTrue(foundBookedRegion.get());
         } else {
@@ -700,7 +722,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     }
 
     private static List<FeatureFlag> setFeatureFlags() {
-        return List.of(FeatureFlag.builder().flagName("sscs_wa_1_0").status(true).build(),
-                FeatureFlag.builder().flagName("sscs_wa_1_3").status(true).build());
+        List<String> flags = List.of("sscs_wa_1_0", "sscs_wa_1_1", "sscs_wa_1_2", "sscs_wa_1_3");
+
+        return flags.stream()
+                .map(flag -> FeatureFlag.builder().flagName(flag).status(true).build())
+                .collect(Collectors.toList());
     }
 }

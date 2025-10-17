@@ -3,7 +3,9 @@
   "title": "must successfully create judicial role mapping for District Judge - salaried appointment",
   "_extends_": "F-008_Test_Data_Base",
   "specs": [
-    "contains the actorIds of the user just published"
+    "contains the actorIds of the user just published",
+
+    "NB: Current test judge has both Private Law and Civil authorisations: so will gain extra FL401-Judge role"
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
@@ -88,7 +90,31 @@
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "[[ANYTHING_PRESENT]]"
+            "workTypes": "hearing_work,decision_making_work,applications,routine_work"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+
+        
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "fl401-judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "contractType": "Salaried",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "hearing_work,decision_making_work,applications,routine_work"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }
