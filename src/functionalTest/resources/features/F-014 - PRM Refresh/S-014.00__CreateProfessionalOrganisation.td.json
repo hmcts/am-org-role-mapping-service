@@ -27,9 +27,9 @@
   "companyNumber": "${[scenarioContext][customValues][generateAlphaNumericSize7]}",
   "companyUrl": "string",
   "superUser": {
-    "firstName": "ga-TestUser001",
-    "lastName": "ga-TestUser001Lastname",
-    "email": "TEST_AM_ORM_BEFTA_PRD_USER1_PR_2493@test.local"
+    "firstName": "ga-Ter001",
+    "lastName": "ga-Tes001Lastname",
+    "email": "TEST_AM_ORM_@test.local"
   },
   "paymentAccount": [
     "PBA${[scenarioContext][customValues][generateAlphaNumericSize7]}"
