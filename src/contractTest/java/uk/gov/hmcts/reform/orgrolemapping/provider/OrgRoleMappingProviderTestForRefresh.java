@@ -87,7 +87,8 @@ public class OrgRoleMappingProviderTestForRefresh {
         //uncomment to force publishing of pacts results to central server
         //System.getProperties().setProperty("pact.verifier.publishResults", "true");
         testTarget.setControllers(new RefreshController(
-                refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator
+                refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator,
+                true
         ));
         if (context != null) {
             context.setTarget(testTarget);
