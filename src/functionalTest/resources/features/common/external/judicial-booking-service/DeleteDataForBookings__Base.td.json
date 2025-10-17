@@ -1,0 +1,18 @@
+{
+  "_guid_": "DeleteDataForBookings__Base",
+
+  "productName": "Judicial Booking Service",
+  "operationName": "Delete Booking by userId",
+
+  "method": "DELETE",
+  "uri": "{{JUDICIAL_BOOKING_URL}}/am/bookings/{userId}",
+
+  "request": {
+    "headers": {
+      "_extends_": "Common_Request_Headers"
+    },
+    "pathVariables": {
+      "userId": "OVERRIDE_ME"
+    }
+  }
+}

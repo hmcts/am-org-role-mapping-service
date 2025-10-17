@@ -1,13 +1,28 @@
 {
-  "_guid_": "S-060",
-  "title": "must successfully create judicial role mapping for Tribunal Member Disability - Fee Paid appointment",
+  "_guid_": "S-163",
+  "title": "must successfully create organisational role mapping for fee-paid judge but not permit bookings when no ticketCode=368",
   "_extends_": "F-006_Test_Data_Base",
-  "specs": [
-    "contains the actorId of the user just published",
-    "contains multiple roles due to SSCS multi-region expanion for Wales and South West"
-  ],
+
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+
+  "specs": [
+    "a judicial profile for SSCS that does not support judicial bookings (i.e. no ticketCode=368)",
+
+    "contains the actorId of the user for which above booking is created",
+
+    "contains a non-bookable fee-paid-judge role-assignment",
+    "contains no booked judge/fee-paid role-assignments",
+
+    "NB: The current test judge triggers SSCS multi-region expanion for Wales (region 7) and South West (region 6)."
+  ],
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmJRDUser1"
+    }
+  },
+
   "request": {
     "headers": {
       "sort": "roleName",
@@ -17,14 +32,14 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": "${[scenarioContext][childContexts][S-060_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "actorId": ["${[scenarioContext][testData][users][invokingUser][id]}"],
           "roleName": ["hmcts-judiciary"],
           "attributes": {
             "contractType": ["Fee-Paid"]
           }
         },
         {
-          "actorId": "${[scenarioContext][childContexts][S-060_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "actorId": ["${[scenarioContext][testData][users][invokingUser][id]}"],
           "attributes": {
             "jurisdiction": ["SSCS"]
           }
@@ -32,10 +47,11 @@
       ]
     }
   },
+
   "expectedResponse": {
     "_extends_": "Common_200_Response",
-    "body": {
-      "roleAssignmentResponse": [
+    "body" : {
+      "roleAssignmentResponse" : [
         {
           "__elementId__": "roleName,attributes.jurisdiction,attributes.region"
         },
@@ -44,7 +60,7 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "fee-paid-disability",
+          "roleName": "fee-paid-judge",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
@@ -53,12 +69,12 @@
           "endTime" : "[[ANYTHING_PRESENT]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "Y",
+            "substantive": "N",
             "contractType": "Fee-Paid",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
             "region" : "6",
-            "workTypes": "hearing_work,priority"
+            "workTypes": "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -67,7 +83,7 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "fee-paid-disability",
+          "roleName": "fee-paid-judge",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
@@ -76,12 +92,12 @@
           "endTime" : "[[ANYTHING_PRESENT]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "Y",
+            "substantive": "N",
             "contractType": "Fee-Paid",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
             "region" : "7",
-            "workTypes": "hearing_work,priority"
+            "workTypes": "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
