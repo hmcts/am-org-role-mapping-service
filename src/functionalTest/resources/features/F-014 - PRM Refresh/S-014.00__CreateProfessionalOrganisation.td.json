@@ -20,7 +20,7 @@
     },
     "body": {
   "name": "GA-TestOrganisation001",
-  "status": "ACTIVE",
+  "status": "PENDING",
   "statusMessage": "activeorganisation",
   "sraId": "${[scenarioContext][customValues][generateUUID]}",
   "sraRegulated": "string",
