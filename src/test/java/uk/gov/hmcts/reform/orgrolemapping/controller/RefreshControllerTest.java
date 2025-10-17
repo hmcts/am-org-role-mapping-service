@@ -37,7 +37,8 @@ class RefreshControllerTest {
 
     @InjectMocks
     private final RefreshController sut =
-        new RefreshController(refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator);
+        new RefreshController(refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator,
+                true);
 
     @BeforeEach
     void setUp() {

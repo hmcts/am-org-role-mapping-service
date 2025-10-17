@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -34,13 +35,18 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUT
 @Slf4j
 public class RefreshController {
 
+    private final boolean refreshApiEnabled;
+
     @Autowired
     public RefreshController(RefreshOrchestrator refreshOrchestrator,
                              JudicialRefreshOrchestrator judicialRefreshOrchestrator,
-                             ProfessionalRefreshOrchestrator professionalRefreshOrchestrator) {
+                             ProfessionalRefreshOrchestrator professionalRefreshOrchestrator,
+                             @Value("${professional.role.mapping.refreshApi.enabled}")
+                             boolean refreshApiEnabled) {
         this.refreshOrchestrator = refreshOrchestrator;
         this.judicialRefreshOrchestrator = judicialRefreshOrchestrator;
         this.professionalRefreshOrchestrator = professionalRefreshOrchestrator;
+        this.refreshApiEnabled = refreshApiEnabled;
     }
 
     RefreshOrchestrator refreshOrchestrator;
