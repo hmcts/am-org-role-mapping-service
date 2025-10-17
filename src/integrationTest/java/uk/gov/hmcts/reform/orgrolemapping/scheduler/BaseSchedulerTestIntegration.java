@@ -58,6 +58,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.writeValueAsP
     "professional.refdata.pageSize=" + TEST_PAGE_SIZE,
     // set environment ready for flag checks
     "orm.environment=" + TEST_ENVIRONMENT,
+    // turn on refresh api
+    "professional.role.mapping.refreshApi.enabled=true",
     "testing.support.enabled=true"
 })
 abstract class BaseSchedulerTestIntegration extends BaseTestIntegration {

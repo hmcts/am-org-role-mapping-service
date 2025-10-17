@@ -29,6 +29,8 @@ public class ProfessionalUserServiceConfig {
 
     private final String tolerance;
 
+    private final boolean refreshApiEnabled;
+
     public ProfessionalUserServiceConfig(
             @Value("${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.retryOneIntervalMin}")
             String orgRetryOneIntervalMin,
@@ -47,7 +49,9 @@ public class ProfessionalUserServiceConfig {
             @Value("${professional.refdata.pageSize}")
             String pageSize,
             @Value("${groupAccess.lastRunTimeTolerance}")
-            String tolerance) {
+            String tolerance,
+            @Value("${professional.role.mapping.refreshApi.enabled}")
+            boolean refreshApiEnabled) {
         this.orgRetryOneIntervalMin = orgRetryOneIntervalMin;
         this.orgRetryTwoIntervalMin = orgRetryTwoIntervalMin;
         this.orgRetryThreeIntervalMin = orgRetryThreeIntervalMin;
@@ -57,5 +61,6 @@ public class ProfessionalUserServiceConfig {
         this.activeUserRefreshDays = activeUserRefreshDays;
         this.pageSize = pageSize;
         this.tolerance = tolerance;
+        this.refreshApiEnabled = refreshApiEnabled;
     }
 }
