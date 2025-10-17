@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
@@ -63,6 +62,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         """;
 
     @BeforeEach
+    @Override
     public void setUp() {
         super.setUp();
         judicialOfficeHolders = new HashSet<>();
@@ -77,8 +77,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                 + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
         "Principal Judge,Salaried,BBA3,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
                     + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
-        "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'",
-        "Judge of the First-tier Tribunal,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'"
+        "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge,case-allocator,"
+                + "task-supervisor'",
+        "Judge of the First-tier Tribunal,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge,"
+                + "case-allocator,task-supervisor'"
     })
     void shouldReturnSalariedRoles(String appointment, String appointmentType,
                                    String serviceCode, String expectedRoles) {
@@ -95,7 +97,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
 
         roleAssignments.forEach(r -> {
@@ -156,7 +158,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
 
         roleAssignments.forEach(r -> {
@@ -194,13 +196,12 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
 
         roleAssignments.forEach(r -> {
@@ -234,8 +235,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
         //assertion
         assertTrue(roleAssignments.isEmpty());
     }
@@ -251,8 +251,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -486,12 +485,11 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
         assertFalse(roleAssignments.isEmpty());
 
@@ -525,12 +523,11 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
         assertFalse(roleAssignments.isEmpty());
         roleAssignments.forEach(r -> {
@@ -557,12 +554,11 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder("leadership-judge", "task-supervisor", "case-allocator",
                         "specific-access-approver-judiciary", "hmcts-judiciary", "judge",
                         "post-hearing-salaried-judge"));
@@ -589,8 +585,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -607,8 +602,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         List<JudicialOfficeHolder> outputJoh = new ArrayList<>();
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("SSCS", true), outputJoh);
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags(), outputJoh);
 
         // verify region and baseLocation are blank
         outputJoh.forEach(joh -> {
@@ -631,8 +625,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         List<JudicialOfficeHolder> outputJoh = new ArrayList<>();
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("SSCS", true), outputJoh);
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags(), outputJoh);
 
         // verify region and baseLocation are blank
         outputJoh.forEach(joh -> {
@@ -721,11 +714,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         }
     }
 
-    private static List<FeatureFlag> setFeatureFlags() {
-        List<String> flags = List.of("sscs_wa_1_0", "sscs_wa_1_1", "sscs_wa_1_2", "sscs_wa_1_3");
-
-        return flags.stream()
-                .map(flag -> FeatureFlag.builder().flagName(flag).status(true).build())
-                .collect(Collectors.toList());
+    private List<FeatureFlag> setFeatureFlags() {
+        return getAllFeatureFlagsToggleByJurisdiction("SSCS", true, false);
     }
+
 }

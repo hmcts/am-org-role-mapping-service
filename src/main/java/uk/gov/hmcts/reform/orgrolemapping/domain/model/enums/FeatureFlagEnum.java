@@ -9,6 +9,7 @@ public enum FeatureFlagEnum {
     SSCS_WA_1_1("sscs_wa_1_1"),
     SSCS_WA_1_2("sscs_wa_1_2"),
     SSCS_WA_1_3("sscs_wa_1_3"),
+    SSCS_WA_1_4("sscs_wa_1_4"),
     SSCS_WA_1_5("sscs_wa_1_5"),
     CIVIL_WA_1_0("civil_wa_1_0"),
     PRIVATELAW_HEARING_1_0("privatelaw_hearing_1_0"),
