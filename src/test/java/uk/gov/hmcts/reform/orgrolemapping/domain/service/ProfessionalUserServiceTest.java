@@ -100,7 +100,7 @@ class ProfessionalUserServiceTest {
     private static final ProfessionalUserServiceConfig professionalUserServiceConfig =
             new ProfessionalUserServiceConfig(RETRY_ONE_INTERVAL, RETRY_TWO_INTERVAL,
                     RETRY_THREE_INTERVAL, RETRY_ONE_INTERVAL, RETRY_TWO_INTERVAL,
-                    RETRY_THREE_INTERVAL, "10", "1", "10", "true");
+                    RETRY_THREE_INTERVAL, "10", "1", "10", true);
 
     ProfessionalUserService professionalUserService = new ProfessionalUserService(
             prdService,
