@@ -16,7 +16,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertHelper.MultiRegion;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -24,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -393,15 +391,6 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         );
     }
 
-
-    private static List<FeatureFlag> setFeatureFlags() {
-        List<String> flags = List.of("sscs_wa_1_0", "sscs_wa_1_1", "sscs_wa_1_2", "sscs_wa_1_3");
-
-        return flags.stream()
-                .map(flag -> FeatureFlag.builder().flagName(flag).status(true).build())
-                .collect(Collectors.toList());
-    }
-
     private String setExpectedBookingRegionId(String regionId, boolean withBooking, boolean johFallback) {
         if (withBooking && !judicialBookings.isEmpty()) {
             return (johFallback ? regionId :
@@ -420,12 +409,8 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         judicialBookings = Set.of(judicialBooking);
     }
 
-    private static List<FeatureFlag> setFeatureFlags() {
-        List<String> flags = List.of("sscs_wa_1_0", "sscs_wa_1_1", "sscs_wa_1_2", "sscs_wa_1_3", "sscs_wa_1_4");
-
-        return flags.stream()
-                .map(flag -> FeatureFlag.builder().flagName(flag).status(true).build())
-                .toList();
+    private List<FeatureFlag> setFeatureFlags() {
+        return getAllFeatureFlagsToggleByJurisdiction("SSCS", true, false);
     }
 
 }
