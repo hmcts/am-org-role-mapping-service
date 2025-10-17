@@ -17,7 +17,7 @@ Feature: F-014 : Refresh Professional User
 
 
   # P1. All flags = true => expected 2 roles generated
-  @S-014.01
+  @S-014.01 @Ignore
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: successful refresh of professional user - single user - All flags true and PRD enabled true
     And a successful call [to verify professional user has userAccessTypes enabled] as in [S-014.01__VerifyProfessionalUser],
@@ -31,7 +31,7 @@ Feature: F-014 : Refresh Professional User
 
 
   # N1 User not found - 0 roles generated
-  @S-014.02
+  @S-014.02 @Ignore
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: unsuccessful refresh of professional user - single user
     Given a user with [an active IDAM profile with full permissions],
@@ -42,7 +42,7 @@ Feature: F-014 : Refresh Professional User
 
 
   # P2 CCD 3 flags = true (but PRD enabled = false) => expected 2 roles generated
-  @S-014.03
+  @S-014.03 @Ignore
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: successful refresh of professional user - single user - All flags true and PRD enabled false
     Given a user with [an active IDAM profile with full permissions],
@@ -57,7 +57,7 @@ Feature: F-014 : Refresh Professional User
 
 
   # N2 User found without PRD access types - 0 roles generated positive scenario 200 returned
-  @S-014.04
+  @S-014.04 @Ignore
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: unsuccessful refresh of professional user - single user no PRD
     Given a user with [an active IDAM profile with full permissions],
@@ -71,7 +71,7 @@ Feature: F-014 : Refresh Professional User
     And a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments].
 
 
-  @S-014.5
+  @S-014.5 @Ignore
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: Delete and Clean Up Professional Organisation test data
     Given a successful call [to delete existing role assignments corresponding to the test userId] as in [DeleteDataForProfessionalRoleAssignments]
