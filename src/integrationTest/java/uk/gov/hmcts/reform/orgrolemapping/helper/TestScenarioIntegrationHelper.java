@@ -15,6 +15,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@SuppressWarnings({
+    "java:S115" // Constant names should comply with a naming convention
+})
 public class TestScenarioIntegrationHelper {
 
     public static final DateTimeFormatter DF = DateTimeFormatter.ofPattern("yyyy-MM-dd");

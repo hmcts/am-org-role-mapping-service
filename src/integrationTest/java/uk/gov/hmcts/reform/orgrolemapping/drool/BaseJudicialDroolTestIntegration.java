@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper.assertWireMockAssignmentRequests;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.APPOINTMENT_BEGIN_TIME;
@@ -54,6 +53,7 @@ public class BaseJudicialDroolTestIntegration extends BaseDroolTestIntegration {
                                                      Map<String, String> overrideMapValues) throws Exception;
     }
 
+    @SuppressWarnings("unused") // NB: for simplicity arguments must match for all tests
     public void assertCreateOrmMappingApiWithBooking(String jrdResponseFileName,
                                                      String rasRequestFileNameWithoutBooking,
                                                      String rasRequestFileNameWithBooking,
@@ -148,7 +148,7 @@ public class BaseJudicialDroolTestIntegration extends BaseDroolTestIntegration {
                                                                   List<TestScenario> testScenarios) {
         return testScenarios.stream()
             .map(testScenario -> getAssignmentRequestFromFile(fileName, testScenario))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     private AssignmentRequest getAssignmentRequestFromFile(String fileName,
