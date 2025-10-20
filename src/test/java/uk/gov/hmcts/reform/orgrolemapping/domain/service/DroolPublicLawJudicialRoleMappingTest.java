@@ -1,10 +1,11 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
@@ -33,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
     private static final String USER_ID = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
@@ -84,12 +85,24 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         "High Court Judge,'','judge,hmcts-judiciary,hearing-viewer',5,true",
         "High Court Judge,'','judge,hmcts-judiciary,hearing-viewer',6,false",
 
+        "President of the Family Division,'','judge,hmcts-judiciary,hearing-viewer',1,true",
+        "President of the Family Division,'','judge,hmcts-judiciary,hearing-viewer',5,true",
+        "President of the Family Division,'','judge,hmcts-judiciary,hearing-viewer',6,false",
+
         "_,'Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
                 + "case-allocator,specific-access-approver-judiciary,hearing-viewer',1,true",
         "_,'Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
                 + "case-allocator,specific-access-approver-judiciary,hearing-viewer',5,true",
         "_,'Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
                 + "case-allocator,specific-access-approver-judiciary,hearing-viewer',7,false",
+
+        "_,'Acting Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
+                + "case-allocator,specific-access-approver-judiciary,hearing-viewer',1,true",
+        "_,'Acting Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
+                + "case-allocator,specific-access-approver-judiciary,hearing-viewer',5,true",
+        "_,'Acting Designated Family Judge','leadership-judge,judge,task-supervisor,hmcts-judiciary,"
+                + "case-allocator,specific-access-approver-judiciary,hearing-viewer',7,false",
+
 
         "Tribunal Judge,'','judge,hmcts-judiciary,hearing-viewer',1,true",
         "Tribunal Judge,'','judge,hmcts-judiciary,hearing-viewer',5,true",
@@ -216,6 +229,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         "Deputy District Judge (sitting in retirement),'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy High Court Judge,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "High Court Judge- Sitting in Retirement,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
+        "High Court Judge (sitting in retirement),'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Circuit Judge (sitting in retirement),'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Recorder (sitting in retirement),'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy Upper Tribunal Judge,'','judge,fee-paid-judge,hmcts-judiciary,hearing-viewer'",
@@ -239,6 +253,7 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         "Deputy District Judge (sitting in retirement),'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy High Court Judge,'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "High Court Judge- Sitting in Retirement,'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
+        "High Court Judge (sitting in retirement),'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Circuit Judge (sitting in retirement),'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Recorder (sitting in retirement),'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
         "Deputy Upper Tribunal Judge,'','fee-paid-judge,hmcts-judiciary,hearing-viewer'",
@@ -322,6 +337,11 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
                 assertEquals(BOOKING_END_TIME, r.getEndTime());
                 assertEquals(BOOKING_REGION_ID, r.getAttributes().get("region").asText());
                 assertEquals(BOOKING_LOCATION_ID, primaryLocation);
+            } else if (r.getRoleName().equals("fee-paid-judge")) {
+                assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
+                assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());
+                assertEquals(ACCESS_PROFILE_PRIMARY_LOCATION_ID, primaryLocation);
+                assertNull(r.getAttributes().get("region"));
             } else {
                 assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
                 assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());

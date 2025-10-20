@@ -580,3 +580,31 @@ then
       .build());
       logMsg("Rule : civil_circuit_judge_in_retirement_fee_paid_joh");
 end;
+
+/*
+ * "CIVIL Lead and Deputy Online Judge" business role mapping to JOH.
+ */
+rule "civil_lead_and_deputy_online_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_4.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               appointmentType in ("Salaried", "SPTW"),
+                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
+                               (roles != null && roles.contains("Lead and Deputy Online Judge")),
+                               (validateAuthorisation(authorisations, "AAA6") || validateAuthorisation(authorisations, "AAA7")))
+then
+  insert(
+      JudicialOfficeHolder.builder()
+      .userId($jap.getUserId())
+      .office("CIVIL Lead and Deputy Online Judge-Salaried")
+      .jurisdiction("CIVIL")
+      .ticketCodes($jap.getTicketCodes())
+      .beginTime($jap.getBeginTime())
+      .endTime($jap.getEndTime())
+      .regionId($jap.getRegionId())
+      .baseLocationId($jap.getBaseLocationId())
+      .primaryLocation($jap.getPrimaryLocationId())
+      .contractType($jap.getAppointmentType())
+      .build());
+      logMsg("Rule : civil_lead_and_deputy_online_judge_salaried_joh");
+end;
