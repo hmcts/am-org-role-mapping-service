@@ -107,7 +107,8 @@ class CivilJudicialIT extends BaseJudicialDroolTestIntegration implements Judici
             "Civil/OutputToRas/" + rasRequestFileNameWithBooking,
             additionalRoleTest,
             overrideMapValues,
-            List.of() // default is all flags on
+            // TODO: remove temp flag-off value needed after DTSAM-860
+            List.of(FeatureFlagEnum.PRIVATELAW_WA_1_7) // default is all flags on
         );
     }
 
@@ -125,7 +126,8 @@ class CivilJudicialIT extends BaseJudicialDroolTestIntegration implements Judici
             "Civil/OutputToRas/" + rasRequestFileNameWithBooking,
             additionalRoleTest,
             overrideMapValues,
-            List.of() // default is all flags on
+            // TODO: remove temp flag-off value needed after DTSAM-860
+            List.of(FeatureFlagEnum.PRIVATELAW_WA_1_7) // default is all flags on
         );
     }
 
@@ -143,7 +145,8 @@ class CivilJudicialIT extends BaseJudicialDroolTestIntegration implements Judici
             "Civil/OutputToRas/" + rasRequestFileNameWithBooking,
             additionalRoleTest,
             overrideMapValues,
-            List.of() // default is all flags on
+            // TODO: remove temp flag-off value needed after DTSAM-860
+            List.of(FeatureFlagEnum.PRIVATELAW_WA_1_7) // default is all flags on
         );
     }
 
