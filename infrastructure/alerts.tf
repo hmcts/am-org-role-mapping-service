@@ -57,7 +57,7 @@ module "prm-process-not-started-alerts" {
  
   alert_name = "am-${each.value.key}-not-started-alert"
   alert_desc = "Triggers when ${each.value.processName} has not started the expected time frame in am-${local.local_env}."
-  app_insights_query = "customEvents | where name == '${each.value.processName} - Started' | limit 1"
+  app_insights_query = "customEvents | where cloud_RoleName == 'am-org-role-mapping-service' and cloud_RoleInstance startswith 'am-org-role-mapping-service-java' | where name == '${each.value.processName} - Started' | limit 1"
   custom_email_subject = "Alert: ${each.value.processName} has not started in expected time frame in am-${local.local_env}"
   frequency_in_minutes = each.value.frequencyInMinutes
   time_window_in_minutes = each.value.timeWindowInMinutes
@@ -67,7 +67,7 @@ module "prm-process-not-started-alerts" {
   trigger_threshold = "1"
   resourcegroup_name = local.sharedResourceGroup
   common_tags = var.common_tags
-  enabled = true
+  enabled = var.enable_prm_process_not_started_alerts
 }
 
 module "prm-process-not-completed-alerts" {
@@ -81,7 +81,7 @@ module "prm-process-not-completed-alerts" {
  
   alert_name = "am-${each.value.key}-not-completed-alert"
   alert_desc = "Triggers when ${each.value.processName} has started but not completed am-${local.local_env}."
-  app_insights_query = "customEvents | where name startswith '${each.value.processName}' | where timestamp >= ago(60m) | order by timestamp asc | extend prevName = prev(name) | where prevName == '${each.value.processName} - Started' and name == '${each.value.processName}' - Completed'"
+  app_insights_query = "customEvents | where cloud_RoleName == 'am-org-role-mapping-service' and cloud_RoleInstance startswith 'am-org-role-mapping-service-java' | where name startswith '${each.value.processName}' | where timestamp >= ago(60m) | order by timestamp asc | extend prevName = prev(name) | where prevName == '${each.value.processName} - Started' and name startswith '${each.value.processName} - Completed'"
   custom_email_subject = "Alert: ${each.value.processName} has not completed am-${local.local_env}"
   frequency_in_minutes = each.value.frequencyInMinutes
   time_window_in_minutes = each.value.timeWindowInMinutes
@@ -91,7 +91,7 @@ module "prm-process-not-completed-alerts" {
   trigger_threshold = "1"
   resourcegroup_name = local.sharedResourceGroup
   common_tags = var.common_tags
-  enabled = true
+  enabled = var.enable_prm_process_not_completed_alerts
 }
 
 module "prm-process-failure-alerts" {
@@ -105,7 +105,7 @@ module "prm-process-failure-alerts" {
  
   alert_name = "am-${each.value.key}-failure-alert"
   alert_desc = "Triggers when ${each.value.processName} fails am-${local.local_env}."
-  app_insights_query = "customEvents | where name == '${each.value.processName} - Failed'"
+  app_insights_query = "customEvents | where cloud_RoleName == 'am-org-role-mapping-service' and cloud_RoleInstance startswith 'am-org-role-mapping-service-java' | where name startswith '${each.value.processName}' and (name endswith ' - Partial Success' or name endswith ' - Failed')"
   custom_email_subject = "Alert: ${each.value.processName} failed in am-${var.env}"
   frequency_in_minutes = each.value.frequencyInMinutes
   time_window_in_minutes = each.value.timeWindowInMinutes
@@ -115,5 +115,5 @@ module "prm-process-failure-alerts" {
   trigger_threshold = "0"
   resourcegroup_name = local.sharedResourceGroup
   common_tags = var.common_tags
-  enabled = true
+  enabled = var.enable_prm_process_failure_alerts
 }

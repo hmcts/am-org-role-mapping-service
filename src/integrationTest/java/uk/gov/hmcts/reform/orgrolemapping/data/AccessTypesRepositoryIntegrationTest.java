@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AccessTypesRepositoryIntegrationTest extends BaseTestIntegration {
+class AccessTypesRepositoryIntegrationTest extends BaseTestIntegration {
 
     @Autowired
     private AccessTypesRepository accessTypesRepository;

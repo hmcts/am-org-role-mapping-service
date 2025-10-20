@@ -1,12 +1,24 @@
 package uk.gov.hmcts.reform.orgrolemapping.data;
 
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.QueryHint;
+import org.hibernate.cfg.AvailableSettings;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
+import org.springframework.data.repository.query.Param;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.ACCESS_TYPES;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConstants.ACCESS_TYPES_MIN_VERSION;
@@ -19,6 +31,46 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.PrmConst
 
 @Repository
 public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQueueEntity, String> {
+
+    // NB: This upsert is for PRM Process 5 & Process 6 Single User:
+    //     on conflict it will only update record when this is a fresh update.
+    String UPSERT_SQL_WHEN_LAST_UPDATED = """
+            insert into user_refresh_queue (user_id, user_last_updated, access_types_min_version, deleted,
+                                            access_types, organisation_id, organisation_status,
+                                            organisation_profile_ids, active)
+            values (:userId, :userLastUpdated, :accessTypesMinVersion, :deleted, CAST(:accessTypes AS jsonb),
+                    :organisationId, :organisationStatus, string_to_array(:organisationProfileIds, ','), true)
+            on conflict (user_id) do update
+            set
+                access_types_min_version = greatest(excluded.access_types_min_version,
+                                                    user_refresh_queue.access_types_min_version),
+                user_last_updated = excluded.user_last_updated,
+                last_updated = now(),
+                retry = 0,
+                retry_after = now(),
+                active = true,
+                deleted = excluded.deleted,
+                access_types = excluded.access_types,
+                organisation_id = excluded.organisation_id,
+                organisation_status = excluded.organisation_status,
+                organisation_profile_ids  = excluded.organisation_profile_ids
+            where excluded.user_last_updated > user_refresh_queue.user_last_updated
+            """;
+
+    String SKIP_LOCKED = "-2";
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    UserRefreshQueueEntity findByUserId(String userId);
+
+    @QueryHints(@QueryHint(name = AvailableSettings.JPA_LOCK_TIMEOUT, value = SKIP_LOCKED))
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<UserRefreshQueueEntity> findFirstByActiveTrue();
+
+    @Modifying
+    @Query(value = UPSERT_SQL_WHEN_LAST_UPDATED, nativeQuery = true)
+    void upsert(String userId, LocalDateTime userLastUpdated, Long accessTypesMinVersion, LocalDateTime deleted,
+                String accessTypes, String organisationId, String organisationStatus,
+                String organisationProfileIds);
 
     default void upsertToUserRefreshQueue(NamedParameterJdbcTemplate jdbcTemplate,
                                           List<ProfessionalUserData> rows,
@@ -65,34 +117,12 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
     default void upsertToUserRefreshQueueForLastUpdated(NamedParameterJdbcTemplate jdbcTemplate,
                                                         List<ProfessionalUserData> rows,
                                                         Integer accessTypeMinVersion) {
-
         // NB: This upsert is for PRM Process 5:
         //     on conflict it will only update record when this is a fresh update.
-
-        String sql = """
-            insert into user_refresh_queue (user_id, user_last_updated, access_types_min_version, deleted,
-                                            access_types, organisation_id, organisation_status,
-                                            organisation_profile_ids, active)
-            values (:userId, :userLastUpdated, :accessTypesMinVersion, :deleted, CAST(:accessTypes AS jsonb),
-                    :organisationId, :organisationStatus, string_to_array(:organisationProfileIds, ','), true)
-            on conflict (user_id) do update
-            set
-                access_types_min_version = greatest(excluded.access_types_min_version,
-                                                    user_refresh_queue.access_types_min_version),
-                user_last_updated = excluded.user_last_updated,
-                last_updated = now(),
-                retry = 0,
-                retry_after = now(),
-                active = true,
-                deleted = excluded.deleted,
-                access_types = excluded.access_types,
-                organisation_id = excluded.organisation_id,
-                organisation_status = excluded.organisation_status,
-                organisation_profile_ids  = excluded.organisation_profile_ids
-            where excluded.user_last_updated > user_refresh_queue.user_last_updated
-            """;
-
-        jdbcTemplate.batchUpdate(sql, getParamsFromProfessionalUserDataRows(rows, accessTypeMinVersion));
+        jdbcTemplate.batchUpdate(
+                UPSERT_SQL_WHEN_LAST_UPDATED,
+                getParamsFromProfessionalUserDataRows(rows, accessTypeMinVersion)
+        );
     }
 
     private MapSqlParameterSource[] getParamsFromProfessionalUserDataRows(List<ProfessionalUserData> rows,
@@ -111,5 +141,61 @@ public interface UserRefreshQueueRepository extends JpaRepository<UserRefreshQue
                 return paramValues;
             }).toArray(MapSqlParameterSource[]::new);
     }
+
+    @Query(value = """
+        select user_id, last_updated, user_last_updated, access_types_min_version, deleted,
+               access_types, organisation_id,
+               organisation_status, organisation_profile_ids, active, retry, retry_after
+        from user_refresh_queue
+        where active and retry <= 4
+        and (retry_after < now() or retry_after is null)
+        limit 1
+        for update skip locked""", nativeQuery = true)
+    UserRefreshQueueEntity retrieveSingleActiveRecord();
+
+    @Modifying
+    @Query(value = """
+        update user_refresh_queue
+                              set active = false,
+                              retry = 0,
+                              retry_after = now()
+                              where user_id = :userId
+                              and last_updated <= :lastUpdated
+                              and access_types_min_version <= :accessTypesMinVersion""", nativeQuery = true)
+    void clearUserRefreshRecord(String userId, LocalDateTime lastUpdated,
+                                                  Long accessTypesMinVersion);
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Modifying
+    @Query(value = "update user_refresh_queue "
+            + "set "
+            + "retry = case "
+            + "when retry = 0 then 1 "
+            + "when retry = 1 then 2 "
+            + "when retry = 2 then 3 "
+            + "when retry = 4 then 0 "
+            + "else 4 "
+            + "end, "
+            + "retry_after = case "
+            + "when retry = 0 then now() + (interval '1' Minute) * CAST(:retryOneIntervalMin AS INTEGER) "
+            + "when retry = 1 then now() + (interval '1' Minute) * CAST(:retryTwoIntervalMin AS INTEGER) "
+            + "when retry = 2 then now() + (interval '1' Minute) * CAST(:retryThreeIntervalMin AS INTEGER) "
+            + "when retry = 4 then now() "
+            + "else NULL "
+            + "end "
+            + "where user_id = :userId", nativeQuery = true)
+    void updateRetry(String userId, String retryOneIntervalMin,
+                     String retryTwoIntervalMin, String retryThreeIntervalMin);
+
+    @Modifying
+    @Query(value = """
+            DELETE FROM user_refresh_queue o 
+            WHERE o.last_updated < 
+                  (now() - ((interval '1' day) * CAST(:numDaysPassed AS INTEGER)))
+              AND o.active = false
+            RETURNING user_id
+            """, nativeQuery = true)
+    List<String> deleteInactiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
+            @Param("numDaysPassed") String numDaysPassed);
 
 }

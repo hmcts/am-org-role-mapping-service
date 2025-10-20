@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -9,12 +10,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.OrganisationRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
@@ -290,10 +289,10 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertTotalOrganisationRefreshQueueEntitiesInDb(1, 0, 0);
 
         // Verify 2 active users in the refresh queue, all updated
-        assertTotalUserRefreshQueueEntitiesInDb(2);
-        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_4, SOLICITOR_ACCESS_TYPE,
+        assertTotalUserRefreshQueueEntitiesInDb(3);
+        assertUserRefreshQueueEntitiesInDb("user11", ORGANISATION_ID_4, SOLICITOR_ACCESS_TYPE,
             NEW_USER_LAST_UPDATED, true, false);
-        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_4, OGD_ACCESS_TYPE,
+        assertUserRefreshQueueEntitiesInDb("user12", ORGANISATION_ID_4, OGD_ACCESS_TYPE,
             NEW_USER_LAST_UPDATED, true, false);
     }
 
@@ -308,17 +307,50 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
     })
     void testRetryFailed() {
 
-        Assertions.assertThrows(ServiceException.class, () ->
-            // verify that the organisations are attempted to be updated 3 times
-            runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation4_scenario_01.json"),
-                EndStatus.FAILED, 3)
-        );
+
+        // verify that the organisations are attempted to be updated 9 (3 x 3 retries) times
+        runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation4_scenario_01.json"),
+            EndStatus.FAILED, 9);
 
         // verify that the OrganisationRefreshQueue contains 1 record, 1 active, 4 retries
-        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 1, 4);
+        assertTotalOrganisationRefreshQueueEntitiesInDb(1, 1, 1);
 
         // Verify no active users in the refresh queue
         assertTotalUserRefreshQueueEntitiesInDb(0);
+    }
+
+    /**
+     * Partial Success - Failed.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation1.sql",
+        "classpath:sql/prm/organisation_refresh_queue/insert_organisation4.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user1organisation1.sql"
+    })
+    void testPartialSuccess() {
+        // verify that the organisations are attempted to be updated with a failure for org 4
+        runTest(List.of("/SchedulerTests/PrdUsersByOrganisation/userOrganisation1_scenario_01.json",
+                        "/SchedulerTests/PrdUsersByOrganisation/userOrganisation4_scenario_01.json"),
+                EndStatus.PARTIAL_SUCCESS, 10);
+
+        // verify that the OrganisationRefreshQueue contains 2 records, 1 active, retry=1 (end value)
+        assertTotalOrganisationRefreshQueueEntitiesInDb(2, 1, 1);
+
+        // Verify 5 active user in the refresh queue
+        assertTotalUserRefreshQueueEntitiesInDb(5);
+        assertUserRefreshQueueEntitiesInDb("user1", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+                NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user2", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+                NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user3", ORGANISATION_ID_1, SOLICITOR_ACCESS_TYPE,
+                NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user11", ORGANISATION_ID_4, SOLICITOR_ACCESS_TYPE,
+                NEW_USER_LAST_UPDATED, true, false);
+        assertUserRefreshQueueEntitiesInDb("user12", ORGANISATION_ID_4, OGD_ACCESS_TYPE,
+                NEW_USER_LAST_UPDATED, true, false);
     }
 
     private void runTest(List<String> fileNames, EndStatus endStatus, int noOfCallsToPrd) {
@@ -336,6 +368,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         logAfterStatus(processMonitorDto);
 
         // verify that the process monitor reports the correct status
+        assertNotNull(processMonitorDto);
         assertEquals(endStatus, processMonitorDto.getEndStatus());
     }
 
@@ -460,7 +493,7 @@ class PrmSchedulerProcess4IntegrationTest extends BaseSchedulerTestIntegration {
         assertEquals(TEST_PAGE_SIZE, event.getRequest().getQueryParams().get("pageSize").firstValue(),
             "Response pageSize mismatch");
         // verify response status
-        int httpStatus = EndStatus.FAILED.equals(endStatus)
+        int httpStatus = !EndStatus.SUCCESS.equals(endStatus)
             ? HttpStatus.UNAUTHORIZED.value() : HttpStatus.OK.value();
         assertEquals(httpStatus, event.getResponse().getStatus(),
             "Response status mismatch");

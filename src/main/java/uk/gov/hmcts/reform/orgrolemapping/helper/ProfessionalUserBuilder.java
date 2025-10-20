@@ -34,7 +34,8 @@ public class ProfessionalUserBuilder {
         userData.setDeleted(user.getDateTimeDeleted());
         userData.setAccessTypes(JacksonUtils.convertObjectToString(user.getUserAccessTypes()));
         userData.setOrganisationId(user.getOrganisationInfo().getOrganisationIdentifier());
-        userData.setOrganisationStatus(user.getOrganisationInfo().getStatus());
+        userData.setOrganisationStatus(user.getOrganisationInfo().getStatus().getValue());
+        userData.setOrganisationStatus(user.getOrganisationInfo().getStatus().getValue());
         if (user.getOrganisationInfo().getOrganisationProfileIds() != null) {
             userData.setOrganisationProfileIds(
                 String.join(",", user.getOrganisationInfo().getOrganisationProfileIds()));

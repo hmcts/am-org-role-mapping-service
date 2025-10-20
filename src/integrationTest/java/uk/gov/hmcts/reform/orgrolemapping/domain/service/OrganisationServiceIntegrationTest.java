@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.OrganisationStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -101,7 +102,7 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
     void shouldFindOrganisationChangesAndInsertIntoOrganisationRefreshQueue() {
         OrganisationInfo organisationInfo = OrganisationInfo.builder()
                 .organisationIdentifier("123")
-                .status("ACTIVE")
+                .status(OrganisationStatus.ACTIVE)
                 .organisationLastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
 
@@ -125,7 +126,7 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
         // Arrange
         OrganisationInfo organisationInfo1 = OrganisationInfo.builder()
                 .organisationIdentifier("123")
-                .status("ACTIVE")
+                .status(OrganisationStatus.ACTIVE)
                 .organisationLastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
 
@@ -138,7 +139,7 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
 
         OrganisationInfo organisationInfo2 = OrganisationInfo.builder()
                 .organisationIdentifier("456")
-                .status("ACTIVE")
+                .status(OrganisationStatus.ACTIVE)
                 .organisationLastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE")).build();
 

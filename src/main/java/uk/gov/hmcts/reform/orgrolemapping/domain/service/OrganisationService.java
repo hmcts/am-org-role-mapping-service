@@ -23,7 +23,8 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -38,6 +39,7 @@ public class OrganisationService {
 
     public static final String PROCESS_2_NAME = "PRM Process 2 - Find Organisations with Stale Profiles";
     public static final String PROCESS_3_NAME = "PRM Process 3 - Find organisation changes";
+    private static final String NO_ENTITIES = "No entities to process";
 
     private final PrdService prdService;
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository;
@@ -48,7 +50,9 @@ public class OrganisationService {
     private final String pageSize;
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final ProcessEventTracker processEventTracker;
-    private String tolerance;
+
+    private final String activeOrganisationRefreshDays;
+    private final String tolerance;
     private static final String P2 = "P2";
     private static final String P3 = "P3";
 
@@ -61,6 +65,9 @@ public class OrganisationService {
                                BatchLastRunTimestampRepository batchLastRunTimestampRepository,
                                DatabaseDateTimeRepository databaseDateTimeRepository,
                                ProcessEventTracker processEventTracker,
+                               @Value("${professional.role.mapping.scheduling"
+                                       + ".organisationRefreshCleanup.activeOrganisationRefreshDays}")
+                               String activeOrganisationRefreshDays,
                                @Value("${groupAccess.lastRunTimeTolerance}") String tolerance) {
         this.prdService = prdService;
         this.profileRefreshQueueRepository = profileRefreshQueueRepository;
@@ -71,7 +78,43 @@ public class OrganisationService {
         this.pageSize = pageSize;
         this.jdbcTemplate = jdbcTemplate;
         this.processEventTracker = processEventTracker;
+        this.activeOrganisationRefreshDays = activeOrganisationRefreshDays;
         this.tolerance = tolerance;
+    }
+
+    @Transactional
+    public ProcessMonitorDto deleteInactiveOrganisationRefreshRecords() {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("PRM Cleanup Process - Organisation");
+        processEventTracker.trackEventStarted(processMonitorDto);
+        List<String> deletedEntities = new ArrayList<>();
+        try {
+            processMonitorDto.addProcessStep("Deleting inactive organisation refresh queue entities "
+                    + "last updated before " + activeOrganisationRefreshDays + " days");
+            deletedEntities.addAll(organisationRefreshQueueRepository
+                    .deleteInactiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
+                            activeOrganisationRefreshDays));
+        } catch (Exception exception) {
+            processMonitorDto.markAsFailed(exception.getMessage());
+            processEventTracker.trackEventCompleted(processMonitorDto);
+            throw exception;
+        }
+        addCleanupProcessSteps(processMonitorDto, deletedEntities);
+        processMonitorDto.markAsSuccess();
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
+    }
+
+    private void addCleanupProcessSteps(ProcessMonitorDto processMonitorDto, List<String> organisationIds) {
+        if (organisationIds.isEmpty()) {
+            processMonitorDto.addProcessStep(NO_ENTITIES);
+            log.info("Completed {}. No entities to process", processMonitorDto.getProcessType());
+            return;
+        }
+        processMonitorDto.addProcessStep(String.format("Deleted %s inactive organisation refresh queue entities",
+                organisationIds.size()));
+        String processStep = "=" + organisationIds
+                .stream().map(o -> o + ",").collect(Collectors.joining());
+        processMonitorDto.appendToLastProcessStep(processStep);
     }
 
     @Transactional
@@ -97,23 +140,21 @@ public class OrganisationService {
 
             page = 1;
             Integer accessTypeMinVersion = accessTypesEntity.getVersion().intValue();
-            OrganisationsResponse organisationsResponse = prdService
-                    .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
-            writeAllToOrganisationRefreshQueue(organisationsResponse.getOrganisations(),
-                    accessTypeMinVersion, P3, processMonitorDto);
-
-            page = 2;
-            boolean moreAvailable = organisationsResponse.getMoreAvailable();
-            while (moreAvailable) {
+            OrganisationsResponse organisationsResponse;
+            boolean moreAvailable;
+            do {
                 organisationsResponse = prdService
-                        .retrieveOrganisations(formattedSince, page, Integer.valueOf(pageSize)).getBody();
+                        .retrieveOrganisations(formattedSince, page, Integer.parseInt(pageSize)).getBody();
+                if (organisationsResponse == null) {
+                    throw new ServiceException("OrganisationsResponse is null");
+                }
                 writeAllToOrganisationRefreshQueue(organisationsResponse.getOrganisations(),
                         accessTypeMinVersion, P3, processMonitorDto);
                 moreAvailable = organisationsResponse.getMoreAvailable();
                 page++;
-            }
+            } while (moreAvailable);
             batchLastRunTimestampEntity.setLastOrganisationRunDatetime(LocalDateTime
-                    .ofInstant(batchRunStartTime.getDate(), ZoneOffset.systemDefault()));
+                    .ofInstant(batchRunStartTime.getDate(), ZoneId.systemDefault()));
             batchLastRunTimestampRepository.save(batchLastRunTimestampEntity);
         } catch (Exception exception) {
             String pageFailMessage = (page == 0 ? "" : ", failed at page " + page);

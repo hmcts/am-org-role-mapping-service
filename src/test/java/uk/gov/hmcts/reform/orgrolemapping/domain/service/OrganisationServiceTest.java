@@ -1,12 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
@@ -22,6 +23,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.ProfileRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationByProfileIdsResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationsResponse;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.OrganisationStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
@@ -47,6 +49,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OrganisationServiceTest {
 
+    private final String numDays = "90";
     private final PrdService prdService = Mockito.mock(PrdService.class);
     private final ProfileRefreshQueueRepository profileRefreshQueueRepository =
             Mockito.mock(ProfileRefreshQueueRepository.class);
@@ -70,8 +73,16 @@ class OrganisationServiceTest {
             "1",
             jdbcTemplate,
             accessTypesRepository, batchLastRunTimestampRepository, databaseDateTimeRepository,
-            processEventTracker, "10"
-    );
+            processEventTracker, numDays, "10");
+
+    @Test
+    void deleteInactiveOrganisationRefreshRecordsTest() {
+        organisationService.deleteInactiveOrganisationRefreshRecords();
+
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        verify(organisationRefreshQueueRepository, times(1))
+                .deleteInactiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(numDays);
+    }
 
     @Test
     void findAndInsertStaleOrganisationsIntoRefreshQueue_Test() {
@@ -189,6 +200,16 @@ class OrganisationServiceTest {
                         + "1 organisations=orgIdentifier3, : COMPLETED");
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
                 .isEqualTo(EndStatus.SUCCESS);
+    }
+
+    @Test
+    void deleteInactiveOrganisationRefreshRecordsTestWithFailure() {
+        doThrow(ServiceException.class).when(organisationRefreshQueueRepository)
+                .deleteInactiveOrganisationRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(numDays);
+        Assert.assertThrows(ServiceException.class, () ->
+                organisationService
+                        .deleteInactiveOrganisationRefreshRecords()
+        );
     }
 
     @SuppressWarnings("unchecked")
@@ -353,7 +374,7 @@ class OrganisationServiceTest {
     private OrganisationInfo buildOrganisationInfo(int i) {
         return OrganisationInfo.builder()
                 .organisationIdentifier("orgIdentifier" + i)
-                .status("ACTIVE")
+                .status(OrganisationStatus.ACTIVE)
                 .organisationLastUpdated(LocalDateTime.now())
                 .organisationProfileIds(List.of("SOLICITOR_PROFILE"))
                 .build();

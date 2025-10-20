@@ -8,7 +8,7 @@
 
   "request": {
     "queryParams": {
-      "organisationId": "AKHH9RZ"
+      "organisationId": "${[scenarioContext][siblingContexts][S-013.04_MakeOrganisationRefreshQueueValueActive][testData][request][queryParams][organisationId]}"
     }
   },
 

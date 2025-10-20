@@ -18,15 +18,26 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.RdFeignClie
 
 @FeignClient(value = "prdClient", url = "${feign.client.config.prdClient.url}",
         configuration = {FeignClientConfiguration.class, RdFeignClientInterceptor.class},
-        fallback = PRDFeignClientFallback.class
-)
+        fallback = PRDFeignClientFallback.class)
+
 public interface PRDFeignClient {
+
+    @GetMapping(value = "/")
+    String getServiceStatus();
 
     @PostMapping(value = "/refdata/internal/v1/organisations/getOrganisationsByProfile")
     ResponseEntity<OrganisationByProfileIdsResponse> getOrganisationsByProfileIds(
             @RequestParam(name = "pageSize") Integer pageSize,
             @RequestParam(name = "searchAfter") String searchAfter,
             @RequestBody OrganisationByProfileIdsRequest organisationByProfileIdsRequest
+    );
+
+    @GetMapping(value = "/refdata/internal/v1/organisations/users")
+    ResponseEntity<GetRefreshUserResponse> getRefreshUsers(
+            @RequestParam(name = "userId") String userId,
+            @RequestParam(name = "since") String lastUpdatedSince,
+            @RequestParam(name = "pageSize") Integer pageSize,
+            @RequestParam(name = "searchAfter") String searchAfter
     );
 
     @GetMapping(value = "/refdata/internal/v1/organisations")
@@ -44,13 +55,6 @@ public interface PRDFeignClient {
             @RequestParam(name = "searchAfterOrg") String searchAfterOrg,
             @RequestParam(name = "searchAfterUser") String searchAfterUser,
             @RequestBody UsersByOrganisationRequest usersByOrganisationRequest
-    );
-
-    @GetMapping(value = "/refdata/internal/v1/organisations/users")
-    ResponseEntity<GetRefreshUserResponse> retrieveUsers(
-            @RequestParam(name = "since") String lastUpdatedSince,
-            @RequestParam(name = "pageSize") Integer pageSize,
-            @RequestParam(name = "searchAfter") String searchAfter
     );
 
 }
