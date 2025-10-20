@@ -74,7 +74,7 @@ class PublicLawJudicialIT  extends BaseJudicialDroolTestIntegration implements J
             ),
 
 
-            // 002 Deputy District Judge - Fee Paid
+            // 002 Deputy Circuit Judge - Fee Paid
             Arguments.arguments(
                 "002_Deputy_Circuit_Judge__FeePaid",
                 "002_DCJ__003_R__020_CJ-SIR__021_R-SIR__022_DUTJ__withoutBooking",
@@ -306,6 +306,13 @@ class PublicLawJudicialIT  extends BaseJudicialDroolTestIntegration implements J
             // 013 High Court Judge - Sitting in Retirement - Fee Paid
             Arguments.arguments(
                 "013.1_High_Court_Judge_Sitting-in-Retirement__FeePaid",
+                "004_DDJ-PRFD__005_DDJ-MC__006_DDJ-MC-SIR__007_DDJ__008_DDJ-SIR__009_DHCJ__013_HCJ-SIR__023_DJ-MC-SIR__024_DJ-SIR__withoutBooking",
+                "004_DDJ-PRFD__005_DDJ-MC__006_DDJ-MC-SIR__007_DDJ__008_DDJ-SIR__009_DHCJ__013_HCJ-SIR__023_DJ-MC-SIR__024_DJ-SIR__withBooking",
+                false,
+                null
+            ),
+            Arguments.arguments(
+                "013.2_High_Court_Judge_(sitting-in-retirement)__FeePaid",
                 "004_DDJ-PRFD__005_DDJ-MC__006_DDJ-MC-SIR__007_DDJ__008_DDJ-SIR__009_DHCJ__013_HCJ-SIR__023_DJ-MC-SIR__024_DJ-SIR__withoutBooking",
                 "004_DDJ-PRFD__005_DDJ-MC__006_DDJ-MC-SIR__007_DDJ__008_DDJ-SIR__009_DHCJ__013_HCJ-SIR__023_DJ-MC-SIR__024_DJ-SIR__withBooking",
                 false,
