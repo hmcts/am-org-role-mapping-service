@@ -5,6 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
@@ -15,7 +16,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertHelper.MultiRegion;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -127,13 +126,19 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         "SSCS Principal Judge-Salaried,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
                 + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary',7,true",
 
-        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',1,false",
-        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',6,true",
-        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',7,true",
+        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,"
+                + "case-allocator,task-supervisor',1,false",
+        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,"
+                + "case-allocator,task-supervisor',6,true",
+        "SSCS Judge of the First-tier Tribunal-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,"
+                + "case-allocator,task-supervisor',7,true",
 
-        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',1,false",
-        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',6,true",
-        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary',7,true",
+        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,case-allocator,"
+                + "task-supervisor',1,false",
+        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,case-allocator,"
+                + "task-supervisor',6,true",
+        "SSCS Tribunal Judge-Salaried,'judge,post-hearing-salaried-judge,hmcts-judiciary,case-allocator,"
+                + "task-supervisor',7,true",
 
         "SSCS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary',1,false",
         "SSCS Tribunal Member Medical-Salaried,'medical,hmcts-judiciary',6,true",
@@ -167,6 +172,12 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         );
         if (setOffice.contains("President of Tribunal")) {
             rolesThatRequireRegions = List.of(); // NB: no regions for "President of Tribunal"
+        } else if (List.of("SSCS Tribunal Judge-Salaried", "SSCS Judge of the First-tier Tribunal-Salaried")
+                .contains(setOffice)) {
+            rolesThatRequireRegions = List.of(
+                    "judge",
+                    "post-hearing-salaried-judge"
+            );
         }
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
@@ -380,15 +391,6 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
         );
     }
 
-
-    private static List<FeatureFlag> setFeatureFlags() {
-        List<String> flags = List.of("sscs_wa_1_0", "sscs_wa_1_1", "sscs_wa_1_2", "sscs_wa_1_3");
-
-        return flags.stream()
-                .map(flag -> FeatureFlag.builder().flagName(flag).status(true).build())
-                .collect(Collectors.toList());
-    }
-
     private String setExpectedBookingRegionId(String regionId, boolean withBooking, boolean johFallback) {
         if (withBooking && !judicialBookings.isEmpty()) {
             return (johFallback ? regionId :
@@ -405,6 +407,10 @@ class DroolSscsJudicialRoleMappingTest extends DroolBase {
                 .orElse(JudicialOfficeHolder.builder().build()).getUserId());
         judicialBooking.setLocationId("2");
         judicialBookings = Set.of(judicialBooking);
+    }
+
+    private List<FeatureFlag> setFeatureFlags() {
+        return getAllFeatureFlagsToggleByJurisdiction("SSCS", true, false);
     }
 
 }
