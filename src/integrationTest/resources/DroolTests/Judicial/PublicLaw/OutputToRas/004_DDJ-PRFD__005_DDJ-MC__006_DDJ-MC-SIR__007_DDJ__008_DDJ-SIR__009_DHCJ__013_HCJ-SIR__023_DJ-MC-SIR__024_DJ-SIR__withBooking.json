@@ -25,7 +25,6 @@
         "contractType": "Fee-Paid",
         "primaryLocation": "123456",
         "jurisdiction": "PUBLICLAW",
-        "region": "4",
         "workTypes": "hearing_work,routine_work,decision_making_work,applications"
       },
       "authorisations": [
