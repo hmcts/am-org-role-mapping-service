@@ -42,7 +42,7 @@ public class RefreshController {
                              JudicialRefreshOrchestrator judicialRefreshOrchestrator,
                              ProfessionalRefreshOrchestrator professionalRefreshOrchestrator,
                              @Value("${professional.role.mapping.refreshApi.enabled}")
-                             boolean refreshApiEnabled) {
+                             Boolean refreshApiEnabled) {
         this.refreshOrchestrator = refreshOrchestrator;
         this.judicialRefreshOrchestrator = judicialRefreshOrchestrator;
         this.professionalRefreshOrchestrator = professionalRefreshOrchestrator;
