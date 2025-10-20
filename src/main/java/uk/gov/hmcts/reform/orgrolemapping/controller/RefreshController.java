@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +47,7 @@ public class RefreshController {
         this.refreshOrchestrator = refreshOrchestrator;
         this.judicialRefreshOrchestrator = judicialRefreshOrchestrator;
         this.professionalRefreshOrchestrator = professionalRefreshOrchestrator;
-        this.refreshApiEnabled = refreshApiEnabled;
+        this.refreshApiEnabled = BooleanUtils.isTrue(refreshApiEnabled);
     }
 
     RefreshOrchestrator refreshOrchestrator;
