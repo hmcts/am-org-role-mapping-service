@@ -365,43 +365,88 @@ class PublicLawJudicialIT  extends BaseJudicialDroolTestIntegration implements J
             // 014 Designated Family Judge - Salaried
             Arguments.arguments(
                 "014_Designated_Family_Judge__Salaried",
-                "014_DFJ__singleRegion",
-                "014_DFJ__singleRegion", // bookings have no effect on this scenario
+                "014_DFJ__014b_ADFJ__singleRegion",
+                "014_DFJ__014b_ADFJ__singleRegion", // bookings have no effect on this scenario
                 false,
                 generateJudicialOverrideMapValues(JudicialAccessProfile.AppointmentType.SALARIED, REGION_02_MIDLANDS)
             ),
             Arguments.arguments(
                 "014_Designated_Family_Judge__Salaried",
-                "014_DFJ__multiRegion_1_5",
-                "014_DFJ__multiRegion_1_5", // bookings have no effect on this scenario
+                "014_DFJ__014b_ADFJ__multiRegion_1_5",
+                "014_DFJ__014b_ADFJ__multiRegion_1_5", // bookings have no effect on this scenario
                 false,
                 generateJudicialOverrideMapValues(JudicialAccessProfile.AppointmentType.SALARIED, REGION_01_LONDON)
             ),
             Arguments.arguments(
                 "014_Designated_Family_Judge__Salaried",
-                "014_DFJ__multiRegion_1_5",
-                "014_DFJ__multiRegion_1_5", // bookings have no effect on this scenario
+                "014_DFJ__014b_ADFJ__multiRegion_1_5",
+                "014_DFJ__014b_ADFJ__multiRegion_1_5", // bookings have no effect on this scenario
                 false,
                 generateJudicialOverrideMapValues(JudicialAccessProfile.AppointmentType.SALARIED, REGION_05_SOUTH_EAST)
             ),
             Arguments.arguments(
                 "014_Designated_Family_Judge__Salaried",
-                "014_DFJ__singleRegion",
-                "014_DFJ__singleRegion", // bookings have no effect on this scenario
+                "014_DFJ__014b_ADFJ__singleRegion",
+                "014_DFJ__014b_ADFJ__singleRegion", // bookings have no effect on this scenario
                 false,
                 generateJudicialOverrideMapValues(JudicialAccessProfile.AppointmentType.SPTW, REGION_02_MIDLANDS)
             ),
             Arguments.arguments(
                 "014_Designated_Family_Judge__Salaried",
-                "014_DFJ__multiRegion_1_5",
-                "014_DFJ__multiRegion_1_5", // bookings have no effect on this scenario
+                "014_DFJ__014b_ADFJ__multiRegion_1_5",
+                "014_DFJ__014b_ADFJ__multiRegion_1_5", // bookings have no effect on this scenario
                 false,
                 generateJudicialOverrideMapValues(JudicialAccessProfile.AppointmentType.SPTW, REGION_01_LONDON)
             ),
             Arguments.arguments(
                 "014_Designated_Family_Judge__Salaried",
-                "014_DFJ__multiRegion_1_5",
-                "014_DFJ__multiRegion_1_5", // bookings have no effect on this scenario
+                "014_DFJ__014b_ADFJ__multiRegion_1_5",
+                "014_DFJ__014b_ADFJ__multiRegion_1_5", // bookings have no effect on this scenario
+                false,
+                generateJudicialOverrideMapValues(JudicialAccessProfile.AppointmentType.SPTW, REGION_05_SOUTH_EAST)
+            ),
+
+
+            // 014b Acting Designated Family Judge - Salaried
+            Arguments.arguments(
+                "014b_Acting_Designated_Family_Judge__Salaried",
+                "014_DFJ__014b_ADFJ__singleRegion",
+                "014_DFJ__014b_ADFJ__singleRegion", // bookings have no effect on this scenario
+                false,
+                generateJudicialOverrideMapValues(JudicialAccessProfile.AppointmentType.SALARIED, REGION_02_MIDLANDS)
+            ),
+            Arguments.arguments(
+                "014b_Acting_Designated_Family_Judge__Salaried",
+                "014_DFJ__014b_ADFJ__multiRegion_1_5",
+                "014_DFJ__014b_ADFJ__multiRegion_1_5", // bookings have no effect on this scenario
+                false,
+                generateJudicialOverrideMapValues(JudicialAccessProfile.AppointmentType.SALARIED, REGION_01_LONDON)
+            ),
+            Arguments.arguments(
+                "014b_Acting_Designated_Family_Judge__Salaried",
+                "014_DFJ__014b_ADFJ__multiRegion_1_5",
+                "014_DFJ__014b_ADFJ__multiRegion_1_5", // bookings have no effect on this scenario
+                false,
+                generateJudicialOverrideMapValues(JudicialAccessProfile.AppointmentType.SALARIED, REGION_05_SOUTH_EAST)
+            ),
+            Arguments.arguments(
+                "014b_Acting_Designated_Family_Judge__Salaried",
+                "014_DFJ__014b_ADFJ__singleRegion",
+                "014_DFJ__014b_ADFJ__singleRegion", // bookings have no effect on this scenario
+                false,
+                generateJudicialOverrideMapValues(JudicialAccessProfile.AppointmentType.SPTW, REGION_02_MIDLANDS)
+            ),
+            Arguments.arguments(
+                "014b_Acting_Designated_Family_Judge__Salaried",
+                "014_DFJ__014b_ADFJ__multiRegion_1_5",
+                "014_DFJ__014b_ADFJ__multiRegion_1_5", // bookings have no effect on this scenario
+                false,
+                generateJudicialOverrideMapValues(JudicialAccessProfile.AppointmentType.SPTW, REGION_01_LONDON)
+            ),
+            Arguments.arguments(
+                "014b_Acting_Designated_Family_Judge__Salaried",
+                "014_DFJ__014b_ADFJ__multiRegion_1_5",
+                "014_DFJ__014b_ADFJ__multiRegion_1_5", // bookings have no effect on this scenario
                 false,
                 generateJudicialOverrideMapValues(JudicialAccessProfile.AppointmentType.SPTW, REGION_05_SOUTH_EAST)
             ),
