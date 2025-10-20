@@ -97,7 +97,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-057_DeleteDataForRoleAssignments].
 
   @S-058
-  @FeatureToggle(DB:sscs_wa_1_0=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
+  @FeatureToggle(DB:sscs_wa_1_4=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   Scenario: must successfully create judicial role mapping for Tribunal Judge - Salaried appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-058_DeleteDataForRoleAssignments],
@@ -135,6 +135,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
      When a request is prepared with appropriate values,
      And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
      Then a positive response is received,
+     And the response [contains multiple roles due to SSCS multi-region expanion for Wales and South West]
      And the response has all other details as expected
      And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-060_DeleteDataForRoleAssignments].
 
@@ -163,6 +164,42 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
     Then a positive response is received,
     And the response has all other details as expected,
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-162_DeleteDataForRoleAssignments].
+
+  @S-163
+  @FeatureToggle(DB:sscs_wa_1_1=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
+  Scenario: must successfully create organisational role mapping for fee-paid judge but not permit bookings when no ticketCode=368
+    Given a user with [a judicial profile for SSCS that does not support judicial bookings (i.e. no ticketCode=368)],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-163_DeleteDataForRoleAssignments],
+    And a successful call [to delete existing bookings corresponding to the test actorId] as in [S-163_DeleteDataForBookings],
+    And a successful call [to create single booking for this user] as in [S-163_CreateDataForBookings],
+    And a successful call [to refresh a judicial user's role assignments] as in [S-163_PostRefreshRequestToORM],
+    When a request is prepared with appropriate values,
+    And the request [contains the actorId of the user for which above booking is created],
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response [contains a non-bookable fee-paid-judge role-assignment],
+    And the response [contains no booked judge/fee-paid role-assignments],
+    And the response has all other details as expected,
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-163_DeleteDataForRoleAssignments],
+    And a successful call [to delete existing bookings corresponding to the test actorId] as in [S-163_DeleteDataForBookings].
+
+  @S-164
+  @FeatureToggle(DB:sscs_wa_1_1=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
+  Scenario: must successfully create organisational role mapping for fee-paid judge with bookings when ticketCode=368
+    Given a user with [a judicial profile for SSCS that supports judicial bookings (i.e. ticketCode=368)],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-164_DeleteDataForRoleAssignments],
+    And a successful call [to delete existing bookings corresponding to the test actorId] as in [S-164_DeleteDataForBookings],
+    And a successful call [to create single booking for this user] as in [S-164_CreateDataForBookings],
+    And a successful call [to refresh a judicial user's role assignments] as in [S-164_PostRefreshRequestToORM],
+    When a request is prepared with appropriate values,
+    And the request [contains the actorId of the user for which above booking is created],
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response [contains a bookable fee-paid-judge role-assignment],
+    And the response [contains booked judge/fee-paid role-assignments],
+    And the response has all other details as expected,
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-164_DeleteDataForRoleAssignments],
+    And a successful call [to delete existing bookings corresponding to the test actorId] as in [S-164_DeleteDataForBookings].
 
   @S-006.01
   @FeatureToggle(DB:sscs_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
