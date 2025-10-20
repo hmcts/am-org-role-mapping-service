@@ -194,31 +194,31 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-        scripts = {"classpath:sql/insert_multiple_organisations_profiles.sql"})
+            scripts = {"classpath:sql/insert_multiple_organisations_profiles.sql"})
     void shouldInsertMultipleUserIntoUserRefreshQueue_AndClearOrganisationRefreshQueue_MultipleOrgEntity() {
         ProfessionalUser professionalUser = buildProfessionalUser(1);
         UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
         UsersByOrganisationRequest usersByOrganisationRequestOrg1 = new UsersByOrganisationRequest(List.of("123"));
         UsersByOrganisationResponse responseOrg1 =
-            buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1", false);
+                buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1", false);
 
         when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null),eq(usersByOrganisationRequestOrg1)))
-            .thenReturn(ResponseEntity.ok(responseOrg1));
+                .thenReturn(ResponseEntity.ok(responseOrg1));
 
         ProfessionalUser professionalUser2 = buildProfessionalUser(2);
         UsersOrganisationInfo usersOrganisationInfo2 = buildUsersOrganisationInfo(1234, professionalUser2);
         UsersByOrganisationRequest usersByOrganisationRequestOrg2 = new UsersByOrganisationRequest(List.of("1234"));
         UsersByOrganisationResponse responseOrg2 =
-            buildUsersByOrganisationResponse(usersOrganisationInfo2, "1", "1", false);
+                buildUsersByOrganisationResponse(usersOrganisationInfo2, "1", "1", false);
         when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null),eq(usersByOrganisationRequestOrg2)))
-            .thenReturn(ResponseEntity.ok(responseOrg2));
+                .thenReturn(ResponseEntity.ok(responseOrg2));
 
         professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueue();
 
         assertEquals(2, userRefreshQueueRepository.findAll().size());
 
         List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
-            = organisationRefreshQueueRepository.findAll();
+                = organisationRefreshQueueRepository.findAll();
         assertFalse(organisationRefreshQueueEntities.get(0).getActive());
         assertFalse(organisationRefreshQueueEntities.get(1).getActive());
         List<UserRefreshQueueEntity> userRefreshQueueEntities = userRefreshQueueRepository.findAll();
@@ -250,22 +250,22 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-        scripts = {"classpath:sql/insert_organisation_profiles.sql"})
+            scripts = {"classpath:sql/insert_organisation_profiles.sql"})
     void shouldInsertOneUserIntoUserRefreshQueue_ById() {
         ProfessionalUser professionalUser = buildProfessionalUser(1);
         UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
         UsersByOrganisationResponse response =
-            buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1", false);
+                buildUsersByOrganisationResponse(usersOrganisationInfo, "1", "1", false);
 
         when(prdService.fetchUsersByOrganisation(any(), eq(null), eq(null), any()))
-            .thenReturn(ResponseEntity.ok(response));
+                .thenReturn(ResponseEntity.ok(response));
 
         professionalUserService.findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById("123");
 
         assertEquals(1, userRefreshQueueRepository.findAll().size());
 
         List<OrganisationRefreshQueueEntity> organisationRefreshQueueEntities
-            = organisationRefreshQueueRepository.findAll();
+                = organisationRefreshQueueRepository.findAll();
         assertFalse(organisationRefreshQueueEntities.get(0).getActive());
 
         List<UserRefreshQueueEntity> userRefreshQueueEntities = userRefreshQueueRepository.findAll();
@@ -345,7 +345,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_organisation_profiles_retry_3.sql"})
+            scripts = {"classpath:sql/prm/organisation_refresh_queue/insert_organisation_profiles_retry_3.sql"})
     void shouldRollback_AndUpdateRetryToFourAndRetryAfterToNullOnException2() {
         userRefreshQueueRepository.deleteAll();
         ProfessionalUser professionalUser = buildProfessionalUser(1);
@@ -406,8 +406,8 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_access_types.sql",
-                "classpath:sql/insert_batch_last_run.sql",
-                "classpath:sql/insert_user_refresh_queue.sql"})
+                       "classpath:sql/insert_batch_last_run.sql",
+                       "classpath:sql/insert_user_refresh_queue.sql"})
     void shouldFindUserChangesAndInsertIntoRefreshQueue_WithoutPagination() {
         userRefreshQueueRepository.deleteAll();
         RefreshUser refreshUser = refreshUser(1);
@@ -424,7 +424,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         assertEquals(1, batchLastRunTimestampRepository.findAll().size());
         verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
         assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
-            .isEqualTo(EndStatus.SUCCESS);
+                .isEqualTo(EndStatus.SUCCESS);
     }
 
     @Test
@@ -445,8 +445,8 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
             scripts = {"classpath:sql/insert_access_types.sql",
-                "classpath:sql/insert_batch_last_run.sql",
-                "classpath:sql/insert_user_refresh_queue.sql"})
+                       "classpath:sql/insert_batch_last_run.sql",
+                       "classpath:sql/insert_user_refresh_queue.sql"})
     void shouldFindUserChangesAndInsertIntoRefreshQueue_WithPagination() {
         userRefreshQueueRepository.deleteAll();
         final LocalDateTime preTestLastBatchRunTime = getLastUserRunDatetime();
