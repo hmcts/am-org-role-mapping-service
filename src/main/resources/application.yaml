@@ -201,6 +201,8 @@ professional:
       pageSize: ${PROFESSIONAL_REFDATA_PAGE_SIZE:100}
   role:
     mapping:
+      refreshApi:
+        enabled: ${PROFESSIONAL_REFRESH_API_ENABLED:false}
       scheduling:
         enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}
         findAndUpdateCaseDefinitionChanges:
