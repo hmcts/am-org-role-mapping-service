@@ -186,6 +186,8 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
         runTest(List.of("/SchedulerTests/PrdRetrieveUsers/userx_scenario_04.json"),
             1, false, false, EndStatus.SUCCESS, USERID, HttpStatus.FORBIDDEN,
             errorMessage);
+        // Reset the flag back to true for other tests
+        ReflectionTestUtils.setField(refreshController,"refreshApiEnabled", true);
     }
 
     protected void testCreateRoleAssignment(boolean organisation, boolean group) {
