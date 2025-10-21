@@ -35,7 +35,7 @@ def versions = [
         jacksondata    : '2.18.3',
         drools         : '9.44.0.Final',
         log4JVersion   : '2.24.3',
-        netty_version  : '4.2.6.Final',
+        netty_version  : '4.2.7.Final',
         poi            : '5.4.1'
 ]
 
@@ -206,7 +206,7 @@ jacocoTestReport {
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 jacoco {
-    toolVersion = "0.8.13"
+    toolVersion = "0.8.14"
 }
 
 task migratePostgresDatabase(type: org.flywaydb.gradle.task.FlywayMigrateTask) {
@@ -385,7 +385,7 @@ dependencies {
     implementation group: 'io.netty', name: 'netty-all', version: versions.netty_version
 
 
-    implementation 'net.bytebuddy:byte-buddy:1.17.7'
+    implementation 'net.bytebuddy:byte-buddy:1.17.8'
 
     testImplementation('com.opentable.components:otj-pg-embedded:1.1.1')
 
