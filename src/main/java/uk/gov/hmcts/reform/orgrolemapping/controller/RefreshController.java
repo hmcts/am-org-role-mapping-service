@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
@@ -159,6 +160,9 @@ public class RefreshController {
         content = @Content()
     )
     public ResponseEntity<Object> professionalRefresh(@RequestParam String userId) {
+        if (!refreshApiEnabled) {
+            throw new ForbiddenException("PROFESSIONAL_REFRESH_API_ENABLED is false");
+        }
         return professionalRefreshOrchestrator.refreshProfessionalUser(userId);
     }
 
