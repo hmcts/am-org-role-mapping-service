@@ -5,7 +5,6 @@ import jakarta.inject.Inject;
 import java.util.List;
 
 import lombok.SneakyThrows;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
