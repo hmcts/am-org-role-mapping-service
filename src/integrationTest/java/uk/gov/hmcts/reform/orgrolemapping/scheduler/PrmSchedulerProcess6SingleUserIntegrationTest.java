@@ -175,9 +175,9 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/prm/access_types/insert_accesstypes_yny.sql",
-            "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-            "classpath:sql/prm/user_refresh_queue/insert_user_refresh_queue_orgstatus_pending.sql"
+        "classpath:sql/prm/access_types/insert_accesstypes_yny.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user_refresh_queue_orgstatus_pending.sql"
     })
     void testDisabledApi() {
         ReflectionTestUtils.setField(refreshController,"refreshApiEnabled", false);
