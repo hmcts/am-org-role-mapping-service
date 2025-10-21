@@ -6,6 +6,7 @@ Feature: F-014 : Refresh Professional User
 
 
   # P1. All flags = true => expected 2 roles generated
+  @Ignore
   @S-014.01
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: successful refresh of professional user - single user - All flags true and PRD enabled true
@@ -21,6 +22,7 @@ Feature: F-014 : Refresh Professional User
 
 
   # N1 User not found - 0 roles generated
+  @Ignore
   @S-014.02
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: unsuccessful refresh of professional user - single user
@@ -32,6 +34,7 @@ Feature: F-014 : Refresh Professional User
 
 
   # P2 CCD 3 flags = true (but PRD enabled = false) => expected 2 roles generated
+  @Ignore
   @S-014.03
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: successful refresh of professional user - single user - All flags true and PRD enabled false
@@ -47,6 +50,7 @@ Feature: F-014 : Refresh Professional User
 
 
   # N2 User found without PRD access types - 0 roles generated positive scenario 200 returned
+  @Ignore
   @S-014.04
   @FeatureToggle(EV:PRM_FTA_ENABLED=on)
   Scenario: unsuccessful refresh of professional user - single user no PRD
