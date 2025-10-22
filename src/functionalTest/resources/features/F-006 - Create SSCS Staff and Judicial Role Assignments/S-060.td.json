@@ -18,6 +18,13 @@
       "queryRequests":[
         {
           "actorId": "${[scenarioContext][childContexts][S-060_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "roleName": ["hmcts-judiciary"],
+          "attributes": {
+            "contractType": ["Fee-Paid"]
+          }
+        },
+        {
+          "actorId": "${[scenarioContext][childContexts][S-060_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
           "attributes": {
             "jurisdiction": ["SSCS"]
           }
@@ -30,7 +37,7 @@
     "body": {
       "roleAssignmentResponse": [
         {
-          "__ordering__": "ORDERED"
+          "__elementId__": "roleName,attributes.jurisdiction,attributes.region"
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
@@ -50,7 +57,7 @@
             "contractType": "Fee-Paid",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
+            "region" : "6",
             "workTypes": "hearing_work,priority"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
@@ -73,7 +80,7 @@
             "contractType": "Fee-Paid",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
+            "region" : "7",
             "workTypes": "hearing_work,priority"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
@@ -97,6 +104,24 @@
             "jurisdiction": "SSCS"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-judiciary",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "JUDICIAL",
+          "readOnly": true,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "contractType": "Fee-Paid"
+          }
         }
       ]
     }

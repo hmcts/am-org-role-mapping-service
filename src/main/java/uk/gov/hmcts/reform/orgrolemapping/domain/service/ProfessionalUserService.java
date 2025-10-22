@@ -51,6 +51,7 @@ public class ProfessionalUserService {
     private static final String PROCESS_LOG_START = "Starting {}";
     private static final String PROCESS_LOG_COMPLETED = "Completed {}";
     private static final String NO_ENTITIES = "No entities to process";
+    private static final String LOG_NO_ENTITIES = PROCESS_LOG_COMPLETED + ". " + NO_ENTITIES;
 
     private final PrdService prdService;
 
@@ -142,7 +143,7 @@ public class ProfessionalUserService {
     private void addCleanupProcessSteps(ProcessMonitorDto processMonitorDto, List<String> userIds) {
         if (userIds.isEmpty()) {
             processMonitorDto.addProcessStep(NO_ENTITIES);
-            log.info("Completed {}. No entities to process", processMonitorDto.getProcessType());
+            log.info(LOG_NO_ENTITIES, processMonitorDto.getProcessType());
             return;
         }
         processMonitorDto.addProcessStep(String.format("Deleted %s inactive user refresh queue entities",
@@ -210,7 +211,7 @@ public class ProfessionalUserService {
             }
             if (successfulJobCount == 0 && failedJobCount == 0) {
                 processMonitorDto.addProcessStep(NO_ENTITIES);
-                log.info("Completed {}. No entities to process", PROCESS_4_NAME);
+                log.info(LOG_NO_ENTITIES, PROCESS_4_NAME);
             } else {
                 addProcess4Steps(processMonitorDto, organisationInfo);
             }
@@ -413,7 +414,7 @@ public class ProfessionalUserService {
             }
             if (successfulJobCount == 0 && failedJobCount == 0) {
                 processMonitorDto.addProcessStep(NO_ENTITIES);
-                log.info("Completed {}. No entities to process", PROCESS_6_BATCH_NAME);
+                log.info(LOG_NO_ENTITIES, PROCESS_6_BATCH_NAME);
             }
         } catch (ServiceException ex) {
             errorMessageBuilder.append(ex.getMessage());
