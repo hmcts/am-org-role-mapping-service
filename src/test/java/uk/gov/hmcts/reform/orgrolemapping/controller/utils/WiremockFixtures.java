@@ -110,6 +110,7 @@ public class WiremockFixtures {
         stubRoleAssignments("{}", status.value());
     }
 
+    @SuppressWarnings("unused") // userRequest currently unused in stub
     public void stubGetJudicialBookingByUserIds(JudicialBookingRequest userRequest, String body)  {
         WIRE_MOCK_SERVER.stubFor(post(urlPathMatching("/am/bookings/query"))
             .willReturn(aResponse()
@@ -118,6 +119,7 @@ public class WiremockFixtures {
                 .withBody(body)));
     }
 
+    @SuppressWarnings("unused") // userRequest currently unused in stub
     public void stubGetJudicialDetailsById(JRDUserRequest userRequest, String body) {
         WIRE_MOCK_SERVER.stubFor(post(urlPathMatching("/refdata/judicial/users"))
             .willReturn(aResponse()

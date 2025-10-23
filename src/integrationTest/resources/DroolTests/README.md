@@ -1,7 +1,7 @@
 
 # Integration Test for Drool mappings
 
-## Test Scenarios in: BaseJudicialDroolTestIntegration
+## Test Scenarios in: RunJudicialDroolIntegrationTests
 
 ### .assertCreateOrmMappingApiWithoutBooking
 
