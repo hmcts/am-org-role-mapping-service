@@ -40,6 +40,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.getH
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.TEST_ENVIRONMENT;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.cloneAndExpandReplaceMap;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.getSidamIdsList;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.writeJsonToTestScenarioOutput;
 
 @TestPropertySource(properties = {
     "refresh.BulkAssignment.includeJudicialBookings=true",
@@ -53,6 +54,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
     "testing.support.enabled=true"
 })
 public class BaseDroolTestIntegration extends BaseTestIntegration {
+
+    static final String DROOL_TEST_OUTPUT_PATH = "build/test-results/DroolTests";
 
     static final String TEST_ENVIRONMENT = "local";
 
@@ -92,14 +95,20 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
         wiremockFixtures.stubIdamSystemUser();
     }
 
-    protected String readJsonArrayFromFile(String fileName, List<TestScenario> testScenarios) {
+    protected String readJsonArrayFromFile(String fileName, List<TestScenario> testScenarios, String outputFileName) {
         if (StringUtils.isEmpty(fileName)) {
             return "[]";
         }
 
         return "[" + testScenarios.stream()
-            .map(testScenario -> readJsonFromFile(fileName, testScenario.getReplaceMap()))
+            .map(testScenario -> readJsonFromFile(fileName, testScenario, outputFileName))
             .collect(Collectors.joining(",")) + "]";
+    }
+
+    protected String readJsonFromFile(String fileName, TestScenario testScenarios, String outputFileName) {
+        String json = readJsonFromFile(fileName, testScenarios.getReplaceMap());
+        writeJsonToTestScenarioOutput(json, testScenarios, outputFileName);
+        return json;
     }
 
     protected String readJsonFromFile(String fileName, Map<String, String> replaceMap) {
@@ -147,6 +156,9 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
         }
     }
 
+    @SuppressWarnings({
+        "SameParameterValue" // currently only triggered in Judicial tests
+    })
     protected void triggerCreateOrmMappingApi(UserType userType, List<TestScenario> testScenarios) throws Exception {
 
         mockMvc.perform(post(CREATE_ORG_MAPPING_URI)

@@ -9,5 +9,6 @@ import java.util.Map;
 @Getter
 public class TestScenario {
     private String description;
+    private String outputLocation;
     private Map<String, String> replaceMap;
 }

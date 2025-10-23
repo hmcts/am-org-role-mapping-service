@@ -1,8 +1,12 @@
 package uk.gov.hmcts.reform.orgrolemapping.drool;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArguments;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario;
@@ -11,116 +15,98 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper.assertWireMockAssignmentRequests;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper.writeValueAsPrettyJson;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.APPOINTMENT_BEGIN_TIME;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.APPOINTMENT_END_TIME;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.adjustMapValueToDtz;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.formatJudicialTestOutputLocation;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.getSidamIdsList;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.getSidamIdsSet;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.writeJsonToOutput;
 
 public class BaseJudicialDroolTestIntegration extends BaseDroolTestIntegration {
 
-    @SuppressWarnings("unused")
-    interface JudicialIntegrationTests {
+    public static final String DROOL_JUDICIAL_TEST_OUTPUT_PATH = DROOL_TEST_OUTPUT_PATH + "Judicial/";
 
-        String DISPLAY_CREATE_ORM_MAPPING_API_WITH_BOOKING
-            = "#{index} - {0} - test CreateOrmMappingApi with booking - overrides: {4}";
-        String DISPLAY_CREATE_ORM_MAPPING_API_WITHOUT_BOOKING
-            = "#{index} - {0} - test CreateOrmMappingApi without booking - overrides: {4}";
-        String DISPLAY_CREATE_ORM_MAPPING_API_WITH_EXPIRED_DATES
-            = "#{index} - {0} - test CreateOrmMappingApi with expired dates - overrides: {4}";
+    private static final String DISPLAY_NAME = "#{index} - {0}";
 
-        void testCreateOrmMappingApiWithBooking(String jrdResponseFileName,
-                                                String rasRequestFileNameWithoutBooking,
-                                                String rasRequestFileNameWithBooking,
-                                                boolean additionalRoleTest,
-                                                Map<String, String> overrideMapValues) throws Exception;
+    static Stream<Arguments> getTestArguments() {
+        List<DroolJudicialTestArguments> arguments = new ArrayList<>();
 
-        void testCreateOrmMappingApiWithoutBooking(String jrdResponseFileName,
-                                                   String rasRequestFileNameWithoutBooking,
-                                                   String rasRequestFileNameWithBooking,
-                                                   boolean additionalRoleTest,
-                                                   Map<String, String> overrideMapValues) throws Exception;
+        arguments.addAll(BasicJudicialIT.getTestArguments());
 
-        void testCreateOrmMappingApiWithExpiredDates(String jrdResponseFileName,
-                                                     String rasRequestFileNameWithoutBooking,
-                                                     String rasRequestFileNameWithBooking,
-                                                     boolean additionalRoleTest,
-                                                     Map<String, String> overrideMapValues) throws Exception;
+        return arguments.stream()
+            .map(DroolJudicialTestArguments::toArguments);
     }
 
-    @SuppressWarnings("unused") // NB: for simplicity arguments must match for all tests
-    public void assertCreateOrmMappingApiWithBooking(String jrdResponseFileName,
-                                                     String rasRequestFileNameWithoutBooking,
-                                                     String rasRequestFileNameWithBooking,
-                                                     boolean additionalRoleTest,
-                                                     Map<String, String> overrideMapValues,
-                                                     List<FeatureFlagEnum> turnOffFlags) throws Exception {
+    @MethodSource("getTestArguments")
+    @ParameterizedTest(name = DISPLAY_NAME)
+    void testCreateOrmMappingApiWithBooking(String ignoredDisplayName,
+                                            DroolJudicialTestArguments testArguments) throws Exception {
 
-        List<TestScenario> testScenarios = TestScenarioIntegrationHelper.generateJudicialHappyPathScenarios(
-            additionalRoleTest,
-            true,
-            overrideMapValues
-        );
+        boolean includeBookingScenario = true; // NB: with booking
+
+        writeTestArgumentsToOutput(testArguments);
 
         assertCreateOrmMappingApiForTestScenarios(
-            testScenarios,
-            jrdResponseFileName,
-            rasRequestFileNameWithBooking,
-            true,
-            turnOffFlags
+            TestScenarioIntegrationHelper.generateJudicialHappyPathScenarios(
+                testArguments,
+                includeBookingScenario
+            ),
+            testArguments.getJrdResponseFileName(),
+            testArguments.getRasRequestFileNameWithBooking(), // NB: with booking
+            includeBookingScenario,
+            testArguments.getTurnOffFlags()
         );
 
     }
 
-    @SuppressWarnings("unused") // NB: for simplicity arguments must match for all tests
-    public void assertCreateOrmMappingApiWithoutBooking(String jrdResponseFileName,
-                                                        String rasRequestFileNameWithoutBooking,
-                                                        String rasRequestFileNameWithBooking,
-                                                        boolean additionalRoleTest,
-                                                        Map<String, String> overrideMapValues,
-                                                        List<FeatureFlagEnum> turnOffFlags) throws Exception {
 
-        var testScenarios = TestScenarioIntegrationHelper.generateJudicialHappyPathScenarios(
-            additionalRoleTest,
-            false,
-            overrideMapValues
-        );
+    @MethodSource("getTestArguments")
+    @ParameterizedTest(name = DISPLAY_NAME)
+    void testCreateOrmMappingApiWithoutBooking(String ignoredDisplayName,
+                                               DroolJudicialTestArguments testArguments) throws Exception {
+
+        boolean includeBookingScenario = false; // NB: without booking
+
+        writeTestArgumentsToOutput(testArguments);
 
         assertCreateOrmMappingApiForTestScenarios(
-            testScenarios,
-            jrdResponseFileName,
-            rasRequestFileNameWithoutBooking,
-            false,
-            turnOffFlags
+            TestScenarioIntegrationHelper.generateJudicialHappyPathScenarios(
+                testArguments,
+                includeBookingScenario
+            ),
+            testArguments.getJrdResponseFileName(),
+            testArguments.getRasRequestFileNameWithoutBooking(), // NB: without booking
+            includeBookingScenario,
+            testArguments.getTurnOffFlags()
         );
 
     }
 
-    @SuppressWarnings("unused") // NB: for simplicity arguments must match for all tests
-    public void assertCreateOrmMappingApiWithExpiredDates(String jrdResponseFileName,
-                                                          String rasRequestFileNameWithoutBooking,
-                                                          String rasRequestFileNameWithBooking,
-                                                          boolean additionalRoleTest,
-                                                          Map<String, String> overrideMapValues,
-                                                          List<FeatureFlagEnum> turnOffFlags) throws Exception {
 
-        var testScenarios = TestScenarioIntegrationHelper.generateJudicialNegativePathScenarios(
-            additionalRoleTest,
-            overrideMapValues
-        );
+    @MethodSource("getTestArguments")
+    @ParameterizedTest(name = DISPLAY_NAME)
+    void testCreateOrmMappingApiWithExpiredDates(String ignoredDisplayName,
+                                                 DroolJudicialTestArguments testArguments) throws Exception {
+
+        writeTestArgumentsToOutput(testArguments);
 
         assertCreateOrmMappingApiForTestScenarios(
-            testScenarios,
-            jrdResponseFileName,
-            EMPTY_ROLE_ASSIGNMENT_TEMPLATE,
+            TestScenarioIntegrationHelper.generateJudicialNegativePathScenarios(testArguments),
+            testArguments.getJrdResponseFileName(),
+            EMPTY_ROLE_ASSIGNMENT_TEMPLATE, // negative test so always expect empty RAS request
             true, // NB: include valid booking to prove it is ignored when other values are expired
-            turnOffFlags
+            testArguments.getTurnOffFlags()
         );
+
     }
 
     private void assertCreateOrmMappingApiForTestScenarios(List<TestScenario> testScenarios,
@@ -176,14 +162,22 @@ public class BaseJudicialDroolTestIntegration extends BaseDroolTestIntegration {
             JudicialBookingRequest.builder()
                 .queryRequest(UserRequest.builder().userIds(getSidamIdsList(testScenarios)).build())
                 .build(),
-            "{ \"bookings\": " + readJsonArrayFromFile(fileName, testScenarios) + " }");
+            "{ \"bookings\": " + readJsonArrayFromFile(fileName, testScenarios, "JudicialBookingResponse") + " }");
     }
 
     private void stubGetJudicialDetailsById(String fileName,
                                             List<TestScenario> testScenarios) {
         wiremockFixtures.stubGetJudicialDetailsById(
             JRDUserRequest.builder().sidamIds(getSidamIdsSet(testScenarios)).build(),
-            readJsonArrayFromFile("DroolTests/Judicial/" + fileName, testScenarios)
+            readJsonArrayFromFile("DroolTests/Judicial/" + fileName, testScenarios, "JrdUserResponse")
+        );
+    }
+
+    private void writeTestArgumentsToOutput(DroolJudicialTestArguments testArguments) throws JsonProcessingException {
+        writeJsonToOutput(
+            writeValueAsPrettyJson(testArguments),
+            formatJudicialTestOutputLocation(testArguments, ""),
+            "TestArguments"
         );
     }
 
