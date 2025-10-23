@@ -1,252 +1,175 @@
 package uk.gov.hmcts.reform.orgrolemapping.drool;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArguments;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
-import uk.gov.hmcts.reform.orgrolemapping.drool.BaseJudicialDroolTestIntegration.JudicialIntegrationTests;
+import uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.SALARIED;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_01_LONDON;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_02_MIDLANDS;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_05_SOUTH_EAST;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.cloneAndOverrideMap;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.generateJudicialOverrideMapValues;
 
-class CivilJudicialIT extends BaseJudicialDroolTestIntegration implements JudicialIntegrationTests {
+public class CivilJudicialIT {
 
     public static final String SERVICE_CODES = "[[SERVICE_CODES]]";
 
-    /** Parameterized test arguments are.
-     * * @param jrdResponseFileName - JRD response file name
-     * * @param rasRequestFileNameWithoutBooking - RAS request file name without booking
-     * * @param rasRequestFileNameWithBooking - RAS request file name with booking
-     * * @param additionalRoleTest - boolean flag to indicate if additional role test is required
-     * * @param overrideMapValues - map of values to override in the test scenario
-     */
-    static Stream<Arguments> getTestArguments() {
+    public static List<DroolJudicialTestArguments> getTestArguments(String serviceCode) {
 
-        return Stream.of(
-            // 001 Circuit Judge - Salaried
-            Arguments.arguments(
-                "001_Circuit_Judge__Salaried",
-                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__singleRegion",
-                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__singleRegion", // bookings have no effect on this scenario
-                false,
-                generateJudicialOverrideMapValues(AppointmentType.SALARIED, REGION_02_MIDLANDS)
-            ),
-            Arguments.arguments(
-                "001_Circuit_Judge__Salaried",
-                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5",
-                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5", // bookings have no effect on this scenario
-                false,
-                generateJudicialOverrideMapValues(AppointmentType.SALARIED, REGION_01_LONDON)
-            ),
-            Arguments.arguments(
-                "001_Circuit_Judge__Salaried",
-                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5",
-                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5", // bookings have no effect on this scenario
-                false,
-                generateJudicialOverrideMapValues(AppointmentType.SALARIED, REGION_05_SOUTH_EAST)
-            ),
-            Arguments.arguments(
-                "001_Circuit_Judge__Salaried",
-                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__singleRegion",
-                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__singleRegion", // bookings have no effect on this scenario
-                false,
-                generateJudicialOverrideMapValues(AppointmentType.SPTW, REGION_02_MIDLANDS)
-            ),
-            Arguments.arguments(
-                "001_Circuit_Judge__Salaried",
-                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5",
-                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5", // bookings have no effect on this scenario
-                false,
-                generateJudicialOverrideMapValues(AppointmentType.SPTW, REGION_01_LONDON)
-            ),
-            Arguments.arguments(
-                "001_Circuit_Judge__Salaried",
-                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5",
-                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ__multiRegion_1_5", // bookings have no effect on this scenario
-                false,
-                generateJudicialOverrideMapValues(AppointmentType.SPTW, REGION_05_SOUTH_EAST)
-            ),
+        List<DroolJudicialTestArguments> arguments = new ArrayList<>();
 
-            // 005 Deputy District Judge - Sitting in Retirement - Fee Paid
-            Arguments.arguments(
-                "005.1_Deputy_District_Judge_Sitting_in_Retirement__FeePaid",
-                "004_DDJ__005_DDJ-SIR__008_R__015_DJ-SIR__020_CJ-SIR__017_TJ__withoutBooking",
-                "004_DDJ__005_DDJ-SIR__008_R__015_DJ-SIR__020_CJ-SIR__017_TJ__withBooking",
-                false,
-                null
-            ),
-            Arguments.arguments(
-                "005.2_Deputy_District_Judge_(sitting_in_retirement)__FeePaid",
-                "004_DDJ__005_DDJ-SIR__008_R__015_DJ-SIR__020_CJ-SIR__017_TJ__withoutBooking",
-                "004_DDJ__005_DDJ-SIR__008_R__015_DJ-SIR__020_CJ-SIR__017_TJ__withBooking",
-                false,
-                null
+        // 001 Circuit Judge - Salaried
+        arguments.addAll(
+            generateSalariedTestArguments(
+                serviceCode,
+                "001_Circuit_Judge__Salaried",
+                "001_CJ__003_SpCJ__009_SeCJ__010_HCJ",
+                false
             )
         );
-    }
 
-    @Override
-    @MethodSource("getTestArguments")
-    @ParameterizedTest(name = DISPLAY_CREATE_ORM_MAPPING_API_WITH_BOOKING)
-    public void testCreateOrmMappingApiWithBooking(String jrdResponseFileName,
-                                                   String rasRequestFileNameWithoutBooking,
-                                                   String rasRequestFileNameWithBooking,
-                                                   boolean additionalRoleTest,
-                                                   Map<String, String> overrideMapValues) throws Exception {
-        assertCreateOrmMappingApiWithBooking(
-            "Civil/InputFromJrd/" + jrdResponseFileName,
-            "Civil/OutputToRas/" + rasRequestFileNameWithoutBooking,
-            "Civil/OutputToRas/" + rasRequestFileNameWithBooking,
-            additionalRoleTest,
-            overrideMapValues,
-            // TODO: remove temp flag-off value needed after DTSAM-860
-            List.of(FeatureFlagEnum.PRIVATELAW_WA_1_7) // default is all flags on
+        // 005 Deputy District Judge - Sitting in Retirement - Fee Paid
+        arguments.addAll(
+            generateFeePaidTestArguments(
+                serviceCode,
+                "005.1_Deputy_District_Judge_Sitting_in_Retirement__FeePaid",
+                "004_DDJ__005_DDJ-SIR__008_R__015_DJ-SIR__020_CJ-SIR__017_TJ",
+                false
+            )
         );
-    }
-
-    @Override
-    @MethodSource("getTestArguments")
-    @ParameterizedTest(name = DISPLAY_CREATE_ORM_MAPPING_API_WITHOUT_BOOKING)
-    public void testCreateOrmMappingApiWithoutBooking(String jrdResponseFileName,
-                                                      String rasRequestFileNameWithoutBooking,
-                                                      String rasRequestFileNameWithBooking,
-                                                      boolean additionalRoleTest,
-                                                      Map<String, String> overrideMapValues) throws Exception {
-        assertCreateOrmMappingApiWithoutBooking(
-            "Civil/InputFromJrd/" + jrdResponseFileName,
-            "Civil/OutputToRas/" + rasRequestFileNameWithoutBooking,
-            "Civil/OutputToRas/" + rasRequestFileNameWithBooking,
-            additionalRoleTest,
-            overrideMapValues,
-            // TODO: remove temp flag-off value needed after DTSAM-860
-            List.of(FeatureFlagEnum.PRIVATELAW_WA_1_7) // default is all flags on
+        arguments.addAll(
+            generateFeePaidTestArguments(
+                serviceCode,
+                "005.2_Deputy_District_Judge_(sitting_in_retirement)__FeePaid",
+                "004_DDJ__005_DDJ-SIR__008_R__015_DJ-SIR__020_CJ-SIR__017_TJ",
+                false
+            )
         );
+
+        // adjust test arguments ready for use
+        return arguments.stream()
+            .map(testArguments ->
+                testArguments.cloneBuilder()
+                    .description(formatDisplayName(testArguments))
+                    .outputLocation(formatOutputLocation(testArguments))
+                    .jrdResponseFileName(
+                        "Civil/InputFromJrd/" + testArguments.getJrdResponseFileName()
+                    )
+                    .rasRequestFileNameWithBooking(
+                        "Civil/OutputToRas/" + testArguments.getRasRequestFileNameWithBooking()
+                    )
+                    .rasRequestFileNameWithoutBooking(
+                        "Civil/OutputToRas/" + testArguments.getRasRequestFileNameWithoutBooking()
+                    )
+                    // TODO: remove temp flag-off value needed after DTSAM-860
+                    .turnOffFlags(List.of(FeatureFlagEnum.PRIVATELAW_WA_1_7))
+                    .build()
+            )
+            .toList();
     }
 
-    @Override
-    @MethodSource("getTestArguments")
-    @ParameterizedTest(name = DISPLAY_CREATE_ORM_MAPPING_API_WITH_EXPIRED_DATES)
-    public void testCreateOrmMappingApiWithExpiredDates(String jrdResponseFileName,
-                                                        String rasRequestFileNameWithoutBooking,
-                                                        String rasRequestFileNameWithBooking,
-                                                        boolean additionalRoleTest,
-                                                        Map<String, String> overrideMapValues) throws Exception {
-        assertCreateOrmMappingApiWithExpiredDates(
-            "Civil/InputFromJrd/" + jrdResponseFileName,
-            "Civil/OutputToRas/" + rasRequestFileNameWithoutBooking,
-            "Civil/OutputToRas/" + rasRequestFileNameWithBooking,
-            additionalRoleTest,
-            overrideMapValues,
-            // TODO: remove temp flag-off value needed after DTSAM-860
-            List.of(FeatureFlagEnum.PRIVATELAW_WA_1_7) // default is all flags on
+    private static String formatDisplayName(DroolJudicialTestArguments args) {
+        return "Civil: %s__%s".formatted(
+            args.getJrdResponseFileName(),
+            args.getDescription()
         );
     }
 
-    @Override
-    public void assertCreateOrmMappingApiWithBooking(String jrdResponseFileName,
-                                                     String rasRequestFileNameWithoutBooking,
-                                                     String rasRequestFileNameWithBooking,
-                                                     boolean additionalRoleTest,
-                                                     Map<String, String> overrideMapValues,
-                                                     List<FeatureFlagEnum> turnOffFlags) throws Exception {
-
-        // CIVIL special case - repeat all tests for both service code AAA6 and AAA7
-
-        // first run with ServiceCode = AAA6
-        super.assertCreateOrmMappingApiWithBooking(
-            jrdResponseFileName,
-            rasRequestFileNameWithoutBooking,
-            rasRequestFileNameWithBooking,
-            additionalRoleTest,
-            cloneAndOverrideMap(overrideMapValues, Map.of(SERVICE_CODES, "AAA6")),
-            turnOffFlags
-        );
-
-        wiremockFixtures.resetRequests();
-
-        // second run with ServiceCode = AAA7
-        super.assertCreateOrmMappingApiWithBooking(
-            jrdResponseFileName,
-            rasRequestFileNameWithoutBooking,
-            rasRequestFileNameWithBooking,
-            additionalRoleTest,
-            cloneAndOverrideMap(overrideMapValues, Map.of(SERVICE_CODES, "AAA7")),
-            turnOffFlags
+    private static String formatOutputLocation(DroolJudicialTestArguments args) {
+        return "Civil/%s/%s/".formatted(
+            args.getJrdResponseFileName(),
+            args.getDescription()
         );
     }
 
-    @Override
-    public void assertCreateOrmMappingApiWithoutBooking(String jrdResponseFileName,
-                                                        String rasRequestFileNameWithoutBooking,
-                                                        String rasRequestFileNameWithBooking,
-                                                        boolean additionalRoleTest,
-                                                        Map<String, String> overrideMapValues,
-                                                        List<FeatureFlagEnum> turnOffFlags) throws Exception {
+    @SuppressWarnings({"SameParameterValue"})
+    private static List<DroolJudicialTestArguments> generateFeePaidTestArguments(String serviceCode,
+                                                                                 String jrdResponseFileName,
+                                                                                 String rasRequestFileName,
+                                                                                 boolean additionalRoleTest) {
 
-        // CIVIL special case - repeat all tests for both service code AAA6 and AAA7
-
-        // first run with ServiceCode = AAA6
-        super.assertCreateOrmMappingApiWithoutBooking(
-            jrdResponseFileName,
-            rasRequestFileNameWithoutBooking,
-            rasRequestFileNameWithBooking,
-            additionalRoleTest,
-            cloneAndOverrideMap(overrideMapValues, Map.of(SERVICE_CODES, "AAA6")),
-            turnOffFlags
+        return List.of(
+            DroolJudicialTestArguments.builder()
+                .description(serviceCode)
+                .jrdResponseFileName(jrdResponseFileName)
+                .rasRequestFileNameWithBooking(rasRequestFileName + "__withBooking")
+                .rasRequestFileNameWithoutBooking(rasRequestFileName + "__withoutBooking")
+                .additionalRoleTest(additionalRoleTest)
+                .overrideMapValues(
+                    Map.of(SERVICE_CODES, serviceCode)
+                )
+                .build()
         );
 
-        wiremockFixtures.resetRequests();
-
-        // second run with ServiceCode = AAA7
-        super.assertCreateOrmMappingApiWithoutBooking(
-            jrdResponseFileName,
-            rasRequestFileNameWithoutBooking,
-            rasRequestFileNameWithBooking,
-            additionalRoleTest,
-            cloneAndOverrideMap(overrideMapValues, Map.of(SERVICE_CODES, "AAA7")),
-            turnOffFlags
-        );
     }
 
-    @Override
-    public void assertCreateOrmMappingApiWithExpiredDates(String jrdResponseFileName,
-                                                          String rasRequestFileNameWithoutBooking,
-                                                          String rasRequestFileNameWithBooking,
-                                                          boolean additionalRoleTest,
-                                                          Map<String, String> overrideMapValues,
-                                                          List<FeatureFlagEnum> turnOffFlags) throws Exception {
+    @SuppressWarnings({"SameParameterValue"})
+    private static List<DroolJudicialTestArguments> generateSalariedTestArguments(String serviceCode,
+                                                                                  String jrdResponseFileName,
+                                                                                  String rasRequestFileName,
+                                                                                  boolean additionalRoleTest) {
 
-        // CIVIL special case - repeat all tests for both service code AAA6 and AAA7
+        List<DroolJudicialTestArguments> arguments = new ArrayList<>();
+        arguments.addAll(List.of(
+            // SALARIED + single region
+            DroolJudicialTestArguments.builder()
+                .description(serviceCode + "__SALARIED__singleRegion")
+                .jrdResponseFileName(jrdResponseFileName)
+                .rasRequestFileNameWithBooking(rasRequestFileName + "__singleRegion")
+                // NB: With and Without Booking test output will match for these scenarios
+                .rasRequestFileNameWithoutBooking(rasRequestFileName + "__singleRegion")
+                .additionalRoleTest(additionalRoleTest)
+                .overrideMapValues(
+                    generateJudicialOverrideMapValues(serviceCode, SALARIED, REGION_02_MIDLANDS)
+                )
+                .build(),
 
-        // first run with ServiceCode = AAA6
-        super.assertCreateOrmMappingApiWithExpiredDates(
-            jrdResponseFileName,
-            rasRequestFileNameWithoutBooking,
-            rasRequestFileNameWithBooking,
-            additionalRoleTest,
-            cloneAndOverrideMap(overrideMapValues, Map.of(SERVICE_CODES, "AAA6")),
-            turnOffFlags
+            // SALARIED + multi region (1 + 5)
+            DroolJudicialTestArguments.builder()
+                .description(serviceCode + "__SALARIED__multiRegion_1")
+                .jrdResponseFileName(jrdResponseFileName)
+                .rasRequestFileNameWithBooking(rasRequestFileName + "__multiRegion_1_5")
+                // NB: With and Without Booking test output will match for these scenarios
+                .rasRequestFileNameWithoutBooking(rasRequestFileName + "__multiRegion_1_5")
+                .additionalRoleTest(additionalRoleTest)
+                .overrideMapValues(
+                    generateJudicialOverrideMapValues(serviceCode, SALARIED, REGION_01_LONDON)
+                )
+                .build(),
+            DroolJudicialTestArguments.builder()
+                .description(serviceCode + "__SALARIED__multiRegion_5")
+                .jrdResponseFileName(jrdResponseFileName)
+                .rasRequestFileNameWithBooking(rasRequestFileName + "__multiRegion_1_5")
+                // NB: With and Without Booking test output will match for these scenarios
+                .rasRequestFileNameWithoutBooking(rasRequestFileName + "__multiRegion_1_5")
+                .additionalRoleTest(additionalRoleTest)
+                .overrideMapValues(
+                    generateJudicialOverrideMapValues(serviceCode, SALARIED, REGION_05_SOUTH_EAST)
+                )
+                .build()
+        ));
+
+        // expand to include additional tests for SPTW
+        arguments.addAll(
+            TestScenarioIntegrationHelper.cloneListOfSalariedTestArgumentsForSptw(arguments)
         );
 
-        wiremockFixtures.resetRequests();
+        return arguments;
+    }
 
-        // second run with ServiceCode = AAA7
-        super.assertCreateOrmMappingApiWithExpiredDates(
-            jrdResponseFileName,
-            rasRequestFileNameWithoutBooking,
-            rasRequestFileNameWithBooking,
-            additionalRoleTest,
-            cloneAndOverrideMap(overrideMapValues, Map.of(SERVICE_CODES, "AAA7")),
-            turnOffFlags
+    @SuppressWarnings({"SameParameterValue"})
+    private static Map<String, String> generateJudicialOverrideMapValues(String serviceCode,
+                                                                         String appointmentType,
+                                                                         String region) {
+        Map<String, String> overrides = TestScenarioIntegrationHelper.generateJudicialOverrideMapValues(
+            appointmentType,
+            region
         );
+        overrides.put(SERVICE_CODES, serviceCode);
+        return overrides;
     }
 
 }
