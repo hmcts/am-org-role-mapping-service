@@ -23,10 +23,8 @@ class DroolIacCaseMappingTest extends DroolBase {
 
     private final String workTypes = "hearing_work, routine_work, decision_making_work, applications";
 
-
     @Test
     void shouldReturnZeroCaseWorkerWrongServiceCode() {
-
         allProfiles.forEach(userAccessProfile -> {
             if (userAccessProfile.getRoleId().equals("1")) {
                 userAccessProfile.setServiceCode("BFA2");
@@ -34,16 +32,15 @@ class DroolIacCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
-
     }
 
     @Test
     void shouldReturnZeroCaseWorkerWrongFlag() {
-
         allProfiles.forEach(userAccessProfile -> {
             userAccessProfile.setSuspended(true);
             if (userAccessProfile.getServiceCode().equals("BFA2")) {
@@ -52,27 +49,26 @@ class DroolIacCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
-
     }
 
     @Test
     void shouldReturnOneCaseWorkerForNewRule() {
-
         allProfiles.forEach(userAccessProfile -> {
             if (userAccessProfile.getRoleId().equals("2")) {
                 userAccessProfile.setServiceCode("BFA1");
             } else {
                 userAccessProfile.setServiceCode("BFA2");
             }
-
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -82,8 +78,7 @@ class DroolIacCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(1).getRoleCategory());
         assertEquals(usersAccessProfiles.keySet().stream().skip(1).iterator().next(),
                 roleAssignments.get(0).getActorId());
-        assertEquals(workTypes,
-                roleAssignments.get(0).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -105,7 +100,8 @@ class DroolIacCaseMappingTest extends DroolBase {
         }
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -116,11 +112,8 @@ class DroolIacCaseMappingTest extends DroolBase {
         assertEquals("case-allocator",roleAssignments.get(2).getRoleName());
         assertEquals("hmcts-legal-operations",roleAssignments.get(3).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(3).getRoleCategory());
-        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
-                roleAssignments.get(0).getActorId());
-
-        assertEquals(workTypes,
-                roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), roleAssignments.get(0).getActorId());
+        assertEquals(workTypes, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -144,7 +137,8 @@ class DroolIacCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -163,10 +157,8 @@ class DroolIacCaseMappingTest extends DroolBase {
         assertEquals("hmcts-legal-operations",roleAssignments.get(7).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(7).getRoleCategory());
         assertThat(usersAccessProfiles).containsKey(roleAssignments.get(0).getActorId());
-        assertEquals(workTypes,
-                roleAssignments.get(2).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(3).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(2).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(3).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -186,7 +178,8 @@ class DroolIacCaseMappingTest extends DroolBase {
         }
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -197,11 +190,8 @@ class DroolIacCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(2).getRoleCategory());
         assertEquals("hmcts-legal-operations",roleAssignments.get(3).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(3).getRoleCategory());
-        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
-                roleAssignments.get(0).getActorId());
-
-        assertEquals(workTypes,
-                roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), roleAssignments.get(0).getActorId());
+        assertEquals(workTypes, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -225,7 +215,8 @@ class DroolIacCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -244,10 +235,8 @@ class DroolIacCaseMappingTest extends DroolBase {
         assertEquals("hmcts-legal-operations",roleAssignments.get(7).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(7).getRoleCategory());
         assertThat(usersAccessProfiles).containsKey(roleAssignments.get(0).getActorId());
-        assertEquals(workTypes,
-                roleAssignments.get(2).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(3).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(2).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(3).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -270,7 +259,8 @@ class DroolIacCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -287,14 +277,11 @@ class DroolIacCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(5).getRoleCategory());
         assertEquals("hmcts-legal-operations",roleAssignments.get(6).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(6).getRoleCategory());
-        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
-                roleAssignments.get(0).getActorId());
+        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), roleAssignments.get(0).getActorId());
         assertThat(usersAccessProfiles).containsKey(roleAssignments.get(2).getActorId());
 
-        assertEquals(workTypes,
-                roleAssignments.get(1).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(2).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(2).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -314,7 +301,8 @@ class DroolIacCaseMappingTest extends DroolBase {
         }
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -327,11 +315,8 @@ class DroolIacCaseMappingTest extends DroolBase {
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(3).getRoleCategory());
         assertEquals("hmcts-legal-operations",roleAssignments.get(4).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(4).getRoleCategory());
-        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(),
-                roleAssignments.get(0).getActorId());
-
-        assertEquals(workTypes,
-                roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals(usersAccessProfiles.keySet().stream().iterator().next(), roleAssignments.get(0).getActorId());
+        assertEquals(workTypes, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -355,7 +340,8 @@ class DroolIacCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -378,10 +364,8 @@ class DroolIacCaseMappingTest extends DroolBase {
         assertEquals("hmcts-legal-operations",roleAssignments.get(9).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(9).getRoleCategory());
         assertThat(usersAccessProfiles).containsKey(roleAssignments.get(0).getActorId());
-        assertEquals(workTypes,
-                roleAssignments.get(2).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(3).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(2).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(3).getAttributes().get("workTypes").asText());
     }
 
     @Test
@@ -395,7 +379,8 @@ class DroolIacCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -408,40 +393,18 @@ class DroolIacCaseMappingTest extends DroolBase {
         assertEquals("hmcts-legal-operations",roleAssignments.get(4).getRoleName());
         assertEquals(RoleCategory.LEGAL_OPERATIONS,roleAssignments.get(4).getRoleCategory());
         assertThat(usersAccessProfiles).containsKey(roleAssignments.get(1).getActorId());
-        Assertions.assertThat(usersAccessProfiles.keySet().stream()).contains(
-                roleAssignments.get(2).getActorId());
+        Assertions.assertThat(usersAccessProfiles.keySet().stream()).contains(roleAssignments.get(2).getActorId());
         roleAssignments.forEach(r -> {
             if (!r.getRoleName().contains("hmcts")) {
                 assertEquals(skillCodes,r.getAuthorisations());
             }
         });
-        assertEquals(workTypes,
-                roleAssignments.get(1).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes,
-                roleAssignments.get(2).getAttributes().get("workTypes").asText());
-
-    }
-
-    @Test
-    void shouldReturnZeroCaseWorkerWrongServiceCodeForNewRule() {
-
-        allProfiles.forEach(userAccessProfile -> {
-            if (userAccessProfile.getRoleId().equals("1")) {
-                userAccessProfile.setServiceCode("BFA2");
-            }
-        });
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //assertion
-        assertTrue(roleAssignments.isEmpty());
-
+        assertEquals(workTypes, roleAssignments.get(1).getAttributes().get("workTypes").asText());
+        assertEquals(workTypes, roleAssignments.get(2).getAttributes().get("workTypes").asText());
     }
 
     @Test
     void shouldReturnZeroCaseWorkerWrongRoleIdForNewRule() {
-
         allProfiles.forEach(userAccessProfile -> {
             userAccessProfile.setRoleId("11");
             if (userAccessProfile.getServiceCode().equals("BFA2")) {
@@ -450,29 +413,10 @@ class DroolIacCaseMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("IAC", true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
-
     }
-
-    @Test
-    void shouldReturnZeroCaseWorkerWrongFlagForNewRule() {
-
-        allProfiles.forEach(userAccessProfile -> {
-            userAccessProfile.setSuspended(true);
-            if (userAccessProfile.getServiceCode().equals("BFA2")) {
-                userAccessProfile.setServiceCode("BFA1");
-            }
-        });
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags("iac_1_1", true));
-
-        //assertion
-        assertTrue(roleAssignments.isEmpty());
-
-    }
-
 }
