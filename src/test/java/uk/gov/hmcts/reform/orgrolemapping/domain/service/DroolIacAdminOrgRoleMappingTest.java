@@ -27,7 +27,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 @ExtendWith(MockitoExtension.class)
-class DroolAdminOrgRoleMappingTest extends DroolBase {
+class DroolIacAdminOrgRoleMappingTest extends DroolBase {
 
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 

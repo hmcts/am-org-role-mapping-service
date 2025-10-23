@@ -19,7 +19,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 
 @ExtendWith(MockitoExtension.class)
-class DroolCaseMappingTest extends DroolBase {
+class DroolIacCaseMappingTest extends DroolBase {
 
     private final String workTypes = "hearing_work, routine_work, decision_making_work, applications";
 

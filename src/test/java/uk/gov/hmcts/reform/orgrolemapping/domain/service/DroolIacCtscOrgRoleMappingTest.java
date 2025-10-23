@@ -20,7 +20,7 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 
 
 @ExtendWith(MockitoExtension.class)
-class DroolCtscOrgRoleMappingTest extends DroolBase {
+class DroolIacCtscOrgRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
