@@ -25,6 +25,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.controller.BaseTest.WIRE_MOCK_S
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.RAS_CREATE_ASSIGNMENTS_URL;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.AM_ORG_ROLE_MAPPING_SERVICE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.IDAM_ID;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.writeJsonToTestScenarioOutput;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.MAPPER;
 
 @Slf4j
@@ -39,19 +40,38 @@ public class RoleAssignmentAssertIntegrationHelper {
         assertEquals(expectedAssignmentRequests.size(), requestMap.size(), "Count of scenarios");
 
         for (AssignmentRequest expectedAssignmentRequest: expectedAssignmentRequests) {
-            AssignmentRequest actualAssignmentRequest
-                = requestMap.get(getAssignmentRequestKey(expectedAssignmentRequest));
 
             TestScenario testScenario = findTestScenarioFromIdamId(
                 expectedAssignmentRequest.getRequest().getReference(),
                 testScenarios
             );
+
             log.info("#####################################################");
             log.info("ASSERT for: {}", testScenario.getDescription());
             log.info("... with overrides for: {}", testScenario.getReplaceMap());
             log.info("#####################################################");
-            log.info("Expected AssignmentRequest: {}", writeValueAsPrettyJson(expectedAssignmentRequest));
-            log.info("Actual AssignmentRequest: {}", writeValueAsPrettyJson(actualAssignmentRequest));
+
+            writeJsonToTestScenarioOutput(
+                writeValueAsPrettyJson(testScenario),
+                testScenario,
+                "TestScenario"
+            );
+
+            // find the actual request from wiremock
+            AssignmentRequest actualAssignmentRequest
+                = requestMap.get(getAssignmentRequestKey(expectedAssignmentRequest));
+
+            writeJsonToTestScenarioOutput(
+                writeValueAsPrettyJson(expectedAssignmentRequest),
+                testScenario,
+                "RasRequest-Expected"
+            );
+
+            writeJsonToTestScenarioOutput(
+                writeValueAsPrettyJson(actualAssignmentRequest),
+                testScenario,
+                "RasRequest-Actual"
+            );
 
             assertNotNull(actualAssignmentRequest, "AssignmentRequest");
             assertRoleRequest(expectedAssignmentRequest, actualAssignmentRequest);
@@ -59,15 +79,15 @@ public class RoleAssignmentAssertIntegrationHelper {
         }
     }
 
+    public static String writeValueAsPrettyJson(Object input) throws JsonProcessingException {
+        return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(input);
+    }
+
     private static TestScenario findTestScenarioFromIdamId(String idamId, List<TestScenario> testScenarios) {
         return testScenarios.stream()
             .filter(testScenario -> testScenario.getReplaceMap().get(IDAM_ID).equals(idamId))
             .findFirst()
             .orElse(TestScenario.builder().description("No description found for idamId: " + idamId).build());
-    }
-
-    private static String writeValueAsPrettyJson(Object input) throws JsonProcessingException {
-        return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(input);
     }
 
     private static void assertRoleRequest(AssignmentRequest expectedAssignmentRequest,
