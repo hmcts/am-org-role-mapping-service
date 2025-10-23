@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseJudicialDroolTestIntegration.DROOL_JUDICIAL_TEST_OUTPUT_PATH;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.RunJudicialDroolIntegrationTests.DROOL_JUDICIAL_TEST_OUTPUT_PATH;
 
 @Slf4j
 @SuppressWarnings({

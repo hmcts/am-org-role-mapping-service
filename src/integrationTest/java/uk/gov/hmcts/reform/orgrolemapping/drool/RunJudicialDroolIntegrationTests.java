@@ -31,7 +31,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.getSidamIdsSet;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.writeJsonToOutput;
 
-public class BaseJudicialDroolTestIntegration extends BaseDroolTestIntegration {
+public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
     public static final String DROOL_JUDICIAL_TEST_OUTPUT_PATH = DROOL_TEST_OUTPUT_PATH + "Judicial/";
 
