@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -7,6 +8,9 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArgument
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -34,6 +39,7 @@ public class TestScenarioIntegrationHelper {
     public static final String ANY_UUID = "[[ANY_UUID]]";
     public static final String ANY_DATE_TIME = "[[ANY_DATE_TIME]]";
     public static final String NOW_DATE_TIME = "[[NOW_DATE_TIME]]";
+    public static final String RANDOM_ID = "[[RANDOM_ID]]";
     public static final String REGION_ID = "[[REGION_ID]]";
     public static final String REGION_NAME = "[[REGION_NAME]]";
     public static final String REGION_00_DEFAULT = "0";
@@ -73,6 +79,8 @@ public class TestScenarioIntegrationHelper {
     private static final String NEGATIVE_TEST__ADDITIONAL_ROLE_END_DATE_EXPIRED
         = "NegativeTest - additional role end date expired";
     private static final String NEGATIVE_TEST__SOFT_DELETE_FLAG_SET = "NegativeTest - soft delete flag set";
+
+    private static final Random RANDOM = new Random();
 
     public static Map<String, String> generateJudicialOverrideMapValues(String appointmentType, String region) {
         Map<String, String> overrideMapValues = new HashMap<>();
@@ -324,6 +332,7 @@ public class TestScenarioIntegrationHelper {
         // add extra values that don't need to match across all the stubs used by test
         return cloneAndOverrideMap(replaceMap, Map.of(
             ANY_UUID, UUID.randomUUID().toString(),
+            RANDOM_ID, String.valueOf(RANDOM.nextInt(1000000)),
             ANY_DATE_TIME, LocalDateTime.now().minusDays(100).format(DTF),
             NOW_DATE_TIME, LocalDateTime.now().format(DTF)
         ));
@@ -350,8 +359,22 @@ public class TestScenarioIntegrationHelper {
         writeJsonToOutput(json, testScenario.getOutputLocation(), outputFileName);
     }
 
+    @SneakyThrows
+    @SuppressWarnings({"ResultOfMethodCallIgnored"})
     public static void writeJsonToOutput(String json, String outputLocation, String outputFileName) {
         log.info("--- Test Output: {} ---\n{}", outputFileName, json);
+
+        if (!StringUtils.isEmpty(outputLocation)) {
+            File outputDirectory = new File(outputLocation);
+            if (!outputDirectory.exists()) {
+                outputDirectory.mkdirs();
+            }
+
+            String outputFilePath = outputLocation + outputFileName + ".json";
+            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath));
+            writer.write(json);
+            writer.close();
+        }
     }
 
     public static String formatJudicialTestOutputLocation(DroolJudicialTestArguments testArguments,

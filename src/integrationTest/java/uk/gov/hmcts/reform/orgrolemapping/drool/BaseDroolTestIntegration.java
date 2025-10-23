@@ -55,7 +55,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
 })
 public class BaseDroolTestIntegration extends BaseTestIntegration {
 
-    static final String DROOL_TEST_OUTPUT_PATH = "build/test-results/DroolTests";
+    static final String DROOL_TEST_OUTPUT_PATH = "build/test-results/DroolTests/";
 
     static final String TEST_ENVIRONMENT = "local";
 
