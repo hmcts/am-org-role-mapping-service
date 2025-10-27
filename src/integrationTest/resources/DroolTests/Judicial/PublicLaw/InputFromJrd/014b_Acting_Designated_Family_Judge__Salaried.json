@@ -12,6 +12,7 @@
       "cft_region": "[[REGION_NAME]]",
       "is_principal_appointment": "true",
       "appointment": "Any-appointment-will-do",
+      "role_name_id": "123456",
       "appointment_type": "[[APPOINTMENT_TYPE]]",
       "contract_type_id": "[[CONTRACT_TYPE_ID]]",
       "service_codes": [
@@ -20,7 +21,6 @@
       "start_date": "[[APPOINTMENT_BEGIN_TIME]]",
       "end_date": "[[APPOINTMENT_END_TIME]]",
       "appointment_id": "1234",
-      "role_name_id": "123456",
       "type": "Courts"
     }
   ],
@@ -42,9 +42,9 @@
   "roles": [
     {
       "jurisdiction_role_name": "Acting Designated Family Judge",
+      "jurisdiction_role_id": "90154",
       "start_date": "[[ROLE_BEGIN_TIME]]",
-      "end_date": "[[ROLE_END_TIME]]",
-      "jurisdiction_role_id": "90154"
+      "end_date": "[[ROLE_END_TIME]]"
     }
   ]
 }

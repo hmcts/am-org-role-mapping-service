@@ -12,6 +12,7 @@
       "cft_region": "[[REGION_NAME]]",
       "is_principal_appointment": "true",
       "appointment": "Senior Circuit Judge",
+      "role_name_id": "75",
       "appointment_type": "[[APPOINTMENT_TYPE]]",
       "contract_type_id": "[[CONTRACT_TYPE_ID]]",
       "service_codes": [
@@ -20,7 +21,6 @@
       "start_date": "[[APPOINTMENT_BEGIN_TIME]]",
       "end_date": "[[APPOINTMENT_END_TIME]]",
       "appointment_id": "1234",
-      "role_name_id": "75",
       "type": "Courts"
     }
   ],

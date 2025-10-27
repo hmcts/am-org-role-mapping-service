@@ -12,6 +12,7 @@
       "cft_region": "North West",
       "is_principal_appointment": "true",
       "appointment": "Magistrate",
+      "role_name_id": "1",
       "appointment_type": "Voluntary",
       "contract_type_id": "2",
       "service_codes": [
@@ -20,7 +21,6 @@
       "start_date": "[[APPOINTMENT_BEGIN_TIME]]",
       "end_date": "[[APPOINTMENT_END_TIME]]",
       "appointment_id": "1234",
-      "role_name_id": "1",
       "type": "Courts"
     }
   ],

@@ -12,6 +12,7 @@
       "cft_region": "North West",
       "is_principal_appointment": "true",
       "appointment": "High Court Judge- Sitting in Retirement",
+      "role_name_id": "52",
       "appointment_type": "Fee-paid",
       "contract_type_id": "1",
       "service_codes": [
@@ -20,7 +21,6 @@
       "start_date": "[[APPOINTMENT_BEGIN_TIME]]",
       "end_date": "[[APPOINTMENT_END_TIME]]",
       "appointment_id": "1234",
-      "role_name_id": "52",
       "type": "Courts"
     }
   ],

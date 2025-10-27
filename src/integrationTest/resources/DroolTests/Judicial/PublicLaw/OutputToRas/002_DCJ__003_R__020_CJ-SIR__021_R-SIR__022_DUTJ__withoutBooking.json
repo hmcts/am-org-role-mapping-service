@@ -8,7 +8,6 @@
   },
   "requestedRoles": [
     {
-      "id": "[[ANY_UUID]]",
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
@@ -32,7 +31,6 @@
       ]
     },
     {
-      "id": "[[ANY_UUID]]",
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
@@ -53,7 +51,6 @@
       ]
     },
     {
-      "id": "[[ANY_UUID]]",
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
