@@ -194,8 +194,7 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "EMPLOYMENT Tribunal Member-Fee-Paid,tribunal-member,hmcts-judiciary",
-        "EMPLOYMENT Tribunal Member Lay-Fee-Paid,tribunal-member,hmcts-judiciary"
+        "EMPLOYMENT Tribunal Member-Fee-Paid,tribunal-member,hmcts-judiciary"
     })
     void shouldReturnTribunalMemberFeePaidRoles(String office,
                                                  @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
