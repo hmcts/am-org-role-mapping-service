@@ -27,9 +27,11 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder
 
 import feign.FeignException;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
@@ -43,7 +45,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class RetrieveDataServiceTest {
 
 
@@ -51,7 +53,7 @@ class RetrieveDataServiceTest {
     private final JRDService jrdService = Mockito.mock(JRDService.class);
     private final ParseRequestService parseRequestService = Mockito.mock(ParseRequestService.class);
 
-    RetrieveDataService sut = new RetrieveDataService(parseRequestService, crdService, jrdService);
+    RetrieveDataService sut = new RetrieveDataService(parseRequestService, crdService, jrdService, true);
 
     @Test
     void retrieveCaseWorkerProfilesTest() {
@@ -206,6 +208,30 @@ class RetrieveDataServiceTest {
                 assertEquals(2, ((JudicialAccessProfile) userAccessProfile).getAuthorisations().size());
             });
         });
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "true,true,0",
+        "true,false,2",
+        "false,true,2",
+        "false,false,2"
+    })
+    void shouldReturnJudicialProfileV2_deletedFlag(Boolean filterSoftDeletedUsersEnabled,
+                                                   Boolean deletedFlagStatus,
+                                                   int expectedUserAccessProfileCount) throws IOException {
+        sut = new RetrieveDataService(parseRequestService, crdService, jrdService, filterSoftDeletedUsersEnabled);
+
+        JudicialProfileV2 profile = TestDataBuilder.buildJudicialProfileV2();
+        profile.setDeletedFlag(deletedFlagStatus.toString());
+
+        doReturn(ResponseEntity.ok(List.of(profile))).when(jrdService).fetchJudicialProfiles(any());
+
+        Map<String, Set<UserAccessProfile>> response
+                = sut.retrieveProfiles(TestDataBuilder.buildUserRequest(), UserType.JUDICIAL);
+
+        assertNotNull(response);
+        assertEquals(expectedUserAccessProfileCount, response.get(profile.getSidamId()).size());
     }
 
     @Test

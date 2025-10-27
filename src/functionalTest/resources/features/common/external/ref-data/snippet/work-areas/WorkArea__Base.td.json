@@ -1,0 +1,9 @@
+{
+  "_guid_": "WorkArea__Base",
+
+  "service_code": "OVERRIDE",
+
+  "area_of_work": "[[ANYTHING_PRESENT]",
+  "created_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+  "last_updated_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]"
+}

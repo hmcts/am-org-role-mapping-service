@@ -43,10 +43,13 @@ def secrets = [
       secret('orm-IDAM-CLIENT-ID', 'OAUTH2_CLIENT_ID'),
       secret('orm-IDAM-CLIENT-SECRET', 'ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET'),
       secret('orm-IDAM-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET'),
-      secret('role-assignment-service-LD-SDK-KEY', 'LD_SDK_KEY'),
       secret('test-am-user2-befta-pwd', 'TEST_AM_USER2_BEFTA_PWD'),
       secret('test-am-crd-user1-befta', 'TEST_AM_CRD_USER1_BEFTA'),
       secret('test-am-crd-user1-befta-password', 'TEST_AM_CRD_USER1_BEFTA_PASSWORD'),
+      secret('test-am-jrd-user1-befta', 'TEST_AM_JRD_USER1_BEFTA'),
+      secret('test-am-jrd-user1-befta-password', 'TEST_AM_JRD_USER1_BEFTA_PASSWORD'),
+      secret('test-am-jrd-user2-befta', 'TEST_AM_JRD_USER2_BEFTA'),
+      secret('test-am-jrd-user2-befta-password', 'TEST_AM_JRD_USER2_BEFTA_PASSWORD'),
       secret('caseworker-topic-primary-send-listen-shared-access-key', 'AMQP_CRD_SHARED_ACCESS_KEY_VALUE'),
       secret('judicial-topic-primary-send-listen-shared-access-key', 'AMQP_JRD_SHARED_ACCESS_KEY_VALUE')
     ]
@@ -58,6 +61,7 @@ def branchesToSync = ['demo', 'ithc', 'perftest']
 // Vars needed for functional and smoke tests run against AKS
 env.IDAM_URL = "https://idam-api.aat.platform.hmcts.net"
 env.IDAM_API_URL_BASE = "https://idam-api.aat.platform.hmcts.net"
+env.IDAM_TESTING_SUPPORT_URL = "https://idam-testing-support-api.aat.platform.hmcts.net"
 env.IDAM_S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
 env.BEFTA_S2S_CLIENT_ID = "am_org_role_mapping_service"
 env.BEFTA_RETRY_MAX_ATTEMPTS = "3"
@@ -94,8 +98,11 @@ env.PACT_BROKER_SCHEME = "https"
 env.CASEWORKER_FTA_ENABLED = "true"
 env.JUDICIAL_FTA_ENABLED = "true"
 
+// Var to turn on JBS FTAs (NB: only disable temporarily if JBS service is unavailable)
+env.BOOKING_FTA_ENABLED = "true"
+
 // Var to turn FTA on for azure-messaging-servicebus DTSAM-150
-env.AZURE_SERVICE_BUS_FTA_ENABLED = "false" // DTSAM-380 - Temp Disabled
+env.AZURE_SERVICE_BUS_FTA_ENABLED = "true"
 env.REFRESH_FTA_ENABLED = "true"
 
 // Vars for Azure Container Registries DTSAM-370
@@ -104,17 +111,17 @@ env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX="hmctspublic.azurecr.io/imported/"
 
 withPipeline(type, product, component) {
   if (env.BRANCH_NAME.startsWith("PR")) {
-    env.LAUNCH_DARKLY_ENV = "pr"
+    env.ORM_ENV = "pr"
   }
   else if(env.BRANCH_NAME == 'master') {
-    env.LAUNCH_DARKLY_ENV = "aat"
+    env.ORM_ENV = "aat"
     // Var turned off for staging as ASB is shared with AAT instances
     env.AZURE_SERVICE_BUS_FTA_ENABLED = "false"
     // Don't run refresh FTAs on AAT DTSAM-173
     env.REFRESH_FTA_ENABLED = "false"
   }
   else {
-    env.LAUNCH_DARKLY_ENV = env.BRANCH_NAME
+    env.ORM_ENV = env.BRANCH_NAME
   }
   onMaster {
     enableSlackNotifications('#am-master-builds')

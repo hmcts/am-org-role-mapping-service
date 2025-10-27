@@ -1,8 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.BooleanUtils;
+import jakarta.inject.Inject;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -48,14 +51,14 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
-import uk.gov.hmcts.reform.orgrolemapping.launchdarkly.FeatureConditionEvaluator;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
-import javax.inject.Inject;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -66,6 +69,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -98,6 +102,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.v1.V1.Error.UNAUTHORIZED_SERVIC
     "refresh.Job.authorisedServices=" + S2S_ORM + "," + S2S_RARB,
     "refresh.Job.includeJudicialBookings=true",
     "refresh.Job.pageSize=" + TEST_PAGE_SIZE,
+    "refresh.judicial.filterSoftDeletedUsers=true",
     "testing.support.enabled=true" // NB: needed for access to test support URLs
 })
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -144,9 +149,6 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     private RequestMappingService<UserAccessProfile> requestMappingService;
 
     @MockBean
-    private FeatureConditionEvaluator featureConditionEvaluation;
-
-    @MockBean
     private SecurityUtils securityUtils;
 
     @Mock
@@ -154,6 +156,9 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
 
     @Mock
     private SecurityContext securityContext;
+
+    @Captor
+    private ArgumentCaptor<Map<String, Set<UserAccessProfile>>> usersAccessProfilesCaptor;
 
     Lock sequential = new ReentrantLock();
 
@@ -170,7 +175,6 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
         doReturn(authentication).when(securityContext).getAuthentication();
         SecurityContextHolder.setContext(securityContext);
-        doReturn(true).when(featureConditionEvaluation).preHandle(any(),any(),any());
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         wiremockFixtures.resetRequests();
     }
@@ -205,7 +209,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
-        assertEquals(0, refreshJob.getUserIds().length);
+        assertNull(refreshJob.getUserIds());
         assertNotNull(refreshJob.getLog());
     }
 
@@ -328,7 +332,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
-        assertEquals(0, refreshJob.getUserIds().length);
+        assertNull(refreshJob.getUserIds());
         assertNotNull(refreshJob.getLog());
     }
 
@@ -449,7 +453,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
+                .andExpect(status().is(202)) // NB: no failure in refresh API as CRD call is in a background process
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
@@ -490,7 +494,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
         assertEquals(COMPLETED, refreshJob.getStatus());
-        assertEquals(0, refreshJob.getUserIds().length);
+        assertNull(refreshJob.getUserIds());
         assertNotNull(refreshJob.getLog());
     }
 
@@ -566,6 +570,50 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         assertEquals(ABORTED, refreshJob.getStatus());
         assertNotNull(refreshJob.getUserIds());
         assertThat(refreshJob.getLog(), containsString(String.join(",", refreshJob.getUserIds())));
+    }
+
+    @Order(17)
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    public void shouldProcessRefreshRoleAssignments_deletedFlag(Boolean deletedFlagStatus) throws Exception {
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
+
+        logger.info(" RefreshJob record with judicial user deleted flag {}", deletedFlagStatus);
+        String[] userIds = buildUserIdList(1);
+
+        ResponseEntity<List<JudicialProfileV2>> res = buildJudicialProfilesResponseV2(userIds);
+        res.getBody().get(0).setDeletedFlag(deletedFlagStatus.toString());
+        doReturn(res).when(jrdFeignClient).getJudicialDetailsById(any(), any());
+
+        mockJBSService(userIds);
+        mockRequestMappingServiceWithJudicialStatus(HttpStatus.CREATED);
+
+        Long jobId = createRefreshJobJudicialTargetedUserList(userIds);
+        UserRequest userRequest = buildUserRequestWithUserIds(userIds);
+
+        mockMvc.perform(post(REFRESH_JOB_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
+                        .param("jobId", jobId.toString())
+                        .content(mapper.writeValueAsBytes(userRequest)))
+                .andExpect(status().is(202))
+                .andReturn();
+
+        await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
+                .timeout(WAIT_FOR_ASYNC_TO_TIMEOUT, TimeUnit.SECONDS)
+                .untilAsserted(() -> Assertions.assertTrue(isRefreshJobInStatus(jobId, COMPLETED)));
+
+        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
+        RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
+        assertEquals(COMPLETED, refreshJob.getStatus());
+        assertNotNull(refreshJob.getLog());
+
+        verify(jrdFeignClient, times(1)).getJudicialDetailsById(any(), any());
+        verify(jbsFeignClient, deletedFlagStatus ? times(0) : times(1)).getJudicialBookingByUserIds(any());
+        verify(requestMappingService, times(1)).createJudicialAssignments(usersAccessProfilesCaptor.capture(), any());
+
+        Map<String, Set<UserAccessProfile>> usersAccessProfiles = usersAccessProfilesCaptor.getValue();
+        assertEquals(deletedFlagStatus, usersAccessProfiles.get(userIds[0]).isEmpty());
     }
 
     @NotNull

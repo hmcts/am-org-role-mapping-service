@@ -23,8 +23,6 @@ java:
           alias: app-insights-connection-string
         - name: am-org-role-mapping-service-s2s-secret
           alias: AM_ORG_ROLE_MAPPING_SERVICE_SECRET
-        - name: role-assignment-service-LD-SDK-KEY
-          alias: LD_SDK_KEY
         - name: orm-IDAM-CLIENT-ID
           alias: ORM_IDAM_CLIENT_ID
         - name: orm-IDAM-CLIENT-SECRET
@@ -38,11 +36,9 @@ java:
     JUDICIAL_BOOKING_APP_URL: "http://{{ .Release.Name }}-am-judicial-booking-service"
     CASE_WORKER_REF_APP_URL: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal
     JUDICIAL_REF_APP_URL: http://rd-judicial-api-aat.service.core-compute-aat.internal
-    LAUNCH_DARKLY_ENV: pr
+    ORM_ENV: pr
     AMQP_SHARED_ACCESS_KEY_NAME: RootManageSharedAccessKey
     AMQP_HOST: "am-sb-preview.servicebus.windows.net"
-    AMQP_JRD_NEW_ASB_ENABLED: true
-    AMQP_CRD_NEW_ASB_ENABLED: true
     CRD_SUBSCRIPTION_NAME: "{{ .Release.Name}}-asb-crd-topic"
     JRD_SUBSCRIPTION_NAME: "{{ .Release.Name}}-asb-jrd-topic"
     CRD_TOPIC_NAME: "{{ .Release.Name}}-asb-crd-topic"
@@ -58,7 +54,6 @@ java:
     REFRESH_JOB_INCLUDE_BOOKINGS: false
     REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS: false
     TESTING_SUPPORT_ENABLED: true
-    RUN_LD_ON_STARTUP: true
   postgresql:
     enabled: true
     primary:
@@ -86,6 +81,14 @@ am-role-assignment-service:
     imagePullPolicy: Always
     ingressHost: ras-${SERVICE_FQDN}
     releaseNameOverride: "{{ .Release.Name }}-am-role-assignment-service"
+    
+    # overidding dev memory and cpu limits to make it match with standard limits
+    # https://github.com/hmcts/chart-java/blob/master/java/values.yaml
+    devmemoryRequests: 1024Mi
+    devcpuRequests: 250m
+    devmemoryLimits: 2048Mi
+    devcpuLimits: 1500m
+
     keyVaults:
       am:
         secrets:
@@ -97,8 +100,6 @@ am-role-assignment-service:
             alias: ROLE_ASSIGNMENT_IDAM_CLIENT_SECRET
           - name: role-assignment-service-IDAM-ADMIN-SECRET
             alias: ROLE_ASSIGNMENT_IDAM_ADMIN_PASSWORD
-          - name: role-assignment-service-LD-SDK-KEY
-            alias: LD_SDK_KEY
     environment:
       ROLE_ASSIGNMENT_DB_HOST: "{{ .Release.Name }}-postgresql"
       ROLE_ASSIGNMENT_DB_USERNAME: "{{ .Values.postgresql.auth.username}}"
@@ -110,10 +111,9 @@ am-role-assignment-service:
       ROLE_ASSIGNMENT_IDAM_ADMIN_USERID: "ras-validation-system@hmcts.net"
       APPLICATION_LOGGING_LEVEL: INFO
       BYPASS_ORG_DROOL_RULE: true
-      LAUNCH_DARKLY_ENV: pr
+      RAS_ENV: pr
       ENABLE_DB_MIGRATE: true
       RUN_DB_MIGRATION_ON_STARTUP: true
-      RUN_LD_ON_STARTUP: true
 
 am-judicial-booking-service:
   java:
@@ -132,9 +132,6 @@ am-judicial-booking-service:
             alias: JUDICIAL_BOOKING_IDAM_CLIENT_SECRET
           - name: judicial-booking-service-IDAM-ADMIN-SECRET
             alias: JUDICIAL_BOOKING_IDAM_ADMIN_PASSWORD
-          - name: role-assignment-service-LD-SDK-KEY
-            alias: LD_SDK_KEY
-
     environment:
       JUDICIAL_BOOKING_SERVICE_POSTGRES_HOST: "{{ .Release.Name }}-postgresql"
       JUDICIAL_BOOKING_SERVICE_POSTGRES_USER: "{{ .Values.postgresql.auth.username}}"
@@ -142,8 +139,7 @@ am-judicial-booking-service:
       JUDICIAL_BOOKING_SERVICE_DB_OPTIONS: "?stringtype=unspecified"
       IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
       IDAM_USER_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
-      LAUNCH_DARKLY_ENV: pr
-      RUN_LD_ON_STARTUP: true
+      JBS_ENV: pr
 
 servicebus:
   releaseNameOverride: ${SERVICE_NAME}-asb

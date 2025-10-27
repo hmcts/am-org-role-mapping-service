@@ -1,10 +1,11 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
@@ -15,7 +16,6 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class DroolSscsStaffOrgRolesTest extends DroolBase {
 
     // NB: multi-regions are: South-West and Wales
@@ -112,8 +112,7 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         List<String> expectedRoleList = Arrays.stream(expectedRoles.split(",")).toList();
@@ -242,8 +241,7 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         List<String> expectedRoleList = Arrays.stream(expectedRoles.split(",")).toList();
@@ -361,8 +359,7 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         List<String> expectedRoleList = Arrays.stream(expectedRoles.split(",")).toList();
@@ -423,8 +420,9 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "14,BBA3,'dwp',N,N",
-        "15,BBA3,'hmrc',N,N"
+        "14,BBA3,'dwp,listed-hearing-viewer',N,N",
+        "15,BBA3,'hmrc,listed-hearing-viewer',N,N",
+        "19,BBA3,'ibca,listed-hearing-viewer',N,N"
     })
     void shouldReturnSscsOtherGovDepMappings(String roleId, String serviceCode, String expectedRoles,
                                              String taskSupervisorFlag, String caseAllocatorFlag) {
@@ -441,16 +439,16 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
         cap.setRegionId("LDN");
         cap.setSkillCodes(skillCodes);
 
+        allProfiles.clear();
         allProfiles.add(cap);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(setFeatureFlags());
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
         roleAssignments.forEach(r -> {
             assertEquals("OTHER_GOV_DEPT", r.getRoleCategory().toString());
@@ -465,11 +463,7 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
             assertNull(r.getAttributes().get("region"));
 
             //assert work types
-            if (("dwp").equals(r.getRoleName())) {
-                assertThat(r.getAttributes().get("workTypes").asText().split(","),
-                        arrayContainingInAnyOrder("applications", "hearing_work",
-                                "routine_work", "priority", "pre_hearing"));
-            } else if (("hmrc").equals(r.getRoleName())) {
+            if (List.of("dwp", "hmrc", "ibca").contains(r.getRoleName())) {
                 assertThat(r.getAttributes().get("workTypes").asText().split(","),
                         arrayContainingInAnyOrder("applications", "hearing_work",
                                 "routine_work", "priority", "pre_hearing"));
@@ -495,14 +489,14 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", false));
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("SSCS", false));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
     }
 
-    private static List<FeatureFlag> setFeatureFlags() {
-        return List.of(FeatureFlag.builder().flagName("sscs_wa_1_0").status(true).build(),
-                FeatureFlag.builder().flagName("sscs_wa_1_2").status(true).build());
+    private List<FeatureFlag> setFeatureFlags() {
+        return getAllFeatureFlagsToggleByJurisdiction("SSCS", true, false);
     }
+
 }

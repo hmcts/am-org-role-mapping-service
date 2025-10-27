@@ -1,0 +1,21 @@
+{
+  "_guid_": "S-032_CreateDataForNewBookings",
+  "_extends_": "F-004_CreateDataForBookings",
+
+  "specs": [
+    "to create extra booking for this user"
+  ],
+ 
+  "request": {
+    "body": {
+      "bookingRequest": {
+        "userId": "${[scenarioContext][parentContext][testData][users][invokingUser][id]}",
+        "regionId": "4",
+        "locationId": "14",
+        "beginDate": "${[scenarioContext][customValues][today]}",
+        "endDate": "${[scenarioContext][customValues][today]}"
+      }
+    }
+  }
+
+}
