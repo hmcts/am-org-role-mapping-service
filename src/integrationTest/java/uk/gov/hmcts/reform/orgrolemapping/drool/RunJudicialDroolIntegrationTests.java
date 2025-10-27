@@ -14,7 +14,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
-import uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper;
+import uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.APPOINTMENT_BEGIN_TIME;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.APPOINTMENT_END_TIME;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.formatJudicialTestOutputLocation;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper.assertWireMockAssignmentRequests;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper.writeValueAsPrettyJson;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.APPOINTMENT_BEGIN_TIME;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.APPOINTMENT_END_TIME;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.adjustMapValueToDtz;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.formatJudicialTestOutputLocation;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.getSidamIdsList;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.getSidamIdsSet;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.writeJsonToOutput;
@@ -61,6 +61,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
         outputDirectory.mkdirs();
     }
 
+
     @MethodSource("getTestArguments")
     @ParameterizedTest(name = DISPLAY_NAME)
     void testCreateOrmMappingApiWithBooking(String ignoredDisplayName,
@@ -71,7 +72,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
         writeTestArgumentsToOutput(testArguments);
 
         assertCreateOrmMappingApiForTestScenarios(
-            TestScenarioIntegrationHelper.generateJudicialHappyPathScenarios(
+            DroolJudicialTestArgumentsHelper.generateJudicialHappyPathScenarios(
                 testArguments,
                 includeBookingScenario
             ),
@@ -94,7 +95,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
         writeTestArgumentsToOutput(testArguments);
 
         assertCreateOrmMappingApiForTestScenarios(
-            TestScenarioIntegrationHelper.generateJudicialHappyPathScenarios(
+            DroolJudicialTestArgumentsHelper.generateJudicialHappyPathScenarios(
                 testArguments,
                 includeBookingScenario
             ),
@@ -115,7 +116,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
         writeTestArgumentsToOutput(testArguments);
 
         assertCreateOrmMappingApiForTestScenarios(
-            TestScenarioIntegrationHelper.generateJudicialNegativePathScenarios(testArguments),
+            DroolJudicialTestArgumentsHelper.generateJudicialNegativePathScenarios(testArguments),
             testArguments.getJrdResponseFileName(),
             EMPTY_ROLE_ASSIGNMENT_TEMPLATE, // negative test so always expect empty RAS request
             true, // NB: include valid booking to prove it is ignored when other values are expired

@@ -12,6 +12,7 @@
       "cft_region": "London",
       "is_principal_appointment": "true",
       "appointment": "Circuit Judge",
+      "role_name_id": "19",
       "appointment_type": "Salaried",
       "contract_type_id": "0",
       "service_codes": [
@@ -20,7 +21,6 @@
       "start_date": "[[APPOINTMENT_BEGIN_TIME]]",
       "end_date": "[[APPOINTMENT_END_TIME]]",
       "appointment_id": "1234",
-      "role_name_id": "19",
       "type": "Courts"
     }
   ],
@@ -28,10 +28,10 @@
     {
       "appointment_id": "1234",
       "authorisation_id": "9876",
-      "jurisdiction_id": "31",
+      "jurisdiction_id": "99",
       "jurisdiction": "TestUnrecognisedServiceCode",
       "ticket_description": "Test Authorisation",
-      "ticket_code": "294",
+      "ticket_code": "987",
       "service_codes": [
         "ZZZ9"
       ],
