@@ -399,7 +399,6 @@ dependencies {
     testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
     testImplementation group: 'info.solidsoft.gradle.pitest', name:'gradle-pitest-plugin', version: '1.15.0'
     testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
-    testImplementation 'com.github.hmcts:befta-fw:9.0.2'
     testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:4.3.0')
     testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test'
     testImplementation group: 'org.springframework.security',name:'spring-security-test'
