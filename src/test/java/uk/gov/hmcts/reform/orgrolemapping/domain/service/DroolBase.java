@@ -142,6 +142,21 @@ public abstract class DroolBase {
     }
 
     @NotNull
+    protected List<FeatureFlag> getAllFeatureFlagsToggleByJurisdiction(String jurisdiction,
+                                                                       Boolean status,
+                                                                       Boolean hearingFlagStatus) {
+        List<FeatureFlag> featureFlags = new ArrayList<>(getAllFeatureFlagsToggleByJurisdiction(jurisdiction, status));
+
+        for (FeatureFlag flag : featureFlags) {
+            if (flag.getFlagName().contains("hearing")) {
+                flag.setStatus(hearingFlagStatus);
+            }
+        }
+
+        return featureFlags;
+    }
+
+    @NotNull
     protected List<FeatureFlag> getAllHearingFlags(Boolean status) {
         return Arrays.stream(FeatureFlagEnum.values())
                 .map(featureFlagEnum -> FeatureFlag.builder()
