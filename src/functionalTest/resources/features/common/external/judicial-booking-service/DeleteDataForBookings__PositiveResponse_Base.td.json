@@ -1,0 +1,12 @@
+{
+  "_guid_": "DeleteDataForBookings__PositiveResponse_Base",
+  "_extends_": "DeleteDataForBookings__Base",
+
+  "specs": [
+    "to delete existing bookings corresponding to the test actorId"
+  ],
+
+  "expectedResponse": {
+    "_extends_": "Common_204_Response"
+  }
+}
