@@ -1,13 +1,26 @@
 {
-  "_guid_": "S-060",
-  "title": "must successfully create judicial role mapping for Tribunal Member Disability - Fee Paid appointment",
+  "_guid_": "S-164",
+  "title": "must successfully create organisational role mapping for fee-paid judge with bookings when ticketCode=368",
   "_extends_": "F-006_Test_Data_Base",
-  "specs": [
-    "contains the actorId of the user just published",
-    "contains multiple roles due to SSCS multi-region expanion for Wales and South West"
-  ],
+
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+
+  "specs": [
+    "a judicial profile for SSCS that supports judicial bookings (i.e. ticketCode=368)",
+
+    "contains the actorId of the user for which above booking is created",
+
+    "contains a bookable fee-paid-judge role-assignment",
+    "contains booked judge/fee-paid role-assignments"
+  ],
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmJRDUser2"
+    }
+  },
+
   "request": {
     "headers": {
       "sort": "roleName",
@@ -17,14 +30,14 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": "${[scenarioContext][childContexts][S-060_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "actorId": ["${[scenarioContext][testData][users][invokingUser][id]}"],
           "roleName": ["hmcts-judiciary"],
           "attributes": {
             "contractType": ["Fee-Paid"]
           }
         },
         {
-          "actorId": "${[scenarioContext][childContexts][S-060_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "actorId": ["${[scenarioContext][testData][users][invokingUser][id]}"],
           "attributes": {
             "jurisdiction": ["SSCS"]
           }
@@ -32,19 +45,20 @@
       ]
     }
   },
+
   "expectedResponse": {
     "_extends_": "Common_200_Response",
-    "body": {
-      "roleAssignmentResponse": [
+    "body" : {
+      "roleAssignmentResponse" : [
         {
-          "__elementId__": "roleName,attributes.jurisdiction,attributes.region"
+          "__elementId__": "roleName"
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "fee-paid-disability",
+          "roleName": "fee-paid-judge",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
@@ -53,35 +67,13 @@
           "endTime" : "[[ANYTHING_PRESENT]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "Y",
+            "bookable" : "true",
+            "substantive": "N",
             "contractType": "Fee-Paid",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS",
-            "region" : "6",
-            "workTypes": "hearing_work,priority"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "fee-paid-disability",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "JUDICIAL",
-          "readOnly": false,
-          "beginTime": "[[ANYTHING_PRESENT]]",
-          "endTime" : "[[ANYTHING_PRESENT]]",
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "contractType": "Fee-Paid",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "7",
-            "workTypes": "hearing_work,priority"
+            "region" : "[[ANYTHING_PRESENT]]",
+            "workTypes": "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -122,6 +114,29 @@
             "substantive": "N",
             "contractType": "Fee-Paid"
           }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "judge",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "JUDICIAL",
+          "readOnly" : false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "Y",
+            "contractType" : "Fee-Paid",
+            "jurisdiction" : "SSCS",
+            "region" : "3",
+            "primaryLocation" : "13",
+            "workTypes" : "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
         }
       ]
     }

@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
@@ -20,7 +19,7 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 
 
 @ExtendWith(MockitoExtension.class)
-class DroolCtscOrgRoleMappingTest extends DroolBase {
+class DroolIacCtscOrgRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
@@ -50,7 +49,7 @@ class DroolCtscOrgRoleMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(2, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
         roleAssignments.forEach(r -> {
             assertEquals("CTSC", r.getRoleCategory().toString());
@@ -104,7 +103,7 @@ class DroolCtscOrgRoleMappingTest extends DroolBase {
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
         roleAssignments.forEach(r -> {
             assertEquals("CTSC", r.getRoleCategory().toString());
@@ -125,6 +124,4 @@ class DroolCtscOrgRoleMappingTest extends DroolBase {
                     }
                 });
     }
-
 }
-
