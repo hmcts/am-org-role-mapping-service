@@ -13,6 +13,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
 @Builder
 @Getter
 public class DroolJudicialTestArguments {
+    private String jurisdiction;
+    private String testGroup;
+    private String testName;
     private String description;
     private String outputLocation;
     private String jrdResponseFileName;
@@ -32,7 +35,11 @@ public class DroolJudicialTestArguments {
     }
 
     public DroolJudicialTestArgumentsBuilder cloneBuilder() {
+        // clone properties but return the builder to allow overrides
         return DroolJudicialTestArguments.builder()
+            .jurisdiction(this.jurisdiction)
+            .testGroup(this.testGroup)
+            .testName(this.testName)
             .description(this.description)
             .outputLocation(this.outputLocation)
             .jrdResponseFileName(this.jrdResponseFileName)
