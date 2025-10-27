@@ -4,9 +4,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArguments;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,12 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static uk.gov.hmcts.reform.orgrolemapping.drool.RunJudicialDroolIntegrationTests.DROOL_JUDICIAL_TEST_OUTPUT_PATH;
-
 @Slf4j
-@SuppressWarnings({
-    "java:S115" // Constant names should comply with a naming convention
-})
 public class TestScenarioIntegrationHelper {
 
     public static final DateTimeFormatter DF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -52,63 +45,8 @@ public class TestScenarioIntegrationHelper {
     public static final String REGION_07_WALES = "7";
     public static final String REGION_11_SCOTLAND = "11";
     public static final String REGION_12_NATIONAL = "12";
-    // JUDICIAL replace values
-    public static final String APPOINTMENT_BEGIN_TIME = "[[APPOINTMENT_BEGIN_TIME]]";
-    public static final String APPOINTMENT_END_TIME = "[[APPOINTMENT_END_TIME]]";
-    public static final String AUTHORISATION_BEGIN_TIME = "[[AUTHORISATION_BEGIN_TIME]]";
-    public static final String AUTHORISATION_END_TIME = "[[AUTHORISATION_END_TIME]]";
-    public static final String APPOINTMENT_TYPE = "[[APPOINTMENT_TYPE]]";
-    public static final String CONTRACT_TYPE_ID = "[[CONTRACT_TYPE_ID]]";
-    public static final String DELETED_FLAG = "[[DELETED_FLAG]]";
-    public static final String ROLE_BEGIN_TIME = "[[ROLE_BEGIN_TIME]]";
-    public static final String ROLE_END_TIME = "[[ROLE_END_TIME]]";
-    // JUDICIAL BOOKING replace values
-    public static final String JBS_BEGIN_TIME = "[[JBS_BEGIN_TIME]]";
-    public static final String JBS_END_TIME = "[[JBS_END_TIME]]";
-
-    private static final String HAPPY_PATH__ALL_DATES_SUPPLIED = "HappyPath - all dates supplied";
-    private static final String HAPPY_PATH__NO_APPOINTMENT_END_DATE = "HappyPath - no appointment end date";
-    private static final String HAPPY_PATH__NO_AUTHORISATION_END_DATE = "HappyPath - no authorisation end date";
-    private static final String HAPPY_PATH__NO_ADDITIONAL_ROLE_END_DATE = "HappyPath - no additional role end date";
-    private static final String HAPPY_PATH__NO_BOOKING_END_DATE = "HappyPath - no booking end date";
-
-    private static final String NEGATIVE_TEST__APPOINTMENT_END_DATE_EXPIRED
-        = "NegativeTest - appointment end date expired";
-    private static final String NEGATIVE_TEST__AUTHORISATION_END_DATE_EXPIRED
-        = "NegativeTest - authorisation end date expired";
-    private static final String NEGATIVE_TEST__ADDITIONAL_ROLE_END_DATE_EXPIRED
-        = "NegativeTest - additional role end date expired";
-    private static final String NEGATIVE_TEST__SOFT_DELETE_FLAG_SET = "NegativeTest - soft delete flag set";
 
     private static final Random RANDOM = new Random();
-
-    public static Map<String, String> generateJudicialOverrideMapValues(String appointmentType, String region) {
-        Map<String, String> overrideMapValues = new HashMap<>();
-
-        // NB: these should match codes in UtilityFunctions.getAppointmentTypeFromAppointment(...)
-        switch (appointmentType) {
-            case JudicialAccessProfile.AppointmentType.FEE_PAID -> {
-                overrideMapValues.put(APPOINTMENT_TYPE, "Fee-Paid");
-                overrideMapValues.put(CONTRACT_TYPE_ID, "1");
-            }
-            case JudicialAccessProfile.AppointmentType.VOLUNTARY -> {
-                overrideMapValues.put(APPOINTMENT_TYPE, "Voluntary");
-                overrideMapValues.put(CONTRACT_TYPE_ID, "2");
-            }
-            case JudicialAccessProfile.AppointmentType.SPTW -> {
-                overrideMapValues.put(APPOINTMENT_TYPE, "SPTW-50%");
-                overrideMapValues.put(CONTRACT_TYPE_ID, "5");
-            }
-            default -> {
-                overrideMapValues.put(APPOINTMENT_TYPE, "Salaried");
-                overrideMapValues.put(CONTRACT_TYPE_ID, "0");
-            }
-        }
-
-        addRegionOverrideMapValues(overrideMapValues, region);
-
-        return overrideMapValues;
-    }
 
 
     public static void addRegionOverrideMapValues(Map<String, String> overrideMapValues, String region) {
@@ -156,143 +94,6 @@ public class TestScenarioIntegrationHelper {
         }
     }
 
-    public static List<DroolJudicialTestArguments> cloneListOfSalariedTestArgumentsForSptw(
-        List<DroolJudicialTestArguments> originalList
-    ) {
-        // override Appointment Type values with SPTW values
-        Map<String, String> overrideMapValues = new HashMap<>();
-        overrideMapValues.put(APPOINTMENT_TYPE, "SPTW-50%");
-        overrideMapValues.put(CONTRACT_TYPE_ID, "5");
-
-        return originalList.stream()
-            .map(originalArgs -> originalArgs.cloneBuilder()
-                .description(originalArgs.getDescription().replace("SALARIED", "SPTW"))
-                .overrideMapValues(
-                    cloneAndOverrideMap(
-                        originalArgs.getOverrideMapValues(),
-                        overrideMapValues
-                    )
-                )
-                .build()
-            )
-            .toList();
-
-    }
-
-    public static List<TestScenario> generateJudicialHappyPathScenarios(DroolJudicialTestArguments testArguments,
-                                                                        boolean includeBookingScenario) {
-        List<TestScenario> testScenarios = new ArrayList<>();
-
-        Map<String, String> overrideMapValues = testArguments.getOverrideMapValues();
-
-        String scenarioOutputPath = "HappyPath/" + (includeBookingScenario ? "WithBooking/" : "WithoutBooking/");
-
-        testScenarios.add(TestScenario.builder()
-            .description(HAPPY_PATH__ALL_DATES_SUPPLIED)
-            .outputLocation(
-                formatJudicialTestOutputLocation(testArguments, scenarioOutputPath + "AllDatesSupplied/")
-            )
-            .replaceMap(createDefaultJudicialReplaceMap(overrideMapValues))
-            .build());
-
-        testScenarios.add(TestScenario.builder()
-            .description(HAPPY_PATH__NO_APPOINTMENT_END_DATE)
-            .outputLocation(
-                formatJudicialTestOutputLocation(testArguments, scenarioOutputPath + "NoAppointmentEndDate/")
-            )
-            .replaceMap(
-                useNullDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), APPOINTMENT_END_TIME)
-            )
-            .build());
-
-        testScenarios.add(TestScenario.builder()
-            .description(HAPPY_PATH__NO_AUTHORISATION_END_DATE)
-            .outputLocation(
-                formatJudicialTestOutputLocation(testArguments, scenarioOutputPath + "NoAuthorisationEndDate/")
-            )
-            .replaceMap(
-                useNullDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), AUTHORISATION_END_TIME)
-            )
-            .build());
-
-        if (testArguments.isAdditionalRoleTest()) {
-            testScenarios.add(TestScenario.builder()
-                .description(HAPPY_PATH__NO_ADDITIONAL_ROLE_END_DATE)
-                .outputLocation(
-                    formatJudicialTestOutputLocation(testArguments, scenarioOutputPath + "NoAdditionalRoleEndDate/")
-                )
-                .replaceMap(
-                    useNullDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), ROLE_END_TIME)
-                )
-                .build());
-        }
-
-        if (includeBookingScenario) {
-            testScenarios.add(TestScenario.builder()
-                .description(HAPPY_PATH__NO_BOOKING_END_DATE)
-                .outputLocation(
-                    formatJudicialTestOutputLocation(testArguments, scenarioOutputPath + "NoBookingEndDate/")
-                )
-                .replaceMap(
-                    useNullDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), JBS_END_TIME)
-                )
-                .build());
-        }
-
-        return testScenarios;
-    }
-
-
-    public static List<TestScenario> generateJudicialNegativePathScenarios(DroolJudicialTestArguments testArguments) {
-        List<TestScenario> testScenarios = new ArrayList<>();
-
-        Map<String, String> overrideMapValues = testArguments.getOverrideMapValues();
-
-        // NB: JBS only returns valid bookings so no need to test with expired booking end date
-
-        testScenarios.add(TestScenario.builder()
-            .description(NEGATIVE_TEST__APPOINTMENT_END_DATE_EXPIRED)
-            .outputLocation(
-                formatJudicialTestOutputLocation(testArguments, "NegativeTest/AppointmentEndDateExpired/")
-            )
-            .replaceMap(
-                expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), APPOINTMENT_END_TIME)
-            )
-            .build());
-
-        testScenarios.add(TestScenario.builder()
-            .description(NEGATIVE_TEST__AUTHORISATION_END_DATE_EXPIRED)
-            .outputLocation(
-                formatJudicialTestOutputLocation(testArguments, "NegativeTest/AuthorisationEndDateExpired/")
-            )
-            .replaceMap(
-                expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), AUTHORISATION_END_TIME)
-            )
-            .build());
-
-        if (testArguments.isAdditionalRoleTest()) {
-            testScenarios.add(TestScenario.builder()
-                .description(NEGATIVE_TEST__ADDITIONAL_ROLE_END_DATE_EXPIRED)
-                .outputLocation(
-                    formatJudicialTestOutputLocation(testArguments, "NegativeTest/AdditionalRoleEndDateExpired/")
-                )
-                .replaceMap(
-                    expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), ROLE_END_TIME)
-                )
-                .build());
-        }
-
-        testScenarios.add(TestScenario.builder()
-            .description(NEGATIVE_TEST__SOFT_DELETE_FLAG_SET)
-            .outputLocation(
-                formatJudicialTestOutputLocation(testArguments, "NegativeTest/SoftDeleteFlagSet/")
-            )
-            .replaceMap(
-                setBooleanInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), DELETED_FLAG, true))
-            .build());
-
-        return testScenarios;
-    }
 
     public static List<String> getSidamIdsList(List<TestScenario> testScenarios) {
         return new ArrayList<>(getSidamIdsSet(testScenarios));
@@ -302,30 +103,6 @@ public class TestScenarioIntegrationHelper {
         return testScenarios.stream()
             .map(testScenario -> testScenario.getReplaceMap().get(IDAM_ID))
             .collect(Collectors.toSet());
-    }
-
-    public static Map<String, String> createDefaultJudicialReplaceMap(Map<String, String> overrideMapValues) {
-
-        // build map of happy path values: even for those that may not be in the test
-        Map<String, String> outputMap = new HashMap<>(Map.of(
-            IDAM_ID, UUID.randomUUID().toString(),
-            APPOINTMENT_BEGIN_TIME, LocalDate.now().minusDays(5).format(DF),
-            APPOINTMENT_END_TIME, LocalDate.now().plusDays(5).format(DF),
-            AUTHORISATION_BEGIN_TIME, LocalDate.now().minusDays(3).format(DF),
-            AUTHORISATION_END_TIME, LocalDate.now().plusDays(3).format(DF),
-            DELETED_FLAG, "false",
-            ROLE_BEGIN_TIME, LocalDate.now().minusDays(2).format(DF),
-            ROLE_END_TIME, LocalDate.now().plusDays(2).format(DF),
-            JBS_BEGIN_TIME, LocalDate.now().minusDays(1).format(DF) + "T00:00:00Z",
-            JBS_END_TIME, LocalDate.now().plusDays(1).format(DF) + "T00:00:00Z"
-        ));
-
-        // add or override with extra values if needed
-        if (MapUtils.isNotEmpty(overrideMapValues)) {
-            outputMap.putAll(overrideMapValues);
-        }
-
-        return outputMap;
     }
 
     public static Map<String, String> cloneAndExpandReplaceMap(Map<String, String> replaceMap) {
@@ -377,26 +154,18 @@ public class TestScenarioIntegrationHelper {
         }
     }
 
-    public static String formatJudicialTestOutputLocation(DroolJudicialTestArguments testArguments,
-                                                           String scenarioOutputPath) {
-        if (StringUtils.isEmpty(testArguments.getOutputLocation())) {
-            return null;
-        }
-        return DROOL_JUDICIAL_TEST_OUTPUT_PATH + testArguments.getOutputLocation() + scenarioOutputPath;
-    }
-
-    private static Map<String, String> expireDateInReplaceMap(Map<String, String> replaceMap, String expiredDateKey) {
+    public static Map<String, String> expireDateInReplaceMap(Map<String, String> replaceMap, String expiredDateKey) {
         replaceMap.put(expiredDateKey, LocalDate.now().minusDays(10).format(DF));
         return replaceMap;
     }
 
-    private static Map<String, String> useNullDateInReplaceMap(Map<String, String> replaceMap, String nullDateKey) {
+    public static Map<String, String> useNullDateInReplaceMap(Map<String, String> replaceMap, String nullDateKey) {
         replaceMap.put(nullDateKey, null);
         return replaceMap;
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static Map<String, String> setBooleanInReplaceMap(Map<String, String> replaceMap,
+    public static Map<String, String> setBooleanInReplaceMap(Map<String, String> replaceMap,
                                                               String boolKey,
                                                               boolean boolValue) {
         replaceMap.put(boolKey, Boolean.toString(boolValue));
