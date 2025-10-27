@@ -29,7 +29,7 @@
   "superUser": {
     "firstName": "ga-Ter001",
     "lastName": "ga-Tes001Lastname",
-    "email": "TEST_AM_ORM_@test.local"
+    "email": "${[scenarioContext][testData][invokingUser][username]}"
   },
   "paymentAccount": [
     "PBA${[scenarioContext][customValues][generateAlphaNumericSize7]}"
