@@ -1,14 +1,14 @@
 package uk.gov.hmcts.reform.orgrolemapping.drool;
 
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArguments;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
-import uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper;
+import uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.SALARIED;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.adjustTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_01_LONDON;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_02_MIDLANDS;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_05_SOUTH_EAST;
@@ -50,39 +50,7 @@ public class CivilJudicialIT {
         );
 
         // adjust test arguments ready for use
-        return arguments.stream()
-            .map(testArguments ->
-                testArguments.cloneBuilder()
-                    .description(formatDisplayName(testArguments))
-                    .outputLocation(formatOutputLocation(testArguments))
-                    .jrdResponseFileName(
-                        "Civil/InputFromJrd/" + testArguments.getJrdResponseFileName()
-                    )
-                    .rasRequestFileNameWithBooking(
-                        "Civil/OutputToRas/" + testArguments.getRasRequestFileNameWithBooking()
-                    )
-                    .rasRequestFileNameWithoutBooking(
-                        "Civil/OutputToRas/" + testArguments.getRasRequestFileNameWithoutBooking()
-                    )
-                    // TODO: remove temp flag-off value needed after DTSAM-860
-                    .turnOffFlags(List.of(FeatureFlagEnum.PRIVATELAW_WA_1_7))
-                    .build()
-            )
-            .toList();
-    }
-
-    private static String formatDisplayName(DroolJudicialTestArguments args) {
-        return "Civil: %s__%s".formatted(
-            args.getJrdResponseFileName(),
-            args.getDescription()
-        );
-    }
-
-    private static String formatOutputLocation(DroolJudicialTestArguments args) {
-        return "Civil/%s/%s/".formatted(
-            args.getJrdResponseFileName(),
-            args.getDescription()
-        );
+        return adjustTestArguments(arguments, "Civil");
     }
 
     @SuppressWarnings({"SameParameterValue"})
@@ -154,7 +122,7 @@ public class CivilJudicialIT {
 
         // expand to include additional tests for SPTW
         arguments.addAll(
-            TestScenarioIntegrationHelper.cloneListOfSalariedTestArgumentsForSptw(arguments)
+            DroolJudicialTestArgumentsHelper.cloneListOfSalariedTestArgumentsForSptw(arguments)
         );
 
         return arguments;
@@ -164,7 +132,7 @@ public class CivilJudicialIT {
     private static Map<String, String> generateJudicialOverrideMapValues(String serviceCode,
                                                                          String appointmentType,
                                                                          String region) {
-        Map<String, String> overrides = TestScenarioIntegrationHelper.generateJudicialOverrideMapValues(
+        Map<String, String> overrides = DroolJudicialTestArgumentsHelper.generateCommonJudicialOverrideMapValues(
             appointmentType,
             region
         );
