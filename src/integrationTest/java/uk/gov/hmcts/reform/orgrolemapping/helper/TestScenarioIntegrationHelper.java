@@ -136,7 +136,6 @@ public class TestScenarioIntegrationHelper {
         writeJsonToOutput(json, testScenario.getOutputLocation(), outputFileName);
     }
 
-    @SneakyThrows
     @SuppressWarnings({"ResultOfMethodCallIgnored"})
     public static void writeJsonToOutput(String json, String outputLocation, String outputFileName) {
         log.info("--- Test Output: {} ---\n{}", outputFileName, json);
@@ -147,11 +146,16 @@ public class TestScenarioIntegrationHelper {
                 outputDirectory.mkdirs();
             }
 
-            String outputFilePath = outputLocation + outputFileName + ".json";
-            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath));
-            writer.write(json);
-            writer.close();
+            createFile(outputLocation + outputFileName + ".json", json);
         }
+    }
+
+    @SneakyThrows
+    @SuppressWarnings({"ResultOfMethodCallIgnored"})
+    public static void createFile(String outputFilePath, String contents) {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath));
+        writer.write(contents);
+        writer.close();
     }
 
     public static Map<String, String> expireDateInReplaceMap(Map<String, String> replaceMap, String expiredDateKey) {
