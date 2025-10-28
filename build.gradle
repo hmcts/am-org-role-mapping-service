@@ -337,7 +337,7 @@ dependencies {
     implementation group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.4'
     implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '1.33.6'
 
-    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.5.1'
 
     // drools engine dependency
     implementation group: 'org.drools', name: 'drools-core', version: versions.drools
