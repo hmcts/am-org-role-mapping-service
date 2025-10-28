@@ -142,19 +142,15 @@ public class TestScenarioIntegrationHelper {
         log.info("--- Test Output: {} ---\n{}", outputFileName, json);
 
         if (!StringUtils.isEmpty(outputLocation)) {
-            cleanDirectory(outputLocation);
+            File outputDirectory = new File(outputLocation);
+            if (!outputDirectory.exists()) {
+                outputDirectory.mkdirs();
+            }
 
             String outputFilePath = outputLocation + outputFileName + ".json";
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath));
             writer.write(json);
             writer.close();
-        }
-    }
-
-    public static void cleanDirectory(String outputLocation) {
-        File outputDirectory = new File(outputLocation);
-        if (!outputDirectory.exists()) {
-            outputDirectory.mkdirs();
         }
     }
 

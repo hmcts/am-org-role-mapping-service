@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +29,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumen
 import static uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper.assertWireMockAssignmentRequests;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper.writeValueAsPrettyJson;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.adjustMapValueToDtz;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.cleanDirectory;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.getSidamIdsList;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.getSidamIdsSet;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.writeJsonToOutput;
@@ -51,7 +51,11 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
     @SuppressWarnings({"ResultOfMethodCallIgnored"})
     @BeforeAll
     static void beforeAllTests() {
-        cleanDirectory(DROOL_JUDICIAL_TEST_OUTPUT_PATH);
+        File outputDirectory = new File(DROOL_JUDICIAL_TEST_OUTPUT_PATH);
+        if (outputDirectory.exists()) {
+            outputDirectory.delete();
+        }
+        outputDirectory.mkdirs();
     }
 
 
