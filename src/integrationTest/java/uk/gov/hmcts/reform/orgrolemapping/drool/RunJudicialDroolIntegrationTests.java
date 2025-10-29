@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.drool;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -17,6 +18,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +41,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
     private static final String DISPLAY_NAME = "#{index} - {0}";
 
+
     static Stream<Arguments> getTestArguments() {
         List<DroolJudicialTestArguments> arguments = new ArrayList<>();
 
@@ -51,12 +54,13 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
             .map(DroolJudicialTestArguments::toArguments);
     }
 
+
     @SuppressWarnings({"ResultOfMethodCallIgnored"})
     @BeforeAll
-    static void beforeAllTests() {
+    static void beforeAllTests() throws IOException {
         File outputDirectory = new File(DROOL_JUDICIAL_TEST_OUTPUT_PATH);
         if (outputDirectory.exists()) {
-            outputDirectory.delete();
+            FileUtils.deleteDirectory(outputDirectory);
         }
         outputDirectory.mkdirs();
     }
