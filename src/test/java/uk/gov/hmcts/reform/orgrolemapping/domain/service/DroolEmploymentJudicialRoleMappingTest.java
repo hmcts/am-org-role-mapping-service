@@ -102,8 +102,6 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
                 + "hmcts-judiciary,specific-access-approver-judiciary",
         "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried,leadership-judge,judge,task-supervisor,"
                     + "case-allocator,hmcts-judiciary,specific-access-approver-judiciary",
-        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried,leadership-judge,judge,task-supervisor,"
-                + "case-allocator,hmcts-judiciary,specific-access-approver-judiciary",
         "EMPLOYMENT Vice President-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
                 + "hmcts-judiciary,specific-access-approver-judiciary",
         "EMPLOYMENT Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"

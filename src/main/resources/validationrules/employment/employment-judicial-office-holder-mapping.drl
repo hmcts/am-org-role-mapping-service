@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRole;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentGroup;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
@@ -32,11 +33,14 @@ import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuild
 
 /*
  * "EMPLOYMENT President of Tribunal" business role mapping to JOH.
+ * Made obsolete in DTSAM-995 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.
  */
 rule "employment_president_of_tribunal_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
    $f2: FeatureFlag(flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_2.getValue())
+   $f3: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "President of Tribunal",
                                appointmentType == "Salaried",
@@ -68,12 +72,45 @@ then
 end;
 
 /*
+ * "EMPLOYMENT President of Tribunal" business role mapping to JOH for v3_0.
+ */
+rule "v3_0_employment_president_of_tribunal_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
+   $jap: JudicialAccessProfile(hasAppointmentCode(Appointment.PRESIDENT_OF_TRIBUNAL),
+                               isSalaried(),
+                               hasValidEndDate(),
+                               hasValidAuthorisation(Jurisdiction.EMPLOYMENT))
+then
+  String regionId = "12".equals($jap.getRegionId()) ? "11" : $jap.getRegionId();
+
+      insert(
+          JudicialOfficeHolder.builder()
+              .userId($jap.getUserId())
+              .office(Office.Employment.PRESIDENT_OF_TRIBUNAL_SALARIED)
+              .jurisdiction(Jurisdiction.EMPLOYMENT.getName())
+              .ticketCodes($jap.getTicketCodes())
+              .beginTime($jap.getBeginTime())
+              .endTime($jap.getEndTime())
+              .regionId(regionId)
+              .baseLocationId($jap.getBaseLocationId())
+              .primaryLocation($jap.getPrimaryLocationId())
+              .contractType($jap.getAppointmentType())
+              .build()
+      );
+      logMsg("Rule : v3_0_employment_president_of_tribunal_salaried_joh");
+end;
+
+/*
  * "EMPLOYMENT President, Employment Tribunals (Scotland)" business role mapping to JOH.
+ * Made obsolete in DTSAM-995 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.
  */
 rule "employment_president_employment_tribunals_scotland_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_1.getValue())
    $f2: FeatureFlag(flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_2.getValue())
+   $f3: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "President, Employment Tribunals (Scotland)",
                                appointmentType == "Salaried",
@@ -105,11 +142,44 @@ then
 end;
 
 /*
+ * "EMPLOYMENT President, Employment Tribunals (Scotland)" business role mapping to JOH for v3_0.
+ */
+rule "v3_0_employment_president_employment_tribunals_scotland_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
+   $jap: JudicialAccessProfile(hasAppointmentCode(Appointment.PRESIDENT_ET_SCOTLAND),
+                               isSalaried(),
+                               hasValidEndDate(),
+                               hasValidAuthorisation(Jurisdiction.EMPLOYMENT))
+then
+  String regionId = "12".equals($jap.getRegionId()) ? "11" : $jap.getRegionId();
+
+      insert(
+          JudicialOfficeHolder.builder()
+              .userId($jap.getUserId())
+              .office(Office.Employment.PRESIDENT_ET_SCOTLAND_SALARIED)
+              .jurisdiction(Jurisdiction.EMPLOYMENT.getName())
+              .ticketCodes($jap.getTicketCodes())
+              .beginTime($jap.getBeginTime())
+              .endTime($jap.getEndTime())
+              .regionId(regionId)
+              .baseLocationId($jap.getBaseLocationId())
+              .primaryLocation($jap.getPrimaryLocationId())
+              .contractType($jap.getAppointmentType())
+              .build()
+      );
+      logMsg("Rule : v3_0_employment_president_employment_tribunals_scotland_salaried_joh");
+end;
+
+/*
  * "EMPLOYMENT Vice-President, Employment Tribunal (Scotland)" business role mapping to JOH.
+ * Made obsolete in DTSAM-995 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.
  */
 rule "employment_vice_president_employment_tribunal_scotland_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_3.getValue())
+   $f1: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Vice-President, Employment Tribunal (Scotland)",
                                appointmentType == "Salaried",
@@ -136,12 +206,47 @@ then
 end;
 
 /*
+ * "EMPLOYMENT Vice-President, Employment Tribunal (Scotland)" business role mapping to JOH for v3_0.
+ */
+rule "v3_0_employment_vice_president_employment_tribunal_scotland_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
+   $jap: JudicialAccessProfile(hasAppointmentCode(Appointment.VICE_PRESIDENT_ET_SCOTLAND),
+                               isSalaried(),
+                               hasValidEndDate(),
+                               hasValidAuthorisation(Jurisdiction.EMPLOYMENT))
+then
+  // Solution to work around issue with Scottish judges with region 12 not being
+  // able to see Scottish cases set up with region 11.
+  String regionId = "12".equals($jap.getRegionId()) ? "11" : $jap.getRegionId();
+
+      insert(
+          JudicialOfficeHolder.builder()
+              .userId($jap.getUserId())
+              .office(Office.Employment.VICE_PRESIDENT_SALARIED)
+              .jurisdiction(Jurisdiction.EMPLOYMENT.getName())
+              .ticketCodes($jap.getTicketCodes())
+              .beginTime($jap.getBeginTime())
+              .endTime($jap.getEndTime())
+              .regionId(regionId)
+              .baseLocationId($jap.getBaseLocationId())
+              .primaryLocation($jap.getPrimaryLocationId())
+              .contractType($jap.getAppointmentType())
+              .build()
+      );
+      logMsg("Rule : v3_0_employment_vice_president_employment_tribunal_scotland_salaried_joh");
+end;
+
+/*
  * "EMPLOYMENT Vice President" business role mapping to JOH.
+ * Made obsolete in DTSAM-995 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.
  */
 rule "employment_vice_president_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
    $f2: FeatureFlag(flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_2.getValue())
+   $f3: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Vice President",
                                appointmentType == "Salaried",
@@ -173,12 +278,45 @@ then
 end;
 
 /*
+ * "EMPLOYMENT Vice President" business role mapping to JOH for v3_0.
+ */
+rule "v3_0_employment_vice_president_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
+   $jap: JudicialAccessProfile(hasAppointmentCode(Appointment.VICE_PRESIDENT),
+                               isSalaried(),
+                               hasValidEndDate(),
+                               hasValidAuthorisation(Jurisdiction.EMPLOYMENT))
+then
+  String regionId = "12".equals($jap.getRegionId()) ? "11" : $jap.getRegionId();
+
+      insert(
+          JudicialOfficeHolder.builder()
+              .userId($jap.getUserId())
+              .office(Office.Employment.VICE_PRESIDENT_SALARIED)
+              .jurisdiction(Jurisdiction.EMPLOYMENT.getName())
+              .ticketCodes($jap.getTicketCodes())
+              .beginTime($jap.getBeginTime())
+              .endTime($jap.getEndTime())
+              .regionId(regionId)
+              .baseLocationId($jap.getBaseLocationId())
+              .primaryLocation($jap.getPrimaryLocationId())
+              .contractType($jap.getAppointmentType())
+              .build()
+      );
+      logMsg("Rule : v3_0_employment_vice_president_salaried_joh");
+end;
+
+/*
  * "EMPLOYMENT Regional Employment Judge" business role mapping to JOH.
+ * Made obsolete in DTSAM-995 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.
  */
 rule "employment_regional_employment_judge_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
    $f2: FeatureFlag(flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_2.getValue())
+   $f3: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Regional Employment Judge",
                                appointmentType == "Salaried",
@@ -207,6 +345,36 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : employment_regional_employment_judge_salaried_joh");
+end;
+
+/*
+ * "EMPLOYMENT Regional Employment Judge" business role mapping to JOH for v3_0.
+ */
+rule "v3_0_employment_regional_employment_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
+   $jap: JudicialAccessProfile(hasAppointmentCode(Appointment.REGIONAL_EMPLOYMENT_JUDGE),
+                               isSalaried(),
+                               hasValidEndDate(),
+                               hasValidAuthorisation(Jurisdiction.EMPLOYMENT))
+then
+  String regionId = "12".equals($jap.getRegionId()) ? "11" : $jap.getRegionId();
+
+      insert(
+          JudicialOfficeHolder.builder()
+              .userId($jap.getUserId())
+              .office(Office.Employment.REGIONAL_EMPLOYMENT_JUDGE_SALARIED)
+              .jurisdiction(Jurisdiction.EMPLOYMENT.getName())
+              .ticketCodes($jap.getTicketCodes())
+              .beginTime($jap.getBeginTime())
+              .endTime($jap.getEndTime())
+              .regionId(regionId)
+              .baseLocationId($jap.getBaseLocationId())
+              .primaryLocation($jap.getPrimaryLocationId())
+              .contractType($jap.getAppointmentType())
+              .build()
+      );
+      logMsg("Rule : v3_0_employment_regional_employment_judge_salaried_joh");
 end;
 
 /*
@@ -301,27 +469,26 @@ then
     // able to see Scottish cases set up with region 11.
     String regionId = "12".equals($jap.getRegionId()) ? "11" : $jap.getRegionId();
 
-    insert(
-        JudicialOfficeHolder.builder()
-            .userId($jap.getUserId())
-            .office(Office.Employment.EMPLOYMENT_JUDGE_FEE_PAID)
-            .jurisdiction(Jurisdiction.EMPLOYMENT.getName())
-            .ticketCodes($jap.getTicketCodes())
-            .beginTime($jap.getBeginTime())
-            .endTime($jap.getEndTime())
-            .regionId(regionId)
-            .baseLocationId($jap.getBaseLocationId())
-            .primaryLocation($jap.getPrimaryLocationId())
-            .contractType($jap.getAppointmentType())
-            .build()
-    );
-    logMsg("Rule : v3_0_employment_employment_judge_fee_paid_joh");
+        insert(
+            JudicialOfficeHolder.builder()
+                .userId($jap.getUserId())
+                .office(Office.Employment.EMPLOYMENT_JUDGE_FEE_PAID)
+                .jurisdiction(Jurisdiction.EMPLOYMENT.getName())
+                .ticketCodes($jap.getTicketCodes())
+                .beginTime($jap.getBeginTime())
+                .endTime($jap.getEndTime())
+                .regionId(regionId)
+                .baseLocationId($jap.getBaseLocationId())
+                .primaryLocation($jap.getPrimaryLocationId())
+                .contractType($jap.getAppointmentType())
+                .build()
+        );
+        logMsg("Rule : v3_0_employment_employment_judge_fee_paid_joh");
 end;
 
 
 /*
  * "EMPLOYMENT Tribunal Member" business role mapping to JOH.
- * TODO NBP retire this and new  one with helper classes base location is  going and unit test fix
  * Made obsolete in DTSAM-994 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
  * To be removed in DTSAM-1041.
  */
@@ -398,7 +565,6 @@ end;
  * "EMPLOYMENT Tribunal Member Lay" business role mapping to JOH.
  * Made obsolete in DTSAM-994 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
  * To be removed in DTSAM-1041.
- * NBP TODO
  */
 rule "employment_tribunal_member_lay_fee_paid_joh"
 when
@@ -438,10 +604,12 @@ end;
 
 /*
  * "EMPLOYMENT Acting Regional Employment Judge" business role mapping to JOH.
- */
+ * Made obsolete in DTSAM-995 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.*/
 rule "employment_acting_regional_employment_judge_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_4.getValue())
+   $f3: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointmentType in ("Salaried", "SPTW"),
                                (roles != null && roles.contains("Acting Regional Employment Judge")),
@@ -465,4 +633,37 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : employment_acting_regional_employment_judge_salaried_joh");
+end;
+
+/*
+ * "EMPLOYMENT Acting Regional Employment Judge" business role mapping to JOH.
+ */
+rule "V3_0_employment_acting_regional_employment_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
+   $jap: JudicialAccessProfile(appointment != null,
+                               hasValidAdditionalRole(AdditionalRole.ACTING_REGIONAL_EMPLOYMENT_JUDGE),
+                               isSalaried(),
+                               hasValidEndDate(),
+                               hasValidAuthorisation(Jurisdiction.EMPLOYMENT))
+then
+  // Solution to work around issue with Scottish judges with region 12 not being
+  // able to see Scottish cases set up with region 11.
+  String regionId = "12".equals($jap.getRegionId()) ? "11" : $jap.getRegionId();
+
+      insert(
+          JudicialOfficeHolder.builder()
+              .userId($jap.getUserId())
+              .office(Office.Employment.ACTING_REGIONAL_EMPLOYMENT_JUDGE_SALARIED)
+              .jurisdiction(Jurisdiction.EMPLOYMENT.getName())
+              .ticketCodes($jap.getTicketCodes())
+              .beginTime($jap.getBeginTime())
+              .endTime($jap.getEndTime())
+              .regionId(regionId)
+              .baseLocationId($jap.getBaseLocationId())
+              .primaryLocation($jap.getPrimaryLocationId())
+              .contractType($jap.getAppointmentType())
+              .build()
+      );
+      logMsg("Rule : V3_0_employment_acting_regional_employment_judge_salaried_joh");
 end;
