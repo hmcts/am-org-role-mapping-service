@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -51,6 +50,10 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
 
     private static final String JURISDICTION = Jurisdiction.EMPLOYMENT.getName();
     private static final String SERVICE_CODE = Jurisdiction.EMPLOYMENT.getServiceCodes().get(0);
+
+    static final List<String> ROLES_THAT_REQUIRE_REGIONS = List.of(
+        "judge", "leadership-judge", "specific-access-approver-judiciary"
+    );
 
     static String userId = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
 
@@ -106,70 +109,60 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
                                 "specific-access-approver-judiciary", "hearing-viewer")),
-                /* Test to be enabled after DTSAM-995
                 Arguments.of(Appointment.PRESIDENT_OF_TRIBUNAL,
                         AppointmentType.SPTW,
                         false,
                         ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
                             "specific-access-approver-judiciary", "hearing-viewer")),
-                */
                 Arguments.of(Appointment.PRESIDENT_ET_SCOTLAND,
                         AppointmentType.SALARIED,
                         false,
                         ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
                             "specific-access-approver-judiciary", "hearing-viewer")),
-                /* Test to be enabled after DTSAM-995
                 Arguments.of(Appointment.PRESIDENT_ET_SCOTLAND,
                         AppointmentType.SPTW,
                         false,
                         ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
                             "specific-access-approver-judiciary", "hearing-viewer")),
-                */
                 Arguments.of(Appointment.VICE_PRESIDENT,
                         AppointmentType.SALARIED,
                         false,
                         ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
                                 "specific-access-approver-judiciary", "hearing-viewer")),
-                /* Test to be enabled after DTSAM-995
                 Arguments.of(Appointment.VICE_PRESIDENT,
                         AppointmentType.SPTW,
                         false,
                         ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
                             "specific-access-approver-judiciary", "hearing-viewer")),
-                 */
                 Arguments.of(Appointment.VICE_PRESIDENT_ET_SCOTLAND,
                         AppointmentType.SALARIED,
                         false,
                         ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
                             "specific-access-approver-judiciary", "hearing-viewer")),
-                /* Test to be enabled after DTSAM-995
                 Arguments.of(Appointment.VICE_PRESIDENT_ET_SCOTLAND,
                         AppointmentType.SPTW,
                         false,
                         ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
                                 "specific-access-approver-judiciary", "hearing-viewer")),
-                 */
                 Arguments.of(Appointment.REGIONAL_EMPLOYMENT_JUDGE,
                         AppointmentType.SALARIED,
                         false,
                         ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
                                 "specific-access-approver-judiciary", "hearing-viewer")),
-                /* Test to be enabled after DTSAM-995
                 Arguments.of(Appointment.REGIONAL_EMPLOYMENT_JUDGE,
                         AppointmentType.SPTW,
                         false,
                         ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
                         List.of("leadership-judge", "judge", "task-supervisor", "case-allocator", "hmcts-judiciary",
                             "specific-access-approver-judiciary", "hearing-viewer")),
-                 */
                 Arguments.of(LegacyAppointment.EMPLOYMENT_JUDGE,
                         AppointmentType.SALARIED,
                         false,
@@ -323,7 +316,6 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
 
     }
 
-    @Disabled("To be enabled as part of DTSAM-995")
     @SuppressWarnings({"ParameterCanBeLocal"})
     @ParameterizedTest
     @MethodSource("endToEndDataAdditionalRoles")
@@ -492,15 +484,16 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
         // assertions
         roleAssignments.forEach(r -> {
             assertEquals(userId, r.getActorId());
-            assertCommonRoleAssignmentAttributes(r, "LDN", appointment);
+            assertCommonRoleAssignmentAttributes(r, "LDN", appointment, appointmentType);
         });
 
     }
 
-    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String regionId, String office) {
-
-
-        //filter
+    @SuppressWarnings({"SameParameterValue"})
+    static void assertCommonRoleAssignmentAttributes(RoleAssignment r,
+                                                     String regionId,
+                                                     String appointment,
+                                                     String appointmentType) {
 
         assertEquals(ActorIdType.IDAM, r.getActorIdType());
         assertEquals(userId, r.getActorId());
@@ -519,12 +512,28 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
             assertEquals(GrantType.STANDARD, r.getGrantType());
             assertEquals(JURISDICTION, r.getAttributes().get(Attributes.Name.JURISDICTION).asText());
             assertFalse(r.isReadOnly());
-            assertNull(r.getAttributes().get(Attributes.Name.CONTRACT_TYPE));
         } else {
             assertEquals(Classification.PUBLIC, r.getClassification());
             assertEquals(GrantType.STANDARD, r.getGrantType());
             assertEquals(JURISDICTION, r.getAttributes().get(Attributes.Name.JURISDICTION).asText());
             assertFalse(r.isReadOnly());
+            // NB: no region attribute set for PRESIDENT_OF_TRIBUNAL
+            if (Appointment.PRESIDENT_OF_TRIBUNAL.getName().equals(appointment)) {
+                assertNull(r.getAttributes().get(Attributes.Name.REGION));
+            } else if (ROLES_THAT_REQUIRE_REGIONS.contains(r.getRoleName())) {
+                assertEquals(regionId, r.getAttributes().get(Attributes.Name.REGION).asText());
+            } else {
+                assertNull(r.getAttributes().get(Attributes.Name.REGION));
+            }
+        }
+
+        if (r.getRoleName().equals(RoleName.HEARING_VIEWER)) {
+            assertNull(r.getAttributes().get(Attributes.Name.CONTRACT_TYPE));
+        } else {
+            assertEquals(
+                AppointmentType.isSalaried(appointmentType) ? "Salaried" : "Fee-Paid",
+                r.getAttributes().get(Attributes.Name.CONTRACT_TYPE).asText()
+            );
         }
 
         String expectedWorkTypes = employmentExpectedRoleNameWorkTypesMap.get(r.getRoleName());
