@@ -1,11 +1,14 @@
 package uk.gov.hmcts.reform.orgrolemapping.helper;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArgumentOverrides;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArguments;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario.TestScenarioBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,12 +17,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.SALARIED;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.EMPTY_ROLE_ASSIGNMENT_TEMPLATE;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.RunJudicialDroolIntegrationTests.DROOL_JUDICIAL_TEST_OUTPUT_PATH;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.DF;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.IDAM_ID;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_02_MIDLANDS;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.addRegionOverrideMapValues;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.cloneAndOverrideMap;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.expandDescription;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.expireDateInReplaceMap;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.setBooleanInReplaceMap;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.useNullDateInReplaceMap;
@@ -43,6 +49,10 @@ public class DroolJudicialTestArgumentsHelper {
         = "NegativeTest - additional role end date expired";
     private static final String NEGATIVE_TEST__SOFT_DELETE_FLAG_SET = "NegativeTest - soft delete flag set";
 
+    public static final String SPTW_TEST_APPOINTMENT_TYPE = "SPTW-50%";
+    public static final String SPTW_TEST_CONTRACT_TYPE_ID = "5";
+
+
     // JUDICIAL replace values
     public static final String APPOINTMENT_BEGIN_TIME = "[[APPOINTMENT_BEGIN_TIME]]";
     public static final String APPOINTMENT_END_TIME = "[[APPOINTMENT_END_TIME]]";
@@ -53,6 +63,7 @@ public class DroolJudicialTestArgumentsHelper {
     public static final String DELETED_FLAG = "[[DELETED_FLAG]]";
     public static final String ROLE_BEGIN_TIME = "[[ROLE_BEGIN_TIME]]";
     public static final String ROLE_END_TIME = "[[ROLE_END_TIME]]";
+    public static final String BASE_LOCATION_ID = "[[BASE_LOCATION_ID]]";
     // JUDICIAL BOOKING replace values
     public static final String JBS_BEGIN_TIME = "[[JBS_BEGIN_TIME]]";
     public static final String JBS_END_TIME = "[[JBS_END_TIME]]";
@@ -87,8 +98,8 @@ public class DroolJudicialTestArgumentsHelper {
     ) {
         // override Appointment Type values with SPTW values
         Map<String, String> overrideMapValues = new HashMap<>();
-        overrideMapValues.put(APPOINTMENT_TYPE, "SPTW-50%");
-        overrideMapValues.put(CONTRACT_TYPE_ID, "5");
+        overrideMapValues.put(APPOINTMENT_TYPE, SPTW_TEST_APPOINTMENT_TYPE);
+        overrideMapValues.put(CONTRACT_TYPE_ID, SPTW_TEST_CONTRACT_TYPE_ID);
 
         return originalList.stream()
             .map(originalArgs -> originalArgs.cloneBuilder()
@@ -103,6 +114,24 @@ public class DroolJudicialTestArgumentsHelper {
             )
             .toList();
 
+    }
+
+    public static DroolJudicialTestArguments cloneTestArgumentsAndExpandOverrides(
+        DroolJudicialTestArguments testArguments,
+        String description,
+        Map<String, String> overrideMapValues
+    ) {
+        return testArguments.cloneBuilder()
+            .description(
+                expandDescription(testArguments.getDescription(), description)
+            )
+            .overrideMapValues(
+                cloneAndOverrideMap(
+                    testArguments.getOverrideMapValues(),
+                    overrideMapValues
+                )
+            )
+            .build();
     }
 
     public static Map<String, String> createDefaultJudicialReplaceMap(Map<String, String> overrideMapValues) {
@@ -160,7 +189,9 @@ public class DroolJudicialTestArgumentsHelper {
             }
         }
 
-        addRegionOverrideMapValues(overrideMapValues, region);
+        if (StringUtils.isNotEmpty(region)) {
+            addRegionOverrideMapValues(overrideMapValues, region);
+        }
 
         return overrideMapValues;
     }
@@ -280,20 +311,147 @@ public class DroolJudicialTestArgumentsHelper {
         return testScenarios;
     }
 
+    public static DroolJudicialTestArgumentOverrides generateOverrideWhenSptwNotSupported(
+        String findJrdResponseFileName,
+        List<FeatureFlagEnum> overrideTurnOffFlags
+    ) {
+        return DroolJudicialTestArgumentOverrides.builder()
+            .overrideDescription("SptwNotSupported")
+            .findJrdResponseFileName(findJrdResponseFileName)
+            .findOverrideMapValues(Map.of(
+                APPOINTMENT_TYPE, SPTW_TEST_APPOINTMENT_TYPE,
+                CONTRACT_TYPE_ID, SPTW_TEST_CONTRACT_TYPE_ID
+            ))
+            .overrideRasRequestFileNameWithoutBooking(EMPTY_ROLE_ASSIGNMENT_TEMPLATE)
+            .overrideRasRequestFileNameWithBooking(EMPTY_ROLE_ASSIGNMENT_TEMPLATE)
+            .overrideTurnOffFlags(overrideTurnOffFlags)
+            .build();
+    }
+
     @SuppressWarnings({"SameParameterValue"})
     public static List<DroolJudicialTestArguments> generateStandardFeePaidTestArguments(String jrdResponseFileName,
                                                                                         String rasRequestFileName,
                                                                                         boolean additionalRoleTest) {
+        return generateStandardFeePaidTestArguments(jrdResponseFileName,
+            rasRequestFileName,
+            additionalRoleTest,
+            true // use separate withBookings and withoutBookings output file
+        );
+
+    }
+
+    @SuppressWarnings({"SameParameterValue"})
+    public static List<DroolJudicialTestArguments> generateStandardFeePaidTestArguments(String jrdResponseFileName,
+                                                                                        String rasRequestFileName,
+                                                                                        boolean additionalRoleTest,
+                                                                                        boolean useWithBookings) {
         return List.of(
             DroolJudicialTestArguments.builder()
                 .jrdResponseFileName(jrdResponseFileName)
-                .rasRequestFileNameWithBooking(rasRequestFileName + "__withBooking")
-                .rasRequestFileNameWithoutBooking(rasRequestFileName + "__withoutBooking")
+                .rasRequestFileNameWithBooking(rasRequestFileName + (useWithBookings ? "__withBooking" : ""))
+                .rasRequestFileNameWithoutBooking(rasRequestFileName + (useWithBookings ? "__withoutBooking" : ""))
                 .additionalRoleTest(additionalRoleTest)
                 .overrideMapValues(null)
                 .build()
         );
 
+    }
+
+    public static List<DroolJudicialTestArguments> generateStandardSalariedTestArguments(String jrdResponseFileName,
+                                                                                         String rasRequestFileName,
+                                                                                         boolean additionalRoleTest) {
+        List<DroolJudicialTestArguments> arguments = new ArrayList<>();
+
+        arguments.add(
+            DroolJudicialTestArguments.builder()
+                .description("SALARIED")
+                .jrdResponseFileName(jrdResponseFileName)
+                .rasRequestFileNameWithBooking(rasRequestFileName)
+                // NB: With and Without Booking test output will match for these scenarios
+                .rasRequestFileNameWithoutBooking(rasRequestFileName)
+                .additionalRoleTest(additionalRoleTest)
+                .overrideMapValues(
+                    generateCommonJudicialOverrideMapValues(SALARIED, REGION_02_MIDLANDS)
+                )
+                .build()
+        );
+
+        // expand to include additional tests for SPTW
+        arguments.addAll(
+            DroolJudicialTestArgumentsHelper.cloneListOfSalariedTestArgumentsForSptw(arguments)
+        );
+
+        return arguments;
+
+    }
+
+    public static List<DroolJudicialTestArguments> overrideTestArguments(
+        List<DroolJudicialTestArguments> inputArguments,
+        List<DroolJudicialTestArgumentOverrides> overrides
+    ) {
+        List<DroolJudicialTestArguments> outputArguments = new ArrayList<>();
+
+        inputArguments.forEach(argument -> {
+            var findOverride = overrides.stream().filter(testOverride ->
+                testOverride.getFindJrdResponseFileName().equals(argument.getJrdResponseFileName())
+                    && matchOverrideMapValues(
+                    argument.getOverrideMapValues(),
+                    testOverride.getFindOverrideMapValues()
+                )
+            ).findFirst();
+
+            if (findOverride.isPresent()) {
+                var override = findOverride.get();
+                var builder = argument.cloneBuilder();
+                if (override.getOverrideDescription() != null) {
+                    builder.description(
+                        expandDescription(
+                            argument.getDescription(),
+                            override.getOverrideDescription()
+                        )
+                    );
+                }
+                if (override.getOverrideRasRequestFileNameWithoutBooking() != null) {
+                    builder.rasRequestFileNameWithoutBooking(
+                        override.getOverrideRasRequestFileNameWithoutBooking()
+                    );
+                }
+                if (override.getOverrideRasRequestFileNameWithBooking() != null) {
+                    builder.rasRequestFileNameWithBooking(
+                        override.getOverrideRasRequestFileNameWithBooking()
+                    );
+                }
+                if (CollectionUtils.isNotEmpty(override.getOverrideTurnOffFlags())) {
+                    builder.turnOffFlags(override.getOverrideTurnOffFlags());
+                }
+                outputArguments.add(builder.build());
+            } else {
+                outputArguments.add(argument); // no override found so use original
+            }
+        });
+
+        return outputArguments;
+    }
+
+    private static boolean matchOverrideMapValues(Map<String, String> overrideMapValues,
+                                                  Map<String, String> matchOnOverrideMapValues) {
+        if (matchOnOverrideMapValues == null || matchOnOverrideMapValues.isEmpty()) {
+            return true; // default when not matching on any specific values
+        }
+        if (overrideMapValues == null || overrideMapValues.isEmpty()) {
+            return false; // default when test argument has no override map values to try and match against
+        }
+
+        // search for any matchMap value that DOES NOT MATCH
+        var foundMissingMatch = matchOnOverrideMapValues.entrySet().stream().anyMatch(entry -> {
+            if (overrideMapValues.containsKey(entry.getKey())) {
+                return !overrideMapValues.get(entry.getKey()).equals(entry.getValue());
+            }
+            return true; // i.e. no match if key missing
+        });
+
+        // return true if no missing match found (i.e. all match checks must have passed)
+        return !foundMissingMatch;
     }
 
     private static TestScenarioBuilder createTestScenarioBuilderWithDefaults(DroolJudicialTestArguments testArguments) {
@@ -329,7 +487,7 @@ public class DroolJudicialTestArgumentsHelper {
 
     private static String joinFileNameAndDescription(DroolJudicialTestArguments args, String separator) {
 
-        return org.apache.commons.lang.StringUtils.isEmpty(args.getDescription())
+        return StringUtils.isEmpty(args.getDescription())
             ? args.getJrdResponseFileName()
             : args.getJrdResponseFileName() + separator + args.getDescription();
     }

@@ -158,6 +158,12 @@ public class TestScenarioIntegrationHelper {
         writer.close();
     }
 
+    public static String expandDescription(String currentDescription, String extraDescription) {
+        return StringUtils.isEmpty(currentDescription)
+            ? extraDescription
+            : currentDescription + "__" + extraDescription;
+    }
+
     public static Map<String, String> expireDateInReplaceMap(Map<String, String> replaceMap, String expiredDateKey) {
         replaceMap.put(expiredDateKey, LocalDate.now().minusDays(10).format(DF));
         return replaceMap;
