@@ -178,7 +178,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "build/test-reports/DroolTests/Judicial",
+            reportDir            : "build/test-results/DroolTests/Judicial",
             reportFiles          : "JudicialTestIndex.html",
             reportTitles         : "Index",
             reportName           : "Drool Judicial Test Report"
