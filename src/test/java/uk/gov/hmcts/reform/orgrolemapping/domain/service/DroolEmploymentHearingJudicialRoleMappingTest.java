@@ -327,7 +327,8 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
         AppointmentEnum appointment, String appointmentType, boolean addBooking,
         AdditionalRoleEnum additionalRole, List<String> expectedRoleNames) {
 
-        // override parameter as this test will allways generate no senior role assignments as additional role is expired
+        // override parameter as this test will allways generate no senior role assignments
+        // as additional role is expired
         expectedRoleNames = DEFAULT_SALARIED_ROLE;
 
         shouldGenerateRoleAssignments_forAdditionalRole(
