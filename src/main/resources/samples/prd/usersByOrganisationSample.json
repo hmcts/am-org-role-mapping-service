@@ -1,0 +1,31 @@
+{
+  "organisationInfo": [
+    {
+      "organisationIdentifier": "B04IXE4",
+      "status": "ACTIVE",
+      "organisationProfileIds": [
+        "SOLICITOR_PROFILE"
+      ],
+      "users": [
+        {
+          "userIdentifier": "38f6b38f-98e6-452e-af38-1cdf79856310",
+          "firstName": "Bulkuser",
+          "lastName": "admin",
+          "email": "bulkuser.admin@hmcts.net",
+          "lastUpdated": "2023-09-19T15:36:33.653",
+          "userAccessTypes": [
+            {
+              "jurisdictionId": "CIVIL",
+              "organisationProfileId": "SOLICITOR_PROFILE",
+              "accessTypeId": "civil-cases-1",
+              "enabled": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "lastOrgInPage": "82g7b38f-98e6-452e-af38-1cdf79856355",
+  "lastUserInPage": "38f6b38f-98e6-452e-af38-1cdf79856310",
+  "moreAvailable": false
+}
