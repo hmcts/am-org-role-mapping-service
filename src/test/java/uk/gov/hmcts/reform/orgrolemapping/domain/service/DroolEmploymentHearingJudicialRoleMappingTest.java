@@ -51,6 +51,10 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
     private static final String JURISDICTION = Jurisdiction.EMPLOYMENT.getName();
     private static final String SERVICE_CODE = Jurisdiction.EMPLOYMENT.getServiceCodes().get(0);
 
+    static final List<String> DEFAULT_SALARIED_ROLE = List.of(
+        "judge", "hmcts-judiciary", "hearing-viewer", "case-allocator"
+    );
+
     static final List<String> ROLES_THAT_REQUIRE_REGIONS = List.of(
         "judge", "leadership-judge", "specific-access-approver-judiciary"
     );
@@ -167,12 +171,12 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
                         AppointmentType.SALARIED,
                         false,
                         ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
-                        List.of("judge", "hmcts-judiciary", "hearing-viewer", "case-allocator")),
+                        DEFAULT_SALARIED_ROLE),
                 Arguments.of(LegacyAppointment.EMPLOYMENT_JUDGE,
                         AppointmentType.SPTW,
                         false,
                         ExtraTestAdditionalRoles.ANY_OTHER_ROLE,
-                        List.of("judge", "hmcts-judiciary", "hearing-viewer", "case-allocator")),
+                        DEFAULT_SALARIED_ROLE),
                 Arguments.of(LegacyAppointment.EMPLOYMENT_JUDGE,
                         AppointmentType.FEE_PAID,
                         false,
@@ -319,12 +323,12 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
     @SuppressWarnings({"ParameterCanBeLocal"})
     @ParameterizedTest
     @MethodSource("endToEndDataAdditionalRoles")
-    void shouldGenerateNoRoleAssignments_forAdditionalRoleMapping_expiredRoleEndDate(
+    void shouldGenerateNoSeniorRoleAssignments_forAdditionalRoleMapping_expiredRoleEndDate(
         AppointmentEnum appointment, String appointmentType, boolean addBooking,
         AdditionalRoleEnum additionalRole, List<String> expectedRoleNames) {
 
-        // override parameter as this test will allways generate no role assignments as additional role is expired
-        expectedRoleNames = List.of();
+        // override parameter as this test will allways generate no senior role assignments as additional role is expired
+        expectedRoleNames = DEFAULT_SALARIED_ROLE;
 
         shouldGenerateRoleAssignments_forAdditionalRole(
             appointment,
