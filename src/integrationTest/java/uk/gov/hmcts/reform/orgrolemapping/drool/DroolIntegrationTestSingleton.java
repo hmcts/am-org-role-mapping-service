@@ -5,6 +5,10 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario;
 import java.util.ArrayList;
 import java.util.List;
 
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHeading2;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHtmlPage;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHyperlink;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildLine;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.createFile;
 
 public class DroolIntegrationTestSingleton  {
@@ -21,12 +25,25 @@ public class DroolIntegrationTestSingleton  {
     }
 
     public void writeJudicialIndexFile(String outputPath) {
-        writeIndexFile(outputPath, judicialTests);
+        writeIndexFile("Drool Judicial Test Report", outputPath, judicialTests);
     }
 
-    private void writeIndexFile(String outputFilePath, List<TestScenario> testScenarios) {
-        // TODO - enhance to write full HTML index file
-        String contents = "Size = " + testScenarios.size();
-        createFile(outputFilePath,contents);
+    private void writeIndexFile(String title,
+                                String outputFilePath,
+                                List<TestScenario> testScenarios) {
+        String group = "";
+        String body = "<ul>\n";
+        for (TestScenario testScenario : testScenarios) {
+            if (!testScenario.getTestGroup().equals(group)) {
+                group = testScenario.getTestGroup();
+                body += buildHeading2(group);
+            }
+            body += buildLine(buildHyperlink(
+                    testScenario.getOutputLocation(),
+                    testScenario.getDescription()
+            ));
+        }
+        body += "</ul>\n";
+        createFile(outputFilePath, buildHtmlPage(title, title, body));
     }
 }
