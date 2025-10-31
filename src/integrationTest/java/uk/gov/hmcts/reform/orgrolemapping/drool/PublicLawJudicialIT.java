@@ -8,6 +8,7 @@ import java.util.List;
 
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.SALARIED;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.adjustTestArguments;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.cloneListOfTestArgumentsForMultiRegion;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateCommonJudicialOverrideMapValues;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardFeePaidTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_01_LONDON;
@@ -18,6 +19,9 @@ public class PublicLawJudicialIT {
 
     @SuppressWarnings({"LineLength"})
     public static List<DroolJudicialTestArguments> getTestArguments() {
+
+        // PublicLaw special tests:
+        // * multi region tests for 1 & 5 for all salaried judges
 
         List<DroolJudicialTestArguments> arguments = new ArrayList<>();
 
@@ -289,40 +293,23 @@ public class PublicLawJudicialIT {
                                                                                   String rasRequestFileName,
                                                                                   boolean additionalRoleTest) {
 
-        List<DroolJudicialTestArguments> arguments = new ArrayList<>();
-
-        arguments.addAll(List.of(
-            // SALARIED + single region
+        List<DroolJudicialTestArguments> arguments = List.of(
             DroolJudicialTestArguments.builder()
-                .description("SALARIED__singleRegion")
+                .description("SALARIED")
                 .jrdResponseFileName(jrdResponseFileName)
-                .rasRequestFileNameWithBooking(rasRequestFileName + "__singleRegion")
+                .rasRequestFileNameWithBooking(rasRequestFileName)
                 // NB: With and Without Booking test output will match for these scenarios
-                .rasRequestFileNameWithoutBooking(rasRequestFileName + "__singleRegion")
+                .rasRequestFileNameWithoutBooking(rasRequestFileName)
                 .additionalRoleTest(additionalRoleTest)
                 .overrideMapValues(generateCommonJudicialOverrideMapValues(SALARIED, REGION_02_MIDLANDS))
-                .build(),
-
-            // SALARIED + multi region (1 + 5)
-            DroolJudicialTestArguments.builder()
-                .description("SALARIED__multiRegion_1")
-                .jrdResponseFileName(jrdResponseFileName)
-                .rasRequestFileNameWithBooking(rasRequestFileName + "__multiRegion_1_5")
-                // NB: With and Without Booking test output will match for these scenarios
-                .rasRequestFileNameWithoutBooking(rasRequestFileName + "__multiRegion_1_5")
-                .additionalRoleTest(additionalRoleTest)
-                .overrideMapValues(generateCommonJudicialOverrideMapValues(SALARIED, REGION_01_LONDON))
-                .build(),
-            DroolJudicialTestArguments.builder()
-                .description("SALARIED__multiRegion_5")
-                .jrdResponseFileName(jrdResponseFileName)
-                .rasRequestFileNameWithBooking(rasRequestFileName + "__multiRegion_1_5")
-                // NB: With and Without Booking test output will match for these scenarios
-                .rasRequestFileNameWithoutBooking(rasRequestFileName + "__multiRegion_1_5")
-                .additionalRoleTest(additionalRoleTest)
-                .overrideMapValues(generateCommonJudicialOverrideMapValues(SALARIED, REGION_05_SOUTH_EAST))
                 .build()
-        ));
+        );
+
+        arguments = cloneListOfTestArgumentsForMultiRegion(
+            arguments,
+            List.of(REGION_02_MIDLANDS), // any single region
+            List.of(REGION_01_LONDON, REGION_05_SOUTH_EAST) // multi-regions
+        );
 
         // expand to include additional tests for SPTW
         arguments.addAll(
