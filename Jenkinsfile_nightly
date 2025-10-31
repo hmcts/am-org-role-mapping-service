@@ -131,6 +131,16 @@ env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX="hmctspublic.azurecr.io/imported/"
                 reportTitles         : "Features,Failures",
                 reportName           : "Functional Test Report"
         ]
+
+        publishHTML target: [
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "build/test-results/DroolTests/Judicial",
+                reportFiles          : "JudicialTestIndex.html",
+                reportTitles         : "Index",
+                reportName           : "Drool Judicial Test Report"
+        ]
     }
 
     afterAlways('fortify-scan') {

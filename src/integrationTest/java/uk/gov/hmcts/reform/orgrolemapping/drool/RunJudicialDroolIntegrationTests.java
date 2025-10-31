@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.drool;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -38,6 +39,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
 public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
     public static final String DROOL_JUDICIAL_TEST_OUTPUT_PATH = DROOL_TEST_OUTPUT_PATH + "Judicial/";
+    public static final String DROOL_JUDICIAL_TEST_INDEX_FILENAME = "JudicialTestIndex.html";
 
     private static final String DISPLAY_NAME = "#{index} - {0}";
 
@@ -60,8 +62,16 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
             FileUtils.deleteDirectory(outputDirectory);
         }
         outputDirectory.mkdirs();
+
+        DroolIntegrationTestSingleton.getInstance().judicialTests.clear();
     }
 
+    @SuppressWarnings({"ResultOfMethodCallIgnored"})
+    @AfterAll
+    static void afterAllTests() {
+        DroolIntegrationTestSingleton.getInstance()
+                .writeJudicialIndexFile(DROOL_JUDICIAL_TEST_OUTPUT_PATH);
+    }
 
     @MethodSource("getTestArguments")
     @ParameterizedTest(name = DISPLAY_NAME)
@@ -149,6 +159,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
     private List<AssignmentRequest> getAssignmentRequestsFromFile(String fileName,
                                                                   List<TestScenario> testScenarios) {
+        DroolIntegrationTestSingleton.getInstance().judicialTests.addAll(testScenarios);
         return testScenarios.stream()
             .map(testScenario -> getAssignmentRequestFromFile(fileName, testScenario))
             .toList();
