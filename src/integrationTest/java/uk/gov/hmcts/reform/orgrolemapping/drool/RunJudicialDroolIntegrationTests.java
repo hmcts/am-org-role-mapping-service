@@ -70,8 +70,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
     @AfterAll
     static void afterAllTests() {
         DroolIntegrationTestSingleton.getInstance()
-                .writeJudicialIndexFile(DROOL_JUDICIAL_TEST_OUTPUT_PATH
-                        + DROOL_JUDICIAL_TEST_INDEX_FILENAME);
+                .writeJudicialIndexFile(DROOL_JUDICIAL_TEST_OUTPUT_PATH);
     }
 
     @MethodSource("getTestArguments")

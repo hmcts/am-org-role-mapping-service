@@ -48,6 +48,10 @@ public class HtmlBuilder {
         return String.format("<a href=\"%s\">%s</a>", url, linkText);
     }
 
+    public static String buildParagraph(String url, String text) {
+        return String.format("<p>%s</p>", text);
+    }
+
     public static String buildHeading2(String text) {
         return String.format("<h2>%s</h2>", text);
     }
