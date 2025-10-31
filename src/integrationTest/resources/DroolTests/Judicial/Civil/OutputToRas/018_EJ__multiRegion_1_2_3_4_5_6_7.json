@@ -46,6 +46,75 @@
         "contractType": "Salaried",
         "primaryLocation": "123456",
         "jurisdiction": "CIVIL",
+        "region": "2",
+        "workTypes": "decision_making_work,applications"
+      },
+      "authorisations": [
+        "294"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "judge",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "CIVIL",
+        "region": "3",
+        "workTypes": "decision_making_work,applications"
+      },
+      "authorisations": [
+        "294"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "judge",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "CIVIL",
+        "region": "4",
+        "workTypes": "decision_making_work,applications"
+      },
+      "authorisations": [
+        "294"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "judge",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "CIVIL",
         "region": "5",
         "workTypes": "decision_making_work,applications"
       },
@@ -57,7 +126,7 @@
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
-      "roleName": "circuit-judge",
+      "roleName": "judge",
       "classification": "PUBLIC",
       "grantType": "STANDARD",
       "roleCategory": "JUDICIAL",
@@ -69,8 +138,8 @@
         "contractType": "Salaried",
         "primaryLocation": "123456",
         "jurisdiction": "CIVIL",
-        "region": "1",
-        "workTypes": "decision_making_work,applications,multi_track_decision_making_work,intermediate_track_decision_making_work"
+        "region": "6",
+        "workTypes": "decision_making_work,applications"
       },
       "authorisations": [
         "294"
@@ -80,7 +149,7 @@
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
-      "roleName": "circuit-judge",
+      "roleName": "judge",
       "classification": "PUBLIC",
       "grantType": "STANDARD",
       "roleCategory": "JUDICIAL",
@@ -92,8 +161,8 @@
         "contractType": "Salaried",
         "primaryLocation": "123456",
         "jurisdiction": "CIVIL",
-        "region": "5",
-        "workTypes": "decision_making_work,applications,multi_track_decision_making_work,intermediate_track_decision_making_work"
+        "region": "7",
+        "workTypes": "decision_making_work,applications"
       },
       "authorisations": [
         "294"

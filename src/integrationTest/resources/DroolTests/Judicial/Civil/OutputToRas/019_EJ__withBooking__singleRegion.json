@@ -11,7 +11,7 @@
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
-      "roleName": "deputy-district-judge",
+      "roleName": "judge",
       "classification": "PUBLIC",
       "grantType": "STANDARD",
       "roleCategory": "JUDICIAL",
@@ -20,12 +20,12 @@
       "endTime": "[[JBS_END_TIME]]",
       "created": "[[NOW_DATE_TIME]]",
       "attributes": {
-        "baseLocation": "location_jbs",
+        "baseLocation": "[[JBS_LOCATION_ID]]",
         "contractType": "Fee-Paid",
-        "primaryLocation": "location_jbs",
+        "primaryLocation": "[[JBS_LOCATION_ID]]",
         "jurisdiction": "CIVIL",
-        "region": "region_jbs",
-        "workTypes": "decision_making_work,applications,multi_track_decision_making_work,intermediate_track_decision_making_work"
+        "region": "[[JBS_REGION_ID]]",
+        "workTypes": "decision_making_work,applications"
       },
       "authorisations": [
         "294"
@@ -48,27 +48,8 @@
         "contractType": "Fee-Paid",
         "primaryLocation": "123456",
         "jurisdiction": "CIVIL",
+        "region": "[[REGION_ID]]",
         "workTypes": "decision_making_work,applications"
-      },
-      "authorisations": [
-        "294"
-      ]
-    },
-    {
-      "actorIdType": "IDAM",
-      "actorId": "[[IDAM_ID]]",
-      "roleType": "ORGANISATION",
-      "roleName": "hearing-viewer",
-      "classification": "PUBLIC",
-      "grantType": "STANDARD",
-      "roleCategory": "JUDICIAL",
-      "readOnly": false,
-      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
-      "endTime": "[[APPOINTMENT_END_TIME]]",
-      "created": "[[NOW_DATE_TIME]]",
-      "attributes": {
-        "primaryLocation": "123456",
-        "jurisdiction": "CIVIL"
       },
       "authorisations": [
         "294"
@@ -94,45 +75,17 @@
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
-      "roleName": "judge",
+      "roleName": "hearing-viewer",
       "classification": "PUBLIC",
       "grantType": "STANDARD",
       "roleCategory": "JUDICIAL",
       "readOnly": false,
-      "beginTime": "[[JBS_BEGIN_TIME]]",
-      "endTime": "[[JBS_END_TIME]]",
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
       "created": "[[NOW_DATE_TIME]]",
       "attributes": {
-        "baseLocation": "location_jbs",
-        "contractType": "Fee-Paid",
-        "primaryLocation": "location_jbs",
-        "jurisdiction": "CIVIL",
-        "region": "region_jbs",
-        "workTypes": "decision_making_work,applications"
-      },
-      "authorisations": [
-        "294"
-      ]
-    },
-    {
-      "actorIdType": "IDAM",
-      "actorId": "[[IDAM_ID]]",
-      "roleType": "ORGANISATION",
-      "roleName" : "fl401-judge",
-      "classification": "PUBLIC",
-      "grantType": "STANDARD",
-      "roleCategory": "JUDICIAL",
-      "readOnly": false,
-      "beginTime": "[[JBS_BEGIN_TIME]]",
-      "endTime": "[[JBS_END_TIME]]",
-      "created": "[[NOW_DATE_TIME]]",
-      "attributes": {
-        "baseLocation": "location_jbs",
-        "contractType": "Fee-Paid",
-        "primaryLocation": "location_jbs",
-        "jurisdiction" : "PRIVATELAW",
-        "region": "region_jbs",
-        "workTypes" : "hearing_work,decision_making_work,applications,routine_work"
+        "primaryLocation": "123456",
+        "jurisdiction": "CIVIL"
       },
       "authorisations": [
         "294"

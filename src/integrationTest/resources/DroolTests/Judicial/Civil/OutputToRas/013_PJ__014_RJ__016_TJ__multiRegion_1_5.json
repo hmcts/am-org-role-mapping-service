@@ -57,52 +57,6 @@
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
-      "roleName": "circuit-judge",
-      "classification": "PUBLIC",
-      "grantType": "STANDARD",
-      "roleCategory": "JUDICIAL",
-      "readOnly": false,
-      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
-      "endTime": "[[APPOINTMENT_END_TIME]]",
-      "created": "[[NOW_DATE_TIME]]",
-      "attributes": {
-        "contractType": "Salaried",
-        "primaryLocation": "123456",
-        "jurisdiction": "CIVIL",
-        "region": "1",
-        "workTypes": "decision_making_work,applications,multi_track_decision_making_work,intermediate_track_decision_making_work"
-      },
-      "authorisations": [
-        "294"
-      ]
-    },
-    {
-      "actorIdType": "IDAM",
-      "actorId": "[[IDAM_ID]]",
-      "roleType": "ORGANISATION",
-      "roleName": "circuit-judge",
-      "classification": "PUBLIC",
-      "grantType": "STANDARD",
-      "roleCategory": "JUDICIAL",
-      "readOnly": false,
-      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
-      "endTime": "[[APPOINTMENT_END_TIME]]",
-      "created": "[[NOW_DATE_TIME]]",
-      "attributes": {
-        "contractType": "Salaried",
-        "primaryLocation": "123456",
-        "jurisdiction": "CIVIL",
-        "region": "5",
-        "workTypes": "decision_making_work,applications,multi_track_decision_making_work,intermediate_track_decision_making_work"
-      },
-      "authorisations": [
-        "294"
-      ]
-    },
-    {
-      "actorIdType": "IDAM",
-      "actorId": "[[IDAM_ID]]",
-      "roleType": "ORGANISATION",
       "roleName": "hmcts-judiciary",
       "classification": "PRIVATE",
       "grantType": "BASIC",

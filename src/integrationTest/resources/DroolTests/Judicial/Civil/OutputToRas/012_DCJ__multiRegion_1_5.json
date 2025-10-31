@@ -57,7 +57,7 @@
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
-      "roleName": "circuit-judge",
+      "roleName": "leadership-judge",
       "classification": "PUBLIC",
       "grantType": "STANDARD",
       "roleCategory": "JUDICIAL",
@@ -70,7 +70,7 @@
         "primaryLocation": "123456",
         "jurisdiction": "CIVIL",
         "region": "1",
-        "workTypes": "decision_making_work,applications,multi_track_decision_making_work,intermediate_track_decision_making_work"
+        "workTypes": "decision_making_work,applications,access_requests,multi_track_decision_making_work,intermediate_track_decision_making_work"
       },
       "authorisations": [
         "294"
@@ -80,7 +80,7 @@
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
-      "roleName": "circuit-judge",
+      "roleName": "leadership-judge",
       "classification": "PUBLIC",
       "grantType": "STANDARD",
       "roleCategory": "JUDICIAL",
@@ -93,7 +93,53 @@
         "primaryLocation": "123456",
         "jurisdiction": "CIVIL",
         "region": "5",
-        "workTypes": "decision_making_work,applications,multi_track_decision_making_work,intermediate_track_decision_making_work"
+        "workTypes": "decision_making_work,applications,access_requests,multi_track_decision_making_work,intermediate_track_decision_making_work"
+      },
+      "authorisations": [
+        "294"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "task-supervisor",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "CIVIL",
+        "region": "1",
+        "workTypes": "decision_making_work,applications"
+      },
+      "authorisations": [
+        "294"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "task-supervisor",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "CIVIL",
+        "region": "5",
+        "workTypes": "decision_making_work,applications"
       },
       "authorisations": [
         "294"
@@ -114,6 +160,50 @@
       "attributes": {
         "contractType": "Salaried"
       }
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "case-allocator",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "CIVIL",
+        "region": "1"
+      },
+      "authorisations": [
+        "294"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "case-allocator",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "CIVIL",
+        "region": "5"
+      },
+      "authorisations": [
+        "294"
+      ]
     },
     {
       "actorIdType": "IDAM",

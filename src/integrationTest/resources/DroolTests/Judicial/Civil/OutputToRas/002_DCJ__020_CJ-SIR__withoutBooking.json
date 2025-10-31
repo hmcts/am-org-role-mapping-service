@@ -11,7 +11,7 @@
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
-      "roleName": "judge",
+      "roleName": "fee-paid-judge",
       "classification": "PUBLIC",
       "grantType": "STANDARD",
       "roleCategory": "JUDICIAL",
@@ -20,34 +20,11 @@
       "endTime": "[[APPOINTMENT_END_TIME]]",
       "created": "[[NOW_DATE_TIME]]",
       "attributes": {
-        "contractType": "Salaried",
+        "bookable": "true",
+        "contractType": "Fee-Paid",
         "primaryLocation": "123456",
         "jurisdiction": "CIVIL",
-        "region": "[[REGION_ID]]",
         "workTypes": "decision_making_work,applications"
-      },
-      "authorisations": [
-        "294"
-      ]
-    },
-    {
-      "actorIdType": "IDAM",
-      "actorId": "[[IDAM_ID]]",
-      "roleType": "ORGANISATION",
-      "roleName": "circuit-judge",
-      "classification": "PUBLIC",
-      "grantType": "STANDARD",
-      "roleCategory": "JUDICIAL",
-      "readOnly": false,
-      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
-      "endTime": "[[APPOINTMENT_END_TIME]]",
-      "created": "[[NOW_DATE_TIME]]",
-      "attributes": {
-        "contractType": "Salaried",
-        "primaryLocation": "123456",
-        "jurisdiction": "CIVIL",
-        "region": "[[REGION_ID]]",
-        "workTypes": "decision_making_work,applications,multi_track_decision_making_work,intermediate_track_decision_making_work"
       },
       "authorisations": [
         "294"
@@ -66,7 +43,7 @@
       "endTime": "[[APPOINTMENT_END_TIME]]",
       "created": "[[NOW_DATE_TIME]]",
       "attributes": {
-        "contractType": "Salaried"
+        "contractType": "Fee-Paid"
       }
     },
     {
