@@ -71,6 +71,8 @@ public class DroolJudicialTestArgumentsHelper {
     // JUDICIAL BOOKING replace values
     public static final String JBS_BEGIN_TIME = "[[JBS_BEGIN_TIME]]";
     public static final String JBS_END_TIME = "[[JBS_END_TIME]]";
+    public static final String JBS_LOCATION_ID = "[[JBS_LOCATION_ID]]";
+    public static final String JBS_REGION_ID = "[[JBS_REGION_ID]]";
 
     public static List<DroolJudicialTestArguments> adjustTestArguments(List<DroolJudicialTestArguments> arguments,
                                                                        String jurisdiction) {
@@ -117,7 +119,86 @@ public class DroolJudicialTestArgumentsHelper {
                 .build()
             )
             .toList();
+    }
 
+    public static List<DroolJudicialTestArguments> cloneListOfTestArgumentsForMultiRegion(
+        List<DroolJudicialTestArguments> inputArguments,
+        List<String> singleRegions,
+        List<String> multiRegions
+    ) {
+        String singleRegionFileNameSuffix = "singleRegion";
+        String multiRegionFileNameSuffix = "multiRegion_" + String.join("_", multiRegions);
+
+
+        List<DroolJudicialTestArguments> outputArguments = new ArrayList<>();
+
+        inputArguments.forEach(originalArgs -> {
+            // single region
+            outputArguments.addAll(
+                singleRegions.stream().map(region -> {
+                    Map<String, String> regionOverrideMapValues = new HashMap<>();
+                    addRegionOverrideMapValues(regionOverrideMapValues, region);
+
+                    return originalArgs.cloneBuilder()
+                        .description(
+                            expandDescription(originalArgs.getDescription(), "singleRegion_" + region)
+                        )
+                        .rasRequestFileNameWithBooking(
+                            formatRasRequestFileNameWithSuffix(
+                                originalArgs.getRasRequestFileNameWithBooking(),
+                                singleRegionFileNameSuffix
+                            )
+                        )
+                        .rasRequestFileNameWithoutBooking(
+                            formatRasRequestFileNameWithSuffix(
+                                originalArgs.getRasRequestFileNameWithoutBooking(),
+                                singleRegionFileNameSuffix
+                            )
+                        )
+                        .overrideMapValues(
+                            cloneAndOverrideMap(
+                                originalArgs.getOverrideMapValues(),
+                                regionOverrideMapValues
+                            )
+                        )
+                        .build();
+                }).toList()
+            );
+
+            // multi region
+            outputArguments.addAll(
+                multiRegions.stream().map(region -> {
+                    Map<String, String> regionOverrideMapValues = new HashMap<>();
+                    addRegionOverrideMapValues(regionOverrideMapValues, region);
+
+                    return originalArgs.cloneBuilder()
+                        .description(
+                            expandDescription(originalArgs.getDescription(), "multiRegion_" + region)
+                        )
+                        .rasRequestFileNameWithBooking(
+                            formatRasRequestFileNameWithSuffix(
+                                originalArgs.getRasRequestFileNameWithBooking(),
+                                multiRegionFileNameSuffix
+                            )
+                        )
+                        .rasRequestFileNameWithoutBooking(
+                            formatRasRequestFileNameWithSuffix(
+                                originalArgs.getRasRequestFileNameWithoutBooking(),
+                                multiRegionFileNameSuffix
+                            )
+                        )
+                        .overrideMapValues(
+                            cloneAndOverrideMap(
+                                originalArgs.getOverrideMapValues(),
+                                regionOverrideMapValues
+                            )
+                        )
+                        .build();
+                }).toList()
+            );
+        });
+
+        return outputArguments;
     }
 
     public static DroolJudicialTestArguments cloneTestArgumentsAndExpandOverrides(
@@ -153,6 +234,9 @@ public class DroolJudicialTestArgumentsHelper {
             JBS_BEGIN_TIME, LocalDate.now().minusDays(1).format(DF) + "T00:00:00Z",
             JBS_END_TIME, LocalDate.now().plusDays(1).format(DF) + "T00:00:00Z"
         ));
+        // add extras as Map.of constructor above is full
+        outputMap.put(JBS_REGION_ID, "region_jbs");
+        outputMap.put(JBS_LOCATION_ID, "location_jbs");
 
         // add or override with extra values if needed
         if (MapUtils.isNotEmpty(overrideMapValues)) {
@@ -482,8 +566,14 @@ public class DroolJudicialTestArgumentsHelper {
 
     private static String formatRasRequestFileName(String fileName, String jurisdiction) {
         return EMPTY_ROLE_ASSIGNMENT_TEMPLATE.equals(fileName)
-            ? fileName
+            ? EMPTY_ROLE_ASSIGNMENT_TEMPLATE
             : jurisdiction + "/OutputToRas/" + fileName;
+    }
+
+    private static String formatRasRequestFileNameWithSuffix(String fileName, String suffix) {
+        return EMPTY_ROLE_ASSIGNMENT_TEMPLATE.equals(fileName)
+            ? EMPTY_ROLE_ASSIGNMENT_TEMPLATE
+            : fileName + "__" + suffix;
     }
 
     private static String formatTestName(DroolJudicialTestArguments args) {
