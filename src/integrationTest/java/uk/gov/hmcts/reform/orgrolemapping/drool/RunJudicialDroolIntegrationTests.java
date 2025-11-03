@@ -39,7 +39,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
 public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
     public static final String DROOL_JUDICIAL_TEST_OUTPUT_PATH = DROOL_TEST_OUTPUT_PATH + "Judicial/";
-    public static final String DROOL_JUDICIAL_TEST_INDEX_FILENAME = "JudicialTestIndex.html";
 
     private static final String DISPLAY_NAME = "#{index} - {0}";
 

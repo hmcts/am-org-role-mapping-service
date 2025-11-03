@@ -60,6 +60,10 @@ public class HtmlBuilder {
         return String.format("<li>%s</li>", text);
     }
 
+    public static String buildBulletPoints(String text) {
+        return String.format("<ul>%s</ul>", text);
+    }
+
     private static String buildTableHeaders(List<String> tableHeaders) {
         return tableHeaders.size() == 0 ? "" :
                 String.format("<tr>%s</tr>",
