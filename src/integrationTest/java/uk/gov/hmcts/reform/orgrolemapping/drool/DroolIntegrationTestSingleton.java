@@ -10,7 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_CONTENT_STYLE_CLASS;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_SCRIPT;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_STYLE;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_HEADER_STYLE_CLASS;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildBulletPoints;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildButton;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildDiv;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHeading2;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHtmlPage;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHyperlink;
@@ -33,7 +39,8 @@ public class DroolIntegrationTestSingleton  {
     public void writeJudicialIndexFile(String outputPath) {
         buildJudicialFiles(outputPath, judicialTests).forEach((fileName, htmlBody) -> {
             String title = "Drool Judicial Test Report";
-            createFile(outputPath + fileName, buildHtmlPage(fileName, title, htmlBody));
+            createFile(outputPath + fileName, buildHtmlPage(fileName,
+                    COLLAPSE_STYLE, title, htmlBody, COLLAPSE_SCRIPT));
         });
     }
 
@@ -66,7 +73,7 @@ public class DroolIntegrationTestSingleton  {
                 body += buildHeading2(group);
             }
             // Add the test scenario line
-            body += buildLine(testScenario.getTestName());
+            body += buildButton(COLLAPSE_HEADER_STYLE_CLASS, testScenario.getTestName());
 
             // Add the files in folder (as bullet pointed hyperlinks
             String bulletPoints = "";
@@ -76,7 +83,7 @@ public class DroolIntegrationTestSingleton  {
                         buildHyperlink(testScenario.getOutputLocation().replace(outputPath,"")
                                 + filename, filename));
             }
-            body += buildBulletPoints(bulletPoints);
+            body += buildDiv(COLLAPSE_CONTENT_STYLE_CLASS, buildBulletPoints(bulletPoints));
         }
         return body;
     }
