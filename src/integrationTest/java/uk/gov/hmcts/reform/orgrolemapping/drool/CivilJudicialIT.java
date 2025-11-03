@@ -104,7 +104,7 @@ public class CivilJudicialIT {
             )
         );
 
-        // 006 Circuit Judge - Salaried
+        // 006 District Judge - Salaried
         arguments.addAll(
             generateSalariedTestArguments(
                 serviceCode,

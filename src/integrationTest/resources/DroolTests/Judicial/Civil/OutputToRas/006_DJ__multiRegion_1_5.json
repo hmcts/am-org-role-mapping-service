@@ -7,7 +7,7 @@
     "replaceExisting": true
   },
   "requestedRoles": [
-      {
+    {
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
