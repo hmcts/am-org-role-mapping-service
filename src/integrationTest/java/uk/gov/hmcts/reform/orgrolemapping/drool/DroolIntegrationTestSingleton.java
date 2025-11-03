@@ -72,20 +72,28 @@ public class DroolIntegrationTestSingleton  {
                 group = testScenario.getTestGroup();
                 body += buildHeading2(group);
             }
-            // Add the test scenario line
-            body += buildButton(COLLAPSE_HEADER_STYLE_CLASS, testScenario.getTestName());
-
-            // Add the files in folder (as bullet pointed hyperlinks
-            String bulletPoints = "";
-            for (String filename : getFilesInFolder(testScenario.getOutputLocation())) {
-                // Add the file as a hyperlink (minus the relative path to the output folder)
-                bulletPoints += buildLine(
-                        buildHyperlink(testScenario.getOutputLocation().replace(outputPath,"")
-                                + filename, filename));
-            }
-            body += buildDiv(COLLAPSE_CONTENT_STYLE_CLASS, buildBulletPoints(bulletPoints));
+            // Add the files in folder as a collapsible section
+            body += buildContents(testScenario.getTestName() + " - " + testScenario.getDescription(),
+                    buildContentsOfFolder(outputPath, testScenario.getOutputLocation()));
         }
         return body;
+    }
+
+    private static String buildContents(String heading, String contents) {
+        String body = buildButton(COLLAPSE_HEADER_STYLE_CLASS, heading);
+        body += buildDiv(COLLAPSE_CONTENT_STYLE_CLASS, contents);
+        return body;
+    }
+
+    private static String buildContentsOfFolder(String outputPath, String outputLocation) {
+        String contents = "";
+        for (String filename : getFilesInFolder(outputLocation)) {
+            // Add the file as a hyperlink (minus the relative path to the output folder)
+            contents += buildLine(
+                    buildHyperlink(outputLocation.replace(outputPath,"")
+                            + filename, filename));
+        }
+        return buildBulletPoints(contents);
     }
 
     private static List<String> getFilesInFolder(final String outputLocation) {
