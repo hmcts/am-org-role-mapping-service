@@ -175,7 +175,7 @@ public class PublicLawJudicialIT {
             generateSalariedTestArguments(
                 "014_Designated_Family_Judge__Salaried",
                 "014_DFJ__014b_ADFJ",
-                false
+                true // additional role test
             )
         );
 
@@ -184,7 +184,7 @@ public class PublicLawJudicialIT {
             generateSalariedTestArguments(
                 "014b_Acting_Designated_Family_Judge__Salaried",
                 "014_DFJ__014b_ADFJ",
-                true
+                true // additional role test
             )
         );
 
