@@ -28,6 +28,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
 public class DroolIntegrationTestSingleton  {
 
     private static final String EXPECTED = "expected";
+    private static final String HTML_FILENAME_SUFFIX = ".html";
+    private static final String JUDICIAL_FILENAME_PREFIX = "JudicialTest_";
+    private static final String JUDICIAL_INDEX_FILENAME = "JudicialTestIndex.html";
     
     private static DroolIntegrationTestSingleton instance = null;
 
@@ -41,11 +44,28 @@ public class DroolIntegrationTestSingleton  {
     }
 
     public void writeJudicialIndexFile(String outputPath) {
+        final String title = "Drool Judicial Test Report";
+
+        // Build the Judicial Files by Jurisdiction.
+        List<String> indexLinks = new ArrayList<>();
         buildJudicialFiles(outputPath, judicialTests).forEach((fileName, htmlBody) -> {
-            String title = "Drool Judicial Test Report";
             createFile(outputPath + fileName, buildHtmlPage(fileName,
                     COLLAPSE_STYLE, title, htmlBody, COLLAPSE_SCRIPT));
+            indexLinks.add(fileName);
         });
+
+        // Build the Index page for all Jurisdiction files.
+        createFile(outputPath + JUDICIAL_INDEX_FILENAME, buildHtmlPage(
+                JUDICIAL_INDEX_FILENAME, "",
+                "Index of Judicial Test Reports", buildHtmlIndexes(indexLinks), ""));
+    }
+
+    private static String buildHtmlIndexes(List<String> indexLinks) {
+        StringBuilder body = new StringBuilder();
+        indexLinks.forEach(fileName -> {
+            body.append(buildLine(buildHyperlink(fileName, fileName)));
+        });
+        return body.toString();
     }
 
     public static Map<String,String> buildJudicialFiles(String outputPath, List<TestScenario> testScenarios) {
@@ -58,7 +78,8 @@ public class DroolIntegrationTestSingleton  {
         // Build a map of file names to test scenarios
         Map<String, List<TestScenario>> map = new LinkedHashMap<>();
         testScenarios.forEach(testScenario ->
-                map.computeIfAbsent("JudicialTest_" + testScenario.getJurisdiction() + ".html",
+                map.computeIfAbsent(JUDICIAL_FILENAME_PREFIX
+                                + testScenario.getJurisdiction() + HTML_FILENAME_SUFFIX,
                         k -> new ArrayList<>()).add(testScenario));
 
         // Build the map of file names to HTML content
@@ -70,55 +91,55 @@ public class DroolIntegrationTestSingleton  {
     }
 
     private static String buildHtmlBody(String outputPath, List<TestScenario> testScenarios) {
-        String body = "";
 
         // Build the grouping map
         Map<String, Map<String, Map<String, String>>> groupingMap =
                 buildGroupingMap(testScenarios);
 
         // Loop the test groups
+        StringBuilder body = new StringBuilder();
         for (Map.Entry testGroupMap : groupingMap.entrySet()) {
             String testGroup = (String) testGroupMap.getKey();
             Map<String, Map<String, String>> testNamesMap =
                     (Map<String, Map<String, String>>) testGroupMap.getValue();
 
             // Output the test group heading
-            body += buildHeading2(testGroup);
+            body.append(buildHeading2(testGroup));
 
             // Output the test names
-            body += buildHtmlTestNames(outputPath, testNamesMap);
+            body.append(buildHtmlTestNames(outputPath, testNamesMap));
         }
 
-        return body;
+        return body.toString();
     }
 
     private static String buildHtmlTestNames(
             String outputPath, Map<String, Map<String, String>> map) {
-        String body = "";
+        StringBuilder body = new StringBuilder();
         for (Map.Entry entry : map.entrySet()) {
             String testName = (String) entry.getKey();
             Map<String, String> descriptionsMap =
                     (Map<String, String>) entry.getValue();
 
             // Output the test name collapsible section
-            body += buildContents(testName,
-                    buildHtmlDescriptions(outputPath, descriptionsMap));
+            body.append(buildContents(testName,
+                    buildHtmlDescriptions(outputPath, descriptionsMap)));
         }
-        return body;
+        return body.toString();
     }
 
     private static String buildHtmlDescriptions(
             String outputPath, Map<String, String> map) {
-        String body = "";
+        StringBuilder body = new StringBuilder();
         for (Map.Entry entry : map.entrySet()) {
             String description = (String) entry.getKey();
             String outputLocation = (String) entry.getValue();
 
             // Output the description collapsible section
-            body += buildContents(description,
-                    buildContentsOfFolder(outputPath, outputLocation));
+            body.append(buildContents(description,
+                    buildContentsOfFolder(outputPath, outputLocation)));
         }
-        return body;
+        return body.toString();
     }
 
     private static Map<String, Map<String, Map<String, String>>> buildGroupingMap(
@@ -141,20 +162,20 @@ public class DroolIntegrationTestSingleton  {
     }
 
     private static String buildContents(String heading, String contents) {
-        String body = buildButton(COLLAPSE_HEADER_STYLE_CLASS, heading);
-        body += buildDiv(COLLAPSE_CONTENT_STYLE_CLASS, contents);
-        return body;
+        return new StringBuilder()
+                .append(buildButton(COLLAPSE_HEADER_STYLE_CLASS, heading))
+                .append(buildDiv(COLLAPSE_CONTENT_STYLE_CLASS, contents)).toString();
     }
 
     private static String buildContentsOfFolder(String outputPath, String outputLocation) {
-        String contents = "";
-        for (String filename : getFilesInFolder(outputLocation)) {
+        StringBuilder contents = new StringBuilder();
+        getFilesInFolder(outputLocation).forEach(filename -> {
             // Add the file as a hyperlink (minus the relative path to the output folder)
-            contents += buildLine(
+            contents.append(buildLine(
                     buildHyperlink(outputLocation.replace(outputPath,"")
-                            + filename, filename));
-        }
-        return buildBulletPoints(contents);
+                            + filename, filename)));
+        });
+        return buildBulletPoints(contents.toString());
     }
 
     private static List<String> getFilesInFolder(final String outputLocation) {
