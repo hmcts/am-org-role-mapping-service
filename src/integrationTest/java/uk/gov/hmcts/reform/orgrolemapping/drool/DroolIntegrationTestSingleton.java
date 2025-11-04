@@ -6,8 +6,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_CONTENT_STYLE_CLASS;
@@ -26,6 +27,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
 @SuppressWarnings("unchecked")
 public class DroolIntegrationTestSingleton  {
 
+    private static final String EXPECTED = "expected";
+    
     private static DroolIntegrationTestSingleton instance = null;
 
     public List<TestScenario> judicialTests = new ArrayList<>();
@@ -46,18 +49,20 @@ public class DroolIntegrationTestSingleton  {
     }
 
     public static Map<String,String> buildJudicialFiles(String outputPath, List<TestScenario> testScenarios) {
-        // Sort the data by test group and description
-        testScenarios.sort(Comparator.comparing(TestScenario::getTestGroup)
+        // Sort the data by Jurisdiction, test group, test name and description
+        testScenarios.sort(Comparator.comparing(TestScenario::getJurisdiction)
+                .thenComparing(TestScenario::getTestGroup)
+                .thenComparing(TestScenario::getTestName)
                 .thenComparing(TestScenario::getDescription));
 
         // Build a map of file names to test scenarios
-        Map<String, List<TestScenario>> map = new HashMap<>();
+        Map<String, List<TestScenario>> map = new LinkedHashMap<>();
         testScenarios.forEach(testScenario ->
                 map.computeIfAbsent("JudicialTest_" + testScenario.getJurisdiction() + ".html",
                         k -> new ArrayList<>()).add(testScenario));
 
         // Build the map of file names to HTML content
-        Map<String, String> results = new HashMap<>();
+        Map<String, String> results = new LinkedHashMap<>();
         map.entrySet().forEach(entry ->
                 results.put(entry.getKey(), buildHtmlBody(outputPath, entry.getValue())));
 
@@ -95,7 +100,7 @@ public class DroolIntegrationTestSingleton  {
             Map<String, String> descriptionsMap =
                     (Map<String, String>) entry.getValue();
 
-            // Output the test name callapsible section
+            // Output the test name collapsible section
             body += buildContents(testName,
                     buildHtmlDescriptions(outputPath, descriptionsMap));
         }
@@ -109,7 +114,7 @@ public class DroolIntegrationTestSingleton  {
             String description = (String) entry.getKey();
             String outputLocation = (String) entry.getValue();
 
-            // Output the description
+            // Output the description collapsible section
             body += buildContents(description,
                     buildContentsOfFolder(outputPath, outputLocation));
         }
@@ -118,14 +123,16 @@ public class DroolIntegrationTestSingleton  {
 
     private static Map<String, Map<String, Map<String, String>>> buildGroupingMap(
             List<TestScenario> testScenarios) {
-        Map<String, Map<String, Map<String, String>>> groupingMap = new HashMap<>();
+
+        // Build the grouping map
+        Map<String, Map<String, Map<String, String>>> groupingMap = new LinkedHashMap<>();
         for (TestScenario testScenario: testScenarios) {
             // Add the test groups
             groupingMap
-                    .computeIfAbsent(testScenario.getTestGroup(), k -> new HashMap<>());
+                    .computeIfAbsent(testScenario.getTestGroup(), k -> new LinkedHashMap<>());
             // Add the test names
             groupingMap.get(testScenario.getTestGroup())
-                    .computeIfAbsent(testScenario.getTestName(), k -> new HashMap<>());
+                    .computeIfAbsent(testScenario.getTestName(), k -> new LinkedHashMap<>());
             // Add the descriptions
             groupingMap.get(testScenario.getTestGroup()).get(testScenario.getTestName())
                     .put(testScenario.getDescription(), testScenario.getOutputLocation());
@@ -154,8 +161,15 @@ public class DroolIntegrationTestSingleton  {
         List<String> result = new ArrayList<>();
         Arrays.stream(new File(outputLocation).listFiles())
                 .toList().forEach(file -> {
-                    result.add(file.getName());
+                    if (isFileValid(file)) {
+                        result.add(file.getName());
+                    }
                 });
         return result;
+    }
+
+    private static boolean isFileValid(File file) {
+        return file != null && !file.getName().toLowerCase(Locale.getDefault())
+                .contains(EXPECTED);
     }
 }
