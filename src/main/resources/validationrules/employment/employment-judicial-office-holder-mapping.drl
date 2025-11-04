@@ -321,11 +321,15 @@ end;
 
 /*
  * "EMPLOYMENT Tribunal Member" business role mapping to JOH.
+ * TODO NBP retire this and new  one with helper classes base location is  going and unit test fix
+ * Made obsolete in DTSAM-994 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.
  */
 rule "employment_tribunal_member_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
    $f2: FeatureFlag(flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_2.getValue())
+   $f3: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Tribunal Member",
                                appointmentType == "Fee Paid",
@@ -358,12 +362,49 @@ then
 end;
 
 /*
+ * "EMPLOYMENT Tribunal Member" business role mapping to JOH for v3_0.
+ */
+rule "v3_0_employment_tribunal_member_fee_paid_joh"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
+    $jap: JudicialAccessProfile(hasAppointmentCode(Appointment.TRIBUNAL_MEMBER)
+                                    || hasAppointmentCode(Appointment.TRIBUNAL_MEMBER_LAY),
+                                isFeePaid(),
+                                hasValidEndDate(),
+                                hasValidAuthorisation(Jurisdiction.EMPLOYMENT))
+then
+    // Solution to work around issue with Scottish judges with region 12 not being
+    // able to see Scottish cases set up with region 11.
+    String regionId = "12".equals($jap.getRegionId()) ? "11" : $jap.getRegionId();
+
+        insert(
+            JudicialOfficeHolder.builder()
+                .userId($jap.getUserId())
+                .office(Office.Employment.TRIBUNAL_MEMBER_FEE_PAID)
+                .jurisdiction(Jurisdiction.EMPLOYMENT.getName())
+                .ticketCodes($jap.getTicketCodes())
+                .beginTime($jap.getBeginTime())
+                .endTime($jap.getEndTime())
+                .regionId(regionId)
+                .baseLocationId($jap.getBaseLocationId())
+                .primaryLocation($jap.getPrimaryLocationId())
+                .contractType($jap.getAppointmentType())
+                .build()
+        );
+        logMsg("Rule : v3_0_employment_tribunal_member_fee_paid_joh");
+end;
+
+/*
  * "EMPLOYMENT Tribunal Member Lay" business role mapping to JOH.
+ * Made obsolete in DTSAM-994 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.
+ * NBP TODO
  */
 rule "employment_tribunal_member_lay_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
    $f2: FeatureFlag(flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_2.getValue())
+   $f3: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointment == "Tribunal Member Lay",
                                appointmentType == "Fee Paid",
