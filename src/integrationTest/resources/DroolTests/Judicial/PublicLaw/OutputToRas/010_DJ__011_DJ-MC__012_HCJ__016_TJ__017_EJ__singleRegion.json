@@ -11,7 +11,7 @@
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
-      "roleName": "hearing-viewer",
+      "roleName": "judge",
       "classification": "PUBLIC",
       "grantType": "STANDARD",
       "roleCategory": "JUDICIAL",
@@ -20,8 +20,11 @@
       "endTime": "[[APPOINTMENT_END_TIME]]",
       "created": "[[NOW_DATE_TIME]]",
       "attributes": {
+        "contractType": "Salaried",
         "primaryLocation": "123456",
-        "jurisdiction": "PUBLICLAW"
+        "jurisdiction": "PUBLICLAW",
+        "region": "[[REGION_ID]]",
+        "workTypes": "hearing_work,routine_work,decision_making_work,applications"
       },
       "authorisations": [
         "316"
@@ -47,7 +50,7 @@
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
-      "roleName": "judge",
+      "roleName": "hearing-viewer",
       "classification": "PUBLIC",
       "grantType": "STANDARD",
       "roleCategory": "JUDICIAL",
@@ -56,11 +59,8 @@
       "endTime": "[[APPOINTMENT_END_TIME]]",
       "created": "[[NOW_DATE_TIME]]",
       "attributes": {
-        "contractType": "Salaried",
         "primaryLocation": "123456",
-        "jurisdiction": "PUBLICLAW",
-        "region": "[[REGION_ID]]",
-        "workTypes": "hearing_work,routine_work,decision_making_work,applications"
+        "jurisdiction": "PUBLICLAW"
       },
       "authorisations": [
         "316"
