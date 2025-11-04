@@ -1,11 +1,15 @@
 package validationrules.employment;
 
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialOfficeHolder.Office;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.Attributes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.RoleName;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
@@ -19,10 +23,13 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 
 /*
  * EMPLOYMENT "hmcts-judiciary" Org role mapping.
+ * Made obsolete in DTSAM-988 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.
  */
 rule "employment_hmcts_judiciary_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
 $joh: JudicialOfficeHolder(office in ( "EMPLOYMENT President of Tribunal-Salaried",
                                         "EMPLOYMENT Vice President-Salaried",
                                         "EMPLOYMENT Regional Employment Judge-Salaried",
@@ -56,6 +63,48 @@ then
       .attributes(attribute)
       .build());
       logMsg("Rule : employment_hmcts_judiciary_org_role");
+end;
+
+/*
+ * EMPLOYMENT "hmcts-judiciary" Org role mapping.
+ */
+rule "v3_0_employment_hmcts_judiciary_org_role"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+    $joh: JudicialOfficeHolder(office in ( "EMPLOYMENT President of Tribunal-Salaried",
+                                        "EMPLOYMENT Vice President-Salaried",
+                                        "EMPLOYMENT Regional Employment Judge-Salaried",
+                                        "EMPLOYMENT Employment Judge-Salaried",
+                                        Office.Employment.EMPLOYMENT_JUDGE_FEE_PAID,
+                                        "EMPLOYMENT Tribunal Member-Fee-Paid",
+                                        "EMPLOYMENT Tribunal Member Lay-Fee-Paid",
+                                        "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried",
+                                        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried",
+                                        "EMPLOYMENT Acting Regional Employment Judge-Salaried"))
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    if ($joh.isSalaried()) {
+        attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+    } else{
+        attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.FEE_PAID));
+    }
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($joh.getUserId())
+            .roleCategory(RoleCategory.JUDICIAL)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.HMCTS_JUDICIARY)
+            .grantType(GrantType.BASIC)
+            .classification(Classification.PRIVATE)
+            .readOnly(true)
+            .beginTime($joh.getBeginTime())
+            .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+            .attributes(attribute)
+            .build()
+    );
+    logMsg("Rule : V3_0_employment_hmcts_judiciary_org_role");
 end;
 
 /*
@@ -248,10 +297,13 @@ end;
 
 /*
  * EMPLOYMENT "fee-paid-judge" Org role mapping.
+ * Made obsolete in DTSAM-988 - rule will be disabled when EMPLOYMENT_WA_3_0 is enabled.
+ * To be removed in DTSAM-1041.
  */
 rule "employment_fee_paid_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in ("EMPLOYMENT Employment Judge-Fee-Paid"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -275,6 +327,39 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : employment_fee_paid_judge_org_role");
+end;
+
+/*
+ * EMPLOYMENT "fee-paid-judge" Org role mapping.
+ */
+rule "v3_0_employment_fee_paid_judge_org_role"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
+    $joh: JudicialOfficeHolder(office in (Office.Employment.EMPLOYMENT_JUDGE_FEE_PAID))
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.FEE_PAID));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.EMPLOYMENT.getName()));
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,routine_work,applications,amendments"));
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($joh.getUserId())
+            .roleCategory(RoleCategory.JUDICIAL)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.FEE_PAID_JUDGE)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .beginTime($joh.getBeginTime())
+            .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+            .attributes(attribute)
+            .authorisations($joh.getTicketCodes())
+            .build()
+    );
+    logMsg("Rule : v3_0_employment_fee_paid_judge_org_role");
 end;
 
 /*
