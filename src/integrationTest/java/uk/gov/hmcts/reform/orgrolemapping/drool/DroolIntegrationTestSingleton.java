@@ -23,6 +23,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHyperlin
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildLine;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.createFile;
 
+@SuppressWarnings("unchecked")
 public class DroolIntegrationTestSingleton  {
 
     private static DroolIntegrationTestSingleton instance = null;
@@ -64,19 +65,72 @@ public class DroolIntegrationTestSingleton  {
     }
 
     private static String buildHtmlBody(String outputPath, List<TestScenario> testScenarios) {
-        String group = "";
         String body = "";
-        for (TestScenario testScenario : testScenarios) {
-            // Add the group heading if it has changed
-            if (!testScenario.getTestGroup().equals(group)) {
-                group = testScenario.getTestGroup();
-                body += buildHeading2(group);
-            }
-            // Add the files in folder as a collapsible section
-            body += buildContents(testScenario.getTestName() + " - " + testScenario.getDescription(),
-                    buildContentsOfFolder(outputPath, testScenario.getOutputLocation()));
+
+        // Build the grouping map
+        Map<String, Map<String, Map<String, String>>> groupingMap =
+                buildGroupingMap(testScenarios);
+
+        // Loop the test groups
+        for (Map.Entry testGroupMap : groupingMap.entrySet()) {
+            String testGroup = (String) testGroupMap.getKey();
+            Map<String, Map<String, String>> testNamesMap =
+                    (Map<String, Map<String, String>>) testGroupMap.getValue();
+
+            // Output the test group heading
+            body += buildHeading2(testGroup);
+
+            // Output the test names
+            body += buildHtmlTestNames(outputPath, testNamesMap);
+        }
+
+        return body;
+    }
+
+    private static String buildHtmlTestNames(
+            String outputPath, Map<String, Map<String, String>> map) {
+        String body = "";
+        for (Map.Entry entry : map.entrySet()) {
+            String testName = (String) entry.getKey();
+            Map<String, String> descriptionsMap =
+                    (Map<String, String>) entry.getValue();
+
+            // Output the test name callapsible section
+            body += buildContents(testName,
+                    buildHtmlDescriptions(outputPath, descriptionsMap));
         }
         return body;
+    }
+
+    private static String buildHtmlDescriptions(
+            String outputPath, Map<String, String> map) {
+        String body = "";
+        for (Map.Entry entry : map.entrySet()) {
+            String description = (String) entry.getKey();
+            String outputLocation = (String) entry.getValue();
+
+            // Output the description
+            body += buildContents(description,
+                    buildContentsOfFolder(outputPath, outputLocation));
+        }
+        return body;
+    }
+
+    private static Map<String, Map<String, Map<String, String>>> buildGroupingMap(
+            List<TestScenario> testScenarios) {
+        Map<String, Map<String, Map<String, String>>> groupingMap = new HashMap<>();
+        for (TestScenario testScenario: testScenarios) {
+            // Add the test groups
+            groupingMap
+                    .computeIfAbsent(testScenario.getTestGroup(), k -> new HashMap<>());
+            // Add the test names
+            groupingMap.get(testScenario.getTestGroup())
+                    .computeIfAbsent(testScenario.getTestName(), k -> new HashMap<>());
+            // Add the descriptions
+            groupingMap.get(testScenario.getTestGroup()).get(testScenario.getTestName())
+                    .put(testScenario.getDescription(), testScenario.getOutputLocation());
+        }
+        return groupingMap;
     }
 
     private static String buildContents(String heading, String contents) {
