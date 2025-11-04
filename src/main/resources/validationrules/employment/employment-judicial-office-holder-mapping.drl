@@ -404,7 +404,8 @@ end;
 rule "v3_0_employment_employment_judge_salaried_joh"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.EMPLOYMENT_WA_3_0.getValue())
-    $jap: JudicialAccessProfile(!hasAppointmentCode(Appointment.PRESIDENT_OF_TRIBUNAL),
+    $jap: JudicialAccessProfile(// NB: avoid PRESIDENT_OF_TRIBUNAL to avoid giving them region based roles
+                                !hasAppointmentCode(Appointment.PRESIDENT_OF_TRIBUNAL),
                                 isSalaried(),
                                 hasValidEndDate(),
                                 hasValidAuthorisation(Jurisdiction.EMPLOYMENT))
