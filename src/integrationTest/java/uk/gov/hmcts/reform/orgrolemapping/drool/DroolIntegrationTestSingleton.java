@@ -15,7 +15,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_CONT
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_SCRIPT;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_STYLE;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_HEADER_STYLE_CLASS;
-import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildBulletPoints;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildButton;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildDiv;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHeading2;
@@ -170,12 +169,16 @@ public class DroolIntegrationTestSingleton  {
     private static String buildContentsOfFolder(String outputPath, String outputLocation) {
         StringBuilder contents = new StringBuilder();
         getFilesInFolder(outputLocation).forEach(filename -> {
+            // Add the comma separator if required
+            if (contents.length() > 0) {
+                contents.append(", ");
+            }
             // Add the file as a hyperlink (minus the relative path to the output folder)
-            contents.append(buildLine(
+            contents.append(
                     buildHyperlink(outputLocation.replace(outputPath,"")
-                            + filename, filename)));
+                            + filename, filename));
         });
-        return buildBulletPoints(contents.toString());
+        return contents.toString();
     }
 
     private static List<String> getFilesInFolder(final String outputLocation) {
