@@ -35,19 +35,23 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
 })
 public class DroolJudicialTestArgumentsHelper {
 
-    private static final String HAPPY_PATH__ALL_DATES_SUPPLIED = "HappyPath - all dates supplied";
-    private static final String HAPPY_PATH__NO_APPOINTMENT_END_DATE = "HappyPath - no appointment end date";
-    private static final String HAPPY_PATH__NO_AUTHORISATION_END_DATE = "HappyPath - no authorisation end date";
-    private static final String HAPPY_PATH__NO_ADDITIONAL_ROLE_END_DATE = "HappyPath - no additional role end date";
-    private static final String HAPPY_PATH__NO_BOOKING_END_DATE = "HappyPath - no booking end date";
+    private static final String HAPPY_PATH = "HappyPath";
+    private static final String ALL_DATES_SUPPLIED = "all dates supplied";
+    private static final String NO_APPOINTMENT_END_DATE = "no appointment end date";
+    private static final String NO_AUTHORISATION_END_DATE = "no authorisation end date";
+    private static final String NO_ADDITIONAL_ROLE_END_DATE = "no additional role end date";
+    private static final String NO_BOOKING_END_DATE = "no booking end date";
+    private static final String HAPPYPATH_DESCRIPTION = HAPPY_PATH + " - %s - %s";
 
-    private static final String NEGATIVE_TEST__APPOINTMENT_END_DATE_EXPIRED
-        = "NegativeTest - appointment end date expired";
-    private static final String NEGATIVE_TEST__AUTHORISATION_END_DATE_EXPIRED
-        = "NegativeTest - authorisation end date expired";
-    private static final String NEGATIVE_TEST__ADDITIONAL_ROLE_END_DATE_EXPIRED
-        = "NegativeTest - additional role end date expired";
-    private static final String NEGATIVE_TEST__SOFT_DELETE_FLAG_SET = "NegativeTest - soft delete flag set";
+    private static final String NEGATIVE_TEST = "NegativeTest";
+    private static final String APPOINTMENT_END_DATE_EXPIRED
+        = "appointment end date expired";
+    private static final String AUTHORISATION_END_DATE_EXPIRED
+        = "authorisation end date expired";
+    private static final String ADDITIONAL_ROLE_END_DATE_EXPIRED
+        = "additional role end date expired";
+    private static final String SOFT_DELETE_FLAG_SET = "soft delete flag set";
+    private static final String NEGATIVETEST_DESCRIPTION = NEGATIVE_TEST + " - %s";
 
     public static final String SPTW_TEST_APPOINTMENT_TYPE = "SPTW-50%";
     public static final String SPTW_TEST_CONTRACT_TYPE_ID = "5";
@@ -286,10 +290,11 @@ public class DroolJudicialTestArgumentsHelper {
 
         Map<String, String> overrideMapValues = testArguments.getOverrideMapValues();
 
-        String scenarioOutputPath = "HappyPath/" + (includeBookingScenario ? "WithBooking/" : "WithoutBooking/");
+        String bookingScenario = includeBookingScenario ? "WithBooking" : "WithoutBooking";
+        String scenarioOutputPath = HAPPY_PATH + "/" + bookingScenario;
 
         testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-            .description(HAPPY_PATH__ALL_DATES_SUPPLIED)
+            .description(String.format(HAPPYPATH_DESCRIPTION, ALL_DATES_SUPPLIED, bookingScenario))
             .outputLocation(
                 formatJudicialTestOutputLocation(testArguments, scenarioOutputPath + "AllDatesSupplied/")
             )
@@ -297,7 +302,7 @@ public class DroolJudicialTestArgumentsHelper {
             .build());
 
         testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-            .description(HAPPY_PATH__NO_APPOINTMENT_END_DATE)
+            .description(String.format(HAPPYPATH_DESCRIPTION, NO_APPOINTMENT_END_DATE, bookingScenario))
             .outputLocation(
                 formatJudicialTestOutputLocation(testArguments, scenarioOutputPath + "NoAppointmentEndDate/")
             )
@@ -307,7 +312,7 @@ public class DroolJudicialTestArgumentsHelper {
             .build());
 
         testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-            .description(HAPPY_PATH__NO_AUTHORISATION_END_DATE)
+            .description(String.format(HAPPYPATH_DESCRIPTION, NO_AUTHORISATION_END_DATE, bookingScenario))
             .outputLocation(
                 formatJudicialTestOutputLocation(testArguments, scenarioOutputPath + "NoAuthorisationEndDate/")
             )
@@ -318,7 +323,7 @@ public class DroolJudicialTestArgumentsHelper {
 
         if (testArguments.isAdditionalRoleTest()) {
             testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-                .description(HAPPY_PATH__NO_ADDITIONAL_ROLE_END_DATE)
+                .description(String.format(HAPPYPATH_DESCRIPTION, NO_ADDITIONAL_ROLE_END_DATE, bookingScenario))
                 .outputLocation(
                     formatJudicialTestOutputLocation(testArguments, scenarioOutputPath + "NoAdditionalRoleEndDate/")
                 )
@@ -330,7 +335,7 @@ public class DroolJudicialTestArgumentsHelper {
 
         if (includeBookingScenario) {
             testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-                .description(HAPPY_PATH__NO_BOOKING_END_DATE)
+                .description(String.format(HAPPYPATH_DESCRIPTION, NO_BOOKING_END_DATE, bookingScenario))
                 .outputLocation(
                     formatJudicialTestOutputLocation(testArguments, scenarioOutputPath + "NoBookingEndDate/")
                 )
@@ -352,7 +357,7 @@ public class DroolJudicialTestArgumentsHelper {
         // NB: JBS only returns valid bookings so no need to test with expired booking end date
 
         testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-            .description(NEGATIVE_TEST__APPOINTMENT_END_DATE_EXPIRED)
+            .description(String.format(NEGATIVETEST_DESCRIPTION,APPOINTMENT_END_DATE_EXPIRED))
             .outputLocation(
                 formatJudicialTestOutputLocation(testArguments, "NegativeTest/AppointmentEndDateExpired/")
             )
@@ -362,7 +367,7 @@ public class DroolJudicialTestArgumentsHelper {
             .build());
 
         testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-            .description(NEGATIVE_TEST__AUTHORISATION_END_DATE_EXPIRED)
+            .description(String.format(NEGATIVETEST_DESCRIPTION,AUTHORISATION_END_DATE_EXPIRED))
             .outputLocation(
                 formatJudicialTestOutputLocation(testArguments, "NegativeTest/AuthorisationEndDateExpired/")
             )
@@ -373,7 +378,7 @@ public class DroolJudicialTestArgumentsHelper {
 
         if (testArguments.isAdditionalRoleTest()) {
             testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-                .description(NEGATIVE_TEST__ADDITIONAL_ROLE_END_DATE_EXPIRED)
+                .description(String.format(NEGATIVETEST_DESCRIPTION,ADDITIONAL_ROLE_END_DATE_EXPIRED))
                 .outputLocation(
                     formatJudicialTestOutputLocation(testArguments, "NegativeTest/AdditionalRoleEndDateExpired/")
                 )
@@ -384,7 +389,7 @@ public class DroolJudicialTestArgumentsHelper {
         }
 
         testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-            .description(NEGATIVE_TEST__SOFT_DELETE_FLAG_SET)
+            .description(String.format(NEGATIVETEST_DESCRIPTION,SOFT_DELETE_FLAG_SET))
             .outputLocation(
                 formatJudicialTestOutputLocation(testArguments, "NegativeTest/SoftDeleteFlagSet/")
             )
