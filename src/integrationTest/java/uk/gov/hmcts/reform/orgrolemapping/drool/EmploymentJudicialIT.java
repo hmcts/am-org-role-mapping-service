@@ -356,7 +356,8 @@ public class EmploymentJudicialIT {
 
         // the following Additional Role Test do not need the Additional Role Fallback prior to DTSAM-970
         testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
-            .overrideDescription("022_Acting_Regional_Employment_Judge__Salaried")
+            .overrideDescription("NoGenericRoleMappingFallbackWhenAdditionalRoleIsExpired")
+            .findJrdResponseFileName("022_Acting_Regional_Employment_Judge__Salaried")
             .overrideAdditionalRoleExpiredFallbackFileName(EMPTY_ROLE_ASSIGNMENT_TEMPLATE)
             .overrideTurnOffFlags(List.of(flag))
             .build()

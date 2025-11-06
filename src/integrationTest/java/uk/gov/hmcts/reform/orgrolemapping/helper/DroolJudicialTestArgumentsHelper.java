@@ -571,6 +571,7 @@ public class DroolJudicialTestArgumentsHelper {
     ) {
         List<DroolJudicialTestArguments> outputArguments = new ArrayList<>();
 
+        // for each test argument: find first override that matches and apply or just use clone of original if none
         inputArguments.forEach(argument -> {
             var findOverride = overrides.stream().filter(testOverride ->
                 (
@@ -583,9 +584,10 @@ public class DroolJudicialTestArgumentsHelper {
                 )
             ).findFirst();
 
+            var argumentBuilder = argument.cloneBuilder();
+
             if (findOverride.isPresent()) {
                 var override = findOverride.get();
-                var builder = argument.cloneBuilder();
 
                 // NB: use flag off list in description to help identify test reports
                 var overrideDescription = CollectionUtils.isNotEmpty(override.getOverrideTurnOffFlags())
@@ -600,7 +602,7 @@ public class DroolJudicialTestArgumentsHelper {
                     : override.getOverrideDescription();
 
                 if (overrideDescription != null) {
-                    builder.description(
+                    argumentBuilder.description(
                         expandDescription(
                             argument.getDescription(),
                             overrideDescription
@@ -608,27 +610,26 @@ public class DroolJudicialTestArgumentsHelper {
                     );
                 }
                 if (override.getOverrideRasRequestFileNameWithoutBooking() != null) {
-                    builder.rasRequestFileNameWithoutBooking(
+                    argumentBuilder.rasRequestFileNameWithoutBooking(
                         override.getOverrideRasRequestFileNameWithoutBooking()
                     );
                 }
                 if (override.getOverrideRasRequestFileNameWithBooking() != null) {
-                    builder.rasRequestFileNameWithBooking(
+                    argumentBuilder.rasRequestFileNameWithBooking(
                         override.getOverrideRasRequestFileNameWithBooking()
                     );
                 }
                 if (override.getOverrideAdditionalRoleExpiredFallbackFileName() != null) {
-                    builder.additionalRoleExpiredFallbackFileName(
+                    argumentBuilder.additionalRoleExpiredFallbackFileName(
                         override.getOverrideAdditionalRoleExpiredFallbackFileName()
                     );
                 }
                 if (CollectionUtils.isNotEmpty(override.getOverrideTurnOffFlags())) {
-                    builder.turnOffFlags(override.getOverrideTurnOffFlags());
+                    argumentBuilder.turnOffFlags(override.getOverrideTurnOffFlags());
                 }
-                outputArguments.add(builder.build());
-            } else {
-                outputArguments.add(argument); // no override found so use original
             }
+
+            outputArguments.add(argumentBuilder.build());
         });
 
         return outputArguments;
