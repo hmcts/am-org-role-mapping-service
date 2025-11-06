@@ -41,7 +41,7 @@ public class DroolJudicialTestArgumentsHelper {
     private static final String NO_AUTHORISATION_END_DATE = "no authorisation end date";
     private static final String NO_ADDITIONAL_ROLE_END_DATE = "no additional role end date";
     private static final String NO_BOOKING_END_DATE = "no booking end date";
-    private static final String HAPPYPATH_DESCRIPTION = HAPPY_PATH + " - %s - %s";
+    private static final String HAPPY_PATH_DESCRIPTION = HAPPY_PATH + " - %s - %s";
 
     private static final String NEGATIVE_TEST = "NegativeTest";
     private static final String APPOINTMENT_END_DATE_EXPIRED
@@ -51,7 +51,7 @@ public class DroolJudicialTestArgumentsHelper {
     private static final String ADDITIONAL_ROLE_END_DATE_EXPIRED
         = "additional role end date expired";
     private static final String SOFT_DELETE_FLAG_SET = "soft delete flag set";
-    private static final String NEGATIVETEST_DESCRIPTION = NEGATIVE_TEST + " - %s";
+    private static final String NEGATIVE_TEST_DESCRIPTION = NEGATIVE_TEST + " - %s";
 
     public static final String SPTW_TEST_APPOINTMENT_TYPE = "SPTW-50%";
     public static final String SPTW_TEST_CONTRACT_TYPE_ID = "5";
@@ -93,6 +93,9 @@ public class DroolJudicialTestArgumentsHelper {
                     )
                     .rasRequestFileNameWithoutBooking(
                         formatRasRequestFileName(testArguments.getRasRequestFileNameWithoutBooking(), jurisdiction)
+                    )
+                    .additionalRoleExpiredFallbackFileName(
+                        formatRasRequestFileName(testArguments.getAdditionalRoleExpiredFallbackFileName(), jurisdiction)
                     )
                     .build()
             )
@@ -294,7 +297,7 @@ public class DroolJudicialTestArgumentsHelper {
         String scenarioOutputPath = HAPPY_PATH + "/" + bookingScenario;
 
         testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-            .description(String.format(HAPPYPATH_DESCRIPTION, ALL_DATES_SUPPLIED, bookingScenario))
+            .description(String.format(HAPPY_PATH_DESCRIPTION, ALL_DATES_SUPPLIED, bookingScenario))
             .outputLocation(
                 formatJudicialTestOutputLocation(testArguments, scenarioOutputPath + "AllDatesSupplied/")
             )
@@ -302,7 +305,7 @@ public class DroolJudicialTestArgumentsHelper {
             .build());
 
         testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-            .description(String.format(HAPPYPATH_DESCRIPTION, NO_APPOINTMENT_END_DATE, bookingScenario))
+            .description(String.format(HAPPY_PATH_DESCRIPTION, NO_APPOINTMENT_END_DATE, bookingScenario))
             .outputLocation(
                 formatJudicialTestOutputLocation(testArguments, scenarioOutputPath + "NoAppointmentEndDate/")
             )
@@ -312,7 +315,7 @@ public class DroolJudicialTestArgumentsHelper {
             .build());
 
         testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-            .description(String.format(HAPPYPATH_DESCRIPTION, NO_AUTHORISATION_END_DATE, bookingScenario))
+            .description(String.format(HAPPY_PATH_DESCRIPTION, NO_AUTHORISATION_END_DATE, bookingScenario))
             .outputLocation(
                 formatJudicialTestOutputLocation(testArguments, scenarioOutputPath + "NoAuthorisationEndDate/")
             )
@@ -323,7 +326,7 @@ public class DroolJudicialTestArgumentsHelper {
 
         if (testArguments.isAdditionalRoleTest()) {
             testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-                .description(String.format(HAPPYPATH_DESCRIPTION, NO_ADDITIONAL_ROLE_END_DATE, bookingScenario))
+                .description(String.format(HAPPY_PATH_DESCRIPTION, NO_ADDITIONAL_ROLE_END_DATE, bookingScenario))
                 .outputLocation(
                     formatJudicialTestOutputLocation(testArguments, scenarioOutputPath + "NoAdditionalRoleEndDate/")
                 )
@@ -335,7 +338,7 @@ public class DroolJudicialTestArgumentsHelper {
 
         if (includeBookingScenario) {
             testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-                .description(String.format(HAPPYPATH_DESCRIPTION, NO_BOOKING_END_DATE, bookingScenario))
+                .description(String.format(HAPPY_PATH_DESCRIPTION, NO_BOOKING_END_DATE, bookingScenario))
                 .outputLocation(
                     formatJudicialTestOutputLocation(testArguments, scenarioOutputPath + "NoBookingEndDate/")
                 )
@@ -357,7 +360,7 @@ public class DroolJudicialTestArgumentsHelper {
         // NB: JBS only returns valid bookings so no need to test with expired booking end date
 
         testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-            .description(String.format(NEGATIVETEST_DESCRIPTION,APPOINTMENT_END_DATE_EXPIRED))
+            .description(String.format(NEGATIVE_TEST_DESCRIPTION, APPOINTMENT_END_DATE_EXPIRED))
             .outputLocation(
                 formatJudicialTestOutputLocation(testArguments, "NegativeTest/AppointmentEndDateExpired/")
             )
@@ -367,7 +370,7 @@ public class DroolJudicialTestArgumentsHelper {
             .build());
 
         testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-            .description(String.format(NEGATIVETEST_DESCRIPTION,AUTHORISATION_END_DATE_EXPIRED))
+            .description(String.format(NEGATIVE_TEST_DESCRIPTION, AUTHORISATION_END_DATE_EXPIRED))
             .outputLocation(
                 formatJudicialTestOutputLocation(testArguments, "NegativeTest/AuthorisationEndDateExpired/")
             )
@@ -378,43 +381,83 @@ public class DroolJudicialTestArgumentsHelper {
 
         if (testArguments.isAdditionalRoleTest()) {
             testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-                .description(String.format(NEGATIVETEST_DESCRIPTION,ADDITIONAL_ROLE_END_DATE_EXPIRED))
+                .description(String.format(NEGATIVE_TEST_DESCRIPTION, ADDITIONAL_ROLE_END_DATE_EXPIRED))
                 .outputLocation(
                     formatJudicialTestOutputLocation(testArguments, "NegativeTest/AdditionalRoleEndDateExpired/")
                 )
                 .replaceMap(
                     expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), ROLE_END_TIME)
                 )
+                // NB: may need to override RAS request file to use fallback template when additional role is expired
+                .overrideRasRequestFileName(testArguments.getAdditionalRoleExpiredFallbackFileName())
                 .build());
         }
 
         testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-            .description(String.format(NEGATIVETEST_DESCRIPTION,SOFT_DELETE_FLAG_SET))
+            .description(String.format(NEGATIVE_TEST_DESCRIPTION, SOFT_DELETE_FLAG_SET))
             .outputLocation(
                 formatJudicialTestOutputLocation(testArguments, "NegativeTest/SoftDeleteFlagSet/")
             )
             .replaceMap(
-                setBooleanInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), DELETED_FLAG, true))
+                setBooleanInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), DELETED_FLAG, true)
+            )
             .build());
 
         return testScenarios;
     }
 
-    public static DroolJudicialTestArgumentOverrides generateOverrideWhenSptwNotSupported(
+    public static DroolJudicialTestArgumentOverrides generateOverrideFlagOffCatchAll(
+        FeatureFlagEnum overrideTurnOffFlag
+    ) {
+        // This is a catch-all override tha will match on all test arguments.
+        // It should be the final override used in Flag Off Tests, so we repeat all test arguments with the flag off,
+        // even those without any change in behaviour.
+        return DroolJudicialTestArgumentOverrides.builder()
+            .overrideTurnOffFlags(List.of(overrideTurnOffFlag))
+            .build();
+    }
+
+    public static DroolJudicialTestArgumentOverrides generateOverrideWhenNotSupported(
         String findJrdResponseFileName,
+        FeatureFlagEnum overrideTurnOffFlag
+    ) {
+        return generateOverrideWhenNotSupported(
+            "NotSupported",
+            findJrdResponseFileName,
+            null,
+            overrideTurnOffFlag != null ? List.of(overrideTurnOffFlag) : null
+        );
+    }
+
+    public static DroolJudicialTestArgumentOverrides generateOverrideWhenNotSupported(
+        String overrideDescription,
+        String findJrdResponseFileName,
+        Map<String, String> findOverrideMapValues,
         List<FeatureFlagEnum> overrideTurnOffFlags
     ) {
         return DroolJudicialTestArgumentOverrides.builder()
-            .overrideDescription("SptwNotSupported")
+            .overrideDescription(overrideDescription)
             .findJrdResponseFileName(findJrdResponseFileName)
-            .findOverrideMapValues(Map.of(
-                APPOINTMENT_TYPE, SPTW_TEST_APPOINTMENT_TYPE,
-                CONTRACT_TYPE_ID, SPTW_TEST_CONTRACT_TYPE_ID
-            ))
+            .findOverrideMapValues(findOverrideMapValues)
             .overrideRasRequestFileNameWithoutBooking(EMPTY_ROLE_ASSIGNMENT_TEMPLATE)
             .overrideRasRequestFileNameWithBooking(EMPTY_ROLE_ASSIGNMENT_TEMPLATE)
             .overrideTurnOffFlags(overrideTurnOffFlags)
             .build();
+    }
+
+    public static DroolJudicialTestArgumentOverrides generateOverrideWhenSptwNotSupported(
+        String findJrdResponseFileName,
+        FeatureFlagEnum overrideTurnOffFlag
+    ) {
+        return generateOverrideWhenNotSupported(
+            "SptwNotSupported",
+            findJrdResponseFileName,
+            Map.of(
+                APPOINTMENT_TYPE, SPTW_TEST_APPOINTMENT_TYPE,
+                CONTRACT_TYPE_ID, SPTW_TEST_CONTRACT_TYPE_ID
+            ),
+            overrideTurnOffFlag != null ? List.of(overrideTurnOffFlag) : null
+        );
     }
 
     @SuppressWarnings({"SameParameterValue"})
@@ -427,6 +470,16 @@ public class DroolJudicialTestArgumentsHelper {
             true // use separate withBookings and withoutBookings output file
         );
 
+    }
+
+    public static List<DroolJudicialTestArguments> generateStandardFeePaidTestArguments(String jrdResponseFileName,
+                                                                                        String rasRequestFileName) {
+        return generateStandardFeePaidTestArguments(
+            jrdResponseFileName,
+            rasRequestFileName,
+            false, // default to false, i.e. NOT an Additional Role Test
+            true // default to use separate withBookings and withoutBookings output file
+        );
     }
 
     @SuppressWarnings({"SameParameterValue"})
@@ -447,8 +500,45 @@ public class DroolJudicialTestArgumentsHelper {
     }
 
     public static List<DroolJudicialTestArguments> generateStandardSalariedTestArguments(String jrdResponseFileName,
+                                                                                         String rasRequestFileName) {
+        return generateStandardSalariedTestArguments(
+            jrdResponseFileName,
+            rasRequestFileName,
+            false // default to false, i.e. NOT an Additional Role Test
+        );
+    }
+
+    public static List<DroolJudicialTestArguments> generateStandardSalariedTestArguments(String jrdResponseFileName,
                                                                                          String rasRequestFileName,
                                                                                          boolean additionalRoleTest) {
+        return generateStandardSalariedTestArguments(
+            jrdResponseFileName,
+            rasRequestFileName,
+            additionalRoleTest,
+            null
+        );
+    }
+
+    public static List<DroolJudicialTestArguments> generateStandardSalariedTestArguments(
+        String jrdResponseFileName,
+        String rasRequestFileName,
+        String additionalRoleExpiredFallbackFileName
+    ) {
+        return generateStandardSalariedTestArguments(
+            jrdResponseFileName,
+            rasRequestFileName,
+            // must be additional role test if using fallback file name
+            StringUtils.isNotEmpty(additionalRoleExpiredFallbackFileName),
+            additionalRoleExpiredFallbackFileName
+        );
+    }
+
+    public static List<DroolJudicialTestArguments> generateStandardSalariedTestArguments(
+        String jrdResponseFileName,
+        String rasRequestFileName,
+        boolean additionalRoleTest,
+        String additionalRoleExpiredFallbackFileName
+    ) {
         List<DroolJudicialTestArguments> arguments = new ArrayList<>();
 
         arguments.add(
@@ -459,6 +549,7 @@ public class DroolJudicialTestArgumentsHelper {
                 // NB: With and Without Booking test output will match for these scenarios
                 .rasRequestFileNameWithoutBooking(rasRequestFileName)
                 .additionalRoleTest(additionalRoleTest)
+                .additionalRoleExpiredFallbackFileName(additionalRoleExpiredFallbackFileName)
                 .overrideMapValues(
                     generateCommonJudicialOverrideMapValues(SALARIED, REGION_02_MIDLANDS)
                 )
@@ -482,7 +573,10 @@ public class DroolJudicialTestArgumentsHelper {
 
         inputArguments.forEach(argument -> {
             var findOverride = overrides.stream().filter(testOverride ->
-                testOverride.getFindJrdResponseFileName().equals(argument.getJrdResponseFileName())
+                (
+                    StringUtils.isEmpty(testOverride.getFindJrdResponseFileName())
+                    || testOverride.getFindJrdResponseFileName().equals(argument.getJrdResponseFileName())
+                )
                     && matchOverrideMapValues(
                     argument.getOverrideMapValues(),
                     testOverride.getFindOverrideMapValues()
@@ -492,11 +586,24 @@ public class DroolJudicialTestArgumentsHelper {
             if (findOverride.isPresent()) {
                 var override = findOverride.get();
                 var builder = argument.cloneBuilder();
-                if (override.getOverrideDescription() != null) {
+
+                // NB: use flag off list in description to help identify test reports
+                var overrideDescription = CollectionUtils.isNotEmpty(override.getOverrideTurnOffFlags())
+                    ? expandDescription(
+                        override.getOverrideDescription(),
+                        "TurnOffFlags__" + String.join("__",
+                            override.getOverrideTurnOffFlags().stream()
+                                .map(Enum::name)
+                                .toList()
+                        )
+                    )
+                    : override.getOverrideDescription();
+
+                if (overrideDescription != null) {
                     builder.description(
                         expandDescription(
                             argument.getDescription(),
-                            override.getOverrideDescription()
+                            overrideDescription
                         )
                     );
                 }
@@ -508,6 +615,11 @@ public class DroolJudicialTestArgumentsHelper {
                 if (override.getOverrideRasRequestFileNameWithBooking() != null) {
                     builder.rasRequestFileNameWithBooking(
                         override.getOverrideRasRequestFileNameWithBooking()
+                    );
+                }
+                if (override.getOverrideAdditionalRoleExpiredFallbackFileName() != null) {
+                    builder.additionalRoleExpiredFallbackFileName(
+                        override.getOverrideAdditionalRoleExpiredFallbackFileName()
                     );
                 }
                 if (CollectionUtils.isNotEmpty(override.getOverrideTurnOffFlags())) {
@@ -565,6 +677,10 @@ public class DroolJudicialTestArgumentsHelper {
     }
 
     private static String formatRasRequestFileName(String fileName, String jurisdiction) {
+        if (StringUtils.isEmpty(fileName)) {
+            return null;
+        }
+
         return EMPTY_ROLE_ASSIGNMENT_TEMPLATE.equals(fileName)
             ? EMPTY_ROLE_ASSIGNMENT_TEMPLATE
             : jurisdiction + "/OutputToRas/" + fileName;
