@@ -1,9 +1,9 @@
 {
   "_guid_": "S-008.03b",
-  "title": "must successfully create org role mapping for Senior Legal Caseworker + Case allocator",
+  "title": "must successfully create org role mapping for Hearing Centre Team Leader + Case allocator",
   "_extends_": "S-008.03",
   "specs": [
-    "contains the actorId of the user just published who has Senior Legal Caseworker role + Case allocator"
+    "contains the actorId of the user just published who has Hearing Centre Team Leader role + Case allocator"
   ],
   "request": {
     "pathVariables": {
