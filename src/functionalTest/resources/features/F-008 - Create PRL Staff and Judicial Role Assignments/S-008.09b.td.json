@@ -27,8 +27,7 @@
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW",
-            "substantive": "N",
-            "region": "[[ANYTHING_PRESENT]]"
+            "substantive": "N"
           }
         }
       ]
