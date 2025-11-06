@@ -27,14 +27,14 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 @ExtendWith(MockitoExtension.class)
-class DroolAdminOrgRoleMappingTest extends DroolBase {
+class DroolIacAdminOrgRoleMappingTest extends DroolBase {
 
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
     static {
         expectedRoleNameWorkTypesMap.put("hmcts-admin", null);
         expectedRoleNameWorkTypesMap.put("hearing-centre-admin", "hearing_work, upper_tribunal, routine_work, "
-                + "review_case");
+                + "review_case, bail_work");
         expectedRoleNameWorkTypesMap.put("national-business-centre", "hearing_work, upper_tribunal, routine_work");
         expectedRoleNameWorkTypesMap.put("case-allocator", null);
         expectedRoleNameWorkTypesMap.put("task-supervisor", null);
