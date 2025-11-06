@@ -23,7 +23,7 @@ def versions = [
         junit          : '5.11.3',
         junitPlatform  : '1.11.3',
         lombok         : '1.18.42',
-        pitest         : '1.20.3',
+        pitest         : '1.21.0',
         reformLogging  : '6.1.9',
         reformS2sClient: '5.3.3',
         serenity       : '4.2.34',
@@ -392,7 +392,7 @@ dependencies {
     pitest 'org.pitest:pitest-junit5-plugin:1.2.3'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.19.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.20.0'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
 
