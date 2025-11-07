@@ -1,0 +1,44 @@
+{
+  "_guid_": "S-008.18",
+  "title": "must successfully create org role mapping for Cafcass Cymru Caseworker",
+  "_extends_": "F-008_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published who has Cafcass Cymru Caseworker role"
+  ],
+  "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "request": {
+    "pathVariables": {
+      "actorId": "e3d26938-ad7d-49af-b040-8f7e13b31145"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "caseworker-privatelaw-externaluser-viewonly",
+          "classification": "RESTRICTED",
+          "grantType": "STANDARD",
+          "roleCategory": "OTHER_GOV_DEPT",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive" : "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "region": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW"
+          }
+        }
+      ]
+    }
+  }
+}
