@@ -32,8 +32,7 @@
           "readOnly": false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive" : "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "substantive" : "N",
             "region": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW"
           }
