@@ -23,10 +23,10 @@
         {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "caseworker-privatelaw-externaluser-viewonly",
-          "classification": "RESTRICTED",
+          "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "OTHER_GOV_DEPT",
           "readOnly": false,
