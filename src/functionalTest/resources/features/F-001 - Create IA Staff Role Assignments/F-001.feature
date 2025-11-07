@@ -174,7 +174,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.03a
-  @FeatureToggle(DB:iac_wa_1_3=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_4=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Task Supervisor
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (BFA1 IA)] as in [S-001.03a__VerifyCaseworkerDetails],
@@ -188,7 +188,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.03b
-  @FeatureToggle(DB:iac_wa_1_3=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_4=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Case allocator
      Given a user with [an active IDAM profile with full permissions],
      And a successful call [to verify caseworker details for Hearing Centre Team Leader + Case allocator (BFA1 IA)] as in [S-001.03b__VerifyCaseworkerDetails],
@@ -216,7 +216,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.04a
-  @FeatureToggle(DB:iac_wa_1_3=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_4=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Administrator + Task Supervisor
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Administrator + Task Supervisor (BFA1 IA)] as in [S-001.04a__VerifyCaseworkerDetails],
@@ -230,7 +230,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.04b
-  @FeatureToggle(DB:iac_wa_1_3=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_4=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Administrator + Case allocator
      Given a user with [an active IDAM profile with full permissions],
      And a successful call [to verify caseworker details for Hearing Centre Administrator + Case allocator (BFA1 IA)] as in [S-001.04b__VerifyCaseworkerDetails],
@@ -258,7 +258,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.05a
-  @FeatureToggle(DB:iac_wa_1_3=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_4=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Court Clerk + Task Supervisor
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Court Clerk + Task Supervisor (BFA1 IA)] as in [S-001.05a__VerifyCaseworkerDetails],
@@ -272,7 +272,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.05b
-  @FeatureToggle(DB:iac_wa_1_3=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_4=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Court Clerk + Case allocator
      Given a user with [an active IDAM profile with full permissions],
      And a successful call [to verify caseworker details for Court Clerk + Case allocator (BFA1 IA)] as in [S-001.05b__VerifyCaseworkerDetails],
