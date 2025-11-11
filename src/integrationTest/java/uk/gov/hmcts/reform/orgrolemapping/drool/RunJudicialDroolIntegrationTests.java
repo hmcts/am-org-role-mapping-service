@@ -48,6 +48,8 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
         arguments.addAll(BasicJudicialIT.getTestArguments());
 
+        arguments.addAll(SscsJudicialIT.getTestArguments());
+
         return arguments.stream()
             .map(DroolJudicialTestArguments::toArguments);
     }
