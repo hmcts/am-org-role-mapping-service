@@ -141,7 +141,7 @@ public class SscsJudicialIT {
             )
         );
 
-        // 003e Deputy District Judge (MC) - Fee Paid
+        // 003e Recorder - Fee Paid
         arguments.addAll(
             generateFeePaidTestArguments(
                 "003e_Recorder__FeePaid",
@@ -465,7 +465,7 @@ public class SscsJudicialIT {
                 jrdResponseFileName,
                 rasRequestFileName,
                 false, // NB: no additional role tests in SSCS
-                false // NB: bookings not permitted
+                false // NB: bookings not used for tribunal member fee-paid
             );
         }
 
