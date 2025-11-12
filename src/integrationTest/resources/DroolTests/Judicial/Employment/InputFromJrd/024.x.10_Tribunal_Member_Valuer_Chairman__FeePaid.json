@@ -11,8 +11,8 @@
       "cft_region_id": "[[REGION_ID]]",
       "cft_region": "[[REGION_NAME]]",
       "is_principal_appointment": "true",
-      "appointment": "Tribunal Member Valuer",
-      "role_name_id": "88",
+      "appointment": "Tribunal Member Valuer Chairman",
+      "role_name_id": "89",
       "appointment_type": "Fee-paid",
       "contract_type_id": "1",
       "service_codes": [
