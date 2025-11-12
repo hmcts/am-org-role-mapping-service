@@ -33,6 +33,8 @@ public class EmploymentJudicialIT {
     private static final String FEE_PAID_JUDGE_OUTPUT_TEMPLATE = "007_EJ__008_EJ-SIR__013_R__014_RTJ__015_TJ";
     private static final String TRIBUNAL_MEMBER_JUDGE_OUTPUT_TEMPLATE = "009_TM__010_TML";
 
+    private static final String JRD_TEMPLATE_PRESIDENT_OF_TRIBUNAL_SALARIED = "001_President_of_Tribunal__Salaried";
+
     private static final boolean NO_BOOKABLE_ROLES_FLAG = false;
 
     public static List<DroolJudicialTestArguments> getTestArguments() {
@@ -42,7 +44,7 @@ public class EmploymentJudicialIT {
         // 001 President of Tribunal - Salaried
         arguments.addAll(
             generateStandardSalariedTestArguments(
-                "001_President_of_Tribunal__Salaried",
+                JRD_TEMPLATE_PRESIDENT_OF_TRIBUNAL_SALARIED,
                 "001_PT" // special case as LEADERSHIP JUDGE but with no region
             )
         );
@@ -268,6 +270,69 @@ public class EmploymentJudicialIT {
             )
         );
 
+        // 024.x Other Tribunal Member types excluded from DTSAM-970
+        arguments.addAll(
+            generateTribunalMemberTestArguments(
+                "024.x.01_Tribunal_Member_Dentist__FeePaid",
+                EMPTY_ROLE_ASSIGNMENT_TEMPLATE // NB: no mapping by request of service team
+            )
+        );
+        arguments.addAll(
+            generateTribunalMemberTestArguments(
+                "024.x.02_Tribunal_Member_Drainage__FeePaid",
+                EMPTY_ROLE_ASSIGNMENT_TEMPLATE // NB: no mapping by request of service team
+            )
+        );
+        arguments.addAll(
+            generateTribunalMemberTestArguments(
+                "024.x.03_Tribunal_Member_Farmer__FeePaid",
+                EMPTY_ROLE_ASSIGNMENT_TEMPLATE // NB: no mapping by request of service team
+            )
+        );
+        arguments.addAll(
+            generateTribunalMemberTestArguments(
+                "024.x.04_Tribunal_Member_Landowner__FeePaid",
+                EMPTY_ROLE_ASSIGNMENT_TEMPLATE // NB: no mapping by request of service team
+            )
+        );
+        arguments.addAll(
+            generateTribunalMemberTestArguments(
+                "024.x.05_Tribunal_Member_Optometrist__FeePaid",
+                EMPTY_ROLE_ASSIGNMENT_TEMPLATE // NB: no mapping by request of service team
+            )
+        );
+        arguments.addAll(
+            generateTribunalMemberTestArguments(
+                "024.x.06_Tribunal_Member_Pharmacist__FeePaid",
+                EMPTY_ROLE_ASSIGNMENT_TEMPLATE // NB: no mapping by request of service team
+            )
+        );
+        arguments.addAll(
+            generateTribunalMemberTestArguments(
+                "024.x.07_Tribunal_Member_Professional__FeePaid",
+                EMPTY_ROLE_ASSIGNMENT_TEMPLATE // NB: no mapping by request of service team
+            )
+        );
+        arguments.addAll(
+            generateTribunalMemberTestArguments(
+                "024.x.08_Tribunal_Member_Service__FeePaid",
+                EMPTY_ROLE_ASSIGNMENT_TEMPLATE // NB: no mapping by request of service team
+            )
+        );
+        arguments.addAll(
+            generateTribunalMemberTestArguments(
+                "024.x.09_Tribunal_Member_Valuer__FeePaid",
+                EMPTY_ROLE_ASSIGNMENT_TEMPLATE // NB: no mapping by request of service team
+            )
+        );
+        arguments.addAll(
+            generateTribunalMemberTestArguments(
+                "024.x.10_Tribunal_Member_Valuer_Chairman__FeePaid",
+                EMPTY_ROLE_ASSIGNMENT_TEMPLATE // NB: no mapping by request of service team
+            )
+        );
+
+
         // expand all test arguments to cover region 12 tests
         arguments = expandTestArgumentsToCoverRegion12Tests(arguments);
 
@@ -375,28 +440,44 @@ public class EmploymentJudicialIT {
         List<DroolJudicialTestArguments> outputArguments = new ArrayList<>();
 
         inputArguments.forEach(argument -> {
-            outputArguments.add(
-                cloneTestArgumentsAndExpandOverrides(
-                    argument,
-                    "region_2",
-                    Map.of(
-                        REGION_ID, REGION_02_MIDLANDS,
-                        REGION_NAME, "Midlands",
-                        OUTPUT_REGION_ID, REGION_02_MIDLANDS // output region should match
+            // NB: skip region 12 tests if 'President of Tribunal' or output is the EMPTY RAS response
+            if (JRD_TEMPLATE_PRESIDENT_OF_TRIBUNAL_SALARIED.equals(argument.getJrdResponseFileName())
+                || EMPTY_ROLE_ASSIGNMENT_TEMPLATE.equals(argument.getRasRequestFileNameWithoutBooking())) {
+
+                // NB: region not important for these tests so go with original test arguments and use 'any-region'
+                outputArguments.add(
+                    cloneTestArgumentsAndExpandOverrides(
+                        argument,
+                        null, // only using one test so no change in description required
+                        Map.of(
+                            REGION_ID, "any-region-id",
+                            REGION_NAME, "Any Region"
+                        )
+                    ));
+            } else {
+                outputArguments.add(
+                    cloneTestArgumentsAndExpandOverrides(
+                        argument,
+                        "region_2",
+                        Map.of(
+                            REGION_ID, REGION_02_MIDLANDS,
+                            REGION_NAME, "Midlands",
+                            OUTPUT_REGION_ID, REGION_02_MIDLANDS // output region should match
+                        )
                     )
-                )
-            );
-            outputArguments.add(
-                cloneTestArgumentsAndExpandOverrides(
-                    argument,
-                    "region_12_output_11",
-                    Map.of(
-                        REGION_ID, REGION_12_NATIONAL,
-                        REGION_NAME, "National",
-                        OUTPUT_REGION_ID, REGION_11_SCOTLAND // region 12 output as 11, see DTSAM-186
+                );
+                outputArguments.add(
+                    cloneTestArgumentsAndExpandOverrides(
+                        argument,
+                        "region_12_output_11",
+                        Map.of(
+                            REGION_ID, REGION_12_NATIONAL,
+                            REGION_NAME, "National",
+                            OUTPUT_REGION_ID, REGION_11_SCOTLAND // region 12 output as 11, see DTSAM-186
+                        )
                     )
-                )
-            );
+                );
+            }
         });
 
         return outputArguments;

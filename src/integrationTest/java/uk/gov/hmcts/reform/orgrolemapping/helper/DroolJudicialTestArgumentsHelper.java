@@ -211,7 +211,9 @@ public class DroolJudicialTestArgumentsHelper {
     ) {
         return testArguments.cloneBuilder()
             .description(
-                expandDescription(testArguments.getDescription(), description)
+                StringUtils.isNotEmpty(description)
+                    ? expandDescription(testArguments.getDescription(), description)
+                    : testArguments.getDescription()
             )
             .overrideMapValues(
                 cloneAndOverrideMap(
@@ -380,10 +382,18 @@ public class DroolJudicialTestArgumentsHelper {
             .build());
 
         if (testArguments.isAdditionalRoleTest()) {
+            String description = String.format(NEGATIVE_TEST_DESCRIPTION, ADDITIONAL_ROLE_END_DATE_EXPIRED);
+            String scenarioOutputPath = "NegativeTest/AdditionalRoleEndDateExpired/";
+
+            if (StringUtils.isNotEmpty(testArguments.getAdditionalRoleExpiredFallbackFileName())) {
+                description += " - using RAS fallback file";
+                scenarioOutputPath += "WithFallback/";
+            }
+
             testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-                .description(String.format(NEGATIVE_TEST_DESCRIPTION, ADDITIONAL_ROLE_END_DATE_EXPIRED))
+                .description(description)
                 .outputLocation(
-                    formatJudicialTestOutputLocation(testArguments, "NegativeTest/AdditionalRoleEndDateExpired/")
+                    formatJudicialTestOutputLocation(testArguments, scenarioOutputPath)
                 )
                 .replaceMap(
                     expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), ROLE_END_TIME)
