@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.InvalidRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AppointmentV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
@@ -157,6 +158,7 @@ class AssignmentRequestBuilderTest {
                         assertNotNull(appointment.getTicketCodes());
                         assertEquals(2, appointment.getTicketCodes().size());
                         assertNotNull(appointment.getAppointment());
+                        assertNotNull(appointment.getAppointmentCode());
                     });
             assertEquals(2, judicialAccessProfiles.size());
         }
@@ -183,6 +185,7 @@ class AssignmentRequestBuilderTest {
                         assertNotNull(appointment.getTicketCodes());
                         assertEquals(0, appointment.getTicketCodes().size());
                         assertNotNull(appointment.getAppointment());
+                        assertNotNull(appointment.getAppointmentCode());
                     });
             assertEquals(2, judicialAccessProfiles.size());
         }
@@ -213,6 +216,7 @@ class AssignmentRequestBuilderTest {
                         assertEquals(2, appointment.getTicketCodes().size());
                         Assertions.assertThat(List.of("374","372")).hasSameElementsAs(appointment.getTicketCodes());
                         assertNotNull(appointment.getAppointment());
+                        assertNotNull(appointment.getAppointmentCode());
                     });
             assertEquals(2, judicialAccessProfiles.size());
         }
@@ -261,6 +265,7 @@ class AssignmentRequestBuilderTest {
 
             var builder = AppointmentV2.builder()
                 .appointment(appId)
+                .roleNameId(appId + "_code")
                 .appointmentId(appId)
                 .contractTypeId(CONTRACT_TYPE_ID)
                 .appointmentType("To-Be-Replaced")
@@ -781,6 +786,7 @@ class AssignmentRequestBuilderTest {
                     () -> assertNotNull(accessProfile.getBaseLocationId()),
                     () -> assertNotNull(accessProfile.getTicketCodes()),
                     () -> assertNotNull(accessProfile.getAppointment()),
+                    () -> assertNotNull(accessProfile.getAppointmentCode()),
                     () -> accessProfile.getAuthorisations()
                             .forEach(ConvertUserProfileToJudicialAccessProfileV2::assertCommonAuthorisationFields)
             );
@@ -799,53 +805,157 @@ class AssignmentRequestBuilderTest {
 
     }
 
-    @Test
-    void validateIACAuthorisation() {
 
-        assertTrue(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
+    @Nested
+    @DisplayName("ValidateAdditionalRole tests")
+    class ValidateAdditionalRole {
+
+        private static final String ANY_OTHER_CODE = "any-code";
+        private static final String TEST_CODE = "test-code";
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        void validateAdditionalRole_falseWhenNullOrEmptyRoles(List<RoleV2> additionalRoles) {
+            assertFalse(AssignmentRequestBuilder.validateAdditionalRole(additionalRoles, TEST_CODE));
+        }
+
+        @Test
+        void validateAdditionalRole_falseWhenNoMatch() {
+
+            // GIVEN
+            var additionalRoles = List.of(
+                RoleV2.builder()
+                    .jurisdictionRoleId(ANY_OTHER_CODE)
+                    .endDate(null) // no end date
+                    .build(),
+                RoleV2.builder()
+                    .jurisdictionRoleId(ANY_OTHER_CODE)
+                    .endDate(LocalDate.now().plusDays(10)) // valid end date
+                    .build()
+            );
+
+            // WHEN / THEN
+            assertFalse(AssignmentRequestBuilder.validateAdditionalRole(additionalRoles, TEST_CODE));
+
+        }
+
+        @Test
+        void validateAdditionalRole_falseWhenMatchButInvalidEndDate() {
+
+            // GIVEN
+            var additionalRoles = List.of(
+                RoleV2.builder()
+                    .jurisdictionRoleId(ANY_OTHER_CODE)
+                    .endDate(null) // no end date
+                    .build(),
+                RoleV2.builder()
+                    .jurisdictionRoleId(TEST_CODE)
+                    .endDate(LocalDate.now().minusDays(10)) // invalid end date
+                    .build()
+            );
+
+            // WHEN / THEN
+            assertFalse(AssignmentRequestBuilder.validateAdditionalRole(additionalRoles, TEST_CODE));
+
+        }
+
+        @Test
+        void validateAdditionalRole_trueWhenMatchAndNoEndDate() {
+
+            // GIVEN
+            var additionalRoles = List.of(
+                RoleV2.builder()
+                    .jurisdictionRoleId(ANY_OTHER_CODE)
+                    .endDate(null) // no end date
+                    .build(),
+                RoleV2.builder()
+                    .jurisdictionRoleId(TEST_CODE)
+                    .endDate(null) // no end date
+                    .build()
+            );
+
+            // WHEN / THEN
+            assertTrue(AssignmentRequestBuilder.validateAdditionalRole(additionalRoles, TEST_CODE));
+
+        }
+
+        @Test
+        void validateAdditionalRole_trueWhenMatchAndValidEndDate() {
+
+            // GIVEN
+            var additionalRoles = List.of(
+                RoleV2.builder()
+                    .jurisdictionRoleId(ANY_OTHER_CODE)
+                    .endDate(null) // no end date
+                    .build(),
+                RoleV2.builder()
+                    .jurisdictionRoleId(TEST_CODE)
+                    .endDate(LocalDate.now().plusDays(10)) // valid end date
+                    .build()
+            );
+
+            // WHEN / THEN
+            assertTrue(AssignmentRequestBuilder.validateAdditionalRole(additionalRoles, TEST_CODE));
+
+        }
+
+    }
+
+
+    @Nested
+    @DisplayName("ValidateAuthorisation tests")
+    class ValidateAuthorisation {
+
+        @Test
+        void validateIACAuthorisation() {
+
+            assertTrue(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
                 .serviceCodes(List.of("BFA1"))
                 .endDate(LocalDateTime.now().plusDays(1)).build()), "BFA1"));
-    }
+        }
 
-    @Test
-    void validateEmptyAuthorisation() {
+        @Test
+        void validateEmptyAuthorisation() {
 
-        List<Authorisation> authorisations = Collections.emptyList();
+            List<Authorisation> authorisations = Collections.emptyList();
 
-        assertFalse(AssignmentRequestBuilder.validateAuthorisation(authorisations, "BFA1"));
-    }
+            assertFalse(AssignmentRequestBuilder.validateAuthorisation(authorisations, "BFA1"));
+        }
 
-    @Test
-    void validateNullAuthorisation() {
+        @Test
+        void validateNullAuthorisation() {
 
-        assertFalse(AssignmentRequestBuilder.validateAuthorisation(null, "BFA1"));
-    }
+            assertFalse(AssignmentRequestBuilder.validateAuthorisation(null, "BFA1"));
+        }
 
-    @Test
-    void validateNonIACAuthorisation() {
+        @Test
+        void validateNonIACAuthorisation() {
 
-        assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
+            assertFalse(AssignmentRequestBuilder.validateAuthorisation(List.of(Authorisation.builder()
                 .serviceCodes(List.of("BFA2"))
                 .endDate(LocalDateTime.now().plusDays(1)).build()), "BFA1"));
-    }
+        }
 
 
-    @Test
-    void validateAuthorisation_inValidEndDate() {
-        Authorisation authorisation = Authorisation.builder()
+        @Test
+        void validateAuthorisation_inValidEndDate() {
+            Authorisation authorisation = Authorisation.builder()
                 .endDate(LocalDateTime.now().minusDays(2))
                 .serviceCodes(List.of("BFA2"))
                 .build();
-        boolean isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(authorisation),
+            boolean isValidAuthorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(authorisation),
                 "BFA1");
-        assertFalse(isValidAuthorisation);
+            assertFalse(isValidAuthorisation);
+        }
+
+        @Test
+        void validateAuthorisation_emptyList() {
+            boolean authorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(), "BFA1");
+            assertFalse(authorisation);
+        }
+
     }
 
-    @Test
-    void validateAuthorisation_emptyList() {
-        boolean authorisation = AssignmentRequestBuilder.validateAuthorisation(List.of(), "BFA1");
-        assertFalse(authorisation);
-    }
 
     @Test
     void cloneNewRoleAssignmentAndChangeRegion_emptyObject() {
