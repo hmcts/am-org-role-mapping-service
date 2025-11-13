@@ -441,10 +441,10 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
   @FeatureToggle(DB:st_cic_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Regional Centre Administrator
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify caseworker details for Regional Centre Administrator  (BBA2 ST_CIC)] as in [S-012.13__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for Regional Centre Administrator (BBA2 ST_CIC)] as in [S-012.13__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-012_PushMessageToCRDService],
-    And the request [contains the actorId of the user just published who has Regional Centre Administrator  role],
+    And the request [contains the actorId of the user just published who has Regional Centre Administrator role],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
@@ -453,12 +453,12 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
 
   @S-012.13a
   @FeatureToggle(DB:st_cic_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for Regional Centre Administrator  + Task Supervisor
+  Scenario: must successfully create org role mapping for Regional Centre Administrator + Task Supervisor
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify caseworker details for Regional Centre Administrator  + Task Supervisor (BBA2 ST_CIC)] as in [S-012.13a__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for Regional Centre Administrator + Task Supervisor (BBA2 ST_CIC)] as in [S-012.13a__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-012_PushMessageToCRDService],
-    And the request [contains the actorId of the user just published who has Regional Centre Administrator  role + Task Supervisor],
+    And the request [contains the actorId of the user just published who has Regional Centre Administrator role + Task Supervisor],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
@@ -467,12 +467,12 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
 
   @S-012.13b
   @FeatureToggle(DB:st_cic_wa_1_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for Regional Centre Administrator  + Case Allocator
+  Scenario: must successfully create org role mapping for Regional Centre Administrator + Case Allocator
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify caseworker details for Regional Centre Administrator  + Case Allocator (BBA2 ST_CIC)] as in [S-012.13b__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for Regional Centre Administrator + Case Allocator (BBA2 ST_CIC)] as in [S-012.13b__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-012_PushMessageToCRDService],
-    And the request [contains the actorId of the user just published who has Regional Centre Administrator  role + Case Allocator],
+    And the request [contains the actorId of the user just published who has Regional Centre Administrator role + Case Allocator],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
