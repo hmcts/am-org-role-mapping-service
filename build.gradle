@@ -20,8 +20,8 @@ plugins {
 ext['snakeyaml.version'] = '2.4'
 
 def versions = [
-        junit          : '5.11.3',
-        junitPlatform  : '1.11.3',
+        junit          : '5.14.1',
+        junitPlatform  : '1.14.1',
         lombok         : '1.18.42',
         pitest         : '1.21.0',
         reformLogging  : '6.1.9',
