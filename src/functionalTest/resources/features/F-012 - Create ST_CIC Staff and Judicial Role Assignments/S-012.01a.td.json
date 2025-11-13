@@ -9,7 +9,7 @@
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
   "request": {
     "pathVariables": {
-      "actorId": "dbd301ce-e2cf-4e85-b38e-ed5221612aad"
+      "actorId": "353f7596-4056-4c33-b759-3b2afb675a7b"
     }
   },
   "expectedResponse": {
@@ -24,7 +24,7 @@
           "roleName": "task-supervisor",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
+          "roleCategory": "LEGAL_OPERATIONS",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
