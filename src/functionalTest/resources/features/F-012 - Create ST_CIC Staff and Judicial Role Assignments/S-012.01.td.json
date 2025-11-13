@@ -62,7 +62,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-legal-operations",
-          "classification": "PUBLIC",
+          "classification": "PRIVATE",
           "grantType": "BASIC",
           "roleCategory": "LEGAL_OPERATIONS",
           "readOnly": true,
