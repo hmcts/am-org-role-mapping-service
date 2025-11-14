@@ -1,0 +1,56 @@
+{
+  "sidam_id": "[[IDAM_ID]]",
+  "object_id": "[[RANDOM_ID]]",
+  "personal_code": "[[RANDOM_ID]]",
+  "active_flag": "true",
+  "deleted_flag": "[[DELETED_FLAG]]",
+  "appointments": [
+    {
+      "base_location_id": "321",
+      "epimms_id": "123456",
+      "cft_region_id": "[[REGION_ID]]",
+      "cft_region": "[[REGION_NAME]]",
+      "is_principal_appointment": "true",
+      "appointment": "Chairman",
+      "role_name_id": "13",
+      "appointment_type": "Fee-paid",
+      "contract_type_id": "1",
+      "service_codes": [
+        "BBA3"
+      ],
+      "start_date": "[[APPOINTMENT_BEGIN_TIME]]",
+      "end_date": "[[APPOINTMENT_END_TIME]]",
+      "appointment_id": "1234",
+      "type": "Tribunals"
+    }
+  ],
+  "authorisations": [
+    {
+      "appointment_id": "1234",
+      "authorisation_id": "9876",
+      "jurisdiction_id": "34",
+      "jurisdiction": "Tribunals",
+      "ticket_description": "Social Security and Child Support",
+      "ticket_code": "357",
+      "service_codes": [
+        "BBA3"
+      ],
+      "start_date": "[[AUTHORISATION_BEGIN_TIME]]",
+      "end_date": "[[AUTHORISATION_END_TIME]]"
+    },
+    {
+      "appointment_id": "1234",
+      "authorisation_id": "9877",
+      "jurisdiction_id": "34",
+      "jurisdiction": "Tribunals",
+      "ticket_description": "Extra Auth Code",
+      "ticket_code": "[[EXTRA_AUTH_CODE]]",
+      "service_codes": [
+        "BBA3"
+      ],
+      "start_date": "[[AUTHORISATION_BEGIN_TIME]]",
+      "end_date": "[[AUTHORISATION_END_TIME]]"
+    }
+  ],
+  "roles": []
+}
