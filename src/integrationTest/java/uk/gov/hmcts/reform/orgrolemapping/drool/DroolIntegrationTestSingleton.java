@@ -47,9 +47,11 @@ public class DroolIntegrationTestSingleton  {
 
         // Build the Judicial Files by Jurisdiction.
         List<String> indexLinks = new ArrayList<>();
-        buildJudicialFiles(outputPath, judicialTests).forEach((fileName, htmlBody) -> {
+        buildJudicialFiles(outputPath, judicialTests).forEach((jurisdiction, htmlBody) -> {
+            String fileName = buildFilename(jurisdiction);
             createFile(outputPath + fileName, buildHtmlPage(fileName,
-                    COLLAPSE_STYLE, title, htmlBody, COLLAPSE_SCRIPT));
+                    COLLAPSE_STYLE, String.format("%s - %s", title, jurisdiction),
+                    htmlBody, COLLAPSE_SCRIPT));
             indexLinks.add(fileName);
         });
 
@@ -77,8 +79,7 @@ public class DroolIntegrationTestSingleton  {
         // Build a map of file names to test scenarios
         Map<String, List<TestScenario>> map = new LinkedHashMap<>();
         testScenarios.forEach(testScenario ->
-                map.computeIfAbsent(JUDICIAL_FILENAME_PREFIX
-                                + testScenario.getJurisdiction() + HTML_FILENAME_SUFFIX,
+                map.computeIfAbsent(testScenario.getJurisdiction(),
                         k -> new ArrayList<>()).add(testScenario));
 
         // Build the map of file names to HTML content
@@ -87,6 +88,10 @@ public class DroolIntegrationTestSingleton  {
                 results.put(entry.getKey(), buildHtmlBody(outputPath, entry.getValue())));
 
         return results;
+    }
+
+    private static String buildFilename(String jurisdiction) {
+        return JUDICIAL_FILENAME_PREFIX + jurisdiction + HTML_FILENAME_SUFFIX;
     }
 
     private static String buildHtmlBody(String outputPath, List<TestScenario> testScenarios) {
