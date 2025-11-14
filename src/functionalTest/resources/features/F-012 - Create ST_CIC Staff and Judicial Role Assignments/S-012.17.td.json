@@ -34,7 +34,7 @@
           "attributes": {
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "ST_CIC",
-            "substantive": "N"
+            "substantive": "Y"
           }
         }
       ]
