@@ -9,7 +9,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -78,19 +78,19 @@ public class RefreshControllerJudicialRefreshIntegrationTest extends BaseTestInt
     @Inject
     private WebApplicationContext wac;
 
-    @MockBean
+    @MockitoBean
     private JRDFeignClient jrdFeignClient;
 
-    @MockBean
+    @MockitoBean
     private JBSFeignClient jbsFeignClient;
 
-    @MockBean
+    @MockitoBean
     private RASFeignClient rasFeignClient;
 
-    @MockBean
+    @MockitoBean
     private RequestMappingService<UserAccessProfile> requestMappingService;
 
-    @MockBean
+    @MockitoBean
     private SecurityUtils securityUtils;
 
     @Mock
