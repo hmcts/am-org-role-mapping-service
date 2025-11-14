@@ -1,0 +1,43 @@
+{
+  "_guid_": "S-012.17",
+  "title": "must successfully create org role mapping for CICA Caseworker",
+  "_extends_": "F-012_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published who has CICA Caseworker role"
+  ],
+  "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "request": {
+    "pathVariables": {
+      "actorId": "da124272-f976-4061-8bf3-70802c0f4ab8"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "cica",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "OTHER_GOV_DEPT",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "ST_CIC",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}
