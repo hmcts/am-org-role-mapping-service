@@ -53,7 +53,7 @@ end;
 
 rule "v_1_5_iac_ctsc_caseworker_v11"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_5.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_5.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("9","10"), serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
