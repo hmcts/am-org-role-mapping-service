@@ -1,0 +1,17 @@
+{
+  "_guid_": "S-300",
+  "title": "must report feature flags API",
+  "_extends_": "F-000_Test_Data_Base",
+  "specs": [
+    "to produce a map of feature flags and their statuses"
+  ],
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-mapping/fetchAllFlagStatuses",
+  "request": {
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response"
+  }
+}
