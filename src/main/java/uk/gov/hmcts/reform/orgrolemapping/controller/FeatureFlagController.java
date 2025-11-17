@@ -14,6 +14,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.FlagRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
 import uk.gov.hmcts.reform.orgrolemapping.util.PersistenceUtil;
 
+import java.util.Map;
+
 @RestController
 @Hidden
 @ConditionalOnProperty(name = "testing.support.enabled", havingValue = "true")
@@ -38,7 +40,8 @@ public class FeatureFlagController {
     }
 
     @GetMapping(value = "/am/role-mapping/fetchAllFlagStatuses")
-    public ResponseEntity<Object> getAllFeatureFlags(@RequestParam(value = "env", required = false) String env) {
+    public ResponseEntity<Map<String, Boolean>> getAllFeatureFlags(
+            @RequestParam(value = "env", required = false) String env) {
         return ResponseEntity.ok(persistenceService.getAllFeatureFlags(env));
 
     }
