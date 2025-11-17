@@ -8,6 +8,8 @@ import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfigRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobsRepository;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -40,10 +42,24 @@ public class PersistenceService {
     }
 
     public boolean getStatusByParam(String flagName, String envName) {
+        return flagConfigRepository.findByFlagNameAndEnv(flagName, getEnvironment(envName)).getStatus();
+    }
+
+    private String getEnvironment(String envName) {
         if (StringUtils.isEmpty(envName)) {
-            envName = environmentConfiguration.getEnvironment();
+            return environmentConfiguration.getEnvironment();
         }
-        return flagConfigRepository.findByFlagNameAndEnv(flagName, envName).getStatus();
+        return envName;
+    }
+
+    public Map<String, Boolean> getAllFeatureFlags(String envName) {
+        Map<String, Boolean> map = new HashMap<>();
+        flagConfigRepository.findAll().forEach(flagConfig ->
+                map.computeIfAbsent(
+                        flagConfig.getFlagName(),
+                        k -> getStatusByParam(k, envName)
+        ));
+        return map;
     }
 
     public FlagConfig persistFlagConfig(FlagConfig flagConfig) {

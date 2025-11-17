@@ -37,6 +37,12 @@ public class FeatureFlagController {
 
     }
 
+    @GetMapping(value = "/am/role-mapping/fetchAllFlagStatuses")
+    public ResponseEntity<Object> getAllFeatureFlags(@RequestParam(value = "env", required = false) String env) {
+        return ResponseEntity.ok(persistenceService.getAllFeatureFlags(env));
+
+    }
+
     @PostMapping(
             path = "/am/role-mapping/createFeatureFlag",
             produces = MediaType.APPLICATION_JSON_VALUE,
