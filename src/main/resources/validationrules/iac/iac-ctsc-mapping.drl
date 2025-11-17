@@ -51,7 +51,7 @@ end;
  * IAC ctsc "ctsc" Org role mapping for 1.5 .
  */
 
-rule "v_1_5_iac_ctsc_caseworker_v11"
+rule "v_1_5_iac_ctsc_caseworker"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_5.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("9","10"), serviceCode == "BFA1", !suspended)
@@ -73,7 +73,7 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : v_1_5_iac_ctsc_caseworker_v11");
+      logMsg("Rule : v_1_5_iac_ctsc_caseworker");
 end;
 
 rule "iac_hmcts_ctsc_caseworker_v11"
@@ -134,7 +134,7 @@ end;
  * IAC ctsc "ctsc-team-leader" Org role mapping. added for CR:AM2732 for 1.5.
  */
 
-rule "v_1_5_iac_ctsc_team_leader_v12"
+rule "v_1_5_iac_ctsc_team_leader"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_5.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("9"), serviceCode == "BFA1", !suspended)
@@ -156,7 +156,7 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : v_1_5_iac_ctsc_team_leader_v12");
+      logMsg("Rule : v_1_5_iac_ctsc_team_leader");
 end;
 
 /*

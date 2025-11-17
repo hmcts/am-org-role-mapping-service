@@ -52,7 +52,7 @@ end;
  * IAC case worker Org roles mapping rules for "senior-tribunal-caseworker", "tribunal-case-worker", "case-allocator"
  *  and "task-supervisor" as version IAC_1_1. The STCW role would be deprecated later for 1.5.
  */
-rule "v_1_5_iac_senior_tribunal_caseworker_v11"
+rule "v_1_5_iac_senior_tribunal_caseworker"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_5.getValue())
   $up: CaseWorkerAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
@@ -74,7 +74,7 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : v_1_5_iac_senior_tribunal_caseworker_v11");
+      logMsg("Rule : v_1_5_iac_senior_tribunal_caseworker");
 end;
 
 /*
@@ -112,7 +112,7 @@ end;
 * IAC case worker Org roles mapping rules for "tribunal-caseworker"
 * for 1.5.
 */
-rule "v_1_5_iac_tribunal_caseworker_v11"
+rule "v_1_5_iac_tribunal_caseworker"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_5.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("1","2"), serviceCode == "BFA1", !suspended)
@@ -134,7 +134,7 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : v_1_5_iac_tribunal_caseworker_v11");
+      logMsg("Rule : v_1_5_iac_tribunal_caseworker");
 end;
 
 rule "iac_case_allocator_caseworker_v11"
