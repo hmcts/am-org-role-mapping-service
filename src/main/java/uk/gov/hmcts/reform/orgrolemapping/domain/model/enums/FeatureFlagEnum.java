@@ -18,6 +18,7 @@ public enum FeatureFlagEnum {
     IAC_WA_1_2("iac_wa_1_2"),
     IAC_WA_1_3("iac_wa_1_3"),
     IAC_WA_1_4("iac_wa_1_4"),
+    IAC_WA_1_5("iac_wa_1_5"),
     CIVIL_WA_1_1("civil_wa_1_1"),
     PRIVATELAW_WA_1_1("privatelaw_wa_1_1"),
     EMPLOYMENT_WA_1_0("employment_wa_1_0"),
