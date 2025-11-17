@@ -30,6 +30,8 @@ public class DroolIntegrationTestSingleton  {
     private static final String HTML_FILENAME_SUFFIX = ".html";
     private static final String JUDICIAL_FILENAME_PREFIX = "JudicialTest_";
     private static final String JUDICIAL_INDEX_FILENAME = "JudicialTestIndex.html";
+    private static final String REQUEST =  "request";
+    private static final String RESPONSE = "response";
     
     private static DroolIntegrationTestSingleton instance = null;
 
@@ -172,29 +174,54 @@ public class DroolIntegrationTestSingleton  {
     }
 
     private static String buildContentsOfFolder(String outputPath, String outputLocation) {
-        StringBuilder contents = new StringBuilder();
+        // Get the list of hyperlinks
+        List<String> outputHyperLinks = new ArrayList<>();
+        List<String> inputHyperLinks = new ArrayList<>();
+        List<String> otherHyperLinks = new ArrayList<>();
         getFilesInFolder(outputLocation).forEach(filename -> {
-            // Add the comma separator if required
-            if (contents.length() > 0) {
-                contents.append(", ");
+            // build the hyperlink (minus the relative path to the output folder)
+            String filePath = outputLocation.replace(outputPath,"") + filename;
+            String hyperlink = buildHyperlink(filePath, filename);
+            if (isInputFileName(filename)) {
+                inputHyperLinks.add(hyperlink);
+            } else if (isOutputFileName(filename)) {
+                outputHyperLinks.add(hyperlink);
+            } else {
+                otherHyperLinks.add(hyperlink);
             }
-            // Add the file as a hyperlink (minus the relative path to the output folder)
-            contents.append(
-                    buildHyperlink(outputLocation.replace(outputPath,"")
-                            + filename, filename));
         });
-        return contents.toString();
+
+        String lineFormat = "%s - %s";
+        return buildLine(String.format(lineFormat,"Input",buildStringList(inputHyperLinks)))
+                + buildLine(String.format(lineFormat,"Output",buildStringList(outputHyperLinks)))
+                + buildLine(String.format(lineFormat,"Other",buildStringList(otherHyperLinks)));
+    }
+
+    private static String buildStringList(List<String> list) {
+        StringBuilder result = new StringBuilder();
+        list.forEach(entry -> {
+            result.append(result.length() > 0 ? ", " : "").append(entry);
+        });
+        return result.toString();
     }
 
     private static List<String> getFilesInFolder(final String outputLocation) {
         List<String> result = new ArrayList<>();
-        Arrays.stream(new File(outputLocation).listFiles())
+        Arrays.stream(new File(outputLocation).listFiles()).sorted()
                 .toList().forEach(file -> {
                     if (isFileValid(file)) {
                         result.add(file.getName());
                     }
                 });
         return result;
+    }
+
+    private static boolean isInputFileName(String file) {
+        return file.toLowerCase(Locale.getDefault()).contains(RESPONSE);
+    }
+
+    private static boolean isOutputFileName(String file) {
+        return file.toLowerCase(Locale.getDefault()).contains(REQUEST);
     }
 
     private static boolean isFileValid(File file) {
