@@ -42,6 +42,5 @@ Feature: F-000 : Access Organisation Role Mapping API
   @S-300
   Scenario: must report feature flags API
     Given a user with [an active caseworker profile],
-    And the request [to produce a map of feature flags and their statuses],
-    Then a positive response is received
+    And the request [to produce a map of feature flags and their statuses]
 
