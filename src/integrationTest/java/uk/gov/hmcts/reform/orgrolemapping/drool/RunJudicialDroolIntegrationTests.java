@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -42,7 +43,6 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
     private static final String DISPLAY_NAME = "#{index} - {0}";
 
-
     static Stream<Arguments> getTestArguments() {
         List<DroolJudicialTestArguments> arguments = new ArrayList<>();
 
@@ -70,6 +70,12 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
     static void afterAllTests() {
         DroolIntegrationTestSingleton.getInstance()
                 .writeJudicialIndexFile(DROOL_JUDICIAL_TEST_OUTPUT_PATH);
+    }
+
+    @Test
+    void testFeatureFlagReport() {
+        FeatureFlagReportSingleton.getInstance()
+                .generateReport(featureFlagController);
     }
 
     @MethodSource("getTestArguments")

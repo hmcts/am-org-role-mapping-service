@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
+import uk.gov.hmcts.reform.orgrolemapping.controller.FeatureFlagController;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfigRepository;
@@ -66,6 +67,9 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
     protected final ObjectMapper mapper = JacksonUtils.MAPPER;
 
     protected MockMvc mockMvc;
+
+    @Autowired
+    protected FeatureFlagController featureFlagController;
 
     @Autowired
     private FlagConfigRepository flagConfigRepository;
