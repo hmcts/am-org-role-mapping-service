@@ -168,7 +168,7 @@ end;
  * Made obsolete in DTSAM-1072 - disabled by iac_wa_1_5 flag.
  * To be removed in DTSAM-1086.
  */
-rule "iac_national-business-centre_caseworker"
+rule "iac_national-business-centre_caseworker_v11"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
   $f1: FeatureFlag(status == false && flagName == FeatureFlagEnum.IAC_WA_1_5.getValue())
@@ -191,7 +191,7 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : iac_national-business-centre_caseworker");
+      logMsg("Rule : iac_national-business-centre_caseworker_v11");
 end;
 
 rule "v_1_5_iac_national-business-centre_caseworker"

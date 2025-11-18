@@ -30,7 +30,7 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 
 @ExtendWith(MockitoExtension.class)
-class DroolIacOrgRoleMappingTest extends DroolBase {
+class DroolIacStaffOrgRoleMappingTest extends DroolBase {
 
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
