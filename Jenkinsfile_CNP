@@ -187,16 +187,6 @@ withPipeline(type, product, component) {
             reportName           : "Drool Judicial Test Report"
     ]
 
-    publishHTML target: [
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "build/test-results/DroolTests",
-            reportFiles          : "FeatureFlagReport.html",
-            reportTitles         : "Index",
-            reportName           : "Feature Flag Report"
-    ]
-
   }
 
   before('functionalTest:aat') {
