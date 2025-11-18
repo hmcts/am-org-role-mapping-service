@@ -3,6 +3,7 @@
   "title": "must report feature flags API",
   "_extends_": "F-000_Test_Data_Base",
   "specs": [
+    "an active caseworker profile",
     "to produce a map of feature flags and their statuses"
   ],
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-mapping/fetchAllFlagStatuses",
