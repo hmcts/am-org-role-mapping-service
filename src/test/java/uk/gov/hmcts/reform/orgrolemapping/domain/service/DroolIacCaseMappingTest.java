@@ -21,7 +21,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 @ExtendWith(MockitoExtension.class)
 class DroolIacCaseMappingTest extends DroolBase {
 
-    private final String workTypes = "hearing_work, routine_work, decision_making_work, applications";
+    private final String workTypes = "hearing_work, routine_work, decision_making_work, applications, "
+            + "stf_24w_hearing_work, stf_24w_routine_work, stf_24w_decision_making_work, stf_24w_applications";
 
     @Test
     void shouldReturnZeroCaseWorkerWrongServiceCode() {
