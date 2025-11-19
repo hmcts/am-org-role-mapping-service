@@ -20,7 +20,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-002_DeleteDataForRoleAssignments02].
 
   @S-005
-  @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_1_1=on)
   Scenario: should not create role assignments when user primary work location is false
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-005_DeleteDataForRoleAssignments01],
