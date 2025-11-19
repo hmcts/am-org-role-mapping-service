@@ -150,7 +150,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
         // WHEN
         triggerCreateOrmMappingApi(UserType.JUDICIAL, testScenarios);
-        String featureFlags = triggerFeatureFlagApi(testScenarios);
+        Map<String, Boolean> featureFlags = triggerFeatureFlagApi(testScenarios);
 
         // THEN
         assertWireMockAssignmentRequests(expectedAssignmentRequests, testScenarios, featureFlags);

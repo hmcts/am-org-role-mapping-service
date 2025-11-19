@@ -15,7 +15,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
-import uk.gov.hmcts.reform.orgrolemapping.controller.FeatureFlagController;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfigRepository;
@@ -70,9 +69,6 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
     protected final ObjectMapper mapper = JacksonUtils.MAPPER;
 
     protected MockMvc mockMvc;
-
-    @Autowired
-    protected FeatureFlagController featureFlagController;
 
     @Autowired
     private FlagConfigRepository flagConfigRepository;
@@ -179,10 +175,10 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
     }
 
     @SuppressWarnings({
+        "unchecked",
         "SameParameterValue" // currently only triggered in Judicial tests
     })
-    protected String triggerFeatureFlagApi(List<TestScenario> testScenarios) throws Exception {
-
+    protected Map<String, Boolean> triggerFeatureFlagApi(List<TestScenario> testScenarios) throws Exception {
         MvcResult results = mockMvc.perform(get(ALL_FEATURE_FLAG_STATUSES_URI)
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(S2S_XUI))
@@ -190,7 +186,8 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
                                 .userIds(getSidamIdsList(testScenarios)).build())))
                 .andExpect(status().is(200))
                 .andReturn();
-        return  results.getResponse().getContentAsString();
+        return new ObjectMapper().readValue(
+                results.getResponse().getContentAsString(), Map.class);
     }
 
 }

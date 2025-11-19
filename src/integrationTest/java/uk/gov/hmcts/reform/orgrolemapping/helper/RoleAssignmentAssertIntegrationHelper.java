@@ -33,7 +33,7 @@ public class RoleAssignmentAssertIntegrationHelper {
 
     public static void assertWireMockAssignmentRequests(List<AssignmentRequest> expectedAssignmentRequests,
                                                         List<TestScenario> testScenarios,
-                                                        String featureFlags)
+                                                        Map<String, Boolean> featureFlags)
         throws IOException {
 
         Map<String, AssignmentRequest> requestMap = getMapOfRasRequests();
