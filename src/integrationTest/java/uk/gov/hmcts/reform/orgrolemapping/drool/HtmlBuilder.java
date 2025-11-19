@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.drool;
 
-import java.util.List;
-
 public class HtmlBuilder {
 
     public static final String COLLAPSE_HEADER_STYLE_CLASS = "collapsible";
@@ -52,8 +50,6 @@ public class HtmlBuilder {
     private static final String HEADING1 = "~HEADING1~";
     private static final String SCRIPT = "~SCRIPT~";
     private static final String STYLE = "~STYLE~";
-    private static final String TABLE_HEADERS = "~TABLE_HEADERS~";
-    private static final String TABLE_ROWS = "~TABLE_ROWS~";
     private static final String TITLE = "~TITLE";
 
     public static String buildHtmlPage(String title, String style, String heading1,
@@ -81,20 +77,6 @@ public class HtmlBuilder {
                 .replace(SCRIPT, script);
     }
 
-    public static String buildHtmlTable(List<String> tableHeaders, List<List<String>> tableRows) {
-        String htmlTableTemplate = """
-            <table border="1">
-                <tr>
-                ~TABLE_HEADERS~
-                </tr>
-                ~TABLE_ROWS~
-            </table>
-            """;
-        return htmlTableTemplate
-                .replace(TABLE_HEADERS, buildTableHeaders(tableHeaders))
-                .replace(TABLE_ROWS, buildTableRows(tableRows));
-    }
-
     public static String buildHyperlink(String url, String linkText) {
         return String.format("<a href=\"%s\">%s</a>", url, linkText);
     }
@@ -119,27 +101,5 @@ public class HtmlBuilder {
 
     public static String buildDiv(String styleClass, String text) {
         return String.format("<div%s>%s</div>", buildStyleClassAttribute(styleClass), text);
-    }
-
-    private static String buildTableHeaders(List<String> tableHeaders) {
-        return tableHeaders.size() == 0 ? "" :
-                String.format("<tr>%s</tr>",
-                        String.join("", tableHeaders.stream()
-                                .map(cell -> "<th><b>" + cell + "</b></th>")
-                                .toList()));
-    }
-
-    private static String buildTableRow(List<String> tableRow) {
-        return tableRow.size() == 0 ? "" :
-                String.format("<tr>%s</tr>",
-                        String.join("", tableRow.stream()
-                                .map(cell -> "<td>" + cell + "</td>")
-                                .toList()));
-    }
-
-    private static String buildTableRows(List<List<String>> tableRows) {
-        return tableRows.size() == 0 ? "" :
-                    String.join("", tableRows.stream()
-                            .map(row -> buildTableRow(row)).toList());
     }
 }

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
@@ -8,9 +9,12 @@ import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfigRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobsRepository;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 
 @Service
 public class PersistenceService {
@@ -53,8 +57,15 @@ public class PersistenceService {
     }
 
     public Map<String, Boolean> getAllFeatureFlags(String envName) {
-        Map<String, Boolean> map = new HashMap<>();
-        flagConfigRepository.findAll().forEach(flagConfig ->
+        // Get the feature flag configs
+        List<FlagConfig> featureFlags = new ArrayList<>();
+        flagConfigRepository.findAll().forEach(featureFlags::add);
+
+        // Build the map from the feature flag configs
+        Map<String, Boolean> map = new LinkedMap<>();
+        featureFlags.stream()
+                .sorted(Comparator.comparing(flagConfig -> flagConfig.getFlagName()))
+                .forEach(flagConfig ->
                 map.computeIfAbsent(
                         flagConfig.getFlagName(),
                         k -> getStatusByParam(k, envName)
