@@ -102,7 +102,7 @@
             "primaryLocation": "574546",
             "jurisdiction": "IA",
             "substantive": "Y",
-            "workTypes" : "hearing_work, routine_work, decision_making_work, applications, stf_24w_hearing_work, stf_24w_routine_work, stf_24w_decision_making_work, stf_24w_applications"
+            "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
           }
         },
         {
@@ -137,7 +137,7 @@
             "primaryLocation": "574546",
             "jurisdiction": "IA",
             "substantive": "Y",
-            "workTypes" : "hearing_work, routine_work, decision_making_work, applications, stf_24w_hearing_work, stf_24w_routine_work, stf_24w_decision_making_work, stf_24w_applications"
+            "workTypes" : "hearing_work, routine_work, decision_making_work, applications"
           }
         }
       ]
