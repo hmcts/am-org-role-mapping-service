@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -98,25 +98,25 @@ public class WelcomeControllerIntegrationTest extends BaseTestIntegration {
     @Mock
     private SecurityContext securityContext;
 
-    @MockBean
+    @MockitoBean
     private SecurityUtils securityUtils;
 
-    @MockBean
+    @MockitoBean
     private CRDFeignClient crdFeignClient;
 
-    @MockBean
+    @MockitoBean
     private JRDFeignClient jrdFeignClient;
 
-    @MockBean
+    @MockitoBean
     private JBSFeignClient jbsFeignClient;
 
-    @MockBean
+    @MockitoBean
     private FeignClientInterceptor feignClientInterceptor;
 
-    @MockBean
+    @MockitoBean
     private CRDTopicConsumerNew crdTopicConsumerNew;
 
-    @MockBean
+    @MockitoBean
     private JRDTopicConsumerNew jrdTopicConsumerNew;
 
     @Inject
