@@ -81,8 +81,7 @@ public class DroolIntegrationTestSingleton  {
         // Build a map of file names to test scenarios
         Map<String, List<TestScenario>> map = new LinkedHashMap<>();
         testScenarios.forEach(testScenario ->
-                map.computeIfAbsent(JUDICIAL_FILENAME_PREFIX
-                                + testScenario.getJurisdiction() + HTML_FILENAME_SUFFIX,
+                map.computeIfAbsent(testScenario.getJurisdiction(),
                         k -> new ArrayList<>()).add(testScenario));
 
         // Build the map of file names to HTML content
