@@ -175,15 +175,12 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
     }
 
     @SuppressWarnings({
-        "unchecked",
-        "SameParameterValue" // currently only triggered in Judicial tests
+        "unchecked"
     })
-    protected Map<String, Boolean> triggerFeatureFlagApi(List<TestScenario> testScenarios) throws Exception {
+    protected Map<String, Boolean> triggerFeatureFlagApi() throws Exception {
         MvcResult results = mockMvc.perform(get(ALL_FEATURE_FLAG_STATUSES_URI)
                         .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders(S2S_XUI))
-                        .content(mapper.writeValueAsBytes(UserRequest.builder()
-                                .userIds(getSidamIdsList(testScenarios)).build())))
+                        .headers(getHttpHeaders(S2S_XUI)))
                 .andExpect(status().is(200))
                 .andReturn();
         return new ObjectMapper().readValue(

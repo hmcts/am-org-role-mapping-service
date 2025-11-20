@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FlagRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
 import uk.gov.hmcts.reform.orgrolemapping.util.PersistenceUtil;
-import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
 
 import java.util.Map;
 
@@ -56,7 +55,7 @@ public class FeatureFlagController {
 
     @GetMapping(
         path = ALL_FEATURE_FLAG_STATUSES_URI,
-        produces = V1.MediaType.MAP_ASSIGNMENTS,
+        produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = {"application/json"}
     )
     @ResponseStatus(code = HttpStatus.OK)
@@ -71,14 +70,8 @@ public class FeatureFlagController {
         description = "OK",
         content = @Content(schema = @Schema(implementation = Object.class))
     )
-    @ApiResponse(
-        responseCode = "400",
-        description = V1.Error.INVALID_REQUEST,
-        content = @Content()
-    )
-    public ResponseEntity<Map<String, Boolean>> getAllFeatureFlags(
-            @RequestParam(value = "env", required = false) String env) {
-        return ResponseEntity.ok(persistenceService.getAllFeatureFlags(env));
+    public ResponseEntity<Map<String, Boolean>> getAllFeatureFlags() {
+        return ResponseEntity.ok(persistenceService.getAllFeatureFlags());
 
     }
 

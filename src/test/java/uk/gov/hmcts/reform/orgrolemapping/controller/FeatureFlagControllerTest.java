@@ -53,10 +53,9 @@ class FeatureFlagControllerTest {
     void getAllFeatureFlags() {
 
         Map<String, Boolean> allFlags = Map.of("iac_1_1", Boolean.TRUE, "iac_1_2", Boolean.FALSE);
-        String env = "pr";
 
-        Mockito.when(persistenceService.getAllFeatureFlags(env)).thenReturn(allFlags);
-        ResponseEntity<Map<String, Boolean>> responseEntity = sut.getAllFeatureFlags(env);
+        Mockito.when(persistenceService.getAllFeatureFlags()).thenReturn(allFlags);
+        ResponseEntity<Map<String, Boolean>> responseEntity = sut.getAllFeatureFlags();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
         assertTrue((responseEntity.getBody() instanceof Map));

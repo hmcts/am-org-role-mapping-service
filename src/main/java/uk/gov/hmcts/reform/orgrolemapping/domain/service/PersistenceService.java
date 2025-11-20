@@ -46,17 +46,15 @@ public class PersistenceService {
     }
 
     public boolean getStatusByParam(String flagName, String envName) {
-        return flagConfigRepository.findByFlagNameAndEnv(flagName, getEnvironment(envName)).getStatus();
-    }
-
-    private String getEnvironment(String envName) {
         if (StringUtils.isEmpty(envName)) {
-            return environmentConfiguration.getEnvironment();
+            envName = environmentConfiguration.getEnvironment();
         }
-        return envName;
+        return flagConfigRepository.findByFlagNameAndEnv(flagName, envName).getStatus();
     }
 
-    public Map<String, Boolean> getAllFeatureFlags(String envName) {
+    public Map<String, Boolean> getAllFeatureFlags() {
+        // Get the environment name
+        String envName = environmentConfiguration.getEnvironment();
         // Get the feature flag configs
         List<FlagConfig> featureFlags = new ArrayList<>();
         flagConfigRepository.findAll().forEach(featureFlags::add);
@@ -64,12 +62,11 @@ public class PersistenceService {
         // Build the map from the feature flag configs
         Map<String, Boolean> map = new LinkedMap<>();
         featureFlags.stream()
+                .filter(flagConfig -> flagConfig.getEnv().equalsIgnoreCase(envName))
                 .sorted(Comparator.comparing(flagConfig -> flagConfig.getFlagName()))
                 .forEach(flagConfig ->
-                map.computeIfAbsent(
-                        flagConfig.getFlagName(),
-                        k -> getStatusByParam(k, envName)
-        ));
+                        map.put(flagConfig.getFlagName(), flagConfig.getStatus())
+            );
         return map;
     }
 
