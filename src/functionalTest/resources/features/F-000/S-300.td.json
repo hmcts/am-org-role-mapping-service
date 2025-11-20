@@ -19,9 +19,12 @@
     }
   },
   "expectedResponse": {
-    "_extends_": "Common_200_Response"
-  },
-  "body": {
+    "_extends_": "Common_200_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
       "civil_wa_1_0" : "[[ANYTHING_PRESENT]]",
       "civil_wa_1_1" : "[[ANYTHING_PRESENT]]",
       "civil_wa_1_2" : "[[ANYTHING_PRESENT]]",
