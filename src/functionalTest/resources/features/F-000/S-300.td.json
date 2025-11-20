@@ -2,6 +2,8 @@
   "_guid_": "S-300",
   "title": "must report feature flags API",
   "_extends_": "F-000_Test_Data_Base",
+  "operationName": "Fetch status of feature flags",
+  "productName": "Organisation Role Mapping",
   "specs": [
     "an active IDAM profile with full permissions"
   ],

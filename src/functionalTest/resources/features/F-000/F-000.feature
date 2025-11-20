@@ -43,6 +43,6 @@ Feature: F-000 : Access Organisation Role Mapping API
   Scenario: must report feature flags API
     Given a user with [an active IDAM profile with full permissions],
     When a request is prepared with appropriate values,
-    And it is submitted to call the [Access Organisation Role Mapping API] operation of [Role Assignment Service],
+    And it is submitted to call the [Fetch status of feature flags] operation of [Organisation Role Mapping],
     Then a positive response is received
 
