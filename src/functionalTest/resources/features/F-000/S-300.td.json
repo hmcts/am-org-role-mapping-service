@@ -15,7 +15,7 @@
   "uri": "/am/role-mapping/fetchAllFlagStatuses",
   "request": {
     "headers": {
-      "Content-Type": "application/json"
+      "_extends_": "Common_Request_Headers"
     }
   },
   "expectedResponse": {
