@@ -41,6 +41,8 @@ Feature: F-000 : Access Organisation Role Mapping API
 
   @S-300
   Scenario: must report feature flags API
-    Given a user with [an active caseworker profile],
-    And the request [to produce a map of feature flags and their statuses]
+    Given a user with [an active IDAM profile with full permissions],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Access Organisation Role Mapping API] operation of [Role Assignment Service],
+    Then a positive response is received
 
