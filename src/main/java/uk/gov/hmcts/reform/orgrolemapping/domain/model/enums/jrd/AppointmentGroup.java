@@ -9,6 +9,7 @@ public enum AppointmentGroup implements AppointmentEnum {
         Appointment.TRIBUNAL_MEMBER,
         Appointment.TRIBUNAL_MEMBER_DENTIST,
         Appointment.TRIBUNAL_MEMBER_DISABILITY,
+        Appointment.TRIBUNAL_MEMBER_DRAINAGE,
         Appointment.TRIBUNAL_MEMBER_FARMER,
         Appointment.TRIBUNAL_MEMBER_FINANCIALLY_QUALIFIED,
         Appointment.TRIBUNAL_MEMBER_LANDOWNER,

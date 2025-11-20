@@ -21,7 +21,12 @@ public class DroolJudicialTestArguments {
     private String jrdResponseFileName;
     private String rasRequestFileNameWithoutBooking;
     private String rasRequestFileNameWithBooking;
+
+    // flag to use additional test scenarios for Additional Roles, i.e. tests adjusting Additional Role End Dates
     private boolean additionalRoleTest;
+    // if supplied will use this fallback template when running expired Additional Role End Date scenario
+    private String additionalRoleExpiredFallbackFileName;
+
     private Map<String, String> overrideMapValues;
 
     @Builder.Default
@@ -46,6 +51,7 @@ public class DroolJudicialTestArguments {
             .rasRequestFileNameWithoutBooking(this.rasRequestFileNameWithoutBooking)
             .rasRequestFileNameWithBooking(this.rasRequestFileNameWithBooking)
             .additionalRoleTest(this.additionalRoleTest)
+            .additionalRoleExpiredFallbackFileName(this.additionalRoleExpiredFallbackFileName)
             .overrideMapValues(cloneAndOverrideMap(this.overrideMapValues, null))
             .turnOffFlags(this.turnOffFlags);
     }
