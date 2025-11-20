@@ -1,0 +1,10 @@
+{
+  "roleRequest": {
+    "clientId": "am_org_role_mapping_service",
+    "requestType": "CREATE",
+    "process": "judicial-organisational-role-mapping",
+    "reference": "[[IDAM_ID]]",
+    "replaceExisting": true
+  },
+  "requestedRoles": []
+}
