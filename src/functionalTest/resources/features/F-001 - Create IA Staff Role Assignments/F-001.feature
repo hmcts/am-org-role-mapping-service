@@ -5,7 +5,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     Given an appropriate test context as detailed in the test data source
 
   @S-002
-  @FeatureToggle(DB:iac_1_1=on)
+  @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for a multiple user having single role
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-002_DeleteDataForRoleAssignments01],
@@ -34,7 +34,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-005_DeleteDataForRoleAssignments01].
 
   @S-006
-  @FeatureToggle(DB:iac_1_1=on)
+  @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for a user having multiple roles
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-006_DeleteDataForRoleAssignments01],
@@ -48,7 +48,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-006_DeleteDataForRoleAssignments01].
 
   @S-007
-  @FeatureToggle(DB:iac_1_1=on)
+  @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully generate duplicate records message
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-007_DeleteDataForRoleAssignments01],
@@ -61,7 +61,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-007_DeleteDataForRoleAssignments01].
 
   @S-010
-  @FeatureToggle(DB:iac_1_1=on)
+  @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CA and TS roles
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-010_DeleteDataForRoleAssignments01],
@@ -75,7 +75,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-010_DeleteDataForRoleAssignments01].
 
   @S-001.03
-  @FeatureToggle(DB:iac_wa_1_4=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader (BFA1 IA)] as in [S-001.03__VerifyCaseworkerDetails],
@@ -89,7 +89,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.04
-  @FeatureToggle(DB:iac_wa_1_4=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Administrator (BFA1 IA)] as in [S-001.04__VerifyCaseworkerDetails],
@@ -103,7 +103,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.05
-  @FeatureToggle(DB:iac_wa_1_4=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Court Clerk
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Court Clerk (BFA1 IA)] as in [S-001.05__VerifyCaseworkerDetails],
