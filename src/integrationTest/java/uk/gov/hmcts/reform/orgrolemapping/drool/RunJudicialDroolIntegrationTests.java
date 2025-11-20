@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.drool;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.io.FileUtils;
+import org.apache.maven.shared.utils.StringUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -67,12 +68,13 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
         DroolIntegrationTestSingleton.getInstance().judicialTests.clear();
     }
 
-    @SuppressWarnings({"ResultOfMethodCallIgnored"})
+
     @AfterAll
     static void afterAllTests() {
         DroolIntegrationTestSingleton.getInstance()
                 .writeJudicialIndexFile(DROOL_JUDICIAL_TEST_OUTPUT_PATH);
     }
+
 
     @MethodSource("getTestArguments")
     @ParameterizedTest(name = DISPLAY_NAME)
@@ -173,6 +175,11 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
         // adjust date formats to DTZ
         adjustMapValueToDtz(replaceMapClone, APPOINTMENT_BEGIN_TIME, 0);
         adjustMapValueToDtz(replaceMapClone, APPOINTMENT_END_TIME, 1);
+
+        // apply RAS template override if supplied
+        if (StringUtils.isNotEmpty(testScenario.getOverrideRasRequestFileName())) {
+            fileName = testScenario.getOverrideRasRequestFileName();
+        }
 
         try {
             return mapper.readValue(
