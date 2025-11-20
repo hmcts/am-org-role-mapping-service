@@ -36,7 +36,7 @@ def versions = [
         drools         : '9.44.0.Final',
         log4JVersion   : '2.24.3',
         netty_version  : '4.2.7.Final',
-        poi            : '5.4.1'
+        poi            : '5.5.0'
 ]
 
 def springBootVersion = plugins.getPlugin('org.springframework.boot').class.package.implementationVersion
