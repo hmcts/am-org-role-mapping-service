@@ -36,3 +36,9 @@ professional:
         enabled: true
       scheduling:
         enabled: false
+
+amqp:
+  crd:
+    enabled: false
+  jrd:
+    enabled: false

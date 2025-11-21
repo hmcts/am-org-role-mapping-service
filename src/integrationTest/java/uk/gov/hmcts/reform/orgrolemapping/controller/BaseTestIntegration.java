@@ -33,6 +33,12 @@ import java.util.Properties;
 @ActiveProfiles("itest")
 public abstract class BaseTestIntegration extends BaseTest {
 
+    protected static final MediaType JSON_CONTENT_TYPE = new MediaType(
+            MediaType.APPLICATION_JSON.getType(),
+            MediaType.APPLICATION_JSON.getSubtype(),
+            StandardCharsets.UTF_8
+    );
+
     @MockBean
     @Qualifier("crdPublisher")
     ServiceBusSenderClient serviceBusSenderClient;
@@ -40,12 +46,6 @@ public abstract class BaseTestIntegration extends BaseTest {
     @MockBean
     @Qualifier("jrdPublisher")
     ServiceBusSenderClient serviceBusSenderClientJrd;
-
-    static final MediaType JSON_CONTENT_TYPE = new MediaType(
-        MediaType.APPLICATION_JSON.getType(),
-        MediaType.APPLICATION_JSON.getSubtype(),
-        StandardCharsets.UTF_8
-    );
 
     @TestConfiguration
     static class Configuration {
