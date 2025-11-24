@@ -141,6 +141,54 @@ withPipeline(type, product, component) {
   // Sync environment specific branches with master branch
   syncBranchesWithMaster(branchesToSync)
 
+  afterAlways('test') {
+    // jenkins may fail to copy artifacts after some failures
+
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/test-results/test/*.xml'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/test-results/integration/*.xml'
+
+    publishHTML target: [
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "build/reports/checkstyle",
+            reportFiles          : "main.html,contractTest.html,functionalTest.html,integrationTest.html,smokeTest.html,test.html",
+            reportTitles         : "Main,Contract Test,Functional Test,Integration Test,Smoke Test,Unit Test",
+            reportName           : "Checkstyle Reports"
+    ]
+
+    publishHTML target: [
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "build/reports/tests/test",
+            reportFiles          : "index.html",
+            reportTitles         : "Index",
+            reportName           : "Unit Test Report"
+    ]
+
+    publishHTML target: [
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "build/reports/tests/integration",
+            reportFiles          : "index.html",
+            reportTitles         : "Index",
+            reportName           : "Integration Test Report"
+    ]
+
+    publishHTML target: [
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "build/test-results/DroolTests/Judicial",
+            reportFiles          : "JudicialTestIndex.html",
+            reportTitles         : "Index",
+            reportName           : "Drool Judicial Test Report"
+    ]
+
+  }
+
   before('functionalTest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
   }
