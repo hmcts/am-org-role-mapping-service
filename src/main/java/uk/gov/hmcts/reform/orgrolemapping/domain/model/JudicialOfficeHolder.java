@@ -1,11 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -30,4 +32,23 @@ public class JudicialOfficeHolder implements Serializable {
     private String primaryLocation; //epims id where isPrimary is true
     private String contractType; //appointment type from JRD
     private String status;
+
+    @JsonIgnore
+    public boolean isFeePaid() {
+        // NB: value populated from `JudicialAccessProfile.appointmentType`
+        return AppointmentType.isFeePaid(contractType);
+    }
+
+    @JsonIgnore
+    public boolean isSalaried() {
+        // NB: value populated from `JudicialAccessProfile.appointmentType`
+        return AppointmentType.isSalaried(contractType);
+    }
+
+    @JsonIgnore
+    public boolean isVoluntary() {
+        // NB: value populated from `JudicialAccessProfile.appointmentType`
+        return AppointmentType.isVoluntary(contractType);
+    }
+
 }
