@@ -1,15 +1,15 @@
 {
-  "_guid_": "S-001.04",
-  "title": "must successfully create org role mapping for Hearing Centre Administrator",
+  "_guid_": "S-001.08",
+  "title": "must successfully create org role mapping for National Business Centre Payments Team",
   "_extends_": "F-001_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has Hearing Centre Administrator role"
+    "contains the actorId of the user just published who has National Business Centre Payments Team role"
   ],
  "method": "GET",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
   "request": {
     "pathVariables": {
-      "actorId": "8d243410-94f9-46d9-a350-1949a500f201"
+      "actorId": "82334400-7376-41b2-8b29-1de47c6aeef1"
     }
   },
   "expectedResponse": {
@@ -41,7 +41,7 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "hearing-centre-admin",
+          "roleName": "national-business-centre",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "ADMIN",
@@ -51,7 +51,7 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "IA",
-            "workTypes" : "hearing_work, upper_tribunal, routine_work, review_case, bail_work, stf_24w_hearing_work, stf_24w_upper_tribunal, stf_24w_routine_work"
+            "workTypes" : "hearing_work, upper_tribunal, routine_work, stf_24w_hearing_work, stf_24w_upper_tribunal, stf_24w_routine_work"
           }
         },{
           "id" : "[[ANYTHING_PRESENT]]",
