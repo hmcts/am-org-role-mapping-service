@@ -1,0 +1,20 @@
+{
+  "_guid_": "FetchJudicialById__Base",
+
+  "productName": "Judicial Reference Data",
+  "operationName": "Fetch Judicial By ID",
+
+  "specs": [],
+
+  "method": "POST",
+  "uri": "{{JRD_URL}}/refdata/judicial/users",
+
+  "request": {
+    "headers": {
+      "_extends_": "Common_Request_Headers"
+    },
+    "body": {
+      "sidam_ids": []
+    }
+  }
+}
