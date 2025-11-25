@@ -46,6 +46,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRoleEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentEnum;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,6 +76,54 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.PRDFallbackResponseBuild
 
 @Setter
 public class TestDataBuilder {
+
+    // test enum for future edge cases when validating Additional Roles
+    public enum ExtraTestAdditionalRoles implements AdditionalRoleEnum {
+
+        ANY_OTHER_ROLE("Any Other Role", List.of("any-code")),
+        ROLE_WITH_MULTIPLE_CODES("Role With Multiple Codes", List.of("code-1", "code-2"));
+
+        private final String name;
+        private final List<String> codes;
+
+        ExtraTestAdditionalRoles(String name, List<String> codes) {
+            this.name = name;
+            this.codes = codes;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public List<String> getCodes() {
+            return codes;
+        }
+
+    }
+
+    // test enum for future edge cases when validating Appointments
+    public enum ExtraTestAppointments implements AppointmentEnum {
+
+        ANY_OTHER_APPOINTMENT("Any Other Appointment", List.of("any-code")),
+        APPOINTMENT_WITH_MULTIPLE_CODES("Appointment With Multiple Codes", List.of("code-1", "code-2"));
+
+        private final String name;
+        private final List<String> codes;
+
+        ExtraTestAppointments(String name, List<String> codes) {
+            this.name = name;
+            this.codes = codes;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public List<String> getCodes() {
+            return codes;
+        }
+
+    }
 
     public static String id_1 = "7c12a4bc-450e-4290-8063-b387a5d5e0b7";
     public static String id_2 = "21334a2b-79ce-44eb-9168-2d49a744be9c";
@@ -382,13 +432,13 @@ public class TestDataBuilder {
     public static JudicialAccessProfile buildJudicialAccessProfile() {
         JudicialAccessProfile.JudicialAccessProfileBuilder builder = JudicialAccessProfile.builder();
         builder.userId(id_1);
-        builder.roleId("84");
         builder.contractTypeId("5");
         builder.beginTime(ZonedDateTime.now(ZoneOffset.UTC).plusDays(1));
         builder.endTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1));
         builder.baseLocationId("1");
         builder.primaryLocationId("primary location");
         builder.appointment("2");
+        builder.appointmentCode("84");
         builder.regionId("3");
         builder.ticketCodes(List.of("373"));
         builder.authorisations(Collections.singletonList(
@@ -441,33 +491,6 @@ public class TestDataBuilder {
         return objectMapper.readValue(
                 new File("src/main/resources/judicialBookingSample.json"),
                 JudicialBooking.class);
-    }
-
-    public static JudicialAccessProfile buildJudicialAccessProfileWithParams(List<String> ticketCodes,
-                                                                             String appointment,
-                                                                             String appointmentType,
-                                                                             String locationId,
-                                                                             List<Authorisation> authorisations,
-                                                                             ZonedDateTime beginTime,
-                                                                             ZonedDateTime endTime,
-                                                                             List<String> roles,
-                                                                             String serviceCode) {
-        return JudicialAccessProfile.builder()
-                .userId(id_1)
-                .roleId("1")
-                .regionId("2")
-                .contractTypeId("3")
-                .appointment(appointment)
-                .appointmentType(appointmentType)
-                .baseLocationId(locationId)
-                .primaryLocationId(locationId)
-                .ticketCodes(ticketCodes)
-                .authorisations(authorisations)
-                .beginTime(beginTime)
-                .endTime(endTime)
-                .roles(roles)
-                .serviceCode(serviceCode)
-                .build();
     }
 
     public static JudicialProfileV2 buildJudicialProfileWithParamsV2(

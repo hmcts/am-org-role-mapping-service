@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-001.06b",
+  "title": "must successfully create org role mapping for National Business Centre Team leader + Case allocator",
+  "_extends_": "S-001.06",
+  "specs": [
+    "contains the actorId of the user just published who has National Business Centre Team leader role + Case allocator"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "a83646cc-ad3c-4346-96fe-fcee7e8d1770"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "IA",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}
