@@ -328,9 +328,7 @@ public class SscsJudicialIT {
         // Part 1: Auth368: Appointment Region Single/MultiRegion tests
         List<DroolJudicialTestArguments> p1Arguments = generateStandardFeePaidTestArguments(
             jrdResponseFileName,
-            rasRequestFileName + "__Auth368__AppointmentRegion",
-            false, // NB: no additional role tests in SSCS
-            true // NB: bookings permitted
+            rasRequestFileName + "__Auth368__AppointmentRegion"
         );
 
         // expand for single & multi-region appointment regions
@@ -357,9 +355,7 @@ public class SscsJudicialIT {
         // Part 2: Booking Region Single/MultiRegion tests
         List<DroolJudicialTestArguments> p2Arguments = generateStandardFeePaidTestArguments(
             jrdResponseFileName,
-            rasRequestFileName + "__Auth368__BookingRegion",
-            false,
-            true // NB: bookings permitted
+            rasRequestFileName + "__Auth368__BookingRegion"
         );
 
         // expand for single & multi-region appointment regions
@@ -396,8 +392,8 @@ public class SscsJudicialIT {
         List<DroolJudicialTestArguments> p3Arguments = generateStandardFeePaidTestArguments(
             jrdResponseFileName,
             rasRequestFileName + "__notAuth368__NoBookingAllowed",
-            false,
-            false // NB: bookings not permitted
+            false, // NB: no additional role tests in SSCS
+            false // NB: bookings not permitted for this scenario (i.e. Auth code != 368)
         );
 
         // expand for single & multi-region appointment regions
@@ -429,8 +425,7 @@ public class SscsJudicialIT {
 
         List<DroolJudicialTestArguments> arguments = generateStandardSalariedTestArguments(
             jrdResponseFileName,
-            rasRequestFileName,
-            false // NB: no additional role tests in SSCS
+            rasRequestFileName
         );
 
         // if using regions then expand for multi region tests: (i.e. if not using a no_region template)
@@ -457,8 +452,7 @@ public class SscsJudicialIT {
         if (salariedTests) {
             standardArguments = generateStandardSalariedTestArguments(
                 jrdResponseFileName,
-                rasRequestFileName,
-                false // NB: no additional role tests in SSCS
+                rasRequestFileName
             );
         } else {
             standardArguments = generateStandardFeePaidTestArguments(
