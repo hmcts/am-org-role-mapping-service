@@ -1,0 +1,37 @@
+{
+  "_guid_": "S-109_DeleteDataForRoleAssignments",
+  "productName": "Role Assignment Service",
+  "operationName": "Delete Role Assignments by Process",
+  "method": "DELETE",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments?process={process}&reference={reference}",
+  "specs": [
+    "to delete existing role assignments corresponding to the test actorId"
+  ],
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "X-Correlation-ID": "d85eb06c-6e1f-4485-923c-313063a32a82"
+    },
+    "pathVariables": {
+      "process": "judicial-organisational-role-mapping",
+      "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
+    },
+    "body": {
+      "_extends_": "S-109_JRDEmploymentJudgeSalariedUser"
+    }
+  },
+
+  "expectedResponse": {
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "_extends_": "Common_204_Response"
+  }
+}
