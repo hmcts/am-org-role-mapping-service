@@ -63,7 +63,7 @@ public class PersistenceService {
         Map<String, Boolean> map = new LinkedMap<>();
         featureFlags.stream()
                 .filter(flagConfig -> flagConfig.getEnv().equalsIgnoreCase(envName))
-                .sorted(Comparator.comparing(flagConfig -> flagConfig.getFlagName()))
+                .sorted(Comparator.comparing(FlagConfig::getFlagName))
                 .forEach(flagConfig ->
                         map.put(flagConfig.getFlagName(), flagConfig.getStatus())
             );
