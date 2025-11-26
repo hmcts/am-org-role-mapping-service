@@ -11,7 +11,11 @@
 
   "request": {
     "headers": {
-      "_extends_": "Common_Request_Headers"
+      "_extends_": "Common_Request_Headers",
+      "accept": {
+        "equalTo": "application/vnd.jrd.api+json;Version=2.0",
+        "caseInsensitive": true
+      }
     },
     "body": {
       "sidam_ids": []
