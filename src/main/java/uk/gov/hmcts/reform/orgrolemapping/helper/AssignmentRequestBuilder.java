@@ -169,7 +169,8 @@ public class AssignmentRequestBuilder {
     public static Set<UserAccessProfile> convertProfileToJudicialAccessProfileV2(JudicialProfileV2 judicialProfile) {
         Set<UserAccessProfile> judicialAccessProfiles = new HashSet<>();
 
-        List<String> roles = getActiveRoles(judicialProfile.getRoles()).stream()
+        List<RoleV2> activeRoles = getActiveRoles(judicialProfile.getRoles());
+        List<String> roles = activeRoles.stream()
             .map(RoleV2::getJurisdictionRoleName)
             .distinct()
             .toList();
@@ -194,12 +195,14 @@ public class AssignmentRequestBuilder {
                 var judicialAccessProfile = JudicialAccessProfile.builder()
                     .userId(judicialProfile.getSidamId())
                     .roles(roles)
+                    .additionalRoles(activeRoles)
                     .beginTime(localDateToZonedDateTime(appointment.getStartDate()))
                     .endTime(localDateToZonedDateTime(appointment.getEndDate()))
                     .regionId(appointment.getCftRegionID())
                     .baseLocationId(appointment.getBaseLocationId())
                     .ticketCodes(stringListToDistinctList(ticketCodes))
                     .appointment(appointment.getAppointment())
+                    .appointmentCode(appointment.getRoleNameId())
                     .contractTypeId(appointment.getContractTypeId())
                     .appointmentType(getAppointmentTypeFromAppointment(appointment))
                     .authorisations(associatedAuthorisations)
@@ -292,7 +295,20 @@ public class AssignmentRequestBuilder {
             return authorisations.stream().anyMatch(authorisation ->
                     authorisation.getServiceCodes() != null && authorisation.getServiceCodes().contains(serviceCode)
                     && (authorisation.getEndDate() == null
-                    || authorisation.getEndDate().compareTo(LocalDateTime.now()) >= 0));
+                    || !authorisation.getEndDate().isBefore(LocalDateTime.now())));
+
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean validateAdditionalRole(List<RoleV2> additionalRoles, String additionalRoleCode) {
+
+        if (!CollectionUtils.isEmpty(additionalRoles)) {
+            return additionalRoles.stream().anyMatch(additionalRole ->
+                additionalRoleCode.equals(additionalRole.getJurisdictionRoleId())
+                    && (additionalRole.getEndDate() == null
+                    || !additionalRole.getEndDate().isBefore(LocalDate.now())));
 
         } else {
             return false;
