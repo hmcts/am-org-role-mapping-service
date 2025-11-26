@@ -17,22 +17,8 @@
           "__elementId__": "sidam_id"
         },
         {
-          "sidam_id": "[[ANYTHING_PRESENT]]",
-          "object_id": "[[ANYTHING_PRESENT]]",
-          "known_as": "[[ANYTHING_PRESENT]]",
-          "surname": "[[ANYTHING_PRESENT]]",
-          "full_name": "[[ANYTHING_PRESENT]]",
-          "post_nominals": "[[ANYTHING_PRESENT]]",
-          "email_id": "[[ANYTHING_PRESENT]]",
-          "personal_code": "[[ANYTHING_PRESENT]]",
-          "title": "[[ANYTHING_PRESENT]]",
-          "initials": "[[ANYTHING_PRESENT]]",
-          "retirement_date": "2045-10-29",
-          "active_flag": "true",
-          "deleted_flag": "[[ANYTHING_PRESENT]]",
-          "appointments": "[[ANYTHING_PRESENT]]",
-          "authorisations": "[[ANYTHING_PRESENT]]",
-          "roles": "[[ANYTHING_PRESENT]]"
+          "_extends_": "JudicialDetails",
+          "active_flag": "true"
         }
       ]
     }

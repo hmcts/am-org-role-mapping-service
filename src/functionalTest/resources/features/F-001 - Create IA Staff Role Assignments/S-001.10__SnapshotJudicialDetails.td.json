@@ -1,0 +1,17 @@
+{
+  "_guid_": "S-001.10__SnapshotJudicialDetails",
+  "_extends_": "FetchJudicialById__PositiveResponse_Base",
+
+  "specs": [
+    "to snapshot judicial details for CTSC Administrator (BFA1 IA)"
+  ],
+
+  "request": {
+    "body": {
+      "sidam_ids": [
+        "${[scenarioContext][parentContext][testData][request][pathVariables][actorId]}"
+      ]
+    }
+  }
+
+}
