@@ -1,15 +1,16 @@
 package uk.gov.hmcts.reform.orgrolemapping.drool;
 
+import org.apache.commons.lang3.StringUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArguments;
-import uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.SALARIED;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.adjustTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.cloneListOfTestArgumentsForMultiRegion;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardFeePaidTestArguments;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardSalariedTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_01_LONDON;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_02_MIDLANDS;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_03_NORTH_EAST;
@@ -18,6 +19,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_06_SOUTH_WEST;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_07_WALES;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_11_SCOTLAND;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.cloneAndOverrideMap;
 
 public class CivilJudicialIT {
 
@@ -34,7 +36,6 @@ public class CivilJudicialIT {
         // 001 Circuit Judge - Salaried
         arguments.addAll(
             generateSalariedTestArguments(
-                serviceCode,
                 "001_Circuit_Judge__Salaried",
                 "001_CJ__003_SpCJ__009_SeCJ__010_HCJ",
                 false,
@@ -45,10 +46,8 @@ public class CivilJudicialIT {
         // 002 Deputy Circuit Judge - Fee Paid
         arguments.addAll(
             generateFeePaidTestArguments(
-                serviceCode,
                 "002_Deputy_Circuit_Judge__FeePaid",
                 "002_DCJ__020_CJ-SIR",
-                false,
                 false
             )
         );
@@ -56,7 +55,6 @@ public class CivilJudicialIT {
         // 003 Specialist Circuit Judge - Salaried
         arguments.addAll(
             generateSalariedTestArguments(
-                serviceCode,
                 "003_Specialist_Circuit_Judge__Salaried",
                 "001_CJ__003_SpCJ__009_SeCJ__010_HCJ",
                 false,
@@ -67,19 +65,15 @@ public class CivilJudicialIT {
         // 004 Deputy District Judge - Fee Paid
         arguments.addAll(
             generateFeePaidTestArguments(
-                serviceCode,
                 "004.1_Deputy_District_Judge-Fee-Paid__FeePaid",
                 "004_DDJ__005_DDJ-SIR",
-                false,
                 false
             )
         );
         arguments.addAll(
             generateFeePaidTestArguments(
-                serviceCode,
                 "004.2_Deputy_District_Judge__FeePaid",
                 "004_DDJ__005_DDJ-SIR",
-                false,
                 false
             )
         );
@@ -87,19 +81,15 @@ public class CivilJudicialIT {
         // 005 Deputy District Judge - Sitting in Retirement - Fee Paid
         arguments.addAll(
             generateFeePaidTestArguments(
-                serviceCode,
                 "005.1_Deputy_District_Judge_Sitting_in_Retirement__FeePaid",
                 "004_DDJ__005_DDJ-SIR",
-                false,
                 false
             )
         );
         arguments.addAll(
             generateFeePaidTestArguments(
-                serviceCode,
                 "005.2_Deputy_District_Judge_(sitting_in_retirement)__FeePaid",
                 "004_DDJ__005_DDJ-SIR",
-                false,
                 false
             )
         );
@@ -107,7 +97,6 @@ public class CivilJudicialIT {
         // 006 District Judge - Salaried
         arguments.addAll(
             generateSalariedTestArguments(
-                serviceCode,
                 "006_District_Judge__Salaried",
                 "006_DJ",
                 false,
@@ -120,10 +109,8 @@ public class CivilJudicialIT {
         // 008 Recorder - Fee Paid
         arguments.addAll(
             generateFeePaidTestArguments(
-                serviceCode,
                 "008_Recorder__FeePaid",
                 "008_R",
-                false,
                 false
             )
         );
@@ -131,7 +118,6 @@ public class CivilJudicialIT {
         // 009 Senior Circuit Judge - Salaried
         arguments.addAll(
             generateSalariedTestArguments(
-                serviceCode,
                 "009_Senior_Circuit_Judge__Salaried",
                 "001_CJ__003_SpCJ__009_SeCJ__010_HCJ",
                 false,
@@ -142,7 +128,6 @@ public class CivilJudicialIT {
         // 010 High Court Judge - Salaried
         arguments.addAll(
             generateSalariedTestArguments(
-                serviceCode,
                 "010_High_Court_Judge__Salaried",
                 "001_CJ__003_SpCJ__009_SeCJ__010_HCJ",
                 false,
@@ -155,7 +140,6 @@ public class CivilJudicialIT {
         // 012 Designated Civil Judge - Salaried
         arguments.addAll(
             generateSalariedTestArguments(
-                serviceCode,
                 "012_Designated_Civil_Judge__Salaried",
                 "012_DCJ",
                 true, // additional role test
@@ -166,7 +150,6 @@ public class CivilJudicialIT {
         // 013 Presiding Judge - Salaried
         arguments.addAll(
             generateSalariedTestArguments(
-                serviceCode,
                 "013_Presiding_Judge__Salaried",
                 "013_PJ__014_RJ__016_TJ",
                 true, // additional role test
@@ -177,7 +160,6 @@ public class CivilJudicialIT {
         // 014 Resident Judge - Salaried
         arguments.addAll(
             generateSalariedTestArguments(
-                serviceCode,
                 "014_Resident_Judge__Salaried",
                 "013_PJ__014_RJ__016_TJ",
                 true, // additional role test
@@ -188,10 +170,8 @@ public class CivilJudicialIT {
         // 015 District Judge (sitting in retirement) - Fee Paid
         arguments.addAll(
             generateFeePaidTestArguments(
-                serviceCode,
                 "015_District_Judge_(sitting_in_retirement)__FeePaid",
                 "015_DJ-SIR",
-                false,
                 false
             )
         );
@@ -199,7 +179,6 @@ public class CivilJudicialIT {
         // 016 Tribunal Judge - Salaried
         arguments.addAll(
             generateSalariedTestArguments(
-                serviceCode,
                 "016_Tribunal_Judge__Salaried",
                 "013_PJ__014_RJ__016_TJ",
                 false,
@@ -210,10 +189,8 @@ public class CivilJudicialIT {
         // 017 Tribunal Judge - Fee Paid
         arguments.addAll(
             generateFeePaidTestArguments(
-                serviceCode,
                 "017_Tribunal_Judge__FeePaid",
                 "017_TJ",
-                false,
                 false
             )
         );
@@ -221,7 +198,6 @@ public class CivilJudicialIT {
         // 018 Employment Judge - Salaried
         arguments.addAll(
             generateSalariedTestArguments(
-                serviceCode,
                 "018_Employment_Judge__Salaried",
                 "018_EJ",
                 false,
@@ -232,10 +208,8 @@ public class CivilJudicialIT {
         // 019 Employment Judge - Fee Paid
         arguments.addAll(
             generateFeePaidTestArguments(
-                serviceCode,
                 "019_Employment_Judge__FeePaid",
                 "019_EJ",
-                false,
                 true // employment judge appointment
             )
         );
@@ -243,10 +217,8 @@ public class CivilJudicialIT {
         // 020 Circuit Judge (sitting in retirement) - Fee Paid
         arguments.addAll(
             generateFeePaidTestArguments(
-                serviceCode,
                 "020_Circuit_Judge_(sitting_in_retirement)__FeePaid",
                 "002_DCJ__020_CJ-SIR",
-                false,
                 false
             )
         );
@@ -254,7 +226,6 @@ public class CivilJudicialIT {
         // 021 Lead and Deputy Online Judge - Salaried
         arguments.addAll(
             generateSalariedTestArguments(
-                serviceCode,
                 "021_Lead_and_Deputy_Online_Judge__Salaried",
                 "021_LDOJ",
                 true, // additional role test
@@ -262,28 +233,42 @@ public class CivilJudicialIT {
             )
         );
 
+        arguments = adjustTestArgumentsForServiceCode(arguments, serviceCode);
+
         // adjust test arguments ready for use
         return adjustTestArguments(arguments, "Civil");
     }
 
-    @SuppressWarnings({"SameParameterValue"})
-    private static List<DroolJudicialTestArguments> generateFeePaidTestArguments(String serviceCode,
-                                                                                 String jrdResponseFileName,
-                                                                                 String rasRequestFileName,
-                                                                                 boolean additionalRoleTest,
-                                                                                 boolean employmentAppointmentTest) {
-
-        List<DroolJudicialTestArguments> arguments = List.of(
-            DroolJudicialTestArguments.builder()
-                .description(serviceCode)
-                .jrdResponseFileName(jrdResponseFileName)
-                .rasRequestFileNameWithBooking(rasRequestFileName + "__withBooking")
-                .rasRequestFileNameWithoutBooking(rasRequestFileName + "__withoutBooking")
-                .additionalRoleTest(additionalRoleTest)
+    private static List<DroolJudicialTestArguments> adjustTestArgumentsForServiceCode(
+        List<DroolJudicialTestArguments> arguments,
+        String serviceCode
+    ) {
+        // adjust all test arguments to include ServiceCode in Description and Override Map
+        return arguments.stream()
+            .map(testArguments -> testArguments.cloneBuilder()
+                .description(
+                    StringUtils.isEmpty(testArguments.getDescription())
+                        ? serviceCode
+                        : serviceCode + "__" + testArguments.getDescription()
+                )
                 .overrideMapValues(
-                    Map.of(SERVICE_CODES, serviceCode)
+                    cloneAndOverrideMap(
+                        testArguments.getOverrideMapValues(),
+                        Map.of(SERVICE_CODES, serviceCode)
+                    )
                 )
                 .build()
+            )
+            .toList();
+    }
+
+    private static List<DroolJudicialTestArguments> generateFeePaidTestArguments(String jrdResponseFileName,
+                                                                                 String rasRequestFileName,
+                                                                                 boolean employmentAppointmentTest) {
+
+        List<DroolJudicialTestArguments> arguments = generateStandardFeePaidTestArguments(
+            jrdResponseFileName,
+            rasRequestFileName
         );
 
         // use multi region tests for employment judge appointments
@@ -309,11 +294,17 @@ public class CivilJudicialIT {
         return arguments;
     }
 
-    private static List<DroolJudicialTestArguments> generateSalariedTestArguments(String serviceCode,
-                                                                                  String jrdResponseFileName,
+    private static List<DroolJudicialTestArguments> generateSalariedTestArguments(String jrdResponseFileName,
                                                                                   String rasRequestFileName,
                                                                                   boolean additionalRoleTest,
                                                                                   boolean employmentAppointmentTest) {
+
+
+        List<DroolJudicialTestArguments> arguments = generateStandardSalariedTestArguments(
+            jrdResponseFileName,
+            rasRequestFileName,
+            additionalRoleTest
+        );
 
         // default multi region test values for all salaried tests
         List<String> singleRegions = List.of(REGION_02_MIDLANDS);
@@ -333,44 +324,13 @@ public class CivilJudicialIT {
             );
         }
 
-        List<DroolJudicialTestArguments> arguments = List.of(
-            DroolJudicialTestArguments.builder()
-                .description(serviceCode + "__SALARIED")
-                .jrdResponseFileName(jrdResponseFileName)
-                .rasRequestFileNameWithBooking(rasRequestFileName)
-                // NB: With and Without Booking test output will match for these scenarios
-                .rasRequestFileNameWithoutBooking(rasRequestFileName)
-                .additionalRoleTest(additionalRoleTest)
-                .overrideMapValues(
-                    generateJudicialOverrideMapValues(serviceCode, SALARIED, REGION_02_MIDLANDS)
-                )
-                .build()
-        );
-
         arguments = cloneListOfTestArgumentsForMultiRegion(
             arguments,
             singleRegions,
             multiRegions
         );
 
-        // expand to include additional tests for SPTW
-        arguments.addAll(
-            DroolJudicialTestArgumentsHelper.cloneListOfSalariedTestArgumentsForSptw(arguments)
-        );
-
         return arguments;
-    }
-
-    @SuppressWarnings({"SameParameterValue"})
-    private static Map<String, String> generateJudicialOverrideMapValues(String serviceCode,
-                                                                         String appointmentType,
-                                                                         String region) {
-        Map<String, String> overrides = DroolJudicialTestArgumentsHelper.generateCommonJudicialOverrideMapValues(
-            appointmentType,
-            region
-        );
-        overrides.put(SERVICE_CODES, serviceCode);
-        return overrides;
     }
 
 }
