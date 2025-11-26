@@ -457,6 +457,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
   Scenario: must successfully create org role mapping for CTSC Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Administrator (BFA1 IA)] as in [S-001.10__VerifyCaseworkerDetails],
+    And a successful call [to snapshot judicial details for CTSC Administrator (BFA1 IA)] as in [S-001.10__SnapshotJudicialDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-001_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has CTSC Administrator role],
