@@ -14,6 +14,10 @@
   "active_flag": "[[ANYTHING_PRESENT]]",
   "deleted_flag": "[[ANYTHING_PRESENT]]",
   "appointments": "[[ANYTHING_PRESENT]]",
-  "authorisations": "[[ANYTHING_PRESENT]]",
-  "roles": "[[ANYTHING_PRESENT]]"
+  "authorisations": {
+    "arrayInMap": "[[ANYTHING_PRESENT]]"
+  },
+  "roles":  {
+    "arrayInMap": "[[ANYTHING_PRESENT]]"
+  }
 }
