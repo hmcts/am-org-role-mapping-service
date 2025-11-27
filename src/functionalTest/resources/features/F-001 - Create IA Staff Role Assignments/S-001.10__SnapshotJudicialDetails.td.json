@@ -8,9 +8,7 @@
 
   "request": {
     "body": {
-      "sidam_ids": [
-        "${[scenarioContext][parentContext][testData][request][pathVariables][actorId]}"
-      ]
+      "_extends_": "F-001_JRD_Sidam_Ids"
     }
   }
 
