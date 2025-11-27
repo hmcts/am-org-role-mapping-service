@@ -25,7 +25,8 @@ public class PrivateLawJudicialIT {
     public static List<DroolJudicialTestArguments> getTestArguments() {
 
         // PrivateLaw special tests:
-        // * none
+        // * Additional Role tests will use a fallback when the Additional Role has expired as the hearing role
+        //   mappings are based on any active Appointment + Authorisation being present
 
         List<DroolJudicialTestArguments> arguments = new ArrayList<>();
 
@@ -164,7 +165,7 @@ public class PrivateLawJudicialIT {
             generateStandardSalariedTestArguments(
                 "014_Designated_Family_Judge__Salaried",
                 LEADERSHIP_JUDGE_OUTPUT_TEMPLATE,
-                HEARING_ROLES_ONLY_OUTPUT_TEMPLATE // needed as additional role test
+                HEARING_ROLES_ONLY_OUTPUT_TEMPLATE // hearing fallback needed on this additional role test
             )
         );
 
@@ -174,7 +175,7 @@ public class PrivateLawJudicialIT {
             generateStandardSalariedTestArguments(
                 "015_Family_Division_Liaison_Judge",
                 SALARIED_JUDGE_OUTPUT_TEMPLATE,
-                HEARING_ROLES_ONLY_OUTPUT_TEMPLATE // needed as additional role test
+                HEARING_ROLES_ONLY_OUTPUT_TEMPLATE // hearing fallback needed on this additional role test
             )
         );
 
@@ -184,7 +185,7 @@ public class PrivateLawJudicialIT {
             generateStandardSalariedTestArguments(
                 "016_Senior_Family_Liaison_Judge",
                 SALARIED_JUDGE_OUTPUT_TEMPLATE,
-                HEARING_ROLES_ONLY_OUTPUT_TEMPLATE // needed as additional role test
+                HEARING_ROLES_ONLY_OUTPUT_TEMPLATE // hearing fallback needed on this additional role test
             )
         );
 
