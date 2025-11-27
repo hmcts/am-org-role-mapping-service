@@ -17,7 +17,5 @@
   "authorisations": {
     "arrayInMap": "[[ANYTHING_PRESENT]]"
   },
-  "roles":  {
-    "arrayInMap": "[[ANYTHING_PRESENT]]"
-  }
+  "roles" : [ ]
 }
