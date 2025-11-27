@@ -1,11 +1,6 @@
 { 
   "_guid_": "JudicialDetails",
-   "arrayInMap" : [
-   {
-     "__ordering__": "UNORDERED",
-     "__elementId__": "sidam_id"
-   },
-   {
+   "arrayInMap" : [ {
     "sidam_id" : "[[ANYTHING_PRESENT]]",
     "object_id" : "[[ANYTHING_PRESENT]]",
     "known_as" : "[[ANYTHING_PRESENT]]",
@@ -17,7 +12,7 @@
     "title" : "[[ANYTHING_PRESENT]]",
     "initials" : "[[ANYTHING_PRESENT]]",
     "retirement_date" : "[[ANYTHING_PRESENT]]",
-    "active_flag" : "true",
+    "active_flag" : "[[ANYTHING_PRESENT]]",
     "deleted_flag" : "[[ANYTHING_PRESENT]]",
     "appointments" : [ {
       "base_location_id" : "[[ANYTHING_PRESENT]]",
@@ -27,7 +22,7 @@
       "is_principal_appointment" : "[[ANYTHING_PRESENT]]",
       "appointment" : "[[ANYTHING_PRESENT]]",
       "appointment_type" : "[[ANYTHING_PRESENT]]",
-      "service_codes" : [ "[[ANYTHING_PRESENT]]"],
+      "service_codes" : [ "BHA1" ],
       "start_date" : "[[ANYTHING_PRESENT]]",
       "end_date" : "[[ANYTHING_PRESENT]]",
       "appointment_id" : "[[ANYTHING_PRESENT]]",
@@ -39,9 +34,9 @@
       "jurisdiction" : "[[ANYTHING_PRESENT]]",
       "ticket_description" : "[[ANYTHING_PRESENT]]",
       "ticket_code" : "[[ANYTHING_PRESENT]]",
-      "service_codes" : [ "[[ANYTHING_PRESENT]]" ],
-      "start_date" :"[[ANYTHING_PRESENT]]",
-      "end_date" : "[[ANYTHING_PRESENT]]",
+      "service_codes" : [ "BHA1" ],
+      "start_date" : "[[ANYTHING_PRESENT]]",
+      "end_date" : null,
       "appointment_id" : "[[ANYTHING_PRESENT]]",
       "authorisation_id" : "[[ANYTHING_PRESENT]]",
       "jurisdiction_id" : "[[ANYTHING_PRESENT]]"
