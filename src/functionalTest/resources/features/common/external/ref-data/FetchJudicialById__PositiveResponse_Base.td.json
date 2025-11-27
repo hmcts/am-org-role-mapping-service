@@ -11,16 +11,7 @@
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
-      "arrayInMap": [
-        {
-          "__ordering__": "unordered",
-          "__elementId__": "sidam_id"
-        },
-        {
-          "_extends_": "JudicialDetails",
-          "active_flag": "true"
-        }
-      ]
+      "_extends_": "JudicialDetails"
     }
   }
 

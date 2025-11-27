@@ -1,21 +1,46 @@
 { 
   "_guid_": "JudicialDetails",
-  "sidam_id": "[[ANYTHING_PRESENT]]",
-  "object_id": "[[ANYTHING_PRESENT]]",
-  "known_as": "[[ANYTHING_PRESENT]]",
-  "surname": "[[ANYTHING_PRESENT]]",
-  "full_name": "[[ANYTHING_PRESENT]]",
-  "post_nominals": "[[ANYTHING_PRESENT]]",
-  "email_id": "[[ANYTHING_PRESENT]]",
-  "personal_code": "[[ANYTHING_PRESENT]]",
-  "title": "[[ANYTHING_PRESENT]]",
-  "initials": "[[ANYTHING_PRESENT]]",
-  "retirement_date": "[[ANYTHING_PRESENT]]",
-  "active_flag": "[[ANYTHING_PRESENT]]",
-  "deleted_flag": "[[ANYTHING_PRESENT]]",
-  "appointments": "[[ANYTHING_PRESENT]]",
-  "authorisations": {
-    "arrayInMap": "[[ANYTHING_PRESENT]]"
-  },
-  "roles" : [ ]
+   "arrayInMap" : [ {
+    "sidam_id" : "d85eb06c-6e1f-4485-923c-313063a32a82",
+    "object_id" : "7e1735cf-ad80-4336-9eac-abcdcafdbb87",
+    "known_as" : "Zachary",
+    "surname" : "Baker",
+    "full_name" : "Mr Zachary ",
+    "post_nominals" : null,
+    "email_id" : "EmploymentJudge.Baker@ejudiciary.net",
+    "personal_code" : "4925595",
+    "title" : "Mr",
+    "initials" : "TB",
+    "retirement_date" : "2045-10-29",
+    "active_flag" : "true",
+    "deleted_flag" : "null",
+    "appointments" : [ {
+      "base_location_id" : "1036",
+      "epimms_id" : "",
+      "cft_region_id" : "2",
+      "cft_region" : "Midlands",
+      "is_principal_appointment" : "true",
+      "appointment" : "Employment Judge",
+      "appointment_type" : "Salaried",
+      "service_codes" : [ "BHA1" ],
+      "start_date" : "2013-09-17",
+      "end_date" : null,
+      "appointment_id" : "129574",
+      "role_name_id" : "48",
+      "type" : "Tribunals",
+      "contract_type_id" : "0"
+    } ],
+    "authorisations" : [ {
+      "jurisdiction" : "Tribunals",
+      "ticket_description" : "Employment Tribunal (England & Wales)",
+      "ticket_code" : "1413",
+      "service_codes" : [ "BHA1" ],
+      "start_date" : "2015-10-27",
+      "end_date" : null,
+      "appointment_id" : "129574",
+      "authorisation_id" : "166136",
+      "jurisdiction_id" : "34"
+    } ],
+    "roles" : [ ]
+  } ]
 }
