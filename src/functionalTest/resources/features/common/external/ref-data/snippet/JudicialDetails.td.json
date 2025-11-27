@@ -1,6 +1,11 @@
 { 
   "_guid_": "JudicialDetails",
-   "arrayInMap" : [ {
+   "arrayInMap" : [
+   {
+     "__ordering__": "UNORDERED",
+     "__elementId__": "sidam_id"
+   },
+   {
     "sidam_id" : "[[ANYTHING_PRESENT]]",
     "object_id" : "[[ANYTHING_PRESENT]]",
     "known_as" : "[[ANYTHING_PRESENT]]",
