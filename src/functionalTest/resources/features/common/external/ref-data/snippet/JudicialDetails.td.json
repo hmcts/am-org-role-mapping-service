@@ -19,33 +19,14 @@
      "retirement_date" : "2045-10-29",
      "active_flag" : "true",
      "deleted_flag" : "null",
-     "appointments" : [ {
-       "base_location_id" : "1036",
-       "epimms_id" : "",
-       "cft_region_id" : "2",
-       "cft_region" : "Midlands",
-       "is_principal_appointment" : "true",
-       "appointment" : "Employment Judge",
-       "appointment_type" : "Salaried",
-       "service_codes" : [ "BHA1" ],
-       "start_date" : "2013-09-17",
-       "end_date" : null,
-       "appointment_id" : "129574",
-       "role_name_id" : "48",
-       "type" : "Tribunals",
-       "contract_type_id" : "0"
-     } ],
-     "authorisations" : [ {
-       "jurisdiction" : "Tribunals",
-       "ticket_description" : "Employment Tribunal (England & Wales)",
-       "ticket_code" : "1413",
-       "service_codes" : [ "BHA1" ],
-       "start_date" : "2015-10-27",
-       "end_date" : null,
-       "appointment_id" : "129574",
-       "authorisation_id" : "166136",
-       "jurisdiction_id" : "34"
-     } ],
-     "roles" : [ ]
+     "appointments" : {
+       "arrayInMap": "[[ANYTHING_PRESENT]]"
+     },
+     "authorisations" : {
+       "arrayInMap": "[[ANYTHING_PRESENT]]"
+     },
+     "roles" : {
+       "arrayInMap": "[[ANYTHING_PRESENT]]"
+     }
    } ]
 }
