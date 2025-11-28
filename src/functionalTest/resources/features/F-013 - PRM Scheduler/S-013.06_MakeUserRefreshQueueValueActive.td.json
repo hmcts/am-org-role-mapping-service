@@ -1,0 +1,21 @@
+{
+  "_guid_": "S-013.06_MakeUserRefreshQueueValueActive",
+  "_extends_": "MakeUserRefreshQueueActive__PositiveResponse_Base",
+
+  "specs": [
+    "to make the USER refresh queue value active"
+  ],
+
+  "request": {
+    "queryParams": {
+      "userId": "eccd490f-a40c-4a19-b063-7b107bc6480p"
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "active" : true
+    }
+  }
+
+}
