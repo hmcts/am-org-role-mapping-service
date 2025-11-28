@@ -228,7 +228,7 @@ class RefreshOrchestratorTest {
         void refreshRoleAssignmentRecords_async() {
 
             // GIVEN
-            Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
+            doNothing().when(parseRequestService).validateUserRequest(any());
 
             Map<String, Set<UserAccessProfile>> userAccessProfiles = new HashMap<>();
             Set<UserAccessProfile> userAccessProfileSet = new HashSet<>();
@@ -244,19 +244,16 @@ class RefreshOrchestratorTest {
                 .build());
             userAccessProfiles.put("1", userAccessProfileSet);
 
-            Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.CASEWORKER)))
+            when(retrieveDataService.retrieveProfiles(any(), eq(UserType.CASEWORKER)))
                 .thenReturn(userAccessProfiles);
 
-            List<ResponseEntity<Object>> responseEntities = List.of(
-                ResponseEntity.status(HttpStatus.CREATED).body(new RoleAssignmentRequestResource(AssignmentRequestBuilder
-                    .buildAssignmentRequest(false))));
-            Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
+            when(requestMappingService.createCaseworkerAssignments(any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
-                    .body(responseEntities)));
+                    .body(createResponseEntitiesForCreateAssignmentSuccess(List.of("1")))));
 
-            Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
+            doNothing().when(parseRequestService).validateUserRequest(any());
 
-            mockFetchRefreshJobById(1L, RoleCategory.LEGAL_OPERATIONS, NEW);
+            RefreshJobEntity refreshJobEntitySpy = mockFetchRefreshJobById(1L, RoleCategory.LEGAL_OPERATIONS, NEW);
 
             // WHEN
             // NB: not async when called from here
@@ -264,7 +261,7 @@ class RefreshOrchestratorTest {
 
             // THEN
             // verify has gone on to complete process
-            verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
+            verifyPersistRefreshJob(refreshJobEntitySpy, COMPLETED);
         }
 
         @Test
