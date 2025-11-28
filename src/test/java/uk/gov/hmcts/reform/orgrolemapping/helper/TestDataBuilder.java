@@ -27,8 +27,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
@@ -38,6 +38,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRoleEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentEnum;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -337,7 +338,6 @@ public class TestDataBuilder {
                         false))
                 .build();
     }
-
 
     public static AssignmentRequest buildAssignmentRequest(Status requestStatus, Status roleStatus,
                                                            Boolean replaceExisting) {
