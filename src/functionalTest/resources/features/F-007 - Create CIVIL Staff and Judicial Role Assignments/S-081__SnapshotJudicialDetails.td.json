@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-0081__SnapshotJudicialDetails",
+  "_guid_": "S-081__SnapshotJudicialDetails",
   "_extends_": "FetchJudicialById__PositiveResponse_Base",
 
   "specs": [
