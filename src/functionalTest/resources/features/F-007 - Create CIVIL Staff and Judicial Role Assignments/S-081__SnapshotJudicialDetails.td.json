@@ -5,10 +5,12 @@
   "specs": [
     "to snapshot judicial details"
   ],
-
+  
   "request": {
     "body": {
-      "sidam_ids": "${[scenarioContext][siblingContexts][S-081_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
+      "sidam_ids": [
+        "${[scenarioContext][siblingContexts][S-081_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}"
+      ]
     }
   }
 
