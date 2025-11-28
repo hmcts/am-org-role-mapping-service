@@ -20,6 +20,6 @@
      "deleted_flag" : "[[ANYTHING_PRESENT]]",
      "appointments" : "[[ANYTHING_PRESENT]]",
      "authorisations" : "[[ANYTHING_PRESENT]]",
-     "roles" : [ ]
+     "roles" : "[[ANYTHING_PRESENT]]"
    } ]
 }
