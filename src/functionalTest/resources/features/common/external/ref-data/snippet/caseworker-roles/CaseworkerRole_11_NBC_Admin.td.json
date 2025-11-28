@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_11_NBC_Admin",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "11",
+  "role": "National Business Centre Administrator"
+}

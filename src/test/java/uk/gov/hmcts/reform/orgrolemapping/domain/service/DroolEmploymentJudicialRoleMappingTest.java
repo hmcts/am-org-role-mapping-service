@@ -1,10 +1,12 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
@@ -26,11 +28,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.VarargsAggregator;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
     static Map<String, String> employmentExpectedRoleNameWorkTypesMap = new HashMap<>();
 
-    {
+    static {
         employmentExpectedRoleNameWorkTypesMap.put("leadership-judge", null);
         employmentExpectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,routine_work,"
                 + "applications,amendments");
@@ -100,8 +102,6 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
                 + "hmcts-judiciary,specific-access-approver-judiciary",
         "EMPLOYMENT President Employment Tribunals (Scotland)-Salaried,leadership-judge,judge,task-supervisor,"
                     + "case-allocator,hmcts-judiciary,specific-access-approver-judiciary",
-        "EMPLOYMENT Vice-President Employment Tribunal (Scotland)-Salaried,leadership-judge,judge,task-supervisor,"
-                + "case-allocator,hmcts-judiciary,specific-access-approver-judiciary",
         "EMPLOYMENT Vice President-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
                 + "hmcts-judiciary,specific-access-approver-judiciary",
         "EMPLOYMENT Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
@@ -109,10 +109,14 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         "EMPLOYMENT Acting Regional Employment Judge-Salaried,leadership-judge,judge,task-supervisor,case-allocator,"
                 + "hmcts-judiciary,specific-access-approver-judiciary",
     })
-    void shouldReturnPresidentOfTribunalVicePresidentRegionalEmploymentJudgeSalariedRoles(String setOffice,
+    void shouldReturnPresidentOfTribunalVicePresidentRegionalEmploymentJudgeSalariedRoles(String office,
                                          @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
 
-        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+        judicialOfficeHolders.forEach(joh -> {
+            joh.setOffice(office);
+            // NB: joh.contractType populated with jap.appointmentType
+            joh.setContractType(AppointmentType.SALARIED);
+        });
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
@@ -126,7 +130,7 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
+            assertCommonRoleAssignmentAttributes(r, regionId, office);
         });
     }
 
@@ -134,10 +138,14 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
     @CsvSource({
         "EMPLOYMENT Employment Judge-Salaried,judge,hmcts-judiciary,case-allocator"
     })
-    void shouldReturnEmploymentJudgeSalariedRoles(String setOffice,
+    void shouldReturnEmploymentJudgeSalariedRoles(String office,
                                                   @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
 
-        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+        judicialOfficeHolders.forEach(joh -> {
+            joh.setOffice(office);
+            // NB: joh.contractType populated with jap.appointmentType
+            joh.setContractType(AppointmentType.SALARIED);
+        });
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
@@ -150,7 +158,7 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
             assertEquals("Salaried", r.getAttributes().get("contractType").asText());
-            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
+            assertCommonRoleAssignmentAttributes(r, regionId, office);
         });
     }
 
@@ -158,10 +166,14 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
     @CsvSource({
         "EMPLOYMENT Employment Judge-Fee-Paid,fee-paid-judge,hmcts-judiciary"
     })
-    void shouldReturnEmploymentJudgeFeePaidRoles(String setOffice,
+    void shouldReturnEmploymentJudgeFeePaidRoles(String office,
                                                   @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
 
-        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+        judicialOfficeHolders.forEach(joh -> {
+            joh.setOffice(office);
+            // NB: joh.contractType populated with jap.appointmentType
+            joh.setContractType(AppointmentType.FEE_PAID);
+        });
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
@@ -174,19 +186,22 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         assertEquals(2, roleAssignments.size());
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
-            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
+            assertCommonRoleAssignmentAttributes(r, regionId, office);
         });
     }
 
     @ParameterizedTest
     @CsvSource({
-        "EMPLOYMENT Tribunal Member-Fee-Paid,tribunal-member,hmcts-judiciary",
-        "EMPLOYMENT Tribunal Member Lay-Fee-Paid,tribunal-member,hmcts-judiciary"
+        "EMPLOYMENT Tribunal Member-Fee-Paid,tribunal-member,hmcts-judiciary"
     })
-    void shouldReturnTribunalMemberFeePaidRoles(String setOffice,
+    void shouldReturnTribunalMemberFeePaidRoles(String office,
                                                  @AggregateWith(VarargsAggregator.class) String[] roleNameOutput) {
 
-        judicialOfficeHolders.forEach(joh -> joh.setOffice(setOffice));
+        judicialOfficeHolders.forEach(joh -> {
+            joh.setOffice(office);
+            // NB: joh.contractType populated with jap.appointmentType
+            joh.setContractType(AppointmentType.FEE_PAID);
+        });
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
@@ -199,28 +214,28 @@ class DroolEmploymentJudicialRoleMappingTest extends DroolBase {
         assertEquals(2, roleAssignments.size());
         String regionId = allProfiles.iterator().next().getRegionId();
         roleAssignments.forEach(r -> {
-            assertCommonRoleAssignmentAttributes(r, regionId, setOffice);
+            assertCommonRoleAssignmentAttributes(r, regionId, office);
         });
     }
 
     @ParameterizedTest
     @CsvSource(delimiter = ';',  textBlock = """ 
-        President of Tribunal;Salaried;12;11;
-        President, Employment Tribunals (Scotland);Salaried;12;11;
-        President, Employment Tribunals (Scotland);Salaried;11;11;
-        Vice President;Salaried;13;13;
-        Vice-President, Employment Tribunal (Scotland);Salaried;12;11;
-        Regional Employment Judge;Salaried;10;10;
-        Employment Judge;Salaried;11;11;
-        Employment Judge;Fee Paid;12;11;
-        Tribunal Member;Fee Paid;11;11;
+        President of Tribunal;65;Salaried;12;11;
+        President, Employment Tribunals (Scotland);153;Salaried;12;11;
+        President, Employment Tribunals (Scotland);153;Salaried;11;11;
+        Vice President;91;Salaried;13;13;
+        Vice-President, Employment Tribunal (Scotland);213;Salaried;12;11;
+        Regional Employment Judge;71;Salaried;10;10;
+        Employment Judge;48;Salaried;11;11;
+        Employment Judge;48;Fee Paid;12;11;
+        Tribunal Member;85;Fee Paid;11;11;
         """)
-
-    void shouldReturnRegionIdFromJapAsRegion(String appointment, String appointmentType,
-                                                  String regionIn, String regionOut) {
+    void shouldReturnRegionIdFromJapAsRegion(String appointment, String appointmentCode, String appointmentType,
+                                             String regionIn, String regionOut) {
 
         judicialAccessProfiles.forEach(judicialAccessProfile -> {
             judicialAccessProfile.setAppointment(appointment);
+            judicialAccessProfile.setAppointmentCode(appointmentCode);
             judicialAccessProfile.setAppointmentType(appointmentType);
             judicialAccessProfile.getAuthorisations().forEach(a -> a.setServiceCodes(List.of("BHA1")));
             judicialAccessProfile.setRegionId(regionIn);

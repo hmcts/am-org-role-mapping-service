@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.api.KieServices;
@@ -30,6 +31,7 @@ import java.util.Set;
 
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_QUERY_NAME;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.MAPPER;
 
 public abstract class DroolBase {
 
@@ -140,6 +142,21 @@ public abstract class DroolBase {
     }
 
     @NotNull
+    protected List<FeatureFlag> getAllFeatureFlagsToggleByJurisdiction(String jurisdiction,
+                                                                       Boolean status,
+                                                                       Boolean hearingFlagStatus) {
+        List<FeatureFlag> featureFlags = new ArrayList<>(getAllFeatureFlagsToggleByJurisdiction(jurisdiction, status));
+
+        for (FeatureFlag flag : featureFlags) {
+            if (flag.getFlagName().contains("hearing")) {
+                flag.setStatus(hearingFlagStatus);
+            }
+        }
+
+        return featureFlags;
+    }
+
+    @NotNull
     protected List<FeatureFlag> getAllHearingFlags(Boolean status) {
         return Arrays.stream(FeatureFlagEnum.values())
                 .map(featureFlagEnum -> FeatureFlag.builder()
@@ -147,6 +164,11 @@ public abstract class DroolBase {
                         .status(featureFlagEnum.name().toLowerCase().contains("hearing") ? status : false)
                         .build())
                 .toList();
+    }
+
+    @SneakyThrows
+    public static String writeValueAsPrettyJson(Object input) {
+        return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(input);
     }
 
 }

@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_05_CC",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "5",
+  "role": "Court Clerk"
+}
