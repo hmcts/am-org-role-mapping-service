@@ -10,7 +10,10 @@
 
   "expectedResponse": {
     "_extends_": "Common_200_Response",
-    "Content-Type": "application/vnd.jrd.api+json;Version=2.0",
+    "headers": {
+      "Content-Type": "application/vnd.jrd.api+json;Version=2.0",
+      "Total_records" : "1"
+    },
     "body": {
       "_extends_": "JudicialDetails"
     }

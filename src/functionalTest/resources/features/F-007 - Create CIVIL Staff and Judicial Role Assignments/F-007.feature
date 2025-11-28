@@ -62,6 +62,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
   Scenario: must successfully create org role mapping for Judge
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-081_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-081__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-081_PushMessageToJRDService],
     And the request [contains the actorId of the user just published who has judge role],
     When a request is prepared with appropriate values,
