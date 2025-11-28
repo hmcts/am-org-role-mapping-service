@@ -47,11 +47,14 @@ end;
 
 /*
  * publiclaw admin "task-supervisor" Org role mapping.
+ * Made obsolete in DTSAM-777 - disabled by PUBLICLAW_WA.1_7 flag.
+ * To be removed in DTSAM-780.
  */
 
 rule "publiclaw_task_supervisor_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_7.getValue())
   $cap: CaseWorkerAccessProfile(roleId =="3", serviceCode == "ABA3", !suspended, taskSupervisorFlag == "Y")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -73,6 +76,37 @@ then
       .attributes(attribute)
       .build());
       logMsg("Rule : publiclaw_task_supervisor_org_role");
+end;
+
+/*
+ * publiclaw admin "task-supervisor" Org role mapping. v1_7
+ */
+
+rule "publiclaw_task_supervisor_admin_org_role_v1_7"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_7.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("3","4"), serviceCode == "ABA3", !suspended,
+                           taskSupervisorFlag == "Y")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("task-supervisor")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .authorisations($cap.getSkillCodes())
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : publiclaw_task_supervisor_admin_org_role_v1_7");
 end;
 
 /*

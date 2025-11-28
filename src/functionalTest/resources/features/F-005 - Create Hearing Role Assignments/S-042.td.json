@@ -1,0 +1,64 @@
+{
+  "_guid_": "S-042",
+  "title": "must successfully create organisational role mapping for SSCS admin role assignments (hearing-viewer, hearing-manager)",
+  "_extends_": "F-005_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published for admin role assignments"
+  ],
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+  "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC"
+    },
+    "body": {
+      "actorId": ["cbb51593-aaca-4da3-ab67-7200d8d31af6"],
+      "roleName": ["hearing-viewer", "hearing-manager", "listed-hearing-viewer"]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body" : {
+      "roleAssignmentResponse" : [
+        {
+          "__elementId__": "roleName"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-manager",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "21153",
+            "jurisdiction": "SSCS"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "21153",
+            "jurisdiction": "SSCS"
+          }
+        }
+      ]
+    }
+  }
+}

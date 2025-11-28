@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_10_CTSC_Admin",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "10",
+  "role": "CTSC Administrator"
+}

@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_15_HMRC",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "15",
+  "role": "HMRC Caseworker"
+}
