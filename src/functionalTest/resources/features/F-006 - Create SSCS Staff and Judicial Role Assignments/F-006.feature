@@ -174,6 +174,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
     Given a user with [a judicial profile for SSCS that does not support judicial bookings (i.e. no ticketCode=368)],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-163_DeleteDataForRoleAssignments],
     And a successful call [to delete existing bookings corresponding to the test actorId] as in [S-163_DeleteDataForBookings],
+    And a successful call [to snapshot judicial details] as in [S-163__SnapshotJudicialDetails],
     And a successful call [to create single booking for this user] as in [S-163_CreateDataForBookings],
     And a successful call [to refresh a judicial user's role assignments] as in [S-163_PostRefreshRequestToORM],
     When a request is prepared with appropriate values,
