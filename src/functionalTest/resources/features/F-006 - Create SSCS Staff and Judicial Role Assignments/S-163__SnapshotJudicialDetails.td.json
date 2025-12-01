@@ -9,7 +9,7 @@
   "request": {
     "body": {
       "sidam_ids": [
-        "${[scenarioContext][siblingContexts][S-163_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}"
+        "${[scenarioContext][siblingContexts][S-163_DeleteDataForRoleAssignments][testData][request][pathVariables][userId]}"
       ]
     }
   }
