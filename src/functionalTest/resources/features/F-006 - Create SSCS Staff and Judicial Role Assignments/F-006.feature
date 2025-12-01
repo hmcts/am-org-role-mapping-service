@@ -116,6 +116,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
   Scenario: must successfully create judicial role mapping for Tribunal Judge - Fee Paid appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-059_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-059__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-059_PushMessageToJRDService],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
     And the request [contains the actorId of the user just published],
