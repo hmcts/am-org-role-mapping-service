@@ -10,6 +10,7 @@ Feature: F-004 : Judicial Refresh Request (with/without Bookings)
     Given a user with [a judicial profile that supports judicial bookings],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-004_DeleteDataForRoleAssignments]
     And a successful call [to delete existing bookings corresponding to the test actorId] as in [F-004_DeleteDataForBookings],
+    And a successful call [to snapshot judicial details] as in [S-031__SnapshotJudicialDetails],
     And a successful call [to create single booking for this user] as in [F-004_CreateDataForBookings],
     And a successful call [to refresh a judicial user's role assignments] as in [F-004_PostRefreshRequestToORM],
     When a request is prepared with appropriate values,
