@@ -86,12 +86,14 @@ public class ProviderTestConfiguration {
                 getRequestMappingService(),
                 getParseRequestService(),
                 crdService,
+                jrdService,
                 persistenceService,
                 securityUtils,
                 judicialBookingService,
                 "1",
                 "descending",
                 "1",
+                "2",
                 List.of("am_org_role_mapping_service", "am_role_assignment_refresh_batch"),
                 true
         );
