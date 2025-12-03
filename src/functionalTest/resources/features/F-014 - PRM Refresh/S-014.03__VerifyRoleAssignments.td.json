@@ -1,0 +1,68 @@
+{
+  "_guid_": "S-014.03__VerifyRoleAssignments",
+  "_extends_": "QueryRoleAssignments__PositiveResponse_Base",
+  "specs": [
+    "to verify role assignments are correct for test userId"
+  ],
+  "request": {
+    "body": {
+      "queryRequests": [
+        {
+          "actorId": [
+            "${[scenarioContext][parentContext][testData][request][queryParams][userId]}"
+          ],
+          "roleType": [
+            "ORGANISATION"
+          ],
+          "roleCategory": [
+            "PROFESSIONAL"
+          ]
+        }
+      ]
+    }
+  },
+  "expectedResponse": {
+    "body": {
+        "roleAssignmentResponse": [
+          {
+            "__elementId__": "roleName,attributes.caseAccessGroupId"
+          },
+          {
+            "id": "[[ANYTHING_PRESENT]]",
+            "actorIdType": "IDAM",
+            "actorId": "${[scenarioContext][parentContext][testData][request][queryParams][userId]}",
+            "roleType": "ORGANISATION",
+            "roleName": "Role1",
+            "classification": "RESTRICTED",
+            "grantType": "STANDARD",
+            "roleCategory": "PROFESSIONAL",
+            "readOnly": false,
+            "created": "[[ANYTHING_PRESENT]]",
+            "attributes": {
+              "substantive": "Y",
+              "jurisdiction": "BEFTA_MASTER",
+              "caseType": "FT_CaseAccessGroups"
+            }
+          },
+          {
+            "id": "[[ANYTHING_PRESENT]]",
+            "actorIdType": "IDAM",
+            "actorId": "${[scenarioContext][parentContext][testData][request][queryParams][userId]}",
+            "roleType": "ORGANISATION",
+            "roleName": "Role1",
+            "classification": "RESTRICTED",
+            "grantType": "STANDARD",
+            "roleCategory": "PROFESSIONAL",
+            "readOnly": false,
+            "created": "[[ANYTHING_PRESENT]]",
+            "attributes": {
+              "caseAccessGroupId": "BEFTA_MASTER:${[scenarioContext][siblingContexts][S-014.03__VerifyProfessionalUser][testData][actualResponse][body][users][0][organisationInfo][organisationIdentifier]}",
+              "substantive": "Y",
+              "jurisdiction": "BEFTA_MASTER",
+              "caseType": "FT_CaseAccessGroups"
+            }
+          }
+        ]
+      }
+    }
+  }
