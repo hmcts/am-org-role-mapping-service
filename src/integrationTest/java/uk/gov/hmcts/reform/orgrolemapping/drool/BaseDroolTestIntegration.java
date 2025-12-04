@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
@@ -32,8 +33,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.doReturn;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.FeatureFlagController.ALL_FEATURE_FLAG_STATUSES_URI;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.OrgMappingController.CREATE_ORG_MAPPING_URI;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_XUI;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.getHttpHeaders;
@@ -169,6 +172,19 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
                     .userIds(getSidamIdsList(testScenarios)).build())))
             .andExpect(status().is(200))
             .andReturn();
+    }
+
+    @SuppressWarnings({
+        "unchecked"
+    })
+    protected Map<String, Boolean> triggerFeatureFlagApi() throws Exception {
+        MvcResult results = mockMvc.perform(get(ALL_FEATURE_FLAG_STATUSES_URI)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders(S2S_XUI)))
+                .andExpect(status().is(200))
+                .andReturn();
+        return new ObjectMapper().readValue(
+                results.getResponse().getContentAsString(), Map.class);
     }
 
 }
