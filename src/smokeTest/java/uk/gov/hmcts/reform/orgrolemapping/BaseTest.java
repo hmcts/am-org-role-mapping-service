@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import feign.Feign;
 import feign.jackson.JacksonEncoder;
 import net.serenitybdd.junit5.SerenityJUnit5Extension;
@@ -14,6 +13,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cloud.openfeign.support.SpringMvcContract;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.testcontainers.containers.PostgreSQLContainer;
 import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
 import uk.gov.hmcts.reform.authorisation.generators.ServiceAuthTokenGenerator;
 
@@ -29,6 +29,7 @@ import java.util.Properties;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class BaseTest {
 
+    private static final String POSTGRES = "postgres";
     protected static final ObjectMapper mapper = new ObjectMapper();
 
     @BeforeAll
@@ -57,21 +58,24 @@ public abstract class BaseTest {
         Connection connection;
 
         @Bean
-        public EmbeddedPostgres embeddedPostgres() throws IOException {
-            return EmbeddedPostgres
-                    .builder()
-                    .start();
+        public PostgreSQLContainer embeddedPostgres() throws IOException {
+            PostgreSQLContainer pg = new PostgreSQLContainer()
+                    .withDatabaseName(POSTGRES)
+                    .withUsername(POSTGRES)
+                    .withPassword(POSTGRES);
+            pg.start();
+            return pg;
         }
 
         @Bean
         public DataSource dataSource() throws IOException, SQLException {
-            final EmbeddedPostgres pg = embeddedPostgres();
+            final PostgreSQLContainer pg = embeddedPostgres();
 
             final Properties props = new Properties();
             // Instruct JDBC to accept JSON string for JSONB
             props.setProperty("stringtype", "unspecified");
             props.setProperty("user", "postgres");
-            connection = DriverManager.getConnection(pg.getJdbcUrl("postgres"), props);
+            connection = DriverManager.getConnection(pg.getJdbcUrl(), props);
             return new SingleConnectionDataSource(connection, true);
         }
 
