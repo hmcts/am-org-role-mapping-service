@@ -388,6 +388,8 @@ dependencies {
     implementation 'net.bytebuddy:byte-buddy:1.17.8'
 
     testImplementation('com.opentable.components:otj-pg-embedded:1.1.1')
+    testImplementation('org.testcontainers:testcontainers-postgresql:2.0.2')
+
 
     pitest 'org.pitest:pitest-junit5-plugin:1.2.3'
 
