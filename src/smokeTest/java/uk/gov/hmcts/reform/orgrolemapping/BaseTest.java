@@ -8,6 +8,7 @@ import feign.jackson.JacksonEncoder;
 import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cloud.openfeign.support.SpringMvcContract;
@@ -70,13 +71,12 @@ public abstract class BaseTest {
         @Bean
         public DataSource dataSource() throws IOException, SQLException {
             final PostgreSQLContainer pg = embeddedPostgres();
-
-            final Properties props = new Properties();
-            // Instruct JDBC to accept JSON string for JSONB
-            props.setProperty("stringtype", "unspecified");
-            props.setProperty("user", "postgres");
-            connection = DriverManager.getConnection(pg.getJdbcUrl(), props);
-            return new SingleConnectionDataSource(connection, true);
+            DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
+            dataSourceBuilder.driverClassName("org.postgresql.Driver");
+            dataSourceBuilder.url(pg.getJdbcUrl());
+            dataSourceBuilder.username(pg.getUsername());
+            dataSourceBuilder.password(pg.getPassword());
+            return dataSourceBuilder.build();
         }
 
         @PreDestroy

@@ -5,6 +5,7 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
+import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import groovy.util.logging.Slf4j;
 import jakarta.annotation.PreDestroy;
 import org.apache.http.client.fluent.Executor;
@@ -20,7 +21,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
@@ -40,8 +40,6 @@ import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 @PactTestFor(providerName = "am_roleAssignment_getRoles")
 @PactFolder("pacts")
 public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
-
-    private static final String POSTGRES = "postgres";
 
     @Autowired
     DataSource dataSource;
@@ -120,24 +118,21 @@ public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
         Connection connection;
 
         @Bean
-        public PostgreSQLContainer embeddedPostgres() throws IOException {
-            PostgreSQLContainer pg = new PostgreSQLContainer()
-                    .withDatabaseName(POSTGRES)
-                    .withUsername(POSTGRES)
-                    .withPassword(POSTGRES);
-            pg.start();
-            return pg;
+        public EmbeddedPostgres embeddedPostgres() throws IOException {
+            return EmbeddedPostgres
+                    .builder()
+                    .start();
         }
 
         @Bean
         public DataSource dataSource() throws IOException, SQLException {
-            final PostgreSQLContainer pg = embeddedPostgres();
+            final EmbeddedPostgres pg = embeddedPostgres();
 
             final Properties props = new Properties();
             // Instruct JDBC to accept JSON string for JSONB
             props.setProperty("stringtype", "unspecified");
             props.setProperty("user", "postgres");
-            connection = DriverManager.getConnection(pg.getJdbcUrl(), props);
+            connection = DriverManager.getConnection(pg.getJdbcUrl("postgres"), props);
             return new SingleConnectionDataSource(connection, true);
         }
 
