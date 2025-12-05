@@ -8,17 +8,17 @@ import feign.jackson.JacksonEncoder;
 import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.cloud.openfeign.support.SpringMvcContract;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.testcontainers.containers.PostgreSQLContainer;
 import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
 import uk.gov.hmcts.reform.authorisation.generators.ServiceAuthTokenGenerator;
 
 import jakarta.annotation.PreDestroy;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -52,28 +52,25 @@ public abstract class BaseTest {
 
 
     @TestConfiguration
-    static class Configuration {
+    static class Configuration implements
+            ApplicationContextInitializer<ConfigurableApplicationContext> {
         Connection connection;
 
-        @Bean
-        public PostgreSQLContainer embeddedPostgres() throws IOException {
+        private static final
             PostgreSQLContainer pg = new PostgreSQLContainer()
                     .withDatabaseName(POSTGRES)
                     .withUsername(POSTGRES)
                     .withPassword(POSTGRES);
-            pg.start();
-            return pg;
-        }
 
-        @Bean
-        public DataSource dataSource() throws IOException, SQLException {
-            final PostgreSQLContainer pg = embeddedPostgres();
-            DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-            dataSourceBuilder.driverClassName("org.postgresql.Driver");
-            dataSourceBuilder.url(pg.getJdbcUrl());
-            dataSourceBuilder.username(pg.getUsername());
-            dataSourceBuilder.password(pg.getPassword());
-            return dataSourceBuilder.build();
+        @Override
+        public void initialize(ConfigurableApplicationContext applicationContext) {
+            pg.start();
+
+            TestPropertyValues.of(
+                    "spring.datasource.url=" + pg.getJdbcUrl(),
+                    "spring.datasource.username=" + pg.getUsername(),
+                    "spring.datasource.password=" + pg.getPassword()
+            ).applyTo(applicationContext.getEnvironment());
         }
 
         @PreDestroy
@@ -81,7 +78,7 @@ public abstract class BaseTest {
             if (connection != null) {
                 connection.close();
             }
-            embeddedPostgres().close();
+            pg.close();
         }
     }
 }
