@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import feign.Feign;
 import feign.jackson.JacksonEncoder;
 import net.serenitybdd.junit5.SerenityJUnit5Extension;
@@ -11,24 +10,24 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.cloud.openfeign.support.SpringMvcContract;
-import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.testcontainers.containers.PostgreSQLContainer;
 import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
 import uk.gov.hmcts.reform.authorisation.generators.ServiceAuthTokenGenerator;
 
 import jakarta.annotation.PreDestroy;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 @ExtendWith(SerenityJUnit5Extension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class BaseTest {
 
+    private static final String POSTGRES = "postgres";
     protected static final ObjectMapper mapper = new ObjectMapper();
 
     @BeforeAll
@@ -53,26 +52,25 @@ public abstract class BaseTest {
 
 
     @TestConfiguration
-    static class Configuration {
+    static class Configuration implements
+            ApplicationContextInitializer<ConfigurableApplicationContext> {
         Connection connection;
 
-        @Bean
-        public EmbeddedPostgres embeddedPostgres() throws IOException {
-            return EmbeddedPostgres
-                    .builder()
-                    .start();
-        }
+        private static final
+            PostgreSQLContainer pg = new PostgreSQLContainer()
+                    .withDatabaseName(POSTGRES)
+                    .withUsername(POSTGRES)
+                    .withPassword(POSTGRES);
 
-        @Bean
-        public DataSource dataSource() throws IOException, SQLException {
-            final EmbeddedPostgres pg = embeddedPostgres();
+        @Override
+        public void initialize(ConfigurableApplicationContext applicationContext) {
+            pg.start();
 
-            final Properties props = new Properties();
-            // Instruct JDBC to accept JSON string for JSONB
-            props.setProperty("stringtype", "unspecified");
-            props.setProperty("user", "postgres");
-            connection = DriverManager.getConnection(pg.getJdbcUrl("postgres"), props);
-            return new SingleConnectionDataSource(connection, true);
+            TestPropertyValues.of(
+                    "spring.datasource.url=" + pg.getJdbcUrl(),
+                    "spring.datasource.username=" + pg.getUsername(),
+                    "spring.datasource.password=" + pg.getPassword()
+            ).applyTo(applicationContext.getEnvironment());
         }
 
         @PreDestroy
@@ -80,7 +78,7 @@ public abstract class BaseTest {
             if (connection != null) {
                 connection.close();
             }
-            embeddedPostgres().close();
+            pg.close();
         }
     }
 }
