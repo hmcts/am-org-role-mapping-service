@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+
 /*
  * publiclaw "hearing-centre-team-leader" Org role mapping.
  */
@@ -199,11 +200,14 @@ end;
 
 /*
  * publiclaw admin "hearing-centre-admin" Org role mapping.
+ * Made obsolete in DTSAM-1132 - disabled by publiclaw_wa_2_2 flag.
+ * To be removed in DTSAM-1133.
  */
 
 rule "publiclaw_hearing_centre_admin_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+  $f1: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_2_2.getValue())
   $cap: CaseWorkerAccessProfile(roleId in ("3","4"), serviceCode == "ABA3", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -226,4 +230,37 @@ then
       .attributes(attribute)
       .build());
       logMsg("Rule : publiclaw_hearing_centre_admin_org_role");
+end;
+
+/*
+ * publiclaw admin "hearing-centre-admin" Org role mapping for 2.2.
+ * Made obsolete in DTSAM-1132 - disabled by iac_wa_1_5 flag.
+ * To be removed in DTSAM-1133.
+ */
+
+rule "v2_2_publiclaw_hearing_centre_admin_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_2_2.getValue())
+  $cap: CaseWorkerAccessProfile(roleId in ("3","4"), serviceCode == "ABA3", !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PUBLICLAW"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("routine_work,hearing_work"));
+   attribute.put("region", JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($cap.getId())
+      .roleCategory(RoleCategory.ADMIN)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("hearing-centre-admin")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .authorisations($cap.getSkillCodes())
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : v2_2publiclaw_hearing_centre_admin_org_role");
 end;
