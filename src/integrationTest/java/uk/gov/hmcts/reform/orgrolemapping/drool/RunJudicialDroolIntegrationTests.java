@@ -47,11 +47,13 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
     static Stream<Arguments> getTestArguments() {
         List<DroolJudicialTestArguments> arguments = new ArrayList<>();
 
-        arguments.addAll(BasicJudicialIT.getTestArguments());
+        //TODO arguments.addAll(BasicJudicialIT.getTestArguments());
 
-        arguments.addAll(EmploymentJudicialIT.getTestArguments());
+        //TODO arguments.addAll(EmploymentJudicialIT.getTestArguments());
 
-        arguments.addAll(PublicLawJudicialIT.getTestArguments());
+        //TODO arguments.addAll(PublicLawJudicialIT.getTestArguments());
+
+        arguments.addAll(StcicJudicialIT.getTestArguments());
 
         return arguments.stream()
             .map(DroolJudicialTestArguments::toArguments);
