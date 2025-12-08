@@ -18,11 +18,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
 import uk.gov.hmcts.reform.authorisation.generators.ServiceAuthTokenGenerator;
 
-import jakarta.annotation.PreDestroy;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-
 @ExtendWith(SerenityJUnit5Extension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class BaseTest {
@@ -54,16 +49,13 @@ public abstract class BaseTest {
     @TestConfiguration
     static class Configuration implements
             ApplicationContextInitializer<ConfigurableApplicationContext> {
-        Connection connection;
+        @Override
+        public void initialize(ConfigurableApplicationContext applicationContext) {
 
-        private static final
-            PostgreSQLContainer pg = new PostgreSQLContainer()
+            final PostgreSQLContainer pg = new PostgreSQLContainer()
                     .withDatabaseName(POSTGRES)
                     .withUsername(POSTGRES)
                     .withPassword(POSTGRES);
-
-        @Override
-        public void initialize(ConfigurableApplicationContext applicationContext) {
             pg.start();
 
             TestPropertyValues.of(
@@ -71,14 +63,6 @@ public abstract class BaseTest {
                     "spring.datasource.username=" + pg.getUsername(),
                     "spring.datasource.password=" + pg.getPassword()
             ).applyTo(applicationContext.getEnvironment());
-        }
-
-        @PreDestroy
-        public void contextDestroyed() throws IOException, SQLException {
-            if (connection != null) {
-                connection.close();
-            }
-            pg.close();
         }
     }
 }

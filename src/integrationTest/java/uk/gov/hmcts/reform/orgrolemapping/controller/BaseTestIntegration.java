@@ -2,36 +2,29 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.opentable.db.postgres.embedded.EmbeddedPostgres;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.lang.NonNull;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.TestPropertySourceUtils;
+import org.testcontainers.containers.PostgreSQLContainer;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 
-import jakarta.annotation.PreDestroy;
-import javax.sql.DataSource;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Properties;
 
 @ContextConfiguration(initializers = {BaseTestIntegration.WireMockServerInitializer.class})
 @ActiveProfiles("itest")
 public abstract class BaseTestIntegration extends BaseTest {
+
+    private static final String POSTGRES = "postgres";
 
     protected static final MediaType JSON_CONTENT_TYPE = new MediaType(
             MediaType.APPLICATION_JSON.getType(),
@@ -48,33 +41,22 @@ public abstract class BaseTestIntegration extends BaseTest {
     ServiceBusSenderClient serviceBusSenderClientJrd;
 
     @TestConfiguration
-    static class Configuration {
-        Connection connection;
+    static class Configuration implements
+            ApplicationContextInitializer<ConfigurableApplicationContext> {
+        @Override
+        public void initialize(ConfigurableApplicationContext applicationContext) {
 
-        @Bean
-        public EmbeddedPostgres embeddedPostgres() throws IOException {
-            return EmbeddedPostgres
-                    .builder()
-                    .start();
-        }
+            final PostgreSQLContainer pg = new PostgreSQLContainer()
+                    .withDatabaseName(POSTGRES)
+                    .withUsername(POSTGRES)
+                    .withPassword(POSTGRES);
+            pg.start();
 
-        @Bean
-        public DataSource dataSource(@Autowired EmbeddedPostgres pg) throws Exception {
-
-            final Properties props = new Properties();
-            // Instruct JDBC to accept JSON string for JSONB
-            props.setProperty("stringtype", "unspecified");
-            props.setProperty("user", "postgres");
-            connection = DriverManager.getConnection(pg.getJdbcUrl("postgres"), props);
-            return new SingleConnectionDataSource(connection, true);
-        }
-
-
-        @PreDestroy
-        public void contextDestroyed() throws SQLException {
-            if (connection != null) {
-                connection.close();
-            }
+            TestPropertyValues.of(
+                    "spring.datasource.url=" + pg.getJdbcUrl(),
+                    "spring.datasource.username=" + pg.getUsername(),
+                    "spring.datasource.password=" + pg.getPassword()
+            ).applyTo(applicationContext.getEnvironment());
         }
     }
 
