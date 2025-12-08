@@ -13,8 +13,8 @@
       "is_principal_appointment": "true",
       "appointment": "Tribunal Member Disability",
       "role_name_id": "44",
-      "appointment_type": "Fee-paid",
-      "contract_type_id": "1",
+      "appointment_type": "[[APPOINTMENT_TYPE]]",
+      "contract_type_id": "[[CONTRACT_TYPE_ID]]",
       "service_codes": [
         "BBA3"
       ],
