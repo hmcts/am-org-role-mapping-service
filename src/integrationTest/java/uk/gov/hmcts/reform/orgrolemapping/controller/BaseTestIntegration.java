@@ -47,15 +47,11 @@ public abstract class BaseTestIntegration extends BaseTest {
         public void initialize(ConfigurableApplicationContext applicationContext) {
 
             final PostgreSQLContainer pg = new PostgreSQLContainer()
-                    .withDatabaseName(POSTGRES)
-                    .withUsername(POSTGRES)
-                    .withPassword(POSTGRES);
+                    .withDatabaseName(POSTGRES);
             pg.start();
 
             TestPropertyValues.of(
-                    "spring.datasource.url=" + pg.getJdbcUrl(),
-                    "spring.datasource.username=" + pg.getUsername(),
-                    "spring.datasource.password=" + pg.getPassword()
+                    "spring.datasource.url=" + pg.getJdbcUrl()
             ).applyTo(applicationContext.getEnvironment());
         }
     }
