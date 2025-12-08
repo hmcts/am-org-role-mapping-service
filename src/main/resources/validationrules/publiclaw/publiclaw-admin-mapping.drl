@@ -234,8 +234,6 @@ end;
 
 /*
  * publiclaw admin "hearing-centre-admin" Org role mapping for 2.2.
- * Made obsolete in DTSAM-1132 - disabled by iac_wa_1_5 flag.
- * To be removed in DTSAM-1133.
  */
 
 rule "v2_2_publiclaw_hearing_centre_admin_org_role"
@@ -262,5 +260,5 @@ then
       .authorisations($cap.getSkillCodes())
       .attributes(attribute)
       .build());
-      logMsg("Rule : v2_2publiclaw_hearing_centre_admin_org_role");
+      logMsg("Rule : v2_2_publiclaw_hearing_centre_admin_org_role");
 end;
