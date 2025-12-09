@@ -386,7 +386,7 @@ dependencies {
 
 
     implementation 'net.bytebuddy:byte-buddy:1.17.8'
-    
+
     testImplementation('org.testcontainers:testcontainers-postgresql:2.0.2')
 
 

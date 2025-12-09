@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -44,7 +45,7 @@ public abstract class BaseTestIntegration extends BaseTest {
     static class Configuration implements
             ApplicationContextInitializer<ConfigurableApplicationContext> {
         @Override
-        public void initialize(ConfigurableApplicationContext applicationContext) {
+        public void initialize(@Autowired ConfigurableApplicationContext applicationContext) {
 
             final PostgreSQLContainer pg = new PostgreSQLContainer()
                     .withDatabaseName(POSTGRES);
