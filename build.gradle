@@ -389,7 +389,6 @@ dependencies {
 
     testImplementation('org.testcontainers:testcontainers-postgresql:2.0.2')
 
-
     pitest 'org.pitest:pitest-junit5-plugin:1.2.3'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit

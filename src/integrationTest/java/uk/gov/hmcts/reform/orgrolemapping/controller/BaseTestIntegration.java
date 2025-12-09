@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -43,17 +45,30 @@ public abstract class BaseTestIntegration extends BaseTest {
 
     @TestConfiguration
     static class Configuration implements
-            ApplicationContextInitializer<ConfigurableApplicationContext> {
-        @Override
-        public void initialize(@Autowired ConfigurableApplicationContext applicationContext) {
+            ApplicationContextInitializer<ConfigurableApplicationContext>, AfterAllCallback {
 
-            final PostgreSQLContainer pg = new PostgreSQLContainer()
-                    .withDatabaseName(POSTGRES);
+        private static final PostgreSQLContainer pg = new PostgreSQLContainer()
+                .withDatabaseName(POSTGRES)
+                .withUsername(POSTGRES)
+                .withPassword(POSTGRES);
+
+        @Override
+        public void initialize(ConfigurableApplicationContext applicationContext) {
             pg.start();
 
             TestPropertyValues.of(
-                    "spring.datasource.url=" + pg.getJdbcUrl()
+                    "spring.datasource.url=" + pg.getJdbcUrl(),
+                    "spring.datasource.username=" + pg.getUsername(),
+                    "spring.datasource.password=" + pg.getPassword()
             ).applyTo(applicationContext.getEnvironment());
+        }
+
+        @Override
+        public void afterAll(ExtensionContext context) throws Exception {
+            if (pg == null) {
+                return;
+            }
+            pg.close();
         }
     }
 
