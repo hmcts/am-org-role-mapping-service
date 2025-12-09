@@ -4,11 +4,9 @@ import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -17,8 +15,11 @@ import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 
 import java.nio.charset.StandardCharsets;
@@ -28,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 public abstract class BaseTestIntegration extends BaseTest {
 
     private static final String POSTGRES = "postgres";
+    private static final String POSTGRES_IMAGE = "postgres:latest";
 
     protected static final MediaType JSON_CONTENT_TYPE = new MediaType(
             MediaType.APPLICATION_JSON.getType(),
@@ -47,7 +49,8 @@ public abstract class BaseTestIntegration extends BaseTest {
     static class Configuration implements
             ApplicationContextInitializer<ConfigurableApplicationContext>, AfterAllCallback {
 
-        private static final PostgreSQLContainer pg = new PostgreSQLContainer()
+        private static final PostgreSQLContainer pg =
+                new PostgreSQLContainer<>(DockerImageName.parse(POSTGRES_IMAGE))
                 .withDatabaseName(POSTGRES)
                 .withUsername(POSTGRES)
                 .withPassword(POSTGRES);
@@ -55,12 +58,13 @@ public abstract class BaseTestIntegration extends BaseTest {
         @Override
         public void initialize(ConfigurableApplicationContext applicationContext) {
             pg.start();
+        }
 
-            TestPropertyValues.of(
-                    "spring.datasource.url=" + pg.getJdbcUrl(),
-                    "spring.datasource.username=" + pg.getUsername(),
-                    "spring.datasource.password=" + pg.getPassword()
-            ).applyTo(applicationContext.getEnvironment());
+        @DynamicPropertySource
+        static void registerPgProperties(DynamicPropertyRegistry registry) {
+            registry.add("spring.datasource.url", pg::getJdbcUrl);
+            registry.add("spring.datasource.username", pg::getUsername);
+            registry.add("spring.datasource.password", pg::getPassword);
         }
 
         @Override
