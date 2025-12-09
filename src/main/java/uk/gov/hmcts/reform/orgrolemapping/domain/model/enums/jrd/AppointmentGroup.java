@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public enum AppointmentGroup implements AppointmentEnum {
 
@@ -30,7 +29,7 @@ public enum AppointmentGroup implements AppointmentEnum {
 
     AppointmentGroup(String name, List<Appointment> appointments) {
         this.name = name;
-        this.codes = appointments.stream().flatMap(a -> a.getCodes().stream()).collect(Collectors.toList());
+        this.codes = appointments.stream().flatMap(a -> a.getCodes().stream()).toList();
         this.members = appointments;
     }
 
