@@ -23,6 +23,7 @@ import org.testcontainers.utility.DockerImageName;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 @ContextConfiguration(initializers = {BaseTestIntegration.WireMockServerInitializer.class})
 @ActiveProfiles("itest")
@@ -52,7 +53,7 @@ public abstract class BaseTestIntegration extends BaseTest {
         private static final PostgreSQLContainer pg =
                 new PostgreSQLContainer<>(DockerImageName.parse(POSTGRES_IMAGE))
                 .withDatabaseName(POSTGRES)
-                .withExposedPorts(5451)
+                .withStartupTimeout(Duration.ofSeconds(60))
                 .withUsername(POSTGRES)
                 .withPassword(POSTGRES);
 
