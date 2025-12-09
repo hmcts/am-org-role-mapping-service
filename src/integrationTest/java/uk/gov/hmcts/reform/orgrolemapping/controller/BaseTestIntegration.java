@@ -52,6 +52,7 @@ public abstract class BaseTestIntegration extends BaseTest {
         private static final PostgreSQLContainer pg =
                 new PostgreSQLContainer<>(DockerImageName.parse(POSTGRES_IMAGE))
                 .withDatabaseName(POSTGRES)
+                .withExposedPorts(5451)
                 .withUsername(POSTGRES)
                 .withPassword(POSTGRES);
 
