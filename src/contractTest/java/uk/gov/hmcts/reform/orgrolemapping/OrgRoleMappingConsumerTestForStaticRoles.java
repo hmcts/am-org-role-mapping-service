@@ -5,7 +5,6 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
-import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import groovy.util.logging.Slf4j;
 import jakarta.annotation.PreDestroy;
 import org.apache.http.client.fluent.Executor;
@@ -118,15 +117,15 @@ public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
         Connection connection;
 
         @Bean
-        public EmbeddedPostgres embeddedPostgres() throws IOException {
-            return EmbeddedPostgres
+        public PostgresTestContainer embeddedPostgres() throws IOException {
+            return PostgresTestContainer
                     .builder()
                     .start();
         }
 
         @Bean
         public DataSource dataSource() throws IOException, SQLException {
-            final EmbeddedPostgres pg = embeddedPostgres();
+            final PostgresTestContainer pg = embeddedPostgres();
 
             final Properties props = new Properties();
             // Instruct JDBC to accept JSON string for JSONB
