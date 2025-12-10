@@ -147,7 +147,7 @@ class DroolPublicLawStaffOrgRolesTest extends DroolBase {
                     }
                     //assert work types
                     if (("hearing-centre-team-leader").equals(r.getRoleName())) {
-                        assertEquals("routine_work,access_requests",
+                        assertEquals("routine_work,access_requests,hearing_work",
                                 r.getAttributes().get("workTypes").asText());
                     } else if (("hearing-centre-admin").equals(r.getRoleName())) {
                         assertEquals("routine_work,hearing_work",
