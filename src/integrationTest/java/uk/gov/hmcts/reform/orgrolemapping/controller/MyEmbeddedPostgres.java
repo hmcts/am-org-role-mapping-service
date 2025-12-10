@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.utility.DockerImageName;
@@ -31,8 +30,6 @@ public class MyEmbeddedPostgres implements Closeable {
     static final String JDBC_URL_PREFIX = "jdbc:";
 
     MyEmbeddedPostgres(Map<String, String> postgresConfig, Map<String, String> localeConfig,
-                       // Map<String, MyBindMount> bindMounts, Optional<Network> network,
-                       // Optional<String> networkAlias,
                        DockerImageName image,
                        Duration pgStartupWait, String databaseName) {
         image = image.asCompatibleSubstituteFor("postgres");
@@ -48,19 +45,8 @@ public class MyEmbeddedPostgres implements Closeable {
         final List<String> cmd = new ArrayList<>(Collections.singletonList(POSTGRES));
         cmd.addAll(createConfigOptions(postgresConfig));
         postgreDBContainer.setCommand(cmd.toArray(new String[0]));
-        // processBindMounts(postgreDBContainer, bindMounts);
-        //network.ifPresent(postgreDBContainer::withNetwork);
-        //networkAlias.ifPresent(postgreDBContainer::withNetworkAliases);
         postgreDBContainer.start();
     }
-
-    //    private void processBindMounts(PostgreSQLContainer<?> postgreDBContainer,
-    //                                   Map<String, MyBindMount> bindMounts) {
-    //        bindMounts.values().stream().filter((f) ->
-    //                (new File(f.getLocalFile())).exists()).forEach(
-    //                        (f) -> postgreDBContainer.addFileSystemBind(f.getLocalFile(),
-    //                                f.getRemoteFile(), f.getBindMode()));
-    //    }
 
     private List<String> createConfigOptions(final Map<String, String> postgresConfig) {
         List<String> configOptions = new ArrayList<>();
@@ -127,8 +113,6 @@ public class MyEmbeddedPostgres implements Closeable {
     public static class Builder {
         private final Map<String, String> config = new HashMap<>();
         private final Map<String, String> localeConfig = new HashMap<>();
-        private final Map<String, MyBindMount> bindMounts = new HashMap<>();
-        private Optional<Network> network = Optional.empty();
         private Duration pgStartupWait;
         private DockerImageName image;
         private String databaseName;
@@ -168,7 +152,6 @@ public class MyEmbeddedPostgres implements Closeable {
 
         public MyEmbeddedPostgres start() throws IOException {
             return new MyEmbeddedPostgres(this.config, this.localeConfig,
-                    // this.bindMounts, this.network, this.networkAlias,
                     this.image, this.pgStartupWait, this.databaseName);
         }
 
@@ -178,8 +161,7 @@ public class MyEmbeddedPostgres implements Closeable {
             } else if (o != null && this.getClass() == o.getClass()) {
                 MyEmbeddedPostgres.Builder builder = (MyEmbeddedPostgres.Builder)o;
                 return Objects.equals(this.config, builder.config) && Objects.equals(this.localeConfig,
-                        builder.localeConfig) // && Objects.equals(this.bindMounts, builder.bindMounts)
-                        // && Objects.equals(this.network, builder.network)
+                        builder.localeConfig)
                         && Objects.equals(this.pgStartupWait, builder.pgStartupWait)
                         && Objects.equals(this.image, builder.image)
                         && Objects.equals(this.databaseName, builder.databaseName)
@@ -191,7 +173,6 @@ public class MyEmbeddedPostgres implements Closeable {
 
         public int hashCode() {
             return Objects.hash(new Object[]{this.config, this.localeConfig,
-                // this.bindMounts, this.network,
                 this.pgStartupWait, this.image, this.databaseName, this.networkAlias});
         }
     }
