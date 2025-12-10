@@ -51,14 +51,14 @@ public abstract class BaseTestIntegration extends BaseTest {
         Connection connection;
 
         @Bean
-        public MyEmbeddedPostgres embeddedPostgres() throws IOException {
-            return MyEmbeddedPostgres
+        public PostgresTestContainer embeddedPostgres() throws IOException {
+            return PostgresTestContainer
                     .builder()
                     .start();
         }
 
         @Bean
-        public DataSource dataSource(@Autowired MyEmbeddedPostgres pg) throws Exception {
+        public DataSource dataSource(@Autowired PostgresTestContainer pg) throws Exception {
 
             final Properties props = new Properties();
             // Instruct JDBC to accept JSON string for JSONB
