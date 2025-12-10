@@ -1,11 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,9 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import javax.sql.DataSource;
 
-import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.Network;
@@ -35,9 +31,10 @@ public class MyEmbeddedPostgres implements Closeable {
     static final String JDBC_URL_PREFIX = "jdbc:";
 
     MyEmbeddedPostgres(Map<String, String> postgresConfig, Map<String, String> localeConfig,
-                       Map<String, MyBindMount> bindMounts, Optional<Network> network,
-                       Optional<String> networkAlias, DockerImageName image,
-                       Duration pgStartupWait, String databaseName) throws IOException {
+                       // Map<String, MyBindMount> bindMounts, Optional<Network> network,
+                       // Optional<String> networkAlias,
+                       DockerImageName image,
+                       Duration pgStartupWait, String databaseName) {
         image = image.asCompatibleSubstituteFor("postgres");
         this.postgreDBContainer = new PostgreSQLContainer<>(image)
                 .withDatabaseName(databaseName)
@@ -51,19 +48,19 @@ public class MyEmbeddedPostgres implements Closeable {
         final List<String> cmd = new ArrayList<>(Collections.singletonList(POSTGRES));
         cmd.addAll(createConfigOptions(postgresConfig));
         postgreDBContainer.setCommand(cmd.toArray(new String[0]));
-        processBindMounts(postgreDBContainer, bindMounts);
-        network.ifPresent(postgreDBContainer::withNetwork);
-        networkAlias.ifPresent(postgreDBContainer::withNetworkAliases);
+        // processBindMounts(postgreDBContainer, bindMounts);
+        //network.ifPresent(postgreDBContainer::withNetwork);
+        //networkAlias.ifPresent(postgreDBContainer::withNetworkAliases);
         postgreDBContainer.start();
     }
 
-    private void processBindMounts(PostgreSQLContainer<?> postgreDBContainer,
-                                   Map<String, MyBindMount> bindMounts) {
-        bindMounts.values().stream().filter((f) ->
-                (new File(f.getLocalFile())).exists()).forEach(
-                        (f) -> postgreDBContainer.addFileSystemBind(f.getLocalFile(),
-                                f.getRemoteFile(), f.getBindMode()));
-    }
+    //    private void processBindMounts(PostgreSQLContainer<?> postgreDBContainer,
+    //                                   Map<String, MyBindMount> bindMounts) {
+    //        bindMounts.values().stream().filter((f) ->
+    //                (new File(f.getLocalFile())).exists()).forEach(
+    //                        (f) -> postgreDBContainer.addFileSystemBind(f.getLocalFile(),
+    //                                f.getRemoteFile(), f.getBindMode()));
+    //    }
 
     private List<String> createConfigOptions(final Map<String, String> postgresConfig) {
         List<String> configOptions = new ArrayList<>();
@@ -86,22 +83,6 @@ public class MyEmbeddedPostgres implements Closeable {
         }
 
         return localeOptions;
-    }
-
-    public DataSource getDatabase(String userName, String dbName, Map<String, String> properties) {
-        PGSimpleDataSource ds = new PGSimpleDataSource();
-        ds.setURL(this.postgreDBContainer.getJdbcUrl());
-        ds.setDatabaseName(dbName);
-        ds.setUser(userName);
-        ds.setPassword(this.postgreDBContainer.getPassword());
-        properties.forEach((propertyKey, propertyValue) -> {
-            try {
-                ds.setProperty(propertyKey, propertyValue);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        return ds;
     }
 
     public String getJdbcUrl(String dbName) {
@@ -186,8 +167,9 @@ public class MyEmbeddedPostgres implements Closeable {
         }
 
         public MyEmbeddedPostgres start() throws IOException {
-            return new MyEmbeddedPostgres(this.config, this.localeConfig, this.bindMounts,
-                    this.network, this.networkAlias, this.image, this.pgStartupWait, this.databaseName);
+            return new MyEmbeddedPostgres(this.config, this.localeConfig,
+                    // this.bindMounts, this.network, this.networkAlias,
+                    this.image, this.pgStartupWait, this.databaseName);
         }
 
         public boolean equals(Object o) {
@@ -196,8 +178,8 @@ public class MyEmbeddedPostgres implements Closeable {
             } else if (o != null && this.getClass() == o.getClass()) {
                 MyEmbeddedPostgres.Builder builder = (MyEmbeddedPostgres.Builder)o;
                 return Objects.equals(this.config, builder.config) && Objects.equals(this.localeConfig,
-                        builder.localeConfig) && Objects.equals(this.bindMounts, builder.bindMounts)
-                        && Objects.equals(this.network, builder.network)
+                        builder.localeConfig) // && Objects.equals(this.bindMounts, builder.bindMounts)
+                        // && Objects.equals(this.network, builder.network)
                         && Objects.equals(this.pgStartupWait, builder.pgStartupWait)
                         && Objects.equals(this.image, builder.image)
                         && Objects.equals(this.databaseName, builder.databaseName)
@@ -208,8 +190,9 @@ public class MyEmbeddedPostgres implements Closeable {
         }
 
         public int hashCode() {
-            return Objects.hash(new Object[]{this.config, this.localeConfig, this.bindMounts,
-                this.network, this.pgStartupWait, this.image, this.databaseName, this.networkAlias});
+            return Objects.hash(new Object[]{this.config, this.localeConfig,
+                // this.bindMounts, this.network,
+                this.pgStartupWait, this.image, this.databaseName, this.networkAlias});
         }
     }
 }
