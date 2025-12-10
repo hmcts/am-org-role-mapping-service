@@ -20,7 +20,6 @@ import javax.sql.DataSource;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
@@ -30,10 +29,7 @@ public class MyEmbeddedPostgres implements Closeable {
     private static final Logger LOG = LoggerFactory.getLogger(MyEmbeddedPostgres.class);
     static final Duration DEFAULT_PG_STARTUP_WAIT = Duration.ofSeconds(10L);
     static final String POSTGRES = "postgres";
-    static final String ENV_DOCKER_IMAGE = "PG_FULL_IMAGE";
-    static final String ENV_DOCKER_PREFIX = "TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX";
     static final DockerImageName DOCKER_DEFAULT_IMAGE_NAME = DockerImageName.parse(POSTGRES);
-    static final String DOCKER_DEFAULT_TAG = "13-alpine";
     private final PostgreSQLContainer<?> postgreDBContainer;
     private final UUID instanceId = UUID.randomUUID();
     static final String JDBC_URL_PREFIX = "jdbc:";
@@ -92,28 +88,6 @@ public class MyEmbeddedPostgres implements Closeable {
         return localeOptions;
     }
 
-    public DataSource getTemplateDatabase() {
-        return this.getDatabase(this.postgreDBContainer.getUsername(), "template1");
-    }
-
-    public DataSource getTemplateDatabase(Map<String, String> properties) {
-        return this.getDatabase(this.postgreDBContainer.getUsername(), "template1", properties);
-    }
-
-    public DataSource getPostgresDatabase() {
-        return this.getDatabase(this.postgreDBContainer.getUsername(),
-                this.postgreDBContainer.getDatabaseName());
-    }
-
-    public DataSource getPostgresDatabase(Map<String, String> properties) {
-        return this.getDatabase(this.postgreDBContainer.getUsername(),
-                this.postgreDBContainer.getDatabaseName(), properties);
-    }
-
-    public DataSource getDatabase(String userName, String dbName) {
-        return this.getDatabase(userName, dbName, Collections.emptyMap());
-    }
-
     public DataSource getDatabase(String userName, String dbName, Map<String, String> properties) {
         PGSimpleDataSource ds = new PGSimpleDataSource();
         ds.setURL(this.postgreDBContainer.getJdbcUrl());
@@ -157,32 +131,12 @@ public class MyEmbeddedPostgres implements Closeable {
                 uri.getFragment());
     }
 
-    public String getHost() {
-        return this.postgreDBContainer.getContainerIpAddress();
-    }
-
-    public int getPort() {
-        return this.postgreDBContainer.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT);
-    }
-
     public void close() throws IOException {
         this.postgreDBContainer.close();
     }
 
-    public static MyEmbeddedPostgres start() throws IOException {
-        return builder().start();
-    }
-
     public static MyEmbeddedPostgres.Builder builder() {
         return new MyEmbeddedPostgres.Builder();
-    }
-
-    public String getUserName() {
-        return this.postgreDBContainer.getUsername();
-    }
-
-    public String getPassword() {
-        return this.postgreDBContainer.getPassword();
     }
 
     public String toString() {
@@ -229,60 +183,6 @@ public class MyEmbeddedPostgres implements Closeable {
             this.config.put("synchronous_commit", "off");
             this.config.put("max_connections", "300");
             this.config.put("fsync", "off");
-        }
-
-        public MyEmbeddedPostgres.Builder setPGStartupWait(Duration pgStartupWait) {
-            Objects.requireNonNull(pgStartupWait);
-            if (pgStartupWait.isNegative()) {
-                throw new IllegalArgumentException("Negative durations are not permitted.");
-            } else {
-                this.pgStartupWait = pgStartupWait;
-                return this;
-            }
-        }
-
-        public MyEmbeddedPostgres.Builder setServerConfig(String key, String value) {
-            this.config.put(key, value);
-            return this;
-        }
-
-        public MyEmbeddedPostgres.Builder setBindMount(String localFile, String remoteFile) {
-            return this.setBindMount(MyBindMount.of(localFile, remoteFile, BindMode.READ_ONLY));
-        }
-
-        public MyEmbeddedPostgres.Builder setBindMount(MyBindMount bindMount) {
-            this.bindMounts.put(bindMount.getLocalFile(), bindMount);
-            return this;
-        }
-
-        public MyEmbeddedPostgres.Builder setNetwork(Network network, String networkAlias) {
-            this.network = Optional.ofNullable(network);
-            this.networkAlias = Optional.ofNullable(networkAlias);
-            return this;
-        }
-
-        public MyEmbeddedPostgres.Builder setDatabaseName(String databaseName) {
-            this.databaseName = databaseName;
-            return this;
-        }
-
-        public MyEmbeddedPostgres.Builder setLocaleConfig(String key, String value) {
-            this.localeConfig.put(key, value);
-            return this;
-        }
-
-        public MyEmbeddedPostgres.Builder setImage(DockerImageName image) {
-            this.image = image;
-            return this;
-        }
-
-        public MyEmbeddedPostgres.Builder setTag(String tag) {
-            this.image = this.image.withTag(tag);
-            return this;
-        }
-
-        DockerImageName getImage() {
-            return this.image;
         }
 
         public MyEmbeddedPostgres start() throws IOException {
