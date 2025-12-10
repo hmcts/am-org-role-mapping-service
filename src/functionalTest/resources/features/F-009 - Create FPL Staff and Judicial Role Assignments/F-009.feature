@@ -19,7 +19,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-091_DeleteDataForRoleAssignments].
 
   @S-092
-  @FeatureToggle(DB:publiclaw_wa_1_7=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:publiclaw_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader and Hearing Centre Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-092_DeleteDataForRoleAssignments],
@@ -147,7 +147,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-009.03
-  @FeatureToggle(DB:publiclaw_wa_1_7=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:publiclaw_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader (ABA3 FPL)] as in [S-009.03__VerifyCaseworkerDetails],
@@ -161,7 +161,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-009.03a
-  @FeatureToggle(DB:publiclaw_wa_1_7=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:publiclaw_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Task Supervisor
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (ABA3 FPL)] as in [S-009.03a__VerifyCaseworkerDetails],
@@ -175,7 +175,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-009.03b
-  @FeatureToggle(DB:publiclaw_wa_1_7=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:publiclaw_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Case allocator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader + Case allocator (ABA3 FPL)] as in [S-009.03b__VerifyCaseworkerDetails],
@@ -189,7 +189,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-009.04
-  @FeatureToggle(DB:publiclaw_wa_1_7=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:publiclaw_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Administrator (ABA3 FPL)] as in [S-009.04__VerifyCaseworkerDetails],
@@ -203,7 +203,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-009.04a
-  @FeatureToggle(DB:publiclaw_wa_1_7=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:publiclaw_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Administrator + Task Supervisor
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Administrator + Task Supervisor (ABA3 FPL)] as in [S-009.04a__VerifyCaseworkerDetails],
@@ -217,7 +217,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-009.04b
-  @FeatureToggle(DB:publiclaw_wa_1_7=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:publiclaw_wa_2_2=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Administrator + Case allocator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Administrator + Case allocator (ABA3 FPL)] as in [S-009.04b__VerifyCaseworkerDetails],
