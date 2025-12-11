@@ -33,6 +33,7 @@ public class PostgresTestContainer implements Closeable {
                           Duration pgStartupWait, String databaseName) {
         image = image.asCompatibleSubstituteFor(POSTGRES);
         this.postgreDBContainer = new PostgreSQLContainer<>(image)
+                .withReuse(true)
                 .withDatabaseName(databaseName)
                 .withUsername(POSTGRES)
                 .withPassword(POSTGRES)
