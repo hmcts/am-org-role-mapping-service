@@ -17,7 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.FEE_PAID;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.SALARIED;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.VOLUNTARY;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.EMPTY_ROLE_ASSIGNMENT_TEMPLATE;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.RunJudicialDroolIntegrationTests.DROOL_JUDICIAL_TEST_OUTPUT_PATH;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.DF;
@@ -503,7 +505,9 @@ public class DroolJudicialTestArgumentsHelper {
                 .rasRequestFileNameWithBooking(rasRequestFileName + (useWithBookings ? "__withBooking" : ""))
                 .rasRequestFileNameWithoutBooking(rasRequestFileName + (useWithBookings ? "__withoutBooking" : ""))
                 .additionalRoleTest(additionalRoleTest)
-                .overrideMapValues(null)
+                .overrideMapValues(
+                    generateCommonJudicialOverrideMapValues(FEE_PAID, REGION_02_MIDLANDS)
+                )
                 .build()
         );
 
@@ -572,6 +576,24 @@ public class DroolJudicialTestArgumentsHelper {
         );
 
         return arguments;
+
+    }
+
+    @SuppressWarnings({"SameParameterValue"})
+    public static List<DroolJudicialTestArguments> generateStandardVoluntaryTestArguments(String jrdResponseFileName,
+                                                                                          String rasRequestFileName,
+                                                                                          boolean useWithBookings) {
+        return List.of(
+            DroolJudicialTestArguments.builder()
+                .jrdResponseFileName(jrdResponseFileName)
+                .rasRequestFileNameWithBooking(rasRequestFileName + (useWithBookings ? "__withBooking" : ""))
+                .rasRequestFileNameWithoutBooking(rasRequestFileName + (useWithBookings ? "__withoutBooking" : ""))
+                .additionalRoleTest(false)
+                .overrideMapValues(
+                    generateCommonJudicialOverrideMapValues(VOLUNTARY, REGION_02_MIDLANDS)
+                )
+                .build()
+        );
 
     }
 
