@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -98,7 +97,7 @@ public class PostgresTestContainer implements Closeable {
                 uri.getFragment());
     }
 
-    public void close() throws IOException {
+    public void close() {
         this.postgreDBContainer.close();
     }
 

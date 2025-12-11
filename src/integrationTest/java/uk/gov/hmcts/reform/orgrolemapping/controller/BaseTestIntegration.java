@@ -21,7 +21,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 
 import jakarta.annotation.PreDestroy;
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -51,7 +50,7 @@ public abstract class BaseTestIntegration extends BaseTest {
         Connection connection;
 
         @Bean
-        public PostgresTestContainer embeddedPostgres() throws IOException {
+        public PostgresTestContainer embeddedPostgres() {
             return PostgresTestContainer
                     .builder()
                     .start();
