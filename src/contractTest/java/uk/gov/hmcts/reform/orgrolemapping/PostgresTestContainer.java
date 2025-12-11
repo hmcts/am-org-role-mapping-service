@@ -7,25 +7,17 @@ import java.io.Closeable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
-//import java.util.ArrayList;
-//import java.util.Collections;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 public class PostgresTestContainer implements Closeable {
     static final Duration DEFAULT_PG_STARTUP_WAIT = Duration.ofSeconds(10L);
     static final String POSTGRES = "postgres";
     static final DockerImageName DOCKER_DEFAULT_IMAGE_NAME = DockerImageName.parse(POSTGRES);
     private final PostgreSQLContainer<?> postgreDBContainer;
-    private final UUID instanceId = UUID.randomUUID();
     static final String JDBC_URL_PREFIX = "jdbc:";
 
-    PostgresTestContainer(// Map<String, String> postgresConfig,
-                          DockerImageName image,
+    PostgresTestContainer(DockerImageName image,
                           Duration pgStartupWait, String databaseName) {
         image = image.asCompatibleSubstituteFor(POSTGRES);
         this.postgreDBContainer = new PostgreSQLContainer<>(image)
@@ -35,23 +27,8 @@ public class PostgresTestContainer implements Closeable {
                 .withPassword(POSTGRES)
                 .withStartupTimeout(pgStartupWait)
                 .withEnv("POSTGRES_HOST_AUTH_METHOD", "trust");
-        //        final List<String> cmd = new ArrayList<>(Collections.singletonList(POSTGRES));
-        //        cmd.addAll(createConfigOptions(postgresConfig));
-        //        postgreDBContainer.setCommand(cmd.toArray(new String[0]));
         postgreDBContainer.start();
     }
-
-    //    private List<String> createConfigOptions(final Map<String, String> postgresConfig) {
-    //        List<String> configOptions = new ArrayList<>();
-    //
-    //        for (Map.Entry<String, String> config : postgresConfig.entrySet()) {
-    //            configOptions.add("-c");
-    //            String var10001 = (String)config.getKey();
-    //            configOptions.add(var10001 + "=" + (String)config.getValue());
-    //        }
-    //
-    //        return configOptions;
-    //    }
 
     public String getJdbcUrl(String dbName) {
         try {
@@ -88,12 +65,7 @@ public class PostgresTestContainer implements Closeable {
         return new Builder();
     }
 
-    public String toString() {
-        return "EmbeddedPG-" + this.instanceId;
-    }
-
     public static class Builder {
-        // private final Map<String, String> config = new HashMap<>();
         private Duration pgStartupWait;
         private DockerImageName image;
         private String databaseName;
@@ -105,7 +77,7 @@ public class PostgresTestContainer implements Closeable {
                 return this.getEnvOrProperty("TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX") != null
                         ? DockerImageName.parse(this.insertSlashIfNeeded(
                                 this.getEnvOrProperty(
-                                        "TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX"), "postgres"))
+                                        "TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX"), POSTGRES))
                         .withTag("13-alpine") :
                         PostgresTestContainer.DOCKER_DEFAULT_IMAGE_NAME.withTag("13-alpine");
             }
@@ -123,15 +95,10 @@ public class PostgresTestContainer implements Closeable {
             this.pgStartupWait = PostgresTestContainer.DEFAULT_PG_STARTUP_WAIT;
             this.image = this.getDefaultImage();
             this.databaseName = PostgresTestContainer.POSTGRES;
-            //            this.config.put("timezone", "UTC");
-            //            this.config.put("synchronous_commit", "off");
-            //            this.config.put("max_connections", "300");
-            //            this.config.put("fsync", "off");
         }
 
         public PostgresTestContainer start() {
-            return new PostgresTestContainer(// this.config,
-                    this.image, this.pgStartupWait, this.databaseName);
+            return new PostgresTestContainer(this.image, this.pgStartupWait, this.databaseName);
         }
 
         public boolean equals(Object o) {
@@ -139,9 +106,7 @@ public class PostgresTestContainer implements Closeable {
                 return true;
             } else if (o != null && this.getClass() == o.getClass()) {
                 Builder builder = (Builder)o;
-                return // Objects.equals(this.config, builder.config)
-                        //&& Objects.equals(this.localeConfig, builder.localeConfig)
-                        Objects.equals(this.pgStartupWait, builder.pgStartupWait)
+                return Objects.equals(this.pgStartupWait, builder.pgStartupWait)
                         && Objects.equals(this.image, builder.image)
                         && Objects.equals(this.databaseName, builder.databaseName);
             } else {
@@ -150,8 +115,7 @@ public class PostgresTestContainer implements Closeable {
         }
 
         public int hashCode() {
-            return Objects.hash(new Object[]{// this.config, this.localeConfig,
-                this.pgStartupWait, this.image, this.databaseName});
+            return Objects.hash(new Object[]{this.pgStartupWait, this.image, this.databaseName});
         }
     }
 }
