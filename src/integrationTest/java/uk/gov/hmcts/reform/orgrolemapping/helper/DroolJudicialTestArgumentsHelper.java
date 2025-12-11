@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.FEE_PAID;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.SALARIED;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.EMPTY_ROLE_ASSIGNMENT_TEMPLATE;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.RunJudicialDroolIntegrationTests.DROOL_JUDICIAL_TEST_OUTPUT_PATH;
@@ -503,7 +504,9 @@ public class DroolJudicialTestArgumentsHelper {
                 .rasRequestFileNameWithBooking(rasRequestFileName + (useWithBookings ? "__withBooking" : ""))
                 .rasRequestFileNameWithoutBooking(rasRequestFileName + (useWithBookings ? "__withoutBooking" : ""))
                 .additionalRoleTest(additionalRoleTest)
-                .overrideMapValues(null)
+                .overrideMapValues(
+                    generateCommonJudicialOverrideMapValues(FEE_PAID, REGION_02_MIDLANDS)
+                )
                 .build()
         );
 
