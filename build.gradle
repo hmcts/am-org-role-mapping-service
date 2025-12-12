@@ -36,7 +36,7 @@ def versions = [
         drools         : '9.44.0.Final',
         log4JVersion   : '2.24.3',
         netty_version  : '4.2.7.Final',
-        poi            : '5.5.0'
+        poi            : '5.5.1'
 ]
 
 def springBootVersion = plugins.getPlugin('org.springframework.boot').class.package.implementationVersion
@@ -385,7 +385,7 @@ dependencies {
     implementation group: 'io.netty', name: 'netty-all', version: versions.netty_version
 
 
-    implementation 'net.bytebuddy:byte-buddy:1.17.8'
+    implementation 'net.bytebuddy:byte-buddy:1.18.2'
 
     testImplementation('com.opentable.components:otj-pg-embedded:1.1.1')
 
