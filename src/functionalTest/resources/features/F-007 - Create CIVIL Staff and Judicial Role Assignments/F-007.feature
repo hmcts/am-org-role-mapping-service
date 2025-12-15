@@ -45,7 +45,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
 
   @S-081
   @FeatureToggle(DB:civil_wa_2_1=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for Judge
+  Scenario: must successfully create org role mapping for District Judge - Salaried appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-081_DeleteDataForRoleAssignments],
     And a successful call [to snapshot judicial details] as in [S-081__SnapshotJudicialDetails],
@@ -59,7 +59,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
 
   @S-082
   @FeatureToggle(DB:civil_wa_1_9=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for circuit Judge
+  Scenario: must successfully create org role mapping for High Court Judge - Salaried appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-082_DeleteDataForRoleAssignments],
     And a successful call [to snapshot judicial details] as in [S-082__SnapshotJudicialDetails],
@@ -73,7 +73,7 @@ Feature: F-007 : Create Role Assignments for CIVIL Caseworker and Judicial Users
 
   @S-084
   @FeatureToggle(DB:civil_wa_2_0=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for fee paid Judge
+  Scenario: must successfully create org role mapping for Deputy District Judge - Fee Paid appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-084_DeleteDataForRoleAssignments],
     And a successful call [to snapshot judicial details] as in [S-084__SnapshotJudicialDetails],
