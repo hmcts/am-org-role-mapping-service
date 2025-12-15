@@ -6,7 +6,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
 
   @S-002
   @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for a multiple user having single role
+  Scenario: must successfully create org role mapping against multiple users for Senior Tribunal Case Worker
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-002_DeleteDataForRoleAssignments01],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-002_DeleteDataForRoleAssignments02],
