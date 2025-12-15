@@ -1,9 +1,9 @@
 {
-  "_guid_": "S-056",
-  "title": "must successfully create org role mapping for Regional Centre Team Leader",
+  "_guid_": "S-056b",
+  "title": "must successfully create org role mapping for Regional Centre Administrator",
   "_extends_": "F-006_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has Regional Centre Team Leader role"
+    "contains the actorId of the user just published who has Regional Centre Administrator role"
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",

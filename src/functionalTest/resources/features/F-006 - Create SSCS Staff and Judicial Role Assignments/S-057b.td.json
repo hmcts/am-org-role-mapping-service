@@ -1,9 +1,9 @@
 {
-  "_guid_": "S-056",
-  "title": "must successfully create org role mapping for Regional Centre Team Leader",
+  "_guid_": "S-057b",
+  "title": "must successfully create org role mapping for CTSC Admin",
   "_extends_": "F-006_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has Regional Centre Team Leader role"
+    "contains the actorId of the user just published who has CTSC Admin"
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
@@ -16,7 +16,7 @@
     "body": {
       "queryRequests": [
         {
-          "actorId": "${[scenarioContext][childContexts][S-056_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
+          "actorId": "${[scenarioContext][childContexts][S-057_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
         }
       ]
     }
@@ -33,13 +33,51 @@
           "roleName": "case-allocator",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
+          "roleCategory": "CTSC",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS"
+            "jurisdiction": "SSCS",
+            "region": "[[ANYTHING_PRESENT]]"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "ctsc",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "pre_hearing,post_hearing,decision_making_work,applications,hearing_work,routine_work,priority"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "ctsc-team-leader",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region": "[[ANYTHING_PRESENT]]"
           }
         },
         {
@@ -50,7 +88,7 @@
           "roleName": "hearing-manager",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
+          "roleCategory": "CTSC",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
@@ -67,7 +105,7 @@
           "roleName": "hearing-viewer",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
+          "roleCategory": "CTSC",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
@@ -81,69 +119,31 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "hmcts-admin",
+          "roleName": "hmcts-ctsc",
           "classification": "PRIVATE",
           "grantType": "BASIC",
-          "roleCategory": "ADMIN",
+          "roleCategory": "CTSC",
           "readOnly": true,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N"
           }
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "regional-centre-admin",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "pre_hearing,post_hearing,decision_making_work,applications,hearing_work,routine_work,priority"
-          }
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "regional-centre-team-leader",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region": "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
+        },{
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType" : "IDAM",
           "actorId" : "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType" : "ORGANISATION",
-          "roleName" : "specific-access-approver-admin",
+          "roleName" : "specific-access-approver-ctsc",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
-          "roleCategory" : "ADMIN",
+          "roleCategory" : "CTSC",
           "readOnly" : false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
             "substantive" : "N",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
+            "region": "[[ANYTHING_PRESENT]]",
             "workTypes" : "access_requests"
           }
         },
@@ -155,13 +155,14 @@
           "roleName": "task-supervisor",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
+          "roleCategory": "CTSC",
           "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS"
+            "jurisdiction": "SSCS",
+            "region": "[[ANYTHING_PRESENT]]"
           }
         }
       ]

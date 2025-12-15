@@ -1,9 +1,9 @@
 {
-  "_guid_": "S-056",
-  "title": "must successfully create org role mapping for Regional Centre Team Leader",
+  "_guid_": "S-055b",
+  "title": "must successfully create org role mapping for Hearing Centre Administrator",
   "_extends_": "F-006_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has Regional Centre Team Leader role"
+    "contains the actorId of the user just published who has Hearing Centre Administrator role"
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
@@ -16,7 +16,7 @@
     "body": {
       "queryRequests": [
         {
-          "actorId": "${[scenarioContext][childContexts][S-056_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
+          "actorId": "${[scenarioContext][childContexts][S-055_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
         }
       ]
     }
@@ -40,6 +40,43 @@
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "SSCS"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-centre-admin",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "pre_hearing,post_hearing,decision_making_work,applications,hearing_work,routine_work,priority"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-centre-team-leader",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "region": "[[ANYTHING_PRESENT]]"
           }
         },
         {
@@ -90,45 +127,7 @@
           "attributes": {
             "substantive": "N"
           }
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "regional-centre-admin",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "pre_hearing,post_hearing,decision_making_work,applications,hearing_work,routine_work,priority"
-          }
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "regional-centre-team-leader",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region": "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
+        },{
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType" : "IDAM",
           "actorId" : "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",

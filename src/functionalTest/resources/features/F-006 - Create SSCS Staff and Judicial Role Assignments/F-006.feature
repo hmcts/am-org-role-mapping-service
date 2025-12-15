@@ -56,11 +56,23 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
 
   @S-055
   @FeatureToggle(DB:sscs_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for Hearing Centre Team Leader and Hearing Centre Administrator
+  Scenario: must successfully create org role mapping for Hearing Centre Team Leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-055_DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-055_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-055_DeleteDataForRoleAssignments].
+
+  @S-055b
+  @FeatureToggle(DB:sscs_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Hearing Centre Administrator
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-055_DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [S-055_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Administrator role],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
@@ -70,11 +82,23 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
 
   @S-056
   @FeatureToggle(DB:sscs_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for Regional Centre Team Leader and Regional Centre Administrator
+  Scenario: must successfully create org role mapping for Regional Centre Team Leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-056_DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-056_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Regional Centre Team Leader role],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-056_DeleteDataForRoleAssignments].
+
+  @S-056b
+  @FeatureToggle(DB:sscs_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Regional Centre Administrator
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-056_DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [S-056_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Regional Centre Administrator role],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
@@ -84,11 +108,23 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
 
   @S-057
   @FeatureToggle(DB:sscs_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for CTSC Team Leader and CTSC Admin
+  Scenario: must successfully create org role mapping for CTSC Team Leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-057_DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-057_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has CTSC Team Leader role],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
+    Then a positive response is received,
+    And the response has all other details as expected
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-057_DeleteDataForRoleAssignments].
+
+  @S-057b
+  @FeatureToggle(DB:sscs_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for CTSC Admin
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-057_DeleteDataForRoleAssignments],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [S-057_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has CTSC Admin],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],

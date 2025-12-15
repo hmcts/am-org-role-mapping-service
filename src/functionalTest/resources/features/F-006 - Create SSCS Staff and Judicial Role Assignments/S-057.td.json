@@ -1,10 +1,9 @@
 {
   "_guid_": "S-057",
-  "title": "must successfully create org role mapping for CTSC Team Leader and CTSC Admin",
+  "title": "must successfully create org role mapping for CTSC Team Leader",
   "_extends_": "F-006_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has CTSC Team Leader role",
-    "contains the actorId of the user just published who has CTSC Admin"
+    "contains the actorId of the user just published who has CTSC Team Leader role"
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
