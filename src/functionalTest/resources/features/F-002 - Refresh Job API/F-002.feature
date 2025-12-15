@@ -25,7 +25,7 @@ Feature: F-002 : Refresh Role Assignments for CRD and JRD users
   @S-012
   @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   @FeatureToggle(EV:REFRESH_FTA_ENABLED=on)
-  Scenario: must successfully refresh judicial user org roles for a job
+  Scenario: must successfully refresh judicial user org roles on a job for Tribunal Member - fee paid appointment.
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to insert new job in ORM DB to initiate Refresh process] as in [S-012_InsertJobForRefreshAPI],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-012_DeleteDataForRoleAssignments],
