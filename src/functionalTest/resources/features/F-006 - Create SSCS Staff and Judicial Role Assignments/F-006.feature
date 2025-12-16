@@ -115,6 +115,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
   Scenario: must successfully create org role mapping for CTSC Team Leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-057_DeleteDataForRoleAssignments],
+    And a successful call [to verify caseworker details for CTSC Team Leader] as in [S-057__VerifyCaseworkerDetails],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-057_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has CTSC Team Leader role],
     When a request is prepared with appropriate values,
@@ -128,6 +129,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
   Scenario: must successfully create org role mapping for CTSC Admin
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-057_DeleteDataForRoleAssignments],
+    And a successful call [to verify caseworker details for CTSC Admin] as in [S-057b__VerifyCaseworkerDetails],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-057_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has CTSC Admin],
     When a request is prepared with appropriate values,

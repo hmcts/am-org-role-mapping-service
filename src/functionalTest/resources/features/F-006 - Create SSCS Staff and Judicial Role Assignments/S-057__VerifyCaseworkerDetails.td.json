@@ -1,15 +1,15 @@
 {
-  "_guid_": "S-055__VerifyCaseworkerDetails",
+  "_guid_": "S-057__VerifyCaseworkerDetails",
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify caseworker details for Hearing Centre Team Leader"
+    "to verify caseworker details for CTSC Team Leader"
   ],
 
   "request": {
     "body": {
       "userIds": [
-        "${[scenarioContext][parentContext][childContexts][S-055_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}"
+        "${[scenarioContext][parentContext][childContexts][S-056_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}"
       ]
     }
   },
@@ -20,17 +20,17 @@
         {
           "_extends_": "CaseworkerDetails",
 
-          "id": "${[scenarioContext][parentContext][childContexts][S-055_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}",
+          "id": "${[scenarioContext][parentContext][childContexts][S-056_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}",
 
           "case_allocator": "Y",
           "task_supervisor": "Y",
 
           "role": [
             {
-              "_extends_": "CaseworkerRole_03_HC_TL"
+              "_extends_": "CaseworkerRole_09_CTSC_TL"
             },
             {
-              "_extends_": "CaseworkerRole_04_HC_Admin"
+              "_extends_": "CaseworkerRole_10_CTSC_Admin"
             }
           ],
 
