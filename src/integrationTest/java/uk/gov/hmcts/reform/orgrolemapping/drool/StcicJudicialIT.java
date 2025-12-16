@@ -7,11 +7,11 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import java.util.ArrayList;
 import java.util.List;
 
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.adjustTestArguments;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateOverrideFlagOffCatchAll;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardFeePaidTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardSalariedTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardVoluntaryTestArguments;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.adjustTestArguments;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateOverrideFlagOffCatchAll;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.overrideTestArguments;
 
 public class StcicJudicialIT {
@@ -242,98 +242,114 @@ public class StcicJudicialIT {
 
         // TribunalMembers worktypes changes  prior to DTSAM-1146
         testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
-                .overrideDescription("NoWorkTypes")
-                .findJrdResponseFileName("005_Tribunal_Member__FeePaid")
-                .overrideRasRequestFileNameWithoutBooking("FlagOff_STCIC_WA_1_3/" +
-                        FEE_PAID_TRIBUNAL_MEMBER_OUTPUT_TEMPLATE)
-                .overrideRasRequestFileNameWithBooking("FlagOff_STCIC_WA_1_3/" +
-                        FEE_PAID_TRIBUNAL_MEMBER_OUTPUT_TEMPLATE)
-                .overrideTurnOffFlags(List.of(flag))
-                .build()
+            .overrideDescription("NoWorkTypes")
+            .findJrdResponseFileName("005_Tribunal_Member__FeePaid")
+            .overrideRasRequestFileNameWithoutBooking(
+                "FlagOff_STCIC_WA_1_3/" + FEE_PAID_TRIBUNAL_MEMBER_OUTPUT_TEMPLATE
+            )
+            .overrideRasRequestFileNameWithBooking(
+                "FlagOff_STCIC_WA_1_3/" + FEE_PAID_TRIBUNAL_MEMBER_OUTPUT_TEMPLATE
+            )
+            .overrideTurnOffFlags(List.of(flag))
+            .build()
         );
 
         // TribunalMembers Lay worktypes changes  prior to DTSAM-1146
         testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
-                .overrideDescription("NoWorkTypes")
-                .findJrdResponseFileName("006_Tribunal_Member_Lay__FeePaid")
-                .overrideRasRequestFileNameWithoutBooking("FlagOff_STCIC_WA_1_3/" +
-                        FEE_PAID_TRIBUNAL_MEMBER_OUTPUT_TEMPLATE)
-                .overrideRasRequestFileNameWithBooking("FlagOff_STCIC_WA_1_3/" +
-                        FEE_PAID_TRIBUNAL_MEMBER_OUTPUT_TEMPLATE)
-                .overrideTurnOffFlags(List.of(flag))
-                .build()
+            .overrideDescription("NoWorkTypes")
+            .findJrdResponseFileName("006_Tribunal_Member_Lay__FeePaid")
+            .overrideRasRequestFileNameWithoutBooking(
+                "FlagOff_STCIC_WA_1_3/" + FEE_PAID_TRIBUNAL_MEMBER_OUTPUT_TEMPLATE
+            )
+            .overrideRasRequestFileNameWithBooking(
+                "FlagOff_STCIC_WA_1_3/" + FEE_PAID_TRIBUNAL_MEMBER_OUTPUT_TEMPLATE
+            )
+            .overrideTurnOffFlags(List.of(flag))
+            .build()
         );
 
         // TribunalMembers Medical worktypes changes  prior to DTSAM-1146
         testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
-                .overrideDescription("NoWorkTypes")
-                .findJrdResponseFileName("007_Tribunal_Member_Medical__Salaried")
-                .overrideRasRequestFileNameWithoutBooking("FlagOff_STCIC_WA_1_3/" +
-                        SALARIED_TRIBUNAL_MEMBER_MEDICAL_OUTPUT_TEMPLATE)
-                .overrideRasRequestFileNameWithBooking("FlagOff_STCIC_WA_1_3/" +
-                        SALARIED_TRIBUNAL_MEMBER_MEDICAL_OUTPUT_TEMPLATE)
-                .overrideTurnOffFlags(List.of(flag))
-                .build()
+            .overrideDescription("NoWorkTypes")
+            .findJrdResponseFileName("007_Tribunal_Member_Medical__Salaried")
+            .overrideRasRequestFileNameWithoutBooking(
+                "FlagOff_STCIC_WA_1_3/" + SALARIED_TRIBUNAL_MEMBER_MEDICAL_OUTPUT_TEMPLATE
+            )
+            .overrideRasRequestFileNameWithBooking(
+                "FlagOff_STCIC_WA_1_3/" + SALARIED_TRIBUNAL_MEMBER_MEDICAL_OUTPUT_TEMPLATE
+            )
+            .overrideTurnOffFlags(List.of(flag))
+            .build()
         );
 
         // TribunalMembers Medical worktypes changes  prior to DTSAM-1146
         testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
-                .overrideDescription("NoWorkTypes")
-                .findJrdResponseFileName("008_Tribunal_Member_Medical__FeePaid")
-                .overrideRasRequestFileNameWithoutBooking("FlagOff_STCIC_WA_1_3/" +
-                        FEE_PAID_TRIBUNAL_MEMBER_MEDICAL_OUTPUT_TEMPLATE)
-                .overrideRasRequestFileNameWithBooking("FlagOff_STCIC_WA_1_3/" +
-                        FEE_PAID_TRIBUNAL_MEMBER_MEDICAL_OUTPUT_TEMPLATE)
-                .overrideTurnOffFlags(List.of(flag))
-                .build()
+            .overrideDescription("NoWorkTypes")
+            .findJrdResponseFileName("008_Tribunal_Member_Medical__FeePaid")
+            .overrideRasRequestFileNameWithoutBooking(
+                "FlagOff_STCIC_WA_1_3/" + FEE_PAID_TRIBUNAL_MEMBER_MEDICAL_OUTPUT_TEMPLATE
+            )
+            .overrideRasRequestFileNameWithBooking(
+                "FlagOff_STCIC_WA_1_3/" + FEE_PAID_TRIBUNAL_MEMBER_MEDICAL_OUTPUT_TEMPLATE
+            )
+            .overrideTurnOffFlags(List.of(flag))
+            .build()
         );
 
         // TribunalMembers Disability worktypes changes  prior to DTSAM-1146
         testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
-                .overrideDescription("NoWorkTypes")
-                .findJrdResponseFileName("009_Tribunal_Member_Disability__FeePaid")
-                .overrideRasRequestFileNameWithoutBooking("FlagOff_STCIC_WA_1_3/" +
-                        FEE_PAID_TRIBUNAL_MEMBER_DISABILITY_OUTPUT_TEMPLATE)
-                .overrideRasRequestFileNameWithBooking("FlagOff_STCIC_WA_1_3/" +
-                        FEE_PAID_TRIBUNAL_MEMBER_DISABILITY_OUTPUT_TEMPLATE)
-                .overrideTurnOffFlags(List.of(flag))
-                .build()
+            .overrideDescription("NoWorkTypes")
+            .findJrdResponseFileName("009_Tribunal_Member_Disability__FeePaid")
+            .overrideRasRequestFileNameWithoutBooking(
+                "FlagOff_STCIC_WA_1_3/" + FEE_PAID_TRIBUNAL_MEMBER_DISABILITY_OUTPUT_TEMPLATE
+            )
+            .overrideRasRequestFileNameWithBooking(
+                "FlagOff_STCIC_WA_1_3/" + FEE_PAID_TRIBUNAL_MEMBER_DISABILITY_OUTPUT_TEMPLATE
+            )
+            .overrideTurnOffFlags(List.of(flag))
+            .build()
         );
 
         // TribunalMembers Financially Qualified worktypes changes  prior to DTSAM-1146
         testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
-                .overrideDescription("NoWorkTypes")
-                .findJrdResponseFileName("010_Tribunal_Member_Financially_Qualified__FeePaid")
-                .overrideRasRequestFileNameWithoutBooking("FlagOff_STCIC_WA_1_3/" +
-                        FEE_PAID_TRIBUNAL_MEMBER_FINANCIAL_OUTPUT_TEMPLATE)
-                .overrideRasRequestFileNameWithBooking("FlagOff_STCIC_WA_1_3/" +
-                        FEE_PAID_TRIBUNAL_MEMBER_FINANCIAL_OUTPUT_TEMPLATE)
-                .overrideTurnOffFlags(List.of(flag))
-                .build()
+            .overrideDescription("NoWorkTypes")
+            .findJrdResponseFileName("010_Tribunal_Member_Financially_Qualified__FeePaid")
+            .overrideRasRequestFileNameWithoutBooking(
+                "FlagOff_STCIC_WA_1_3/" + FEE_PAID_TRIBUNAL_MEMBER_FINANCIAL_OUTPUT_TEMPLATE
+            )
+            .overrideRasRequestFileNameWithBooking(
+                "FlagOff_STCIC_WA_1_3/" + FEE_PAID_TRIBUNAL_MEMBER_FINANCIAL_OUTPUT_TEMPLATE
+            )
+            .overrideTurnOffFlags(List.of(flag))
+            .build()
         );
 
         // TribunalMembers Optometrist worktypes changes  prior to DTSAM-1146
         testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
-                .overrideDescription("NoWorkTypes")
-                .findJrdResponseFileName("011_Tribunal_Member_Optometrist__FeePaid")
-                .overrideRasRequestFileNameWithoutBooking("FlagOff_STCIC_WA_1_3/" +
-                        FEE_PAID_TRIBUNAL_MEMBER_MEDICAL_OUTPUT_TEMPLATE)
-                .overrideRasRequestFileNameWithBooking("FlagOff_STCIC_WA_1_3/" +
-                        FEE_PAID_TRIBUNAL_MEMBER_MEDICAL_OUTPUT_TEMPLATE)
-                .overrideTurnOffFlags(List.of(flag))
-                .build()
+            .overrideDescription("NoWorkTypes")
+            .findJrdResponseFileName("011_Tribunal_Member_Optometrist__FeePaid")
+            .overrideRasRequestFileNameWithoutBooking(
+                "FlagOff_STCIC_WA_1_3/" + FEE_PAID_TRIBUNAL_MEMBER_MEDICAL_OUTPUT_TEMPLATE
+            )
+            .overrideRasRequestFileNameWithBooking(
+                "FlagOff_STCIC_WA_1_3/" + FEE_PAID_TRIBUNAL_MEMBER_MEDICAL_OUTPUT_TEMPLATE
+            )
+            .overrideTurnOffFlags(List.of(flag))
+            .build()
         );
 
         // Member of the First-tier Tribunal (sitting in retirement) worktypes changes  prior to DTSAM-1146
         testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
-                .overrideDescription("NoWorkTypes")
-                .findJrdResponseFileName("016_Member_of_the_First-tier_Tribunal_(sitting_in_retirement)__FeePaid")
-                .overrideRasRequestFileNameWithoutBooking("FlagOff_STCIC_WA_1_3/" +
-                        FEE_PAID_TRIBUNAL_MEMBER_DISABILITY_OUTPUT_TEMPLATE)
-                .overrideRasRequestFileNameWithBooking("FlagOff_STCIC_WA_1_3/" +
-                        FEE_PAID_TRIBUNAL_MEMBER_DISABILITY_OUTPUT_TEMPLATE)
-                .overrideTurnOffFlags(List.of(flag))
-                .build()
+            .overrideDescription("NoWorkTypes")
+            .findJrdResponseFileName("016_Member_of_the_First-tier_Tribunal_(sitting_in_retirement)__FeePaid")
+            .overrideRasRequestFileNameWithoutBooking(
+                "FlagOff_STCIC_WA_1_3/" + FEE_PAID_TRIBUNAL_MEMBER_DISABILITY_OUTPUT_TEMPLATE
+            )
+            .overrideRasRequestFileNameWithBooking(
+                "FlagOff_STCIC_WA_1_3/" + FEE_PAID_TRIBUNAL_MEMBER_DISABILITY_OUTPUT_TEMPLATE
+            )
+            .overrideTurnOffFlags(List.of(flag))
+            .build()
         );
 
         // must use a catch-all override to run all unaffected tests with the flag off
