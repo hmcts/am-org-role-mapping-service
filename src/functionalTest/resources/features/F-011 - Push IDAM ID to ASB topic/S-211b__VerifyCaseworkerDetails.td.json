@@ -38,7 +38,16 @@
             {
               "_extends_": "WorkArea_BHA1_ET"
             }
-            ]
+            ],
+
+          "skills": [
+            {
+              "__ordering__": "ORDERED"
+            },
+            {
+              "_extends_": "Skill_BHA1_ET"
+            }
+          ]
         }
       ]
     }
