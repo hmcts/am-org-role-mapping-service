@@ -108,6 +108,8 @@ env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX="hmctspublic.azurecr.io/imported/"
   loadVaultSecrets(secrets)
 
   enableMutationTest()
+  // DTSAM-1155 Temp disabling of Security Scan (Zap) in Nightly
+  //enableSecurityScan()
   enableFullFunctionalTest()
   enableFortifyScan()
 
