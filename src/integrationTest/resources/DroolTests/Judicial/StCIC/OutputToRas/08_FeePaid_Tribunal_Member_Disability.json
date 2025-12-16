@@ -22,7 +22,8 @@
       "attributes": {
         "contractType": "Fee-Paid",
         "primaryLocation": "123456",
-        "jurisdiction": "ST_CIC"
+        "jurisdiction": "ST_CIC",
+        "workTypes": "decision_making_work"
       },
       "authorisations": [
         "328"
@@ -43,7 +44,8 @@
       "attributes": {
         "contractType": "Fee-Paid",
         "primaryLocation": "123456",
-        "jurisdiction": "ST_CIC"
+        "jurisdiction": "ST_CIC",
+        "workTypes": "decision_making_work"
       },
       "authorisations": [
         "328"
