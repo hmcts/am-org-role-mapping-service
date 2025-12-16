@@ -11,7 +11,7 @@
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
-      "roleName": "fee-paid-medical",
+      "roleName": "fee-paid-tribunal-member",
       "classification": "PUBLIC",
       "grantType": "STANDARD",
       "roleCategory": "JUDICIAL",
@@ -22,8 +22,7 @@
       "attributes": {
         "contractType": "Fee-Paid",
         "primaryLocation": "123456",
-        "jurisdiction": "ST_CIC",
-        "workTypes": "decision_making_work"
+        "jurisdiction": "ST_CIC"
       },
       "authorisations": [
         "328"

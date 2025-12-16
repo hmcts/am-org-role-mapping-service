@@ -11,7 +11,7 @@
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
-      "roleName": "fee-paid-medical",
+      "roleName": "medical",
       "classification": "PUBLIC",
       "grantType": "STANDARD",
       "roleCategory": "JUDICIAL",
@@ -20,10 +20,9 @@
       "endTime": "[[APPOINTMENT_END_TIME]]",
       "created": "[[NOW_DATE_TIME]]",
       "attributes": {
-        "contractType": "Fee-Paid",
+        "contractType": "Salaried",
         "primaryLocation": "123456",
-        "jurisdiction": "ST_CIC",
-        "workTypes": "decision_making_work"
+        "jurisdiction": "ST_CIC"
       },
       "authorisations": [
         "328"
@@ -42,7 +41,7 @@
       "endTime": "[[APPOINTMENT_END_TIME]]",
       "created": "[[NOW_DATE_TIME]]",
       "attributes": {
-        "contractType": "Fee-Paid"
+        "contractType": "Salaried"
       }
     }
   ]
