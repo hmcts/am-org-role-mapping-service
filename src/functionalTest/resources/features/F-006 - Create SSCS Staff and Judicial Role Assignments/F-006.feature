@@ -73,7 +73,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
   Scenario: must successfully create org role mapping for Hearing Centre Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-055_DeleteDataForRoleAssignments],
-    And a successful call [to verify caseworker details for Hearing Centre Team Leader] as in [S-055b__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for Hearing Centre Administrator] as in [S-055b__VerifyCaseworkerDetails],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-055_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Administrator role],
     When a request is prepared with appropriate values,
@@ -87,6 +87,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
   Scenario: must successfully create org role mapping for Regional Centre Team Leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-056_DeleteDataForRoleAssignments],
+    And a successful call [to verify caseworker details for Regional Centre Team Leader] as in [S-056__VerifyCaseworkerDetails],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-056_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Regional Centre Team Leader role],
     When a request is prepared with appropriate values,
@@ -100,6 +101,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
   Scenario: must successfully create org role mapping for Regional Centre Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-056_DeleteDataForRoleAssignments],
+    And a successful call [to verify caseworker details for Regional Centre Administrator] as in [S-056b__VerifyCaseworkerDetails],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-056_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Regional Centre Administrator role],
     When a request is prepared with appropriate values,
