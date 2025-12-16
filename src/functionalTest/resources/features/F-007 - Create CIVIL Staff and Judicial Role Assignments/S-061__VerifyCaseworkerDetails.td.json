@@ -36,7 +36,7 @@
 
           "work_area": [
             {
-              "_extends_": "WorkArea_AAA6_Civil"
+              "_extends_": "WorkArea_AAA7_Civil"
             }
             ]
         }
