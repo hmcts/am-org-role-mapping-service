@@ -9,7 +9,7 @@
   "request": {
     "body": {
       "userIds": [
-        "${[scenarioContext][parentContext][childContexts][S-056_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}"
+        "${[scenarioContext][parentContext][childContexts][S-057_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}"
       ]
     }
   },
@@ -20,7 +20,7 @@
         {
           "_extends_": "CaseworkerDetails",
 
-          "id": "${[scenarioContext][parentContext][childContexts][S-056_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}",
+          "id": "${[scenarioContext][parentContext][childContexts][S-057_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}",
 
           "case_allocator": "Y",
           "task_supervisor": "Y",
