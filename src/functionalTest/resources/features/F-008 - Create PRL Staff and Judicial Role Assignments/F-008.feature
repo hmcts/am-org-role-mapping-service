@@ -9,6 +9,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
   Scenario: must successfully create org role mapping for Senior Legal Caseworker
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-071_DeleteDataForRoleAssignments],
+    And a successful call [to verify caseworker details for Senior Legal Caseworker] as in [S-071__VerifyCaseworkerDetails],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-071_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Senior Legal Caseworker role],
     When a request is prepared with appropriate values,
@@ -22,6 +23,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
   Scenario: must successfully create org role mapping for Legal Caseworker
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-071_DeleteDataForRoleAssignments],
+    And a successful call [to verify caseworker details for Legal Caseworker] as in [S-071b__VerifyCaseworkerDetails],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-071_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Legal Caseworker role],
     When a request is prepared with appropriate values,
@@ -36,6 +38,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-072_DeleteDataForRoleAssignments],
+    And a successful call [to verify caseworker details for Hearing Centre Team Leader] as in [S-072__VerifyCaseworkerDetails],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-072_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role],
     When a request is prepared with appropriate values,
@@ -49,6 +52,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
   Scenario: must successfully create org role mapping for Hearing Centre Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-072_DeleteDataForRoleAssignments],
+    And a successful call [to verify caseworker details for Hearing Centre Administrator] as in [S-072b__VerifyCaseworkerDetails],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-072_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Administrator role],
     When a request is prepared with appropriate values,
