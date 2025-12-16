@@ -47,6 +47,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
   Scenario: must successfully create org role mapping for Senior Legal Caseworker
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-054_DeleteDataForRoleAssignments],
+    And a successful call [to verify caseworker details for Senior Legal Caseworker] as in [S-054__VerifyCaseworkerDetails],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-054_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Senior Legal Caseworker role],
     When a request is prepared with appropriate values,
@@ -205,6 +206,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
   Scenario: must successfully create organisational role mapping for ibca
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-162_DeleteDataForRoleAssignments]
+    And a successful call [to verify caseworker details for ibca] as in [S-162__VerifyCaseworkerDetails],
     And a successful call [to post create organisational role mapping request on ORM] as in [S-162_PostCreateRequestToORM],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
