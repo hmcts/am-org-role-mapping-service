@@ -22,6 +22,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
   Scenario: must successfully create organisational role mapping for super-user and clerk
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-052_DeleteDataForRoleAssignments]
+    And a successful call [to verify caseworker details for super-user and clerk] as in [S-052__VerifyCaseworkerDetails],
     And a successful call [to post create organisational role mapping request on ORM] as in [S-052_PostCreateRequestToORM],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
