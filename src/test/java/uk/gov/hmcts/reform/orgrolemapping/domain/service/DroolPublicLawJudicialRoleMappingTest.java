@@ -1,11 +1,18 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.Attributes.ContractType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.Attributes.Name;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.RoleName;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
@@ -14,10 +21,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertHelper.MultiRegion;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -34,8 +43,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
+    private static final String JURISDICTION = Jurisdiction.PUBLICLAW.getName();
+    private static final String SERVICE_CODE = Jurisdiction.PUBLICLAW.getServiceCodes().get(0);
 
     private static final String USER_ID = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
     private static final ZonedDateTime BOOKING_BEGIN_TIME = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1);
@@ -53,18 +65,17 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
     static {
-        expectedRoleNameWorkTypesMap.put("judge", "hearing_work,routine_work,decision_making_work,"
-                + "applications");
-        expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
-        expectedRoleNameWorkTypesMap.put("leadership-judge", "hearing_work,decision_making_work,applications,"
-                + "access_requests");
-        expectedRoleNameWorkTypesMap.put("task-supervisor", "hearing_work,routine_work,decision_making_work,"
-                + "applications,access_requests");
-        expectedRoleNameWorkTypesMap.put("case-allocator", null);
-        expectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
-        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,routine_work,"
-                + "decision_making_work,applications");
-        expectedRoleNameWorkTypesMap.put("magistrate", null);
+        expectedRoleNameWorkTypesMap.put(RoleName.JUDGE, "hearing_work,routine_work,decision_making_work,applications");
+        expectedRoleNameWorkTypesMap.put(RoleName.HMCTS_JUDICIARY, null);
+        expectedRoleNameWorkTypesMap.put(RoleName.LEADERSHIP_JUDGE,
+            "hearing_work,decision_making_work,applications,access_requests");
+        expectedRoleNameWorkTypesMap.put(RoleName.TASK_SUPERVISOR,
+            "hearing_work,routine_work,decision_making_work,applications,access_requests");
+        expectedRoleNameWorkTypesMap.put(RoleName.CASE_ALLOCATOR, null);
+        expectedRoleNameWorkTypesMap.put(RoleName.SPECIFIC_ACCESS_APPROVER_JUDICIARY, "access_requests");
+        expectedRoleNameWorkTypesMap.put(RoleName.FEE_PAID_JUDGE,
+            "hearing_work,routine_work,decision_making_work,applications");
+        expectedRoleNameWorkTypesMap.put(RoleName.MAGISTRATE, null);
     }
 
     @ParameterizedTest
@@ -123,9 +134,9 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
     void verifySalariedAndSptwRoles(String appointment, String assignedRoles, String expectedRoleNames,
                                     String region, boolean expectMultiRegion) {
         shouldReturnSalariedRolesFromJudicialAccessProfile(
-                appointment, "Salaried", assignedRoles, expectedRoleNames, region, expectMultiRegion);
+            appointment, AppointmentType.SALARIED, assignedRoles, expectedRoleNames, region, expectMultiRegion);
         shouldReturnSalariedRolesFromJudicialAccessProfile(
-                appointment, "SPTW", assignedRoles, expectedRoleNames, region, expectMultiRegion);
+            appointment, AppointmentType.SPTW, assignedRoles, expectedRoleNames, region, expectMultiRegion);
     }
 
     void shouldReturnSalariedRolesFromJudicialAccessProfile(
@@ -142,11 +153,11 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
         // create map for all salaried roleNames that need regions
         List<String> rolesThatRequireRegions = List.of(
-                "judge",
-                "leadership-judge",
-                "task-supervisor",
-                "case-allocator",
-                "specific-access-approver-judiciary"
+            RoleName.JUDGE,
+            RoleName.LEADERSHIP_JUDGE,
+            RoleName.TASK_SUPERVISOR,
+            RoleName.CASE_ALLOCATOR,
+            RoleName.SPECIFIC_ACCESS_APPROVER_JUDICIARY
         );
 
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
@@ -157,29 +168,29 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         //assertions
         List<String> expectedRoleList = Arrays.stream(expectedRoleNames.split(",")).toList();
         MultiRegion.assertRoleAssignmentCount(
-                roleAssignments,
-                expectedRoleList,
-                expectMultiRegion,
-                rolesThatRequireRegions,
-                multiRegionList
+            roleAssignments,
+            expectedRoleList,
+            expectMultiRegion,
+            rolesThatRequireRegions,
+            multiRegionList
         );
 
         roleAssignments.forEach(r -> {
-            if (r.getAttributes().get("contractType") != null) {
-                assertEquals("Salaried", r.getAttributes().get("contractType").asText());
+            if (r.getAttributes().get(Name.CONTRACT_TYPE) != null) {
+                assertEquals(ContractType.SALARIED, r.getAttributes().get(Name.CONTRACT_TYPE).asText());
             }
 
-            assertRoleSpecificAttributes(r, "Salaried", roleNameToRegionsMap);
+            assertRoleSpecificAttributes(r, AppointmentType.SALARIED, roleNameToRegionsMap);
         });
 
         // verify regions add to map
         MultiRegion.assertRoleNameToRegionsMapIsAsExpected(
-                roleNameToRegionsMap,
-                expectedRoleList,
-                expectMultiRegion,
-                multiRegionList,
-                region, // fallback if not multi-region scenario
-                null // i.e. no bookings
+            roleNameToRegionsMap,
+            expectedRoleList,
+            expectMultiRegion,
+            multiRegionList,
+            region, // fallback if not multi-region scenario
+            null // i.e. no bookings
         );
     }
 
@@ -191,11 +202,11 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
             String appointment, String assignedRoles, String expectedRoleNames) {
 
         clearAndPrepareProfilesForDroolSession(
-                appointment,
-                "Voluntary",
-                Arrays.stream(assignedRoles.split(",")).toList(),
-                ACCESS_PROFILE_REGION_ID,
-                false
+            appointment,
+            AppointmentType.VOLUNTARY,
+            Arrays.stream(assignedRoles.split(",")).toList(),
+            ACCESS_PROFILE_REGION_ID,
+            false
         );
 
         //Execute Kie session
@@ -205,14 +216,14 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         assertFalse(roleAssignments.isEmpty());
         assertEquals(expectedRoleNames.split(",").length, roleAssignments.size());
         assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
-                containsInAnyOrder(expectedRoleNames.split(",")));
+            containsInAnyOrder(expectedRoleNames.split(",")));
 
         roleAssignments.forEach(r -> {
-            if (r.getAttributes().get("contractType") != null) {
-                assertEquals("Voluntary", r.getAttributes().get("contractType").asText());
+            if (r.getAttributes().get(Name.CONTRACT_TYPE) != null) {
+                assertEquals(ContractType.VOLUNTARY, r.getAttributes().get(Name.CONTRACT_TYPE).asText());
             }
 
-            assertRoleSpecificAttributes(r, "Voluntary", null);
+            assertRoleSpecificAttributes(r, AppointmentType.VOLUNTARY, null);
         });
     }
 
@@ -268,11 +279,11 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
             String appointment, boolean addBooking, String assignedRoles, String expectedRoleNames) {
 
         clearAndPrepareProfilesForDroolSession(
-                appointment,
-                "Fee Paid",
-                Arrays.stream(assignedRoles.split(",")).toList(),
-                ACCESS_PROFILE_REGION_ID,
-                addBooking
+            appointment,
+            AppointmentType.FEE_PAID,
+            Arrays.stream(assignedRoles.split(",")).toList(),
+            ACCESS_PROFILE_REGION_ID,
+            addBooking
         );
 
         //Execute Kie session
@@ -285,11 +296,11 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         assertEquals(expectedRoleNames.split(",").length, roleAssignments.size());
 
         roleAssignments.forEach(r -> {
-            if (r.getAttributes().get("contractType") != null) {
-                assertEquals("Fee-Paid", r.getAttributes().get("contractType").asText());
+            if (r.getAttributes().get(Name.CONTRACT_TYPE) != null) {
+                assertEquals(ContractType.FEE_PAID, r.getAttributes().get(Name.CONTRACT_TYPE).asText());
             }
 
-            assertRoleSpecificAttributes(r, "Fee Paid", null);
+            assertRoleSpecificAttributes(r, AppointmentType.FEE_PAID, null);
         });
     }
 
@@ -302,14 +313,14 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
         String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
         String actualWorkTypes = null;
-        if (r.getAttributes().get("workTypes") != null) {
-            actualWorkTypes = r.getAttributes().get("workTypes").asText();
+        if (r.getAttributes().get(Name.WORK_TYPES) != null) {
+            actualWorkTypes = r.getAttributes().get(Name.WORK_TYPES).asText();
         }
         assertEquals(expectedWorkTypes, actualWorkTypes);
 
         String primaryLocation = null;
-        if (r.getAttributes().get("primaryLocation") != null) {
-            primaryLocation = r.getAttributes().get("primaryLocation").asText();
+        if (r.getAttributes().get(Name.PRIMARY_LOCATION) != null) {
+            primaryLocation = r.getAttributes().get(Name.PRIMARY_LOCATION).asText();
         }
 
         if (roleNameToRegionsMap != null) {
@@ -317,38 +328,38 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
             MultiRegion.assertRegionStatusAndUpdateRoleToRegionMap(r, roleNameToRegionsMap);
         }
 
-        if (r.getRoleName().equals("hmcts-judiciary")) {
+        if (r.getRoleName().equals(RoleName.HMCTS_JUDICIARY)) {
             assertEquals(Classification.PRIVATE, r.getClassification());
             assertEquals(GrantType.BASIC, r.getGrantType());
             assertTrue(r.isReadOnly());
-            assertNull(r.getAttributes().get("jurisdiction"));
+            assertNull(r.getAttributes().get(Name.JURISDICTION));
             assertNull(primaryLocation);
             assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
             assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());
         } else {
             assertEquals(Classification.PUBLIC, r.getClassification());
             assertEquals(GrantType.STANDARD, r.getGrantType());
-            assertEquals("ABA3", r.getAuthorisations().get(0));
-            assertEquals("PUBLICLAW", r.getAttributes().get("jurisdiction").asText());
+            assertEquals(SERVICE_CODE, r.getAuthorisations().get(0));
+            assertEquals(JURISDICTION, r.getAttributes().get(Name.JURISDICTION).asText());
             assertFalse(r.isReadOnly());
 
-            if (r.getRoleName().equals("judge") && appointmentType.equals("Fee Paid")) {
+            if (r.getRoleName().equals(RoleName.JUDGE) && appointmentType.equals(AppointmentType.FEE_PAID)) {
                 assertEquals(BOOKING_BEGIN_TIME, r.getBeginTime());
                 assertEquals(BOOKING_END_TIME, r.getEndTime());
-                assertEquals(BOOKING_REGION_ID, r.getAttributes().get("region").asText());
+                assertEquals(BOOKING_REGION_ID, r.getAttributes().get(Name.REGION).asText());
                 assertEquals(BOOKING_LOCATION_ID, primaryLocation);
-            } else if (r.getRoleName().equals("fee-paid-judge")) {
+            } else if (r.getRoleName().equals(RoleName.FEE_PAID_JUDGE)) {
                 assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
                 assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());
                 assertEquals(ACCESS_PROFILE_PRIMARY_LOCATION_ID, primaryLocation);
-                assertNull(r.getAttributes().get("region"));
+                assertNull(r.getAttributes().get(Name.REGION));
             } else {
                 assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
                 assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());
                 assertEquals(ACCESS_PROFILE_PRIMARY_LOCATION_ID, primaryLocation);
-                if (!r.getRoleName().equals("hearing-viewer")
-                        && !r.getRoleName().equals("hearing-manager") && roleNameToRegionsMap == null) {
-                    assertEquals(ACCESS_PROFILE_REGION_ID, r.getAttributes().get("region").asText());
+                if (!r.getRoleName().equals(RoleName.HEARING_VIEWER)
+                        && !r.getRoleName().equals(RoleName.HEARING_MANAGER) && roleNameToRegionsMap == null) {
+                    assertEquals(ACCESS_PROFILE_REGION_ID, r.getAttributes().get(Name.REGION).asText());
                 }
             }
 
@@ -362,35 +373,46 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         judicialOfficeHolders.clear();
         judicialBookings.clear();
 
+        var appointmentEnum = findAppointmentEnumByName(appointment);
+
         judicialAccessProfiles.add(
-                JudicialAccessProfile.builder()
-                        .appointment(appointment)
-                        .appointmentType(appointmentType)
-                        .userId(USER_ID)
-                        .roles(roles)
-                        .regionId(region)
-                        .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
-                        .ticketCodes(List.of("ABA3"))
-                        .beginTime(ACCESS_PROFILE_BEGIN_TIME)
-                        .endTime(ACCESS_PROFILE_END_TIME)
-                        .authorisations(List.of(
-                                Authorisation.builder()
-                                        .serviceCodes(List.of("ABA3"))
-                                        .jurisdiction("PUBLICLAW")
-                                        .endDate(LocalDateTime.now().plusYears(1L))
-                                        .build()
-                        ))
+            JudicialAccessProfile.builder()
+                .appointment(appointmentEnum.getName())
+                .appointmentCode(appointmentEnum.getCodes().get(0))
+                .appointmentType(appointmentType)
+                .userId(USER_ID)
+                .roles(roles)
+                .additionalRoles(buildListOfAdditionalRoles(roles))
+                .regionId(region)
+                .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
+                .ticketCodes(List.of(SERVICE_CODE))
+                .beginTime(ACCESS_PROFILE_BEGIN_TIME)
+                .endTime(ACCESS_PROFILE_END_TIME)
+                .authorisations(List.of(
+                    Authorisation.builder()
+                        .serviceCodes(List.of(SERVICE_CODE))
+                        .jurisdiction(JURISDICTION)
+                        .endDate(LocalDateTime.now().plusYears(1L))
                         .build()
+                ))
+                .build()
+        );
+
+        log.info("""
+                    Test JudicialAccessProfiles used:
+                    {}
+                    """,
+            writeValueAsPrettyJson(judicialAccessProfiles)
         );
 
         if (addBooking) {
             judicialBookings.add(
-                    JudicialBooking.builder()
-                            .userId(USER_ID).locationId(BOOKING_LOCATION_ID)
-                            .regionId(BOOKING_REGION_ID)
-                            .beginTime(BOOKING_BEGIN_TIME)
-                            .endTime(BOOKING_END_TIME)
-                            .build()
+                JudicialBooking.builder()
+                    .userId(USER_ID).locationId(BOOKING_LOCATION_ID)
+                    .regionId(BOOKING_REGION_ID)
+                    .beginTime(BOOKING_BEGIN_TIME)
+                    .endTime(BOOKING_END_TIME)
+                    .build()
             );
         }
     }
@@ -401,30 +423,50 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
+        var appointmentEnum = findAppointmentEnumByName("District Judge (MC)");
+
         judicialAccessProfiles.add(
-                JudicialAccessProfile.builder()
-                        .appointment("District Judge (MC)")
-                        .appointmentType("SPTW")
-                        .userId(USER_ID)
-                        .roles(List.of("District Judge"))
-                        .regionId(ACCESS_PROFILE_REGION_ID)
-                        .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
-                        .ticketCodes(List.of("ABA3"))
-                        .authorisations(List.of(
-                                Authorisation.builder()
-                                        .serviceCodes(List.of("ABA3"))
-                                        .endDate(LocalDateTime.now().plusYears(1L))
-                                        .build()
-                        ))
+            JudicialAccessProfile.builder()
+                .appointment(appointmentEnum.getName())
+                .appointmentCode(appointmentEnum.getCodes().get(0))
+                .appointmentType(AppointmentType.SPTW)
+                .userId(USER_ID)
+                .roles(List.of("Any Other Role"))
+                .additionalRoles(buildListOfAdditionalRoles(List.of("Any Other Role")))
+                .regionId(ACCESS_PROFILE_REGION_ID)
+                .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
+                .ticketCodes(List.of(SERVICE_CODE))
+                .authorisations(List.of(
+                    Authorisation.builder()
+                        .serviceCodes(List.of(SERVICE_CODE))
+                        .jurisdiction(JURISDICTION)
+                        .endDate(LocalDateTime.now().plusYears(1L))
                         .build()
+                ))
+                .build()
         );
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("publiclaw_wa_1_0", false));
+            buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("PUBLICLAW", false));
 
         //assertions
         assertTrue(roleAssignments.isEmpty());
+    }
+
+    private List<RoleV2> buildListOfAdditionalRoles(List<String> roles) {
+        return roles.stream()
+            .filter(StringUtils::isNotEmpty)
+            .map(this::findAdditionalRoleEnumByName)
+            .map(additionalRole ->
+                RoleV2.builder()
+                    .jurisdictionRoleName(additionalRole.getName())
+                    .jurisdictionRoleId(additionalRole.getCodes().get(0))
+                    .startDate(LocalDate.now().minusDays(20L))
+                    .endDate(LocalDate.now().plusDays(20L)) // i.e. valid end date
+                    .build()
+            )
+            .toList();
     }
 
     private List<FeatureFlag> setFeatureFlags() {
@@ -438,4 +480,5 @@ class DroolPublicLawJudicialRoleMappingTest extends DroolBase {
 
         return featureFlags;
     }
+
 }
