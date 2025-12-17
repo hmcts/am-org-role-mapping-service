@@ -39,7 +39,7 @@
           "base_location": [
             {
               "__ordering__": "UNORDERED",
-              "__elementId__": "location_id"
+              "__elementId__": "is_primary"
             },
             {
               "created_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",

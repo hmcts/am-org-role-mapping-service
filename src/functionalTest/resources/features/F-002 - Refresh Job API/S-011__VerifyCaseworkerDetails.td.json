@@ -1,0 +1,44 @@
+{
+  "_guid_": "S-011__VerifyCaseworkerDetails",
+  "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
+
+  "specs": [
+    "to verify caseworker details for staff user"
+  ],
+
+  "request": {
+    "body": {
+      "userIds": [
+        "${[scenarioContext][parentContext][childContexts][S-011_DeleteDataForRoleAssignments][testData][request][pathVariables][reference]}"
+      ]
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "arrayInMap": [
+        {
+          "_extends_": "CaseworkerDetails",
+
+          "id": "${[scenarioContext][parentContext][childContexts][S-011_DeleteDataForRoleAssignments][testData][request][pathVariables][reference]}",
+
+          "case_allocator": "N",
+          "task_supervisor": "N",
+
+          "role": [
+            {
+              "_extends_": "CaseworkerRole_02_LC"
+            }
+          ],
+
+          "work_area": [
+            {
+              "_extends_": "WorkArea_BBA3_SSCS"
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+}
