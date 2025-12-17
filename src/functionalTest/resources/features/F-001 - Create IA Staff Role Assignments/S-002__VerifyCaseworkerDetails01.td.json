@@ -9,7 +9,7 @@
   "request": {
     "body": {
       "userIds": [
-        "${[scenarioContext][parentContext][childContexts][S-002_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}"
+        "${[scenarioContext][parentContext][childContexts][S-002_DeleteDataForRoleAssignments01][testData][request][body][userIds][0]}"
       ]
     }
   },
