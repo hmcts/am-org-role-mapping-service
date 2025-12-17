@@ -23,7 +23,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
 
   @S-005
   @FeatureToggle(DB:iac_1_1=on)
-  Scenario: should not create role assignments when user primary work location is false
+  Scenario: should not create role assignments when primary work location is false for CTSC Team Leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-005_DeleteDataForRoleAssignments01],
     And a successful call [to verify caseworker details for CTSC Team Leader] as in [S-005__VerifyCaseworkerDetails],
@@ -38,7 +38,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
 
   @S-006
   @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for a user having multiple roles
+  Scenario: must successfully create org role mapping with multiple roles for user
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-006_DeleteDataForRoleAssignments01],
     And a successful call [to verify caseworker details for user] as in [S-006__VerifyCaseworkerDetails],

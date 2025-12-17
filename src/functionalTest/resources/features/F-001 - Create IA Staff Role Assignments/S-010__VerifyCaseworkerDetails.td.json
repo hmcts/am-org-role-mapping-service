@@ -22,8 +22,8 @@
 
           "id": "${[scenarioContext][parentContext][childContexts][S-010_DeleteDataForRoleAssignments01][testData][request][body][userIds][0]}",
 
-          "case_allocator": "N",
-          "task_supervisor": "N",
+          "case_allocator": "Y",
+          "task_supervisor": "Y",
 
           "role": [
             {
@@ -35,7 +35,26 @@
             {
               "_extends_": "WorkArea_BFA1_IA"
             }
-            ]
+          ],
+          "base_location": [
+            {
+              "__ordering__": "UNORDERED"
+            },
+            {
+              "created_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+              "last_updated_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+              "location_id": "[[ANY_INTEGER_NOT_NULLABLE]]",
+              "location": "[[ANYTHING_PRESENT]]",
+              "is_primary": true
+            },
+            {
+              "created_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+              "last_updated_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+              "location_id": "[[ANY_INTEGER_NOT_NULLABLE]]",
+              "location": "[[ANYTHING_PRESENT]]",
+              "is_primary": false
+            }
+          ]
         }
       ]
     }
