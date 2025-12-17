@@ -42,12 +42,12 @@ class DroolStcicJudicialRoleMappingTest extends DroolBase {
         expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
         expectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
         expectedRoleNameWorkTypesMap.put("fee-paid-judge", "decision_making_work");
-        expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", null);
+        expectedRoleNameWorkTypesMap.put("fee-paid-tribunal-member", "decision_making_work");
         expectedRoleNameWorkTypesMap.put("magistrate", null);
-        expectedRoleNameWorkTypesMap.put("medical", null);
-        expectedRoleNameWorkTypesMap.put("fee-paid-medical", null);
-        expectedRoleNameWorkTypesMap.put("fee-paid-disability", null);
-        expectedRoleNameWorkTypesMap.put("fee-paid-financial", null);
+        expectedRoleNameWorkTypesMap.put("medical", "decision_making_work");
+        expectedRoleNameWorkTypesMap.put("fee-paid-medical", "decision_making_work");
+        expectedRoleNameWorkTypesMap.put("fee-paid-disability", "decision_making_work");
+        expectedRoleNameWorkTypesMap.put("fee-paid-financial", "decision_making_work");
     }
 
     static void assertCommonRoleAssignmentAttributes(RoleAssignment r) {
