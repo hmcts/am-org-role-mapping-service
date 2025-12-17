@@ -22,12 +22,12 @@
 
           "id": "${[scenarioContext][parentContext][childContexts][S-011_DeleteDataForRoleAssignments][testData][request][pathVariables][reference]}",
 
-          "case_allocator": "N",
-          "task_supervisor": "N",
+          "case_allocator": "Y",
+          "task_supervisor": "Y",
 
           "role": [
             {
-              "_extends_": "CaseworkerRole_02_LC"
+              "_extends_": "CaseworkerRole_01_SLC"
             }
           ],
 
