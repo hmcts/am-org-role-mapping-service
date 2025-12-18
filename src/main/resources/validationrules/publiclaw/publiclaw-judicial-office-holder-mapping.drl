@@ -192,36 +192,6 @@ then
 end;
 
 /*
- * 7: "PUBLICLAW Deputy District Judge - Fee Paid" business role mapping to JOH.
- * Made obsolete in DTSAM-617 - rule will be disabled when PUBLICLAW_WA_1_6 is enabled.
- * To be removed in DTSAM-618.
- */
-rule "publiclaw_deputy_deputy_district_judge_fee_paid_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_6.getValue())
-   $jap: JudicialAccessProfile(appointment == "Deputy District Judge- Fee-Paid",
-                               appointmentType in ("Fee Paid"),
-                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations, "ABA3"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("PUBLICLAW Deputy District Judge - Fee Paid")
-      .jurisdiction("PUBLICLAW")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : publiclaw_deputy_deputy_district_judge_fee_paid_joh");
-end;
-
-/*
  * 7: "PUBLICLAW Deputy District Judge - Fee Paid" business role mapping to JOH. v1.6
  * The creation of the JOH object accommodates for both 'Deputy District Judge- Fee-Paid'
  * and 'Deputy District Judge' appointments. See DTSAM-617.
@@ -249,36 +219,6 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : v1_6_publiclaw_deputy_deputy_district_judge_fee_paid_joh");
-end;
-
-/*
- * 8: "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid" business role mapping to JOH.
- * Made obsolete in DTSAM-625 - rule will be disabled when PUBLICLAW_WA_1_6 is enabled.
- * To be removed in DTSAM-618.
- */
-rule "publiclaw_deputy_district_judge_in_retirement_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_6.getValue())
-   $jap: JudicialAccessProfile(appointment == "Deputy District Judge- Sitting in Retirement",
-                               appointmentType in ("Fee Paid"),
-                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations, "ABA3"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid")
-      .jurisdiction("PUBLICLAW")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : publiclaw_deputy_district_judge_in_retirement_joh");
 end;
 
 /*
@@ -394,67 +334,6 @@ end;
 
 /*
  * 12: "PUBLICLAW High Court Judge - Salaried" business role mapping to JOH.
- * Made obsolete in DTSAM-616 - disabled by PUBLICLAW_WA_1_5 flag.
- * To be removed in DTSAM-568.
- */
-rule "publiclaw_high_court_judge_salaried_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_5.getValue())
-   $jap: JudicialAccessProfile(appointment == "High Court Judge",
-                               appointmentType in ("Salaried"),
-                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations, "ABA3"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("PUBLICLAW High Court Judge - Salaried")
-      .jurisdiction("PUBLICLAW")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : publiclaw_high_court_judge_salaried_joh");
-end;
-
-/*
- * 12: "PUBLICLAW High Court Judge - Salaried" business role mapping to JOH.
- * Made obsolete in DTSAM-840 - disabled by PUBLICLAW_WA_1_9 flag.
- * To be removed in DTSAM-836.
- */
-rule "v1_5_publiclaw_high_court_judge_salaried_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_5.getValue())
-   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_9.getValue())
-   $jap: JudicialAccessProfile(appointment != null,
-                               appointment == "High Court Judge",
-                               appointmentType in ("Salaried", "SPTW"),
-                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations, "ABA3"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("PUBLICLAW High Court Judge - Salaried")
-      .jurisdiction("PUBLICLAW")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : v1_5_publiclaw_high_court_judge_salaried_joh");
-end;
-
-/*
- * 12: "PUBLICLAW High Court Judge - Salaried" business role mapping to JOH.
  * Expand to include "President of the Family Division" in DTSAM-840
  */
 rule "v1_9_publiclaw_high_court_judge_salaried_joh"
@@ -480,36 +359,6 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : v1_9_publiclaw_high_court_judge_salaried_joh");
-end;
-
-/*
- * 13: "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid" business role mapping to JOH.
- * Made obsolete in DTSAM-828 - rule will be disabled when PUBLICLAW_WA_1_8 is enabled.
- * To be removed in DTSAM-832.
- */
-rule "publiclaw_high_court_judge_in_retirement_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_8.getValue())
-   $jap: JudicialAccessProfile(appointment == "High Court Judge- Sitting in Retirement",
-                               appointmentType in ("Fee Paid"),
-                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations, "ABA3"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid")
-      .jurisdiction("PUBLICLAW")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : publiclaw_high_court_judge_in_retirement_joh");
 end;
 
 /*
@@ -540,36 +389,6 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : v1_8_publiclaw_high_court_judge_in_retirement_joh");
-end;
-
-/*
- * 14: "PUBLICLAW Designated Family Judge - Salaried" business role mapping to JOH.
- * Made obsolete in DTSAM-464 - disabled by PUBLICLAW_WA_1_5 flag.
- * To be removed in DTSAM-568.
- */
-rule "publiclaw_designated_family_judge_salaried_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
-   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_5.getValue())
-   $jap: JudicialAccessProfile(appointment != null,
-                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               (roles != null && roles.contains("Designated Family Judge")),
-                               validateAuthorisation(authorisations, "ABA3"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("PUBLICLAW Designated Family Judge - Salaried")
-      .jurisdiction("PUBLICLAW")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : publiclaw_designated_family_judge_salaried_joh");
 end;
 
 /*
@@ -657,36 +476,6 @@ end;
 
 /*
  * 16: "PUBLICLAW Tribunal Judge - Salaried" business role mapping to JOH.
- * Made obsolete in DTSAM-616 - disabled by PUBLICLAW_WA_1_5 flag.
- * To be removed in DTSAM-568.
- */
-rule "publiclaw_tribunal_judge_salaried_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_1.getValue())
-   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_5.getValue())
-   $jap: JudicialAccessProfile(appointment == "Tribunal Judge",
-                               appointmentType in ("Salaried"),
-                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations, "ABA3"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("PUBLICLAW Tribunal Judge - Salaried")
-      .jurisdiction("PUBLICLAW")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : publiclaw_tribunal_judge_salaried_joh");
-end;
-
-/*
- * 16: "PUBLICLAW Tribunal Judge - Salaried" business role mapping to JOH.
  */
 rule "v1_5_publiclaw_tribunal_judge_salaried_joh"
 when
@@ -711,36 +500,6 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : v1_5_publiclaw_tribunal_judge_salaried_joh");
-end;
-
-/*
- * 17: "PUBLICLAW Employment Judge - Salaried" business role mapping to JOH.
- * Made obsolete in DTSAM-616 - disabled by PUBLICLAW_WA_1_5 flag.
- * To be removed in DTSAM-568.
- */
-rule "publiclaw_employment_judge_salaried_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_1.getValue())
-   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_5.getValue())
-   $jap: JudicialAccessProfile(appointment == "Employment Judge",
-                               appointmentType in ("Salaried"),
-                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations, "ABA3"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("PUBLICLAW Employment Judge - Salaried")
-      .jurisdiction("PUBLICLAW")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : publiclaw_employment_judge_salaried_joh");
 end;
 
 /*
@@ -773,36 +532,6 @@ end;
 
 /*
  * 18: "PUBLICLAW Specialist Circuit Judge - Salaried" business role mapping to JOH.
- * Made obsolete in DTSAM-616 - disabled by PUBLICLAW_WA_1_5 flag.
- * To be removed in DTSAM-568.
- */
-rule "publiclaw_specialist_circuit_judge_salaried_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_1.getValue())
-   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_5.getValue())
-   $jap: JudicialAccessProfile(appointment == "Specialist Circuit Judge",
-                               appointmentType in ("Salaried"),
-                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations, "ABA3"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("PUBLICLAW Specialist Circuit Judge - Salaried")
-      .jurisdiction("PUBLICLAW")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : publiclaw_specialist_circuit_judge_salaried_joh");
-end;
-
-/*
- * 18: "PUBLICLAW Specialist Circuit Judge - Salaried" business role mapping to JOH.
  */
 rule "v1_5_publiclaw_specialist_circuit_judge_salaried_joh"
 when
@@ -827,36 +556,6 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : v1_5_publiclaw_specialist_circuit_judge_salaried_joh");
-end;
-
-/*
- * 19: "PUBLICLAW Senior Circuit Judge - Salaried" business role mapping to JOH.
- * Made obsolete in DTSAM-616 - disabled by PUBLICLAW_WA_1_5 flag.
- * To be removed in DTSAM-568.
- */
-rule "publiclaw_senior_circuit_judge_salaried_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_1.getValue())
-   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_5.getValue())
-   $jap: JudicialAccessProfile(appointment == "Senior Circuit Judge",
-                               appointmentType in ("Salaried"),
-                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations, "ABA3"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("PUBLICLAW Senior Circuit Judge - Salaried")
-      .jurisdiction("PUBLICLAW")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : publiclaw_senior_circuit_judge_salaried_joh");
 end;
 
 /*
