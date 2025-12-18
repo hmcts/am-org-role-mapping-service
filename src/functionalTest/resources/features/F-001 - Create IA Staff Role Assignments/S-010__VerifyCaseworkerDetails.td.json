@@ -3,7 +3,7 @@
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify caseworker details for CA and TS roles"
+    "to verify caseworker details for Senior Legal Caseworker"
   ],
 
   "request": {
