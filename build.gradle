@@ -37,6 +37,7 @@ def versions = [
         log4JVersion   : '2.24.3',
         netty_version  : '4.2.7.Final',
         bouncycastle   : '1.83',
+        testcontainers : '2.0.3',
         poi            : '5.5.1'
 ]
 
@@ -388,7 +389,8 @@ dependencies {
 
     implementation 'net.bytebuddy:byte-buddy:1.18.2'
 
-    testImplementation('org.testcontainers:testcontainers-postgresql:2.0.2')
+    testImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
+    testImplementation group: 'org.testcontainers', name: 'testcontainers-postgresql', version: versions.testcontainers
 
     pitest 'org.pitest:pitest-junit5-plugin:1.2.3'
 
