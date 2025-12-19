@@ -22,13 +22,10 @@
 
           "id": "${[scenarioContext][parentContext][childContexts][S-211_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}",
 
-          "case_allocator": "Y",
-          "task_supervisor": "Y",
+          "case_allocator": "N",
+          "task_supervisor": "N",
 
           "role": [
-            {
-              "_extends_": "CaseworkerRole_01_SLC"
-            },
             {
               "_extends_": "CaseworkerRole_02_LC"
             }
@@ -38,16 +35,7 @@
             {
               "_extends_": "WorkArea_BHA1_ET"
             }
-            ],
-
-          "skills": [
-            {
-              "__ordering__": "ORDERED"
-            },
-            {
-              "_extends_": "Skill_BHA1_ET"
-            }
-          ]
+            ]
         }
       ]
     }
