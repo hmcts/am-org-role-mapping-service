@@ -67,7 +67,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
 
   @S-010
   @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for Senior Legal Caseworker
+  Scenario: must successfully create org role mapping for Senior Legal Caseworker + CA and TS roles
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-010_DeleteDataForRoleAssignments01],
     And a successful call [to verify caseworker details for Senior Legal Caseworker] as in [S-010__VerifyCaseworkerDetails],

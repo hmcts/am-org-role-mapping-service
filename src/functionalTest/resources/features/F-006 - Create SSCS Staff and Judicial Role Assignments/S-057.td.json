@@ -1,6 +1,6 @@
 {
   "_guid_": "S-057",
-  "title": "must successfully create org role mapping for CTSC Team Leader",
+  "title": "must successfully create org role mapping for CTSC Team Leader and CTSC Admin",
   "_extends_": "F-006_Test_Data_Base",
   "specs": [
     "contains the actorId of the user just published who has CTSC Team Leader role"

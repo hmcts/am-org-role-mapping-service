@@ -1,6 +1,6 @@
 {
   "_guid_": "S-071",
-  "title": "must successfully create org role mapping for Senior Legal Caseworker",
+  "title": "must successfully create org role mapping for Legal Caseworker and Senior Legal Caseworker",
   "_extends_": "F-008_Test_Data_Base",
   "specs": [
     "contains the actorId of the user just published who has Senior Legal Caseworker role"

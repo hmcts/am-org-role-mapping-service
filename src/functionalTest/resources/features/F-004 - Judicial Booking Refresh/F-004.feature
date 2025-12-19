@@ -6,7 +6,7 @@ Feature: F-004 : Judicial Refresh Request (with/without Bookings)
 
   @S-031
   @FeatureToggle(EV:BOOKING_FTA_ENABLED=on)
-  Scenario: must successfully create judicial role mapping with booking for District Judge - Salaried appointment
+  Scenario: must successfully create judicial role mapping with booking for Tribunal Judge - Fee Paid appointment
     Given a user with [a judicial profile that supports judicial bookings],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-004_DeleteDataForRoleAssignments]
     And a successful call [to delete existing bookings corresponding to the test actorId] as in [F-004_DeleteDataForBookings],
@@ -25,7 +25,7 @@ Feature: F-004 : Judicial Refresh Request (with/without Bookings)
 
   @S-032
   @FeatureToggle(EV:BOOKING_FTA_ENABLED=on)
-  Scenario: must successfully create judicial role mapping with new booking for District Judge - Salaried appointment
+  Scenario: must successfully create judicial role mapping with new booking for Tribunal Judge - Fee Paid appointment
     Given a user with [a judicial profile that supports judicial bookings],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-004_DeleteDataForRoleAssignments]
     And a successful call [to delete existing bookings corresponding to the test actorId] as in [F-004_DeleteDataForBookings],
@@ -45,7 +45,7 @@ Feature: F-004 : Judicial Refresh Request (with/without Bookings)
 
   @S-033
   @FeatureToggle(EV:BOOKING_FTA_ENABLED=on)
-  Scenario: must successfully create judicial role mapping with no booking for District Judge - Salaried appointment
+  Scenario: must successfully create judicial role mapping with no booking for Tribunal Judge - Fee Paid appointment
     Given a user with [a judicial profile that supports judicial bookings],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-004_DeleteDataForRoleAssignments]
     And a successful call [to delete existing bookings corresponding to the test actorId] as in [F-004_DeleteDataForBookings],
