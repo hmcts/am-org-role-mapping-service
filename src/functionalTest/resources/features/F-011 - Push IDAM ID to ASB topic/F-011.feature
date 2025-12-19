@@ -7,26 +7,10 @@ Feature: F-011 : Verify CRD and JRD service bus messages
   @S-211
   @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on) @FeatureToggle(DB:employment_wa_1_0=on)
-  Scenario: must successfully create org role mapping for Senior Legal Caseworker
+  Scenario: must successfully create org role mapping from Staff Azure Service Bus for Legal Caseworker
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-211_DeleteDataForRoleAssignments],
-    And a successful call [to verify caseworker details for Senior Legal Caseworker] as in [S-211__VerifyCaseworkerDetails],
-    And a successful call [to publish existing CRD user ids to endpoint] as in [S-211_PushMessageToCRDService],
-    And the request [contains the actorId of the user just published who has Senior Legal Caseworker role],
-    And a wait time of [5] seconds [to allow for service bus to process the request]
-    When a request is prepared with appropriate values,
-    And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
-    Then a positive response is received,
-    And the response has all other details as expected
-    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-211_DeleteDataForRoleAssignments].
-
-  @S-211b
-  @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on) @FeatureToggle(DB:employment_wa_1_0=on)
-  Scenario: must successfully create org role mapping for Legal Caseworker
-    Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-211_DeleteDataForRoleAssignments],
-    And a successful call [to verify caseworker details for Legal Caseworker] as in [S-211b__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for Legal Caseworker] as in [S-211__VerifyCaseworkerDetails],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-211_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Legal Caseworker role],
     And a wait time of [5] seconds [to allow for service bus to process the request]
@@ -36,11 +20,10 @@ Feature: F-011 : Verify CRD and JRD service bus messages
     And the response has all other details as expected
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-211_DeleteDataForRoleAssignments].
 
-
   @S-213
   @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on) @FeatureToggle(DB:employment_wa_1_0=on)
-  Scenario: must successfully create judicial role mapping for Tribunal Member - Fee Paid appointment
+  Scenario: must successfully create org role mapping from Judicial Azure Service Bus for Tribunal Member - Fee Paid appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-213_DeleteDataForRoleAssignments],
     And a successful call [to snapshot judicial details] as in [S-213__SnapshotJudicialDetails],
