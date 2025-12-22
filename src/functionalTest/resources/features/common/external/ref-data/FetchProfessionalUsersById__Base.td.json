@@ -1,0 +1,20 @@
+{
+  "_guid_": "FetchProfessionalUsersById__Base",
+
+  "productName": "RefreshUsers Reference Data",
+  "operationName": "Get Refresh Users",
+
+  "specs": [],
+
+  "method": "GET",
+  "uri": "{{PRD_URL}}/refdata/internal/v1/organisations/users",
+
+  "request": {
+    "headers": {
+      "_extends_": "Common_Request_Headers"
+    },
+    "queryParams": {
+      "userId": "OVERRIDE"
+    }
+  }
+}
