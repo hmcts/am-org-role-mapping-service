@@ -1,6 +1,6 @@
 {
   "_guid_": "S-051",
-  "title": "must successfully create tribunal caseworker role mappings for a user",
+  "title": "must successfully create organisational role mapping for Legal Caseworker",
   "_extends_": "F-006_Test_Data_Base",
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
