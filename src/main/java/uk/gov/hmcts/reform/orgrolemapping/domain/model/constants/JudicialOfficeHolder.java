@@ -37,6 +37,22 @@ public final class JudicialOfficeHolder {
 
         }
 
+        @UtilityClass
+        public static final class PublicLaw {
+
+            // generic values
+            public static final String PUBLICLAW_JUDGE_SALARIED
+                = "PUBLICLAW FPL Judge-Salaried";
+            public static final String PUBLICLAW_JUDGE_FEE_PAID
+                = "PUBLICLAW FPL Judge-Fee-Paid";
+            public static final String PUBLICLAW_JUDGE_SENIOR
+                = "PUBLICLAW FPL Senior Judge-Salaried";
+
+
+            public static final String PUBLICLAW_MAGISTRATE_VOLUNTARY
+                = "PUBLICLAW Magistrate-Voluntary ";
+        }
+
     }
 
 }
