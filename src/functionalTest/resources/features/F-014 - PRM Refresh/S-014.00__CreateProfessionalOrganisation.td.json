@@ -1,0 +1,68 @@
+{
+  "_guid_": "S-014.00__CreateProfessionalOrganisation",
+  "productName": "Professional Reference Data",
+  "operationName": "Create Professional Organisation",
+  "method": "POST",
+  "uri": "{{PRD_URL}}/refdata/internal/v1/organisations",
+  "specs": [
+    "to create an organisation in professional reference data"
+  ],
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmPRDUser1"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "${[scenarioContext][customValues][generateS2STokenForXui]}",
+      "Content-Type": "application/json"
+    },
+    "body": {
+  "name": "GA-TestOrganisation001",
+  "status": "PENDING",
+  "statusMessage": "activeorganisation",
+  "sraId": "${[scenarioContext][customValues][generateUUID]}",
+  "sraRegulated": "string",
+  "companyNumber": "${[scenarioContext][customValues][generateAlphaNumericSize7]}",
+  "companyUrl": "string",
+  "superUser": {
+    "firstName": "ga-Ter001",
+    "lastName": "ga-Tes001Lastname",
+    "email": "${[scenarioContext][testData][invokingUser][username]}"
+  },
+  "paymentAccount": [
+    "PBA${[scenarioContext][customValues][generateAlphaNumericSize7]}"
+  ],
+  "contactInformation": [
+    {
+      "uprn": "string",
+      "addressLine1": "address1",
+      "addressLine2": "address2",
+      "addressLine3": "address3",
+      "townCity": "London",
+      "county": "string",
+      "country": "string",
+      "postCode": "EC3M 3BY",
+      "dxAddress": [
+        {
+          "dxNumber": "DX1234571",
+          "dxExchange": "dxExchange"
+        }
+      ]
+    }
+  ]
+}
+
+  },
+  "expectedResponse": {
+    "_extends_": "Common_201_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "organisationIdentifier" : "[[ANYTHING_PRESENT]]"
+    }
+  }
+}
