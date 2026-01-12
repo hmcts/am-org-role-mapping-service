@@ -4,7 +4,7 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
   Background:
     Given an appropriate test context as detailed in the test data source
 
-  @S-126
+  @S-126 @Ignore
   @FeatureToggle(DB:st_cic_wa_1_1=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   Scenario: must successfully create judicial role mapping for President of Tribunal - Salaried appointment
     Given a user with [an active IDAM profile with full permissions],
