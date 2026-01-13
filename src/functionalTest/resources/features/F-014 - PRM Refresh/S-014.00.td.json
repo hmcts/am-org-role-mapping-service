@@ -1,0 +1,13 @@
+{
+  "_guid_": "S-014.00",
+  "title": "00-Setup Professional Organisation & User Data",
+
+  "specs": [
+    "Prd admin access"
+  ],
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmPRDUser1"
+    }
+  }
+}

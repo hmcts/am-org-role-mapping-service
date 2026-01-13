@@ -1,0 +1,18 @@
+{
+  "_guid_": "CreateProfessionalUser__Input",
+  "arrayInMap":
+    {
+      "firstName": "GA-Test-User1",
+      "lastName": "GA-Test-User1-Lastname",
+      "email": "GA-Test-User1@hmcts.net",
+      "roles": [
+        "jrd-system-user",
+        "prd-admin",
+        "pui-user-manager",
+        "cwd-system-user"
+      ],
+      "resendInvite": true
+    }
+
+
+}

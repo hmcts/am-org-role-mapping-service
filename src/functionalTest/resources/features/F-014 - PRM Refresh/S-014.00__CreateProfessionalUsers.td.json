@@ -1,0 +1,47 @@
+{
+  "_guid_": "S-014.00__CreateProfessionalUser",
+  "productName": "Professional Reference Data",
+  "operationName": "Create Professional User",
+  "method": "POST",
+  "uri": "{{PRD_URL}}/refdata/internal/v1/organisations/{orgId}/users/",
+  "specs": [
+    "to create a user in professional reference data"
+  ],
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmPRDUser1"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "${[scenarioContext][customValues][generateS2STokenForXui]}",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "firstName": "GA-Test-User00199",
+      "lastName": "GA-Test-User00199-Lastname",
+      "email": "ovelanl@mail.com",
+      "roles": [
+        "jrd-system-user",
+        "prd-admin",
+        "pui-user-manager",
+        "cwd-system-user"
+      ],
+      "resendInvite": true
+    },
+    "pathVariables": {
+      "orgId": "YZ39CG8"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_201_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "userId" : "[[ANYTHING_PRESENT]]"
+    }
+  }
+}

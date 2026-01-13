@@ -1,12 +1,20 @@
 {
   "_guid_": "S-014.01__VerifyProfessionalUser",
-  "_extends_": "FetchProfessionalUsersById__PositiveResponse_Base",
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmPRDUser1"
+    }
+  },
 
   "specs": [
     "to verify professional user has userAccessTypes enabled"
   ],
-
+  "method": "GET",
+  "uri": "{{PRD_URL}}/refdata/internal/v1/organisations/users",
   "request": {
+    "headers": {
+      "_extends_": "Common_Request_Headers"
+    },
     "queryParams": {
       "userId": "${[scenarioContext][parentContext][testData][request][queryParams][userId]}"
     }
@@ -17,11 +25,15 @@
     "body": {
       "users": [
         {
+          "__ordering__": "unordered",
+          "__elementId__": "userIdentifier",
           "_extends_": "ProfessionalUser",
           "organisationInfo": {
             "status": "ACTIVE",
             "organisationProfileIds" : [ "SOLICITOR_PROFILE" ]
           },
+          "lastRecordInPage": "[[ANYTHING_PRESENT]]",
+          "moreAvailable": false,
           "userAccessTypes": [ {
             "jurisdictionId" : "[[ANYTHING_PRESENT]]",
             "organisationProfileId" : "SOLICITOR_PROFILE",

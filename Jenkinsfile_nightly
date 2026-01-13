@@ -43,6 +43,7 @@ def secrets = [
       secret('orm-IDAM-CLIENT-SECRET', 'ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET'),
       secret('orm-IDAM-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET'),
       secret('test-am-user2-befta-pwd', 'TEST_AM_USER2_BEFTA_PWD'),
+      secret('test-am-user2-befta-pwd', 'TEST_AM_PRD_USER1_BEFTA_PASSWORD'),
       secret('test-am-crd-user1-befta', 'TEST_AM_CRD_USER1_BEFTA'),
       secret('test-am-crd-user1-befta-password', 'TEST_AM_CRD_USER1_BEFTA_PASSWORD'),
       secret('test-am-jrd-user1-befta', 'TEST_AM_JRD_USER1_BEFTA'),
@@ -55,6 +56,10 @@ def secrets = [
 ]
 
 withNightlyPipeline(type, product, component) {
+
+
+// extra dynamic users for PRD tests
+    env.TEST_AM_PRD_USER1_BEFTA = "TEST_AM_ORM_BEFTA_PRD_USER1_AAT@test.local"
 
 // Vars needed for functional and smoke tests run against AKS
 env.IDAM_URL = "https://idam-api.aat.platform.hmcts.net"
