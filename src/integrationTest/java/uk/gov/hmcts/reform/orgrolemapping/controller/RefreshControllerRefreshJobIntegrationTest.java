@@ -614,8 +614,8 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         logger.info(" RefreshJob JRD refresh record With Only JobId to process successful");
-        Long jobId = createRefreshJobJudicialRefresh(NEW, null, null);
         String[] userIds = buildUserIdList(1);
+        Long jobId = createRefreshJobJudicialRefresh(NEW, null, null);
 
         mockJRDServiceByServiceName(userIds);
         mockJBSService(userIds);
