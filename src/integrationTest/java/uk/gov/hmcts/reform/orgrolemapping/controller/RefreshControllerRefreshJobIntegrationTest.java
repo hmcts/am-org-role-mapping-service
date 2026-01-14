@@ -615,12 +615,11 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
 
         logger.info(" RefreshJob JRD refresh record With Only JobId to process successful");
         String[] userIds = buildUserIdList(1);
-        Long jobId = createRefreshJobJudicialRefresh(NEW, null, null);
-
         mockJRDServiceByServiceName(userIds);
         mockJBSService(userIds);
         mockRequestMappingServiceWithJudicialStatus(HttpStatus.CREATED);
 
+        Long jobId = createRefreshJobJudicialRefresh(NEW, null, null);
         mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
