@@ -313,6 +313,14 @@ tasks.named('integration') {
     }
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'org.springframework'){
+            details.useVersion versions.spring
+        }
+    }
+}
+
 dependencies {
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.0'
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-web')
