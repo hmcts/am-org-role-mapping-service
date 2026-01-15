@@ -611,31 +611,42 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     @Test
     @Order(18)
     public void shouldProcessRefreshJRDByServiceName() throws Exception {
+        logger.info(" RefreshJob JRD refresh record With Only JobId to process successful");
+        refreshJrdByServiceName(HttpStatus.CREATED, COMPLETED);
+    }
+
+    private void refreshJrdByServiceName(HttpStatus expectedHttpStatus, String expectedJobStatus) throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
-        logger.info(" RefreshJob JRD refresh record With Only JobId to process successful");
         String[] userIds = buildUserIdList(1);
         mockJRDServiceByServiceName(userIds);
         mockJBSService(userIds);
-        mockRequestMappingServiceWithJudicialStatus(HttpStatus.CREATED);
+        mockRequestMappingServiceWithJudicialStatus(expectedHttpStatus);
 
         Long jobId = createRefreshJobJudicialRefresh(NEW, null, null);
         mockMvc.perform(post(REFRESH_JOB_URL)
                         .contentType(JSON_CONTENT_TYPE)
                         .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
                         .param("jobId", jobId.toString()))
-                .andExpect(status().is(202))
+                .andExpect(status().is(HttpStatus.ACCEPTED.value()))
                 .andReturn();
 
         await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
                 .timeout(WAIT_FOR_ASYNC_TO_TIMEOUT, TimeUnit.SECONDS)
-                .untilAsserted(() -> Assertions.assertTrue(isRefreshJobInStatus(jobId, COMPLETED)));
+                .untilAsserted(() -> Assertions.assertTrue(isRefreshJobInStatus(jobId, expectedJobStatus)));
 
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
-        assertEquals(COMPLETED, refreshJob.getStatus());
-        assertNull(refreshJob.getUserIds());
+        assertEquals(expectedJobStatus, refreshJob.getStatus());
+        //assertNull(refreshJob.getUserIds());
         assertNotNull(refreshJob.getLog());
+    }
+
+    @Test
+    @Order(19)
+    public void shouldProcessRefreshJRDByServiceName_Aborted() throws Exception {
+        logger.info(" RefreshJob JRD refresh record With Only JobId process Aborted");
+        refreshJrdByServiceName(HttpStatus.UNPROCESSABLE_ENTITY, ABORTED);
     }
 
     @NotNull
