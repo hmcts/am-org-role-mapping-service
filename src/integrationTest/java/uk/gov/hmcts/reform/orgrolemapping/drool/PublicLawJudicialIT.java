@@ -282,7 +282,10 @@ public class PublicLawJudicialIT {
         List<DroolJudicialTestArguments> arguments = generateStandardSalariedTestArguments(
             jrdResponseFileName,
             rasRequestFileName,
+            additionalRoleTest,
             additionalRoleTest
+                    ? SALARIED_JUDGE_OUTPUT_TEMPLATE // allow AR-Expired fallback to standard salaried template
+                    : null 
         );
 
         arguments = cloneListOfTestArgumentsForMultiRegion(
