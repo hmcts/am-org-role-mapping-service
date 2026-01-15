@@ -638,8 +638,8 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
         assertEquals(expectedJobStatus, refreshJob.getStatus());
-        assertTrue(refreshJob.getUserIds() == null ||
-                (refreshJob.getUserIds().length == 1 && refreshJob.getUserIds()[0] == null));
+        assertTrue(refreshJob.getUserIds() == null
+                || (refreshJob.getUserIds().length == 1 && refreshJob.getUserIds()[0] == null));
         assertNotNull(refreshJob.getLog());
     }
 
