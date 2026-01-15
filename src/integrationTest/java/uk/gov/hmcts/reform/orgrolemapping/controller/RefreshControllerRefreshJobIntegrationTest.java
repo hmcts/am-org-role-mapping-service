@@ -619,7 +619,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
         String[] userIds = buildUserIdList(1);
-        mockJRDServiceByServiceName(userIds);
+        mockJrdServiceByServiceName(userIds);
         mockJBSService(userIds);
         mockRequestMappingServiceWithJudicialStatus(expectedHttpStatus);
 
@@ -672,7 +672,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         doReturn(userProfilesResponse).when(jrdFeignClient).getJudicialDetailsById(any(), any());
     }
 
-    private void mockJRDServiceByServiceName(String[] userIds) {
+    private void mockJrdServiceByServiceName(String[] userIds) {
         ResponseEntity<List<JudicialProfileV2>> userProfilesResponse = buildJudicialProfilesResponseV2(userIds);
         doReturn(userProfilesResponse).when(jrdFeignClient)
                 .getJudicialDetailsByServiceName(any(), any(), any(), any(), any());
