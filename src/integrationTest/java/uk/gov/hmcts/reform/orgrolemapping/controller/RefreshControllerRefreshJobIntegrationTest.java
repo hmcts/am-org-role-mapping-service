@@ -72,6 +72,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -607,18 +608,20 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         Map<String, Set<UserAccessProfile>> usersAccessProfiles = usersAccessProfilesCaptor.getValue();
         assertEquals(deletedFlagStatus, usersAccessProfiles.get(userIds[0]).isEmpty());
     }
-    
-    @Test
+
     @Order(18)
-    public void shouldProcessRefreshJrdByServiceName() throws Exception {
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2})
+    public void shouldProcessRefreshJrdByServiceName(int numberOfBatches) throws Exception {
         logger.info(" RefreshJob JRD refresh record With Only JobId to process successful");
-        refreshJrdByServiceName(HttpStatus.CREATED, COMPLETED);
+        refreshJrdByServiceName(HttpStatus.CREATED, COMPLETED, numberOfBatches);
     }
 
-    private void refreshJrdByServiceName(HttpStatus expectedHttpStatus, String expectedJobStatus) throws Exception {
+    private void refreshJrdByServiceName(HttpStatus expectedHttpStatus, String expectedJobStatus,
+                                         int numberOfBatches) throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
-        String[] userIds = buildUserIdList(1);
+        String[] userIds = buildUserIdList(TEST_PAGE_SIZE * numberOfBatches);
         mockJrdServiceByServiceName(userIds);
         mockJBSService(userIds);
         mockRequestMappingServiceWithJudicialStatus(expectedHttpStatus);
@@ -641,13 +644,17 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         assertTrue(refreshJob.getUserIds() == null
                 || (refreshJob.getUserIds().length == 1 && refreshJob.getUserIds()[0] == null));
         assertNotNull(refreshJob.getLog());
+
+        // verify JRD called expected number of times
+        verify(jrdFeignClient, times(numberOfBatches + 1))
+                .getJudicialDetailsByServiceName(any(), any(), any(), any(), any());
     }
 
     @Test
     @Order(19)
     public void shouldProcessRefreshJrdByServiceName_Aborted() throws Exception {
         logger.info(" RefreshJob JRD refresh record With Only JobId process Aborted");
-        refreshJrdByServiceName(HttpStatus.UNPROCESSABLE_ENTITY, ABORTED);
+        refreshJrdByServiceName(HttpStatus.UNPROCESSABLE_ENTITY, ABORTED, 1);
     }
 
     @NotNull
@@ -675,7 +682,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     private void mockJrdServiceByServiceName(String[] userIds) {
         ResponseEntity<List<JudicialProfileV2>> userProfilesResponse = buildJudicialProfilesResponseV2(userIds);
         doReturn(userProfilesResponse).when(jrdFeignClient)
-                .getJudicialDetailsByServiceName(any(), any(), any(), any(), any());
+                .getJudicialDetailsByServiceName(any(), eq(TEST_PAGE_SIZE), any(), any(), any());
     }
 
     private void mockJBSService(String[] userIds) {
