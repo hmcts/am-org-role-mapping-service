@@ -28,6 +28,7 @@ def versions = [
         reformS2sClient: '5.3.3',
         serenity       : '4.3.4',
         pact_version   : '4.6.17',
+        spring         : '6.2.15',
         rest_assured   : '5.5.6',
         cucumber       : '5.7.0',
         feign_jackson  : '13.6',
@@ -310,6 +311,14 @@ tasks.named('integration') {
 
     testLogging {
         exceptionFormat = 'full'
+    }
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'org.springframework'){
+            details.useVersion versions.spring
+        }
     }
 }
 
