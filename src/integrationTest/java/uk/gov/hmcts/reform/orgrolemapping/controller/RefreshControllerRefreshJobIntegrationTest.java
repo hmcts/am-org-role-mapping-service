@@ -610,7 +610,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     
     @Test
     @Order(18)
-    public void shouldProcessRefreshJRDByServiceName() throws Exception {
+    public void shouldProcessRefreshJrdByServiceName() throws Exception {
         logger.info(" RefreshJob JRD refresh record With Only JobId to process successful");
         refreshJrdByServiceName(HttpStatus.CREATED, COMPLETED);
     }
@@ -638,13 +638,14 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
         RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
         assertEquals(expectedJobStatus, refreshJob.getStatus());
-        //assertNull(refreshJob.getUserIds());
+        assertTrue(refreshJob.getUserIds() == null ||
+                (refreshJob.getUserIds().length == 1 && refreshJob.getUserIds()[0] == null));
         assertNotNull(refreshJob.getLog());
     }
 
     @Test
     @Order(19)
-    public void shouldProcessRefreshJRDByServiceName_Aborted() throws Exception {
+    public void shouldProcessRefreshJrdByServiceName_Aborted() throws Exception {
         logger.info(" RefreshJob JRD refresh record With Only JobId process Aborted");
         refreshJrdByServiceName(HttpStatus.UNPROCESSABLE_ENTITY, ABORTED);
     }
