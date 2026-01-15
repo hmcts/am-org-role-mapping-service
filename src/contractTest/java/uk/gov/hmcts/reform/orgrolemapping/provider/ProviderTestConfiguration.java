@@ -5,10 +5,10 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CRDService;
@@ -30,10 +30,10 @@ import static org.mockito.Mockito.when;
 @TestConfiguration
 public class ProviderTestConfiguration {
 
-    @MockBean
+    @MockitoBean
     CRDService crdService;
 
-    @MockBean
+    @MockitoBean
     JRDService jrdService;
 
     @Bean
@@ -49,10 +49,10 @@ public class ProviderTestConfiguration {
                 getStatelessKieSession(), securityUtils);
     }
 
-    @MockBean
+    @MockitoBean
     RoleAssignmentService roleAssignmentService;
 
-    @MockBean
+    @MockitoBean
     PersistenceService persistenceService;
 
     @Bean
@@ -69,13 +69,13 @@ public class ProviderTestConfiguration {
         return environmentConfiguration;
     }
 
-    @MockBean
+    @MockitoBean
     SecurityUtils securityUtils;
 
-    @MockBean
+    @MockitoBean
     private CacheManager cacheManager;
 
-    @MockBean
+    @MockitoBean
     JudicialBookingService judicialBookingService;
 
     @Bean

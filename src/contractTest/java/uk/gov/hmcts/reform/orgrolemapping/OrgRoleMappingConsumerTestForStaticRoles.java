@@ -17,10 +17,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
@@ -44,16 +44,16 @@ public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
     @Autowired
     DataSource dataSource;
 
-    @MockBean
+    @MockitoBean
     JRDTopicPublisher jrdPublisher;
-    @MockBean
+    @MockitoBean
     CRDTopicPublisher crdPublisher;
 
-    @MockBean
+    @MockitoBean
     @Qualifier("crdPublisher")
     ServiceBusSenderClient serviceBusSenderClient;
 
-    @MockBean
+    @MockitoBean
     @Qualifier("jrdPublisher")
     ServiceBusSenderClient serviceBusSenderClientJrd;
 

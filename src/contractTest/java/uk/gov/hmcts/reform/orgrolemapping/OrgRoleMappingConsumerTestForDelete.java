@@ -17,9 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
@@ -39,16 +39,16 @@ public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
     private static final String RAS_DELETE_ACTOR_BY_ID = AM_RAS_URL + "/" + ACTOR_ID;
     private static final String RAS_DELETE_ACTOR_BY_PR = AM_RAS_URL + "?" + QUERY_PARAMS;
 
-    @MockBean
+    @MockitoBean
     JRDTopicPublisher jrdPublisher;
-    @MockBean
+    @MockitoBean
     CRDTopicPublisher crdPublisher;
 
-    @MockBean
+    @MockitoBean
     @Qualifier("crdPublisher")
     ServiceBusSenderClient serviceBusSenderClient;
 
-    @MockBean
+    @MockitoBean
     @Qualifier("jrdPublisher")
     ServiceBusSenderClient serviceBusSenderClientJrd;
 
