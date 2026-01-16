@@ -60,6 +60,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -611,18 +613,18 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
 
     @Order(18)
     @ParameterizedTest
-    @ValueSource(ints = {1, 2})
-    public void shouldProcessRefreshJrdByServiceName(int numberOfBatches) throws Exception {
+    @ValueSource(ints = {2, 1})
+    public void shouldProcessRefreshJrdByServiceName(int numberOfPages) throws Exception {
         logger.info(" RefreshJob JRD refresh record With Only JobId to process successful");
-        refreshJrdByServiceName(HttpStatus.CREATED, COMPLETED, numberOfBatches);
+        refreshJrdByServiceName(HttpStatus.CREATED, COMPLETED, numberOfPages);
     }
 
     private void refreshJrdByServiceName(HttpStatus expectedHttpStatus, String expectedJobStatus,
-                                         int numberOfBatches) throws Exception {
+                                         int numberOfPages) throws Exception {
         when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
 
-        String[] userIds = buildUserIdList(TEST_PAGE_SIZE * numberOfBatches);
-        mockJrdServiceByServiceName(userIds);
+        String[] userIds = buildUserIdList(TEST_PAGE_SIZE * numberOfPages);
+        mockJrdServiceByServiceName(userIds, TEST_PAGE_SIZE);
         mockJBSService(userIds);
         mockRequestMappingServiceWithJudicialStatus(expectedHttpStatus);
 
@@ -645,8 +647,9 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                 || (refreshJob.getUserIds().length == 1 && refreshJob.getUserIds()[0] == null));
         assertNotNull(refreshJob.getLog());
 
-        // verify JRD called expected number of times
-        verify(jrdFeignClient, times(numberOfBatches + 1))
+        // verify JRD called expected number of times (additional call inside the loop when 1 page only)
+        int expectedJrdCalls = numberOfPages + (numberOfPages == 1 ? 1 : 0);
+        verify(jrdFeignClient, times(expectedJrdCalls))
                 .getJudicialDetailsByServiceName(any(), any(), any(), any(), any());
     }
 
@@ -679,10 +682,31 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         doReturn(userProfilesResponse).when(jrdFeignClient).getJudicialDetailsById(any(), any());
     }
 
-    private void mockJrdServiceByServiceName(String[] userIds) {
-        ResponseEntity<List<JudicialProfileV2>> userProfilesResponse = buildJudicialProfilesResponseV2(userIds);
-        doReturn(userProfilesResponse).when(jrdFeignClient)
-                .getJudicialDetailsByServiceName(any(), eq(TEST_PAGE_SIZE), any(), any(), any());
+    private void mockJrdServiceByServiceName(String[] userIds, int pageSize) {
+        Map<Integer, String[]> paginatedUserIds = getPaginatedUserIds(userIds, pageSize);
+        for (Map.Entry entry : paginatedUserIds.entrySet()) {
+            Integer pageNo = (Integer) entry.getKey();
+            String[] userIdsForPage = (String[]) entry.getValue();
+            ResponseEntity<List<JudicialProfileV2>> userProfilesResponse =
+                    buildJudicialProfilesResponseV2(userIdsForPage);
+            doReturn(userProfilesResponse).when(jrdFeignClient)
+                    .getJudicialDetailsByServiceName(any(), eq(pageSize), eq(pageNo), any(), any());
+        }
+    }
+
+    private Map<Integer, String[]> getPaginatedUserIds(String[] userIds, int pageSize) {
+        int totalPages = (int) Math.ceil((double) userIds.length / pageSize);
+        return IntStream.range(0, totalPages)
+                .boxed()
+                .collect(Collectors.toMap(
+                        pageIndex -> pageIndex,
+                        pageIndex -> Arrays.copyOfRange(
+                                userIds,
+                                pageIndex * pageSize,
+                                Math.min((pageIndex + 1) * pageSize, userIds.length)
+                        )
+                ));
+
     }
 
     private void mockJBSService(String[] userIds) {
