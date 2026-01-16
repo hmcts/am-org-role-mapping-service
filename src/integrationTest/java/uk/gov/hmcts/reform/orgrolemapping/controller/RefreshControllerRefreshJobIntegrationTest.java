@@ -60,6 +60,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -72,6 +74,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -608,6 +611,55 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
         assertEquals(deletedFlagStatus, usersAccessProfiles.get(userIds[0]).isEmpty());
     }
 
+    @Order(18)
+    @ParameterizedTest
+    @ValueSource(ints = {2, 1})
+    public void shouldProcessRefreshJrdByServiceName(int numberOfPages) throws Exception {
+        logger.info(" RefreshJob JRD refresh record With Only JobId to process successful");
+        refreshJrdByServiceName(HttpStatus.CREATED, COMPLETED, numberOfPages);
+    }
+
+    private void refreshJrdByServiceName(HttpStatus expectedHttpStatus, String expectedJobStatus,
+                                         int numberOfPages) throws Exception {
+        when(securityUtils.getServiceName()).thenReturn(AUTHORISED_JOB_SERVICE);
+
+        String[] userIds = buildUserIdList(TEST_PAGE_SIZE * numberOfPages);
+        mockJrdServiceByServiceName(userIds, TEST_PAGE_SIZE);
+        mockJBSService(userIds);
+        mockRequestMappingServiceWithJudicialStatus(expectedHttpStatus);
+
+        Long jobId = createRefreshJobJudicialRefresh(NEW, null, null);
+        mockMvc.perform(post(REFRESH_JOB_URL)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders(AUTHORISED_JOB_SERVICE))
+                        .param("jobId", jobId.toString()))
+                .andExpect(status().is(HttpStatus.ACCEPTED.value()))
+                .andReturn();
+
+        await().pollDelay(WAIT_FOR_ASYNC_TO_COMPLETE, TimeUnit.SECONDS)
+                .timeout(WAIT_FOR_ASYNC_TO_TIMEOUT, TimeUnit.SECONDS)
+                .untilAsserted(() -> Assertions.assertTrue(isRefreshJobInStatus(jobId, expectedJobStatus)));
+
+        logger.info(" -- Refresh Role Assignment record updated successfully -- ");
+        RefreshJob refreshJob = callTestSupportGetJobApi(jobId);
+        assertEquals(expectedJobStatus, refreshJob.getStatus());
+        assertTrue(refreshJob.getUserIds() == null
+                || (refreshJob.getUserIds().length == 1 && refreshJob.getUserIds()[0] == null));
+        assertNotNull(refreshJob.getLog());
+
+        // verify JRD called expected number of times (additional call inside the loop when 1 page only)
+        int expectedJrdCalls = numberOfPages + (numberOfPages == 1 ? 1 : 0);
+        verify(jrdFeignClient, times(expectedJrdCalls))
+                .getJudicialDetailsByServiceName(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    @Order(19)
+    public void shouldProcessRefreshJrdByServiceName_Aborted() throws Exception {
+        logger.info(" RefreshJob JRD refresh record With Only JobId process Aborted");
+        refreshJrdByServiceName(HttpStatus.UNPROCESSABLE_ENTITY, ABORTED, 1);
+    }
+
     @NotNull
     private ResponseEntity<List<CaseWorkerProfilesResponse>> buildUserProfileResponse() {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
@@ -628,6 +680,33 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
     private void mockJRDService(String[] userIds) {
         ResponseEntity<List<JudicialProfileV2>> userProfilesResponse = buildJudicialProfilesResponseV2(userIds);
         doReturn(userProfilesResponse).when(jrdFeignClient).getJudicialDetailsById(any(), any());
+    }
+
+    private void mockJrdServiceByServiceName(String[] userIds, int pageSize) {
+        Map<Integer, String[]> paginatedUserIds = getPaginatedUserIds(userIds, pageSize);
+        for (Map.Entry entry : paginatedUserIds.entrySet()) {
+            Integer pageNo = (Integer) entry.getKey();
+            String[] userIdsForPage = (String[]) entry.getValue();
+            ResponseEntity<List<JudicialProfileV2>> userProfilesResponse =
+                    buildJudicialProfilesResponseV2(userIdsForPage);
+            doReturn(userProfilesResponse).when(jrdFeignClient)
+                    .getJudicialDetailsByServiceName(any(), eq(pageSize), eq(pageNo), any(), any());
+        }
+    }
+
+    private Map<Integer, String[]> getPaginatedUserIds(String[] userIds, int pageSize) {
+        int totalPages = (int) Math.ceil((double) userIds.length / pageSize);
+        return IntStream.range(0, totalPages)
+                .boxed()
+                .collect(Collectors.toMap(
+                        pageIndex -> pageIndex,
+                        pageIndex -> Arrays.copyOfRange(
+                                userIds,
+                                pageIndex * pageSize,
+                                Math.min((pageIndex + 1) * pageSize, userIds.length)
+                        )
+                ));
+
     }
 
     private void mockJBSService(String[] userIds) {
@@ -662,6 +741,12 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseTestIntegrat
                                                  Long linkedJobId,
                                                  String[] userIds) throws Exception {
         return callTestSupportCreateJobApi(RoleCategory.LEGAL_OPERATIONS, status, false, linkedJobId, userIds);
+    }
+
+    private Long createRefreshJobJudicialRefresh(String status,
+                                                 Long linkedJobId,
+                                                 String[] userIds) throws Exception {
+        return callTestSupportCreateJobApi(RoleCategory.JUDICIAL, status, false, linkedJobId, userIds);
     }
 
     private Long callTestSupportCreateJobApi(RoleCategory roleCategory,
