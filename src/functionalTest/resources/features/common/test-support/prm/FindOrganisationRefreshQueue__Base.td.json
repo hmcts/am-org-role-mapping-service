@@ -1,0 +1,21 @@
+{
+  "_guid_": "FindOrganisationRefreshQueue__Base",
+
+  "productName": "Organisation Role Mapping",
+  "operationName": "PRM Organisation Refresh Queue findOrganisationRefreshQueue",
+
+  "specs": [],
+
+  "method": "GET",
+  "uri": "/am/testing-support/prm/findOrganisationRefreshQueue",
+
+  "request": {
+    "headers": {
+      "_extends_": "Common_Request_Headers"
+    },
+    "queryParams": {
+      "organisationId": "OVERRIDE"
+    }
+  }
+
+}
