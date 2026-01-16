@@ -9,6 +9,7 @@ public enum Appointment implements AppointmentEnum {
 
     PRESIDENT_ET_SCOTLAND("President, Employment Tribunals (Scotland)", List.of("153")),
     PRESIDENT_OF_TRIBUNAL("President of Tribunal", List.of("65")),
+    MAGISTRATE("Magistrate", List.of("1")),
     REGIONAL_EMPLOYMENT_JUDGE("Regional Employment Judge", List.of("71")),
 
     // NB: Tribunal members also form a group, see AppointmentGroup.ANY_TRIBUNAL_MEMBER
@@ -33,7 +34,7 @@ public enum Appointment implements AppointmentEnum {
 
 
     private final String name;
-    private final List<String> codes;// support for multiple codes in future (i.e. different spellings for same role)
+    private final List<String> codes; // support for multiple codes in future (i.e. different spellings for same role)
 
     Appointment(String name, List<String> codes) {
         this.name = name;

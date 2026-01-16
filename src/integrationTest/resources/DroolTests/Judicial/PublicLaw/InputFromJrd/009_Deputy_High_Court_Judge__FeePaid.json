@@ -8,13 +8,13 @@
     {
       "base_location_id": "843",
       "epimms_id": "123456",
-      "cft_region_id": "4",
-      "cft_region": "North West",
+      "cft_region_id": "[[REGION_ID]]",
+      "cft_region": "[[REGION_NAME]]",
       "is_principal_appointment": "true",
       "appointment": "Deputy High Court Judge",
       "role_name_id": "33",
-      "appointment_type": "Fee-paid",
-      "contract_type_id": "1",
+      "appointment_type": "[[APPOINTMENT_TYPE]]",
+      "contract_type_id": "[[CONTRACT_TYPE_ID]]",
       "service_codes": [
         "ABA3"
       ],
