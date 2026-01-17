@@ -100,10 +100,13 @@ end;
 
 /*
  * PUBLICLAW Fee Paid "judge" Org role mapping v1.2 .
+ * Made obsolete in DTSAM-1121 - rule will be disabled when PUBLICLAW_WA_3_0 is enabled.
+ * To be removed in DTSAM-1125.
  */
 rule "publiclaw_fee_paid_judge_org_role_v1_2"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_2.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in (
   "PUBLICLAW Deputy District Judge (MC) - Fee Paid", "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
   "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
@@ -136,6 +139,39 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : publiclaw_fee_paid_judge_org_role_v1_2");
+end;
+
+/*
+ * PUBLICLAW Fee Paid "judge" Org role mapping v3.0 .
+ */
+rule "v3_0_publiclaw_fee_paid_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
+  $joh: JudicialOfficeHolder(office in (Office.PublicLaw.PUBLICLAW_JUDGE_FEE_PAID))
+  $bk: JudicialBooking(userId == $joh.userId)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.FEE_PAID));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PUBLICLAW.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ? $bk.getLocationId():$joh.getPrimaryLocation()));
+   attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
+   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("hearing_work,routine_work,decision_making_work,applications"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName(RoleName.JUDGE)
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($bk.getBeginTime())
+      .endTime($bk.getEndTime())
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v3_0_publiclaw_fee_paid_judge_org_role");
 end;
 
 /*
@@ -222,16 +258,9 @@ rule "v3_0_publiclaw_hmcts_judiciary_org_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
     $joh: JudicialOfficeHolder(office in (Office.PublicLaw.PUBLICLAW_JUDGE_SALARIED,
-                                          "PUBLICLAW Deputy District Judge (MC) - Fee Paid", "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
-                                            "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
-                                            "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
-                                            "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid",
-                                            "PUBLICLAW Designated Family Judge - Salaried", "PUBLICLAW Acting Designated Family Judge - Salaried",
-                                            "PUBLICLAW Deputy Circuit Judge - Fee Paid",
-                                            "PUBLICLAW Recorder - Fee Paid",
-                                            "PUBLICLAW Circuit Judge - Sitting in Retirement - Fee Paid", "PUBLICLAW Recorder - Sitting in Retirement - Fee Paid",
-                                            "PUBLICLAW Deputy Upper Tribunal Judge - Fee Paid", "PUBLICLAW District Judge (MC) - Sitting in Retirement - Fee Paid",
-                                            "PUBLICLAW District Judge - Sitting in Retirement - Fee Paid"))
+                                          Office.PublicLaw.PUBLICLAW_JUDGE_FEE_PAID,
+                                          "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
+                                          "PUBLICLAW Designated Family Judge - Salaried", "PUBLICLAW Acting Designated Family Judge - Salaried"))
 then
     Map<String,JsonNode> attribute = new HashMap<>();
     if ($joh.isSalaried()) {
@@ -392,11 +421,13 @@ end;
  * PUBLICLAW "fee-paid-judge" Org role mapping for v 2_1.
  * publiclaw_wa_2_1 - fee-paid-judge not able to make booking outside of their CFT region - Public Law.
  * see DTSAM-939.
+ * Made obsolete in DTSAM-1121 - rule will be disabled when PUBLICLAW_WA_3_0 is enabled.
+ * To be removed in DTSAM-1125.
  */
 rule "v2_1_publiclaw_fee_paid_judge_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_2_1.getValue())
-
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in ("PUBLICLAW Deputy Circuit Judge - Fee Paid",
   "PUBLICLAW Deputy District Judge (MC) - Fee Paid", "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
   "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
@@ -428,4 +459,40 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : v2_1_publiclaw_fee_paid_judge_role");
+end;
+
+/*
+ * PUBLICLAW "fee-paid-judge" Org role mapping for v 3_0.
+ */
+rule "v3_0_publiclaw_fee_paid_judge_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
+
+  $joh: JudicialOfficeHolder(office in (Office.PublicLaw.PUBLICLAW_JUDGE_FEE_PAID,
+                                        "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+
+   attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.FEE_PAID));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PUBLICLAW.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("hearing_work,routine_work,decision_making_work,applications"));
+   attribute.put(Attributes.Name.BOOKABLE, JacksonUtils.convertObjectIntoJsonNode("true"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName(RoleName.FEE_PAID_JUDGE)
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v3_0_publiclaw_fee_paid_judge_role");
 end;
