@@ -8,6 +8,7 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
+import au.com.dius.pact.core.model.PactSpecVersion;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
@@ -42,7 +43,7 @@ import java.util.Map;
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_judicialBooking_query")
+@PactTestFor(providerName = "am_judicialBooking_query", pactVersion = PactSpecVersion.V3)
 @PactFolder("pacts")
 @ContextConfiguration(classes = {JudicialBookingConsumerApplication.class})
 @TestPropertySource(properties = {"feign.client.config.jbsClient.url=http://localhost:4097"})
