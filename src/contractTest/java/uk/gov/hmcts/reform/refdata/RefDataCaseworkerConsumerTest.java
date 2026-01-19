@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCaseWorkerProfile;

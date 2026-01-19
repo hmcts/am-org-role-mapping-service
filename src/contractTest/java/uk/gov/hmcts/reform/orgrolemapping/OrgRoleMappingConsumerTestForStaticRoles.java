@@ -32,7 +32,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)

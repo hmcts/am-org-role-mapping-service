@@ -35,7 +35,7 @@ import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 import java.util.Map;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 

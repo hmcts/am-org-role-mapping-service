@@ -477,6 +477,7 @@ dependencies {
     contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5', version: versions.pact_version
     contractTestImplementation group: 'au.com.dius.pact.provider', name: 'spring', version: versions.pact_version
     contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5spring', version: versions.pact_version
+    contractTestImplementation group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.14'
 
     contractTestImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
     contractTestImplementation(group: "org.junit.jupiter", name: "junit-jupiter-api", version: versions.junit)

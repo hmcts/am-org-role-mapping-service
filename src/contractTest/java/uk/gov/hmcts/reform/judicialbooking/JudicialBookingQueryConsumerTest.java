@@ -34,7 +34,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
 
 import java.util.List;
 import java.util.Map;
