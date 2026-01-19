@@ -26,7 +26,7 @@ def versions = [
         pitest         : '1.22.0',
         reformLogging  : '6.1.9',
         reformS2sClient: '5.3.3',
-        serenity       : '4.2.34',
+        serenity       : '4.3.4',
         spring         : '6.2.15',
         pact_version   : '4.1.41',
         rest_assured   : '5.5.6',
