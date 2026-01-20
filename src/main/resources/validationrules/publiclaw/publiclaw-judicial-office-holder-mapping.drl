@@ -430,10 +430,13 @@ end;
 
 /*
  * 14: "PUBLICLAW Designated Family Judge - Salaried" business role mapping to JOH.
+ * Made obsolete in DTSAM-1122 - rule will be disabled when PUBLICLAW_WA_3_0 is enabled.
+ * To be removed in DTSAM-1125.
  */
 rule "v1_5_publiclaw_designated_family_judge_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_5.getValue())
+   $f3: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointmentType in ("Salaried", "SPTW"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
@@ -458,10 +461,13 @@ end;
 
 /*
  * 14b: "PUBLICLAW Acting Designated Family Judge - Salaried" business role mapping to JOH.
+ * Made obsolete in DTSAM-1122 - rule will be disabled when PUBLICLAW_WA_3_0 is enabled.
+ * To be removed in DTSAM-1125.
  */
 rule "v2_0_publiclaw_acting_designated_family_judge_salaried_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_2_0.getValue())
+   $f3: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
    $jap: JudicialAccessProfile(appointment != null,
                                appointmentType in ("Salaried", "SPTW"),
                                (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
@@ -786,7 +792,7 @@ then
 end;
 
 /*
- * "FPL Judge-Salaried" business role mapping to JOH for v3_0.
+ * 1 : "FPL Judge-Salaried" business role mapping to JOH for v3_0.
  */
 rule "v3_0_publiclaw_judge_salaried_joh"
 when
@@ -814,7 +820,7 @@ then
 end;
 
 /*
- * "FPL Judge-FeePaid" business role mapping to JOH for v3_0.
+ * 2 : "FPL Judge-FeePaid" business role mapping to JOH for v3_0.
  */
 rule "v3_0_publiclaw_judge_fee_paid_joh"
 when
@@ -839,4 +845,34 @@ then
     );
 
     logMsg("Rule : v3_0_publiclaw_judge_fee_paid_joh");
+end;
+
+/*
+ * 3 : "PUBLICLAW Senior Judge - Salaried" business role mapping to JOH v3.0.
+ */
+rule "v3_0_publiclaw_senior_judge_salaried_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
+   $jap: JudicialAccessProfile(isSalaried(),
+                               hasValidAdditionalRole(AdditionalRole.DESIGNATED_FAMILY_JUDGE)
+                                   || hasValidAdditionalRole(AdditionalRole.ACTING_DESIGNATED_FAMILY_JUDGE),
+                               hasValidEndDate(),
+                               hasValidAuthorisation(Jurisdiction.PUBLICLAW))
+then
+    insert(
+        JudicialOfficeHolder.builder()
+            .userId($jap.getUserId())
+            .office(Office.PublicLaw.PUBLICLAW_JUDGE_SENIOR)
+            .jurisdiction(Jurisdiction.PUBLICLAW.getName())
+            .ticketCodes($jap.getTicketCodes())
+            .beginTime($jap.getBeginTime())
+            .endTime($jap.getEndTime())
+            .regionId($jap.getRegionId())
+            .baseLocationId($jap.getBaseLocationId())
+            .primaryLocation($jap.getPrimaryLocationId())
+            .contractType($jap.getAppointmentType())
+            .build()
+     );
+
+    logMsg("Rule : v3_0_publiclaw_senior_judge_salaried_joh");
 end;
