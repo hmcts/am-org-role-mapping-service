@@ -36,6 +36,7 @@ public class DroolIntegrationTestSingleton  {
     private static DroolIntegrationTestSingleton instance = null;
 
     public List<TestScenario> judicialTests = new ArrayList<>();
+    public Map<String, Error> judicialErrors = new LinkedHashMap<>();
 
     public static DroolIntegrationTestSingleton getInstance() {
         if (instance == null) {
@@ -109,10 +110,10 @@ public class DroolIntegrationTestSingleton  {
             Map<String, Map<String, String>> testNamesMap =
                     (Map<String, Map<String, String>>) testGroupMap.getValue();
 
-            // Output the test group heading
+            // Output the test group heading (ie 001_Circuit_Judge__Salaried)
             body.append(buildHeading2(testGroup));
 
-            // Output the test names
+            // Output the test names (ie 001_Circuit_Judge__Salaried__SALARIED)
             body.append(buildHtmlTestNames(outputPath, testNamesMap));
         }
 
@@ -129,14 +130,30 @@ public class DroolIntegrationTestSingleton  {
 
             // Output the test name collapsible section
             body.append(buildContents(testName,
-                    buildHtmlDescriptions(outputPath, descriptionsMap)));
+                    buildHtmlDescriptions(testName, outputPath, descriptionsMap)));
         }
         return body.toString();
     }
 
-    private static String buildHtmlDescriptions(
+    private static String buildError(Error error) {
+        StringBuilder body = new StringBuilder();
+        body.append("<p style=\"color:red;\">")
+                .append("Error during test execution: ")
+                .append(error.getMessage())
+                .append("</p>");
+        return body.toString();
+    }
+
+    private static String buildHtmlDescriptions(String testName,
             String outputPath, Map<String, String> map) {
         StringBuilder body = new StringBuilder();
+
+        // Add any assertion error messages that occurred during test execution
+        Error error = getInstance().judicialErrors.get(testName);
+        if (error != null) {
+            body.append(buildError(error));
+        }
+
         for (Map.Entry entry : map.entrySet()) {
             String description = (String) entry.getKey();
             String outputLocation = (String) entry.getValue();
@@ -154,13 +171,13 @@ public class DroolIntegrationTestSingleton  {
         // Build the grouping map
         Map<String, Map<String, Map<String, String>>> groupingMap = new LinkedHashMap<>();
         for (TestScenario testScenario: testScenarios) {
-            // Add the test groups
+            // Add the test groups (ie 001_Circuit_Judge__Salaried)
             groupingMap
                     .computeIfAbsent(testScenario.getTestGroup(), k -> new LinkedHashMap<>());
-            // Add the test names
+            // Add the test names (ie 001_Circuit_Judge__Salaried__SALARIED)
             groupingMap.get(testScenario.getTestGroup())
                     .computeIfAbsent(testScenario.getTestName(), k -> new LinkedHashMap<>());
-            // Add the descriptions
+            // Add the descriptions (ie HappyPath - all dates supplied - WithBooking)
             groupingMap.get(testScenario.getTestGroup()).get(testScenario.getTestName())
                     .put(testScenario.getDescription(), testScenario.getOutputLocation());
         }
