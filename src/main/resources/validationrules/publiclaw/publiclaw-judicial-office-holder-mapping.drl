@@ -841,7 +841,7 @@ when
                                 hasValidEndDate(),
                                 hasValidAuthorisation(Jurisdiction.PUBLICLAW))
 then
-   insert(
+    insert(
         JudicialOfficeHolder.builder()
             .userId($jap.getUserId())
             .office(Office.PublicLaw.PUBLICLAW_JUDGE_FEE_PAID)
@@ -860,16 +860,16 @@ then
 end;
 
 /*
- * 3 : "PUBLICLAW Senior Judge - Salaried" business role mapping to JOH v3.0.
+ * 3 : "PUBLICLAW Senior Judge - Salaried" business role mapping to JOH for v3_0.
  */
 rule "v3_0_publiclaw_senior_judge_salaried_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
-   $jap: JudicialAccessProfile(isSalaried(),
-                               hasValidAdditionalRole(AdditionalRole.DESIGNATED_FAMILY_JUDGE)
-                                   || hasValidAdditionalRole(AdditionalRole.ACTING_DESIGNATED_FAMILY_JUDGE),
-                               hasValidEndDate(),
-                               hasValidAuthorisation(Jurisdiction.PUBLICLAW))
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
+    $jap: JudicialAccessProfile(isSalaried(),
+                                hasValidAdditionalRole(AdditionalRole.DESIGNATED_FAMILY_JUDGE)
+                                    || hasValidAdditionalRole(AdditionalRole.ACTING_DESIGNATED_FAMILY_JUDGE),
+                                hasValidEndDate(),
+                                hasValidAuthorisation(Jurisdiction.PUBLICLAW))
 then
     insert(
         JudicialOfficeHolder.builder()
@@ -884,7 +884,7 @@ then
             .primaryLocation($jap.getPrimaryLocationId())
             .contractType($jap.getAppointmentType())
             .build()
-     );
+    );
 
     logMsg("Rule : v3_0_publiclaw_senior_judge_salaried_joh");
 end;
@@ -894,23 +894,25 @@ end;
  */
 rule "v3_0_publiclaw_magistrate_voluntary_joh"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
-   $jap: JudicialAccessProfile(isVoluntary(),
-                               hasValidEndDate(),
-                               hasValidAuthorisation(Jurisdiction.PUBLICLAW))
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
+    $jap: JudicialAccessProfile(isVoluntary(),
+                                hasValidEndDate(),
+                                hasValidAuthorisation(Jurisdiction.PUBLICLAW))
 then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office(Office.PublicLaw.PUBLICLAW_MAGISTRATE_VOLUNTARY)
-      .jurisdiction(Jurisdiction.PUBLICLAW.getName())
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : v3_0_publiclaw_magistrate_voluntary_joh");
+    insert(
+        JudicialOfficeHolder.builder()
+            .userId($jap.getUserId())
+            .office(Office.PublicLaw.PUBLICLAW_MAGISTRATE_VOLUNTARY)
+            .jurisdiction(Jurisdiction.PUBLICLAW.getName())
+            .ticketCodes($jap.getTicketCodes())
+            .beginTime($jap.getBeginTime())
+            .endTime($jap.getEndTime())
+            .regionId($jap.getRegionId())
+            .baseLocationId($jap.getBaseLocationId())
+            .primaryLocation($jap.getPrimaryLocationId())
+            .contractType($jap.getAppointmentType())
+            .build()
+    );
+
+    logMsg("Rule : v3_0_publiclaw_magistrate_voluntary_joh");
 end;
