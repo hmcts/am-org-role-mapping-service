@@ -394,7 +394,7 @@ dependencies {
     implementation group: 'io.netty', name: 'netty-all', version: versions.netty_version
 
 
-    implementation 'net.bytebuddy:byte-buddy:1.18.3'
+    implementation 'net.bytebuddy:byte-buddy:1.18.4'
 
     testImplementation('com.opentable.components:otj-pg-embedded:1.1.1')
 
