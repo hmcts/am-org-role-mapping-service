@@ -259,7 +259,6 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
     $joh: JudicialOfficeHolder(office in (Office.PublicLaw.PUBLICLAW_JUDGE_SALARIED,
                                           Office.PublicLaw.PUBLICLAW_JUDGE_FEE_PAID,
-                                          "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
                                           "PUBLICLAW Designated Family Judge - Salaried", "PUBLICLAW Acting Designated Family Judge - Salaried"))
 then
     Map<String,JsonNode> attribute = new HashMap<>();
@@ -468,8 +467,7 @@ rule "v3_0_publiclaw_fee_paid_judge_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
 
-  $joh: JudicialOfficeHolder(office in (Office.PublicLaw.PUBLICLAW_JUDGE_FEE_PAID,
-                                        "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement"))
+  $joh: JudicialOfficeHolder(office in (Office.PublicLaw.PUBLICLAW_JUDGE_FEE_PAID))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
 
