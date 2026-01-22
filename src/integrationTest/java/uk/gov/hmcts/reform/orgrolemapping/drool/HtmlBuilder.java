@@ -81,16 +81,21 @@ public class HtmlBuilder {
         return String.format("<a href=\"%s\">%s</a>", url, linkText);
     }
 
-    public static String buildHeading2(String text) {
-        return String.format("<h2>%s</h2>", text);
+    public static String buildHeading2(String text, String colour) {
+        return String.format("<h2%s>%s</h2>", buildColorStyle(colour), text);
     }
 
     public static String buildLine(String text) {
         return String.format("<li>%s</li>", text);
     }
 
-    public static String buildButton(String styleClass, String text) {
-        return String.format("<button type=\"button\"%s>%s</button>",
+    public static String buildParagraph(String text, String colour) {
+        return String.format("<p%s>%s</p>", buildColorStyle(colour), text);
+    }
+
+    public static String buildButton(String styleClass, String text, String colour) {
+        return String.format("<button%s type=\"button\"%s>%s</button>",
+                buildColorStyle(colour),
                 buildStyleClassAttribute(styleClass), text);
     }
 
@@ -100,6 +105,10 @@ public class HtmlBuilder {
     }
 
     public static String buildDiv(String styleClass, String text) {
-        return String.format("<div%s>%s</div>", buildStyleClassAttribute(styleClass), text);
+        return String.format("<div %s>%s</div>", buildStyleClassAttribute(styleClass), text);
+    }
+
+    public static String buildColorStyle(String colour) {
+        return colour != null ? String.format(" style=\"color:%s;\"", colour) : "";
     }
 }

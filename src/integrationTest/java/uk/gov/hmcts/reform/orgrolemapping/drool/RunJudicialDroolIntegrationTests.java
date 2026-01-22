@@ -166,13 +166,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
         Map<String, Boolean> featureFlags = triggerFeatureFlagApi();
 
         // THEN
-        try {
-            assertWireMockAssignmentRequests(expectedAssignmentRequests, testScenarios, featureFlags);
-        } catch (AssertionError ex) {
-            DroolIntegrationTestSingleton.getInstance()
-                    .judicialErrors.put(testScenarios.getFirst().getTestName(), ex);
-            throw ex;
-        }
+        assertWireMockAssignmentRequests(expectedAssignmentRequests, testScenarios, featureFlags);
     }
 
     private List<AssignmentRequest> getAssignmentRequestsFromFile(String fileName,

@@ -21,6 +21,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHeading2
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHtmlPage;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHyperlink;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildLine;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildParagraph;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.createFile;
 
 @SuppressWarnings("unchecked")
@@ -30,19 +31,27 @@ public class DroolIntegrationTestSingleton  {
     private static final String HTML_FILENAME_SUFFIX = ".html";
     private static final String JUDICIAL_FILENAME_PREFIX = "JudicialTest_";
     private static final String JUDICIAL_INDEX_FILENAME = "JudicialTestIndex.html";
+    private static final String RED =  "red";
     private static final String REQUEST =  "request";
     private static final String RESPONSE = "response";
     
     private static DroolIntegrationTestSingleton instance = null;
 
     public List<TestScenario> judicialTests = new ArrayList<>();
-    public Map<String, Error> judicialErrors = new LinkedHashMap<>();
+    public Map<String, Map<String, Map<String, Error>>> judicialErrors = new LinkedHashMap<>();
 
     public static DroolIntegrationTestSingleton getInstance() {
         if (instance == null) {
             instance = new DroolIntegrationTestSingleton();
         }
         return instance;
+    }
+
+    public void addJudicialError(TestScenario testScenario, Error error) {
+        judicialErrors
+                .computeIfAbsent(testScenario.getTestGroup(), k1 -> new LinkedHashMap<>())
+                    .computeIfAbsent(testScenario.getTestName(), k2 -> new LinkedHashMap<>())
+                        .put(testScenario.getDescription(), error);
     }
 
     public void writeJudicialIndexFile(String outputPath) {
@@ -110,17 +119,20 @@ public class DroolIntegrationTestSingleton  {
             Map<String, Map<String, String>> testNamesMap =
                     (Map<String, Map<String, String>>) testGroupMap.getValue();
 
+            // Check for any testGroup errors and highlight in RED
+            String groupColour = getInstance().judicialErrors.containsKey(testGroup) ? RED : null;
+
             // Output the test group heading (ie 001_Circuit_Judge__Salaried)
-            body.append(buildHeading2(testGroup));
+            body.append(buildHeading2(testGroup, groupColour));
 
             // Output the test names (ie 001_Circuit_Judge__Salaried__SALARIED)
-            body.append(buildHtmlTestNames(outputPath, testNamesMap));
+            body.append(buildHtmlTestNames(testGroup, outputPath, testNamesMap));
         }
 
         return body.toString();
     }
 
-    private static String buildHtmlTestNames(
+    private static String buildHtmlTestNames(String testGroup,
             String outputPath, Map<String, Map<String, String>> map) {
         StringBuilder body = new StringBuilder();
         for (Map.Entry entry : map.entrySet()) {
@@ -128,39 +140,44 @@ public class DroolIntegrationTestSingleton  {
             Map<String, String> descriptionsMap =
                     (Map<String, String>) entry.getValue();
 
+            // Check for any testName errors and highlight in RED
+            String nameColour = getInstance().judicialErrors.containsKey(testGroup)
+                    && getInstance().judicialErrors.get(testGroup).containsKey(testName)
+                    ? RED : null;
+
             // Output the test name collapsible section
             body.append(buildContents(testName,
-                    buildHtmlDescriptions(testName, outputPath, descriptionsMap)));
+                    buildHtmlDescriptions(testGroup, testName, outputPath, descriptionsMap),
+                    nameColour, null));
         }
         return body.toString();
     }
 
     private static String buildError(Error error) {
         StringBuilder body = new StringBuilder();
-        body.append("<p style=\"color:red;\">")
-                .append("Error during test execution: ")
-                .append(error.getMessage())
-                .append("</p>");
+        body.append("Error during test execution: ")
+            .append(error.getMessage());
         return body.toString();
     }
 
-    private static String buildHtmlDescriptions(String testName,
+    private static String buildHtmlDescriptions(String testGroup, String testName,
             String outputPath, Map<String, String> map) {
         StringBuilder body = new StringBuilder();
-
-        // Add any assertion error messages that occurred during test execution
-        Error error = getInstance().judicialErrors.get(testName);
-        if (error != null) {
-            body.append(buildError(error));
-        }
 
         for (Map.Entry entry : map.entrySet()) {
             String description = (String) entry.getKey();
             String outputLocation = (String) entry.getValue();
 
+            // Check for any description errors ...
+            Error error = getInstance().judicialErrors.containsKey(testGroup)
+                    && getInstance().judicialErrors.get(testGroup).containsKey(testName)
+                    ? getInstance().judicialErrors.get(testGroup).get(testName).get(description) : null;
+
+            String descriptionColour = error != null ? RED : null;
+
             // Output the description collapsible section
             body.append(buildContents(description,
-                    buildContentsOfFolder(outputPath, outputLocation)));
+                    buildContentsOfFolder(outputPath, outputLocation), descriptionColour, error));
         }
         return body.toString();
     }
@@ -184,10 +201,21 @@ public class DroolIntegrationTestSingleton  {
         return groupingMap;
     }
 
-    private static String buildContents(String heading, String contents) {
-        return new StringBuilder()
-                .append(buildButton(COLLAPSE_HEADER_STYLE_CLASS, heading))
-                .append(buildDiv(COLLAPSE_CONTENT_STYLE_CLASS, contents)).toString();
+    private static String buildContents(String heading, String contents, String errorColour, Error error) {
+        StringBuilder body = new StringBuilder();
+
+        body.append(buildButton(COLLAPSE_HEADER_STYLE_CLASS, heading, errorColour));
+
+        StringBuilder bodyContents = new StringBuilder();
+        // if there is an error to report then show that in the contents
+        if (error != null) {
+            bodyContents.append(buildParagraph(buildError(error), errorColour));
+        }
+        bodyContents.append(contents);
+
+        body.append(buildDiv(COLLAPSE_CONTENT_STYLE_CLASS, bodyContents.toString()));
+
+        return body.toString();
     }
 
     private static String buildContentsOfFolder(String outputPath, String outputLocation) {
