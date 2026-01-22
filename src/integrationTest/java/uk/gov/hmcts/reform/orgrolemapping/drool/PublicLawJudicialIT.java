@@ -1,16 +1,22 @@
 package uk.gov.hmcts.reform.orgrolemapping.drool;
 
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArgumentOverrides;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArguments;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.EMPTY_ROLE_ASSIGNMENT_TEMPLATE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.adjustTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.cloneListOfTestArgumentsForMultiRegion;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateOverrideFlagOffCatchAll;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateOverrideWhenNotSupported;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardFeePaidTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardSalariedTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardVoluntaryTestArguments;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.overrideTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_01_LONDON;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_02_MIDLANDS;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_05_SOUTH_EAST;
@@ -270,6 +276,52 @@ public class PublicLawJudicialIT {
         );
 
 
+        // Additional Roles identified in Reconciliation Report but not covered elsewhere: see DTSAM-555:
+        // x.01 Court of Appeal Judge - Salaried
+        arguments.addAll(
+            generateSalariedTestArguments(
+                "x.01_Court_of_Appeal_Judge__Salaried",
+                SALARIED_JUDGE_OUTPUT_TEMPLATE,
+                false
+            )
+        );
+        // x.02 Judge of the Upper Tribunal - Salaried
+        arguments.addAll(
+            generateSalariedTestArguments(
+                "x.02_Judge_of_the_Upper_Tribunal__Salaried",
+                SALARIED_JUDGE_OUTPUT_TEMPLATE,
+                false
+            )
+        );
+        // x.03 Master - Salaried
+        arguments.addAll(
+            generateSalariedTestArguments(
+                "x.03_Master__Salaried",
+                SALARIED_JUDGE_OUTPUT_TEMPLATE,
+                false
+            )
+        );
+        // x.04 President of Tribunal - Salaried
+        arguments.addAll(
+            generateSalariedTestArguments(
+                "x.04_President_of_Tribunal__Salaried",
+                SALARIED_JUDGE_OUTPUT_TEMPLATE,
+                false
+            )
+        );
+        //x.05 Tribunal Judge - Fee Paid
+        arguments.addAll(
+            generateStandardFeePaidTestArguments(
+                "x.05_Tribunal_Judge__FeePaid",
+                FEE_PAID_JUDGE_OUTPUT_TEMPLATE
+            )
+        );
+
+
+        // generate extra flag off tests for PUBLICLAW_WA_3_0
+        arguments.addAll(flagOffTestsPublicLawWa30(arguments));
+
+
         // adjust test arguments ready for use
         return adjustTestArguments(arguments, "PublicLaw");
     }
@@ -300,6 +352,55 @@ public class PublicLawJudicialIT {
         );
 
         return arguments;
+    }
+
+
+    private static List<DroolJudicialTestArguments> flagOffTestsPublicLawWa30(
+        List<DroolJudicialTestArguments> inputArguments
+    ) {
+        List<DroolJudicialTestArgumentOverrides> testOverrides = new ArrayList<>();
+        FeatureFlagEnum flag = FeatureFlagEnum.PUBLICLAW_WA_3_0;
+
+
+        // the following Additional Role Tests do not need the Additional Role Fallback prior to DTSAM-1111
+        testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
+            .overrideDescription("NoGenericRoleMappingFallbackWhenAdditionalRoleIsExpired")
+            .findJrdResponseFileName("014_Designated_Family_Judge__Salaried")
+            .overrideAdditionalRoleExpiredFallbackFileName(EMPTY_ROLE_ASSIGNMENT_TEMPLATE)
+            .overrideTurnOffFlags(List.of(flag))
+            .build()
+        );
+        testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
+            .overrideDescription("NoGenericRoleMappingFallbackWhenAdditionalRoleIsExpired")
+            .findJrdResponseFileName("014b_Acting_Designated_Family_Judge__Salaried")
+            .overrideAdditionalRoleExpiredFallbackFileName(EMPTY_ROLE_ASSIGNMENT_TEMPLATE)
+            .overrideTurnOffFlags(List.of(flag))
+            .build()
+        );
+
+
+        // the following appointments are not supported prior to DTSAM-1111/DTSAM-555
+        testOverrides.add(
+            generateOverrideWhenNotSupported("x.01_Court_of_Appeal_Judge__Salaried", flag)
+        );
+        testOverrides.add(
+            generateOverrideWhenNotSupported("x.02_Judge_of_the_Upper_Tribunal__Salaried", flag)
+        );
+        testOverrides.add(
+            generateOverrideWhenNotSupported("x.03_Master__Salaried", flag)
+        );
+        testOverrides.add(
+            generateOverrideWhenNotSupported("x.04_President_of_Tribunal__Salaried", flag)
+        );
+        testOverrides.add(
+            generateOverrideWhenNotSupported("x.05_Tribunal_Judge__FeePaid", flag)
+        );
+
+
+        // must use a catch-all override to run all unaffected tests with the flag off
+        testOverrides.add(generateOverrideFlagOffCatchAll(flag));
+
+        return overrideTestArguments(inputArguments, testOverrides);
     }
 
 }
