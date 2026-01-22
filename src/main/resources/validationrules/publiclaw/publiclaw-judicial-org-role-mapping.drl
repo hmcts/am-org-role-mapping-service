@@ -155,30 +155,35 @@ then
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ? $bk.getLocationId():$joh.getPrimaryLocation()));
    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("hearing_work,routine_work,decision_making_work,applications"));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($joh.getUserId())
-      .roleCategory(RoleCategory.JUDICIAL)
-      .roleType(RoleType.ORGANISATION)
-      .roleName(RoleName.JUDGE)
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .beginTime($bk.getBeginTime())
-      .endTime($bk.getEndTime())
-      .attributes(attribute)
-      .authorisations($joh.getTicketCodes())
-      .build());
-      logMsg("Rule : v3_0_publiclaw_fee_paid_judge_org_role");
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($joh.getUserId())
+            .roleCategory(RoleCategory.JUDICIAL)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.JUDGE)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .beginTime($bk.getBeginTime())
+            .endTime($bk.getEndTime())
+            .attributes(attribute)
+            .authorisations($joh.getTicketCodes())
+            .build()
+      );
+
+    logMsg("Rule : v3_0_publiclaw_fee_paid_judge_org_role");
 end;
 
 /*
  * PUBLICLAW "magistrate" Org role mapping.
+ * Made obsolete in DTSAM-1123 - rule will be disabled when PUBLICLAW_WA_3_0 is enabled.
+ * To be removed in DTSAM-1125.
  */
 rule "publiclaw_magistrate_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in ("PUBLICLAW Magistrate - Voluntary"))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -202,6 +207,40 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : publiclaw_magistrate_org_role");
+end;
+
+/*
+ * PUBLICLAW "magistrate" Org role mapping for v3_0.
+ */
+rule "v3_0_publiclaw_magistrate_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
+  $joh: JudicialOfficeHolder(office in (Office.PublicLaw.PUBLICLAW_MAGISTRATE_VOLUNTARY))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.VOLUNTARY));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PUBLICLAW.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($joh.getUserId())
+            .roleCategory(RoleCategory.JUDICIAL)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.MAGISTRATE)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .beginTime($joh.getBeginTime())
+            .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+            .attributes(attribute)
+            .authorisations($joh.getTicketCodes())
+            .build()
+        );
+
+      logMsg("Rule : v3_0_publiclaw_magistrate_org_role");
 end;
 
 /*
@@ -621,20 +660,22 @@ then
    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("hearing_work,routine_work,decision_making_work,applications"));
    attribute.put(Attributes.Name.BOOKABLE, JacksonUtils.convertObjectIntoJsonNode("true"));
 
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($joh.getUserId())
-      .roleCategory(RoleCategory.JUDICIAL)
-      .roleType(RoleType.ORGANISATION)
-      .roleName(RoleName.FEE_PAID_JUDGE)
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .beginTime($joh.getBeginTime())
-      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
-      .attributes(attribute)
-      .authorisations($joh.getTicketCodes())
-      .build());
-      logMsg("Rule : v3_0_publiclaw_fee_paid_judge_role");
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($joh.getUserId())
+            .roleCategory(RoleCategory.JUDICIAL)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.FEE_PAID_JUDGE)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .beginTime($joh.getBeginTime())
+            .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+            .attributes(attribute)
+            .authorisations($joh.getTicketCodes())
+            .build()
+        );
+
+    logMsg("Rule : v3_0_publiclaw_fee_paid_judge_role");
 end;
