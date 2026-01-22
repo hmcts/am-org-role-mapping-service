@@ -1,6 +1,9 @@
 package validationrules.publiclaw;
 
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialOfficeHolder.Office;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.Attributes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.RoleName;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
@@ -15,14 +18,18 @@ import java.util.HashMap
 import java.util.Map
 import com.fasterxml.jackson.databind.JsonNode;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
  * PUBLICLAW "judge" Org role mapping.
+ * Made obsolete in DTSAM-1120 - rule will be disabled when PUBLICLAW_WA_3_0 is enabled.
+ * To be removed in DTSAM-1125.
  */
 rule "publiclaw_salaried_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in ("PUBLICLAW District Judge - Salaried",
   "PUBLICLAW High Court Judge - Salaried", "PUBLICLAW Circuit Judge - Salaried",
   "PUBLICLAW Designated Family Judge - Salaried", "PUBLICLAW Acting Designated Family Judge - Salaried",
@@ -52,6 +59,43 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : publiclaw_salaried_judge_org_role");
+end;
+
+/*
+ * PUBLICLAW "judge" Org role mapping.
+ */
+rule "v3_0_publiclaw_salaried_judge_org_role"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
+    $joh: JudicialOfficeHolder(office in (Office.PublicLaw.PUBLICLAW_JUDGE_SALARIED,
+                                        "PUBLICLAW Designated Family Judge - Salaried",
+                                        "PUBLICLAW Acting Designated Family Judge - Salaried"))
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PUBLICLAW.getName()));
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("hearing_work,routine_work,decision_making_work,applications"));
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($joh.getUserId())
+            .roleCategory(RoleCategory.JUDICIAL)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.JUDGE)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .beginTime($joh.getBeginTime())
+            .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+            .attributes(attribute)
+            .authorisations($joh.getTicketCodes())
+            .build()
+    );
+
+    logMsg("Rule : v3_0_publiclaw_salaried_judge_org_role");
 end;
 
 /*
@@ -127,10 +171,13 @@ end;
 
 /*
  * PUBLICLAW "hmcts-judiciary" Org role mapping.
+ * Made obsolete in DTSAM-1120 - rule will be disabled when PUBLICLAW_WA_3_0 is enabled.
+ * To be removed in DTSAM-1125.
  */
 rule "publiclaw_hmcts_judiciary_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in (
   "PUBLICLAW District Judge - Salaried",
   "PUBLICLAW High Court Judge - Salaried", "PUBLICLAW Circuit Judge - Salaried",
@@ -166,6 +213,48 @@ then
       .attributes(attribute)
       .build());
       logMsg("Rule : publiclaw_hmcts_judiciary_role");
+end;
+
+/*
+ * PUBLICLAW "hmcts-judiciary" Org role mapping for v3_0.
+ */
+rule "v3_0_publiclaw_hmcts_judiciary_org_role"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
+    $joh: JudicialOfficeHolder(office in (Office.PublicLaw.PUBLICLAW_JUDGE_SALARIED,
+                                          "PUBLICLAW Deputy District Judge (MC) - Fee Paid", "PUBLICLAW Deputy District Judge (MC) - Sitting in Retirement",
+                                            "PUBLICLAW Deputy District Judge - Fee Paid", "PUBLICLAW Deputy District Judge - Sitting in Retirement - Fee Paid",
+                                            "PUBLICLAW Deputy District Judge - PRFD - Fee Paid", "PUBLICLAW Deputy High Court Judge - Fee Paid",
+                                            "PUBLICLAW High Court Judge - Sitting in Retirement - Fee Paid",
+                                            "PUBLICLAW Designated Family Judge - Salaried", "PUBLICLAW Acting Designated Family Judge - Salaried",
+                                            "PUBLICLAW Deputy Circuit Judge - Fee Paid",
+                                            "PUBLICLAW Recorder - Fee Paid",
+                                            "PUBLICLAW Circuit Judge - Sitting in Retirement - Fee Paid", "PUBLICLAW Recorder - Sitting in Retirement - Fee Paid",
+                                            "PUBLICLAW Deputy Upper Tribunal Judge - Fee Paid", "PUBLICLAW District Judge (MC) - Sitting in Retirement - Fee Paid",
+                                            "PUBLICLAW District Judge - Sitting in Retirement - Fee Paid"))
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    if ($joh.isSalaried()) {
+        attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+    }
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($joh.getUserId())
+            .roleCategory(RoleCategory.JUDICIAL)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.HMCTS_JUDICIARY)
+            .grantType(GrantType.BASIC)
+            .classification(Classification.PRIVATE)
+            .readOnly(true)
+            .beginTime($joh.getBeginTime())
+            .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+            .attributes(attribute)
+            .build()
+    );
+
+    logMsg("Rule : v3_0_publiclaw_hmcts_judiciary_org_role");
 end;
 
 /*
