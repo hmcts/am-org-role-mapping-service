@@ -4,6 +4,7 @@ public class HtmlBuilder {
 
     public static final String COLLAPSE_HEADER_STYLE_CLASS = "collapsible";
     public static final String COLLAPSE_CONTENT_STYLE_CLASS = "content";
+    public static final String COLLAPSE_ACTIVE = " collapsibleActive";
     public static final String COLLAPSE_STYLE = """
             .collapsible {
               cursor: pointer;
@@ -104,11 +105,30 @@ public class HtmlBuilder {
                 String.format(" class=\"%s\"", styleClass);
     }
 
-    public static String buildDiv(String styleClass, String text) {
-        return String.format("<div %s>%s</div>", buildStyleClassAttribute(styleClass), text);
+    private static String buildStyleAttribute(String style) {
+        return (style == null || style.isEmpty()) ? "" :
+                String.format(" style=\"%s\"", style);
+    }
+
+    public static String buildDiv(String style, String styleClass, String text) {
+        return String.format("<div %s %s>%s</div>",
+                buildStyleClassAttribute(styleClass),
+                buildStyleAttribute(style), text);
     }
 
     public static String buildColorStyle(String colour) {
-        return colour != null ? String.format(" style=\"color:%s;\"", colour) : "";
+        return colour != null ? buildStyleAttribute(String.format("color:%s;", colour)) : "";
+    }
+
+    public static String getCollapseHeaderStyleClass(boolean active) {
+        return COLLAPSE_HEADER_STYLE_CLASS + (active ? COLLAPSE_ACTIVE : "");
+    }
+
+    public static String getCollapseContentStyleClass(boolean active) {
+        return COLLAPSE_CONTENT_STYLE_CLASS + (active ? COLLAPSE_ACTIVE : "");
+    }
+
+    public static String getCollapseStyle(boolean active) {
+        return active ? "display:block;" : "display:none;";
     }
 }

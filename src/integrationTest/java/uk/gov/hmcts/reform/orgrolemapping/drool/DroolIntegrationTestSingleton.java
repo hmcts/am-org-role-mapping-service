@@ -22,6 +22,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHtmlPage
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHyperlink;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildLine;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildParagraph;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.getCollapseContentStyleClass;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.getCollapseHeaderStyleClass;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.getCollapseStyle;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.createFile;
 
 @SuppressWarnings("unchecked")
@@ -204,7 +207,8 @@ public class DroolIntegrationTestSingleton  {
     private static String buildContents(String heading, String contents, String errorColour, Error error) {
         StringBuilder body = new StringBuilder();
 
-        body.append(buildButton(COLLAPSE_HEADER_STYLE_CLASS, heading, errorColour));
+        boolean active = errorColour != null;
+        body.append(buildButton(getCollapseHeaderStyleClass(active), heading, errorColour));
 
         StringBuilder bodyContents = new StringBuilder();
         // if there is an error to report then show that in the contents
@@ -213,7 +217,8 @@ public class DroolIntegrationTestSingleton  {
         }
         bodyContents.append(contents);
 
-        body.append(buildDiv(COLLAPSE_CONTENT_STYLE_CLASS, bodyContents.toString()));
+        body.append(buildDiv(getCollapseStyle(active),
+                getCollapseContentStyleClass(active), bodyContents.toString()));
 
         return body.toString();
     }
