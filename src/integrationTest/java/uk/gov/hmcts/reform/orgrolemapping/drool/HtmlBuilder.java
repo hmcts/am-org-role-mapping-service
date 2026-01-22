@@ -131,4 +131,11 @@ public class HtmlBuilder {
     public static String getCollapseStyle(boolean active) {
         return active ? "display:block;" : "display:none;";
     }
+
+    public static String makeHtmlSafe(String text) {
+        return text.replace("&", "&amp);")
+                   .replace("<", "&lt;")
+                   .replace(">", "&gt;")
+                   .replace("\"", "&quot;");
+    }
 }

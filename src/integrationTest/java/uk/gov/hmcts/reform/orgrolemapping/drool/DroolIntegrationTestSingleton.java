@@ -25,6 +25,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildParagrap
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.getCollapseContentStyleClass;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.getCollapseHeaderStyleClass;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.getCollapseStyle;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.makeHtmlSafe;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.createFile;
 
 @SuppressWarnings("unchecked")
@@ -159,7 +160,7 @@ public class DroolIntegrationTestSingleton  {
     private static String buildError(Error error) {
         StringBuilder body = new StringBuilder();
         body.append("Error during test execution: ")
-            .append(error.getMessage());
+            .append(makeHtmlSafe(error.getMessage()));
         return body.toString();
     }
 
