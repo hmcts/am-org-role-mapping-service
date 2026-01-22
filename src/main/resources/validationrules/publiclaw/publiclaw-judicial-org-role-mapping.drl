@@ -68,8 +68,7 @@ rule "v3_0_publiclaw_salaried_judge_org_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
     $joh: JudicialOfficeHolder(office in (Office.PublicLaw.PUBLICLAW_JUDGE_SALARIED,
-                                        "PUBLICLAW Designated Family Judge - Salaried",
-                                        "PUBLICLAW Acting Designated Family Judge - Salaried"))
+                                         Office.PublicLaw.PUBLICLAW_JUDGE_SENIOR))
 then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
@@ -259,7 +258,7 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
     $joh: JudicialOfficeHolder(office in (Office.PublicLaw.PUBLICLAW_JUDGE_SALARIED,
                                           Office.PublicLaw.PUBLICLAW_JUDGE_FEE_PAID,
-                                          "PUBLICLAW Designated Family Judge - Salaried", "PUBLICLAW Acting Designated Family Judge - Salaried"))
+                                          Office.PublicLaw.PUBLICLAW_JUDGE_SENIOR))
 then
     Map<String,JsonNode> attribute = new HashMap<>();
     if ($joh.isSalaried()) {
@@ -287,10 +286,13 @@ end;
 
 /*
  * PUBLICLAW "leadership-judge" Org role mapping.
+ * Made obsolete in DTSAM-1122 - rule will be disabled when PUBLICLAW_WA_3_0 is enabled.
+ * To be removed in DTSAM-1125.
  */
 rule "publiclaw_leadership_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in ("PUBLICLAW Designated Family Judge - Salaried",
                                             "PUBLICLAW Acting Designated Family Judge - Salaried"))
 then
@@ -319,11 +321,47 @@ then
 end;
 
 /*
+ * PUBLICLAW "leadership-judge" Org role mapping for v3.0.
+ */
+rule "v3_0_publiclaw_leadership_judge_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
+  $joh: JudicialOfficeHolder(office in (Office.PublicLaw.PUBLICLAW_JUDGE_SENIOR))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PUBLICLAW.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("hearing_work,decision_making_work,applications,access_requests"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName(RoleName.LEADERSHIP_JUDGE)
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v3_0_publiclaw_leadership_judge_org_role");
+end;
+
+/*
  * PUBLICLAW "task-supervisor" Judicial Org role mapping.
+ * Made obsolete in DTSAM-1122 - rule will be disabled when PUBLICLAW_WA_3_0 is enabled.
+ * To be removed in DTSAM-1125.
  */
 rule "publiclaw_task_supervisor_judicial_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in ("PUBLICLAW Designated Family Judge - Salaried",
                                             "PUBLICLAW Acting Designated Family Judge - Salaried"))
 then
@@ -352,11 +390,47 @@ then
 end;
 
 /*
+ * PUBLICLAW "task-supervisor" Judicial Org role mapping for v3_0.
+ */
+rule "v3_0_publiclaw_task_supervisor_judicial_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
+  $joh: JudicialOfficeHolder(office in (Office.PublicLaw.PUBLICLAW_JUDGE_SENIOR))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PUBLICLAW.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("hearing_work,routine_work,decision_making_work,applications,access_requests"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName(RoleName.TASK_SUPERVISOR)
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v3_0_publiclaw_task_supervisor_judicial_org_role");
+end;
+
+/*
  * PUBLICLAW "case-allocator" Org role mapping.
+ * Made obsolete in DTSAM-1122 - rule will be disabled when PUBLICLAW_WA_3_0 is enabled.
+ * To be removed in DTSAM-1125.
  */
 rule "publiclaw_case_allocator_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in ("PUBLICLAW Designated Family Judge - Salaried",
                                             "PUBLICLAW Acting Designated Family Judge - Salaried"))
 then
@@ -384,11 +458,47 @@ then
 end;
 
 /*
+ * PUBLICLAW "case-allocator" Org role mapping for v3_0.
+ */
+rule "v3_0_publiclaw_case_allocator_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
+  $joh: JudicialOfficeHolder(office in (Office.PublicLaw.PUBLICLAW_JUDGE_SENIOR))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PUBLICLAW.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName(RoleName.CASE_ALLOCATOR)
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v3_0_publiclaw_case_allocator_org_role");
+end;
+
+/*
  * PUBLICLAW "specific-access-approver-judiciary" Org role mapping.
+ * Made obsolete in DTSAM-1122 - rule will be disabled when PUBLICLAW_WA_3_0 is enabled.
+ * To be removed in DTSAM-1125.
  */
 rule "publiclaw_specific_access_approver_judiciary_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_1_0.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
   $joh: JudicialOfficeHolder(office in ("PUBLICLAW Designated Family Judge - Salaried",
                                             "PUBLICLAW Acting Designated Family Judge - Salaried"))
 then
@@ -415,6 +525,40 @@ then
       .build());
       logMsg("Rule : publiclaw_specific_access_approver_judiciary_org_role");
 end;
+
+/*
+ * PUBLICLAW "specific-access-approver-judiciary" Org role mapping for v3_0.
+ */
+rule "v3_0_publiclaw_specific_access_approver_judiciary_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PUBLICLAW_WA_3_0.getValue())
+  $joh: JudicialOfficeHolder(office in (Office.PublicLaw.PUBLICLAW_JUDGE_SENIOR))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PUBLICLAW.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("access_requests"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName(RoleName.SPECIFIC_ACCESS_APPROVER_JUDICIARY)
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v3_0_publiclaw_specific_access_approver_judiciary_org_role");
+end;
+
 
 /*
  * PUBLICLAW "fee-paid-judge" Org role mapping for v 2_1.
