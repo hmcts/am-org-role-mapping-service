@@ -2,9 +2,12 @@ package uk.gov.hmcts.reform.orgrolemapping.drool;
 
 public class HtmlBuilder {
 
-    public static final String COLLAPSE_HEADER_STYLE_CLASS = "collapsible";
-    public static final String COLLAPSE_CONTENT_STYLE_CLASS = "content";
-    public static final String COLLAPSE_ACTIVE = " .collapsibleActive";
+    public static final String TICK = "&#9989;"; // Unicode character for tick mark
+    public static final String CROSS = "&#10060;"; // Unicode character for cross
+
+    public static final String COLLAPSE_HEADER_BUTTON_CLASS = "collapsible";
+    public static final String COLLAPSE_CONTENT_DIV_CLASS = "content";
+    public static final String COLLAPSE_ACTIVE = " collapsibleActive";
     public static final String COLLAPSE_STYLE = """
             .collapsible {
               cursor: pointer;
@@ -121,11 +124,7 @@ public class HtmlBuilder {
     }
 
     public static String getCollapseHeaderStyleClass(boolean active) {
-        return COLLAPSE_HEADER_STYLE_CLASS + (active ? COLLAPSE_ACTIVE : "");
-    }
-
-    public static String getCollapseContentStyleClass(boolean active) {
-        return COLLAPSE_CONTENT_STYLE_CLASS + (active ? COLLAPSE_ACTIVE : "");
+        return COLLAPSE_HEADER_BUTTON_CLASS + (active ? COLLAPSE_ACTIVE : "");
     }
 
     public static String getCollapseStyle(boolean active) {
@@ -137,5 +136,9 @@ public class HtmlBuilder {
                    .replace("<", "&lt;")
                    .replace(">", "&gt;")
                    .replace("\"", "&quot;");
+    }
+
+    public static String buildTickOrCross(boolean isTick) {
+        return isTick ? TICK : CROSS;
     }
 }

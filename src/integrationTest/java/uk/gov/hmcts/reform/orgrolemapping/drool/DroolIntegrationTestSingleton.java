@@ -6,11 +6,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_ACTIVE;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_CONTENT_DIV_CLASS;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_SCRIPT;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_STYLE;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildButton;
@@ -20,7 +23,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHtmlPage
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHyperlink;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildLine;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildParagraph;
-import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.getCollapseContentStyleClass;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildTickOrCross;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.getCollapseHeaderStyleClass;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.getCollapseStyle;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.makeHtmlSafe;
@@ -30,6 +33,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
 public class DroolIntegrationTestSingleton  {
 
     private static final String EXPECTED = "expected";
+    private static final String ERROR_PREFIX = "Error during test execution: ";
     private static final String HTML_FILENAME_SUFFIX = ".html";
     private static final String JUDICIAL_FILENAME_PREFIX = "JudicialTest_";
     private static final String JUDICIAL_INDEX_FILENAME = "JudicialTestIndex.html";
@@ -60,13 +64,13 @@ public class DroolIntegrationTestSingleton  {
         final String title = "Drool Judicial Test Report";
 
         // Build the Judicial Files by Jurisdiction.
-        List<String> indexLinks = new ArrayList<>();
+        Map<String, Boolean> indexLinks = new HashMap<>();
         buildJudicialFiles(outputPath, judicialTests).forEach((jurisdiction, htmlBody) -> {
             String fileName = buildFilename(jurisdiction);
             createFile(outputPath + fileName, buildHtmlPage(fileName,
                     COLLAPSE_STYLE, String.format("%s - %s", title, jurisdiction),
                     htmlBody, COLLAPSE_SCRIPT));
-            indexLinks.add(fileName);
+            indexLinks.put(fileName, !htmlBody.contains(ERROR_PREFIX));
         });
 
         // Build the Index page for all Jurisdiction files.
@@ -75,10 +79,13 @@ public class DroolIntegrationTestSingleton  {
                 "Index of Judicial Test Reports", buildHtmlIndexes(indexLinks), ""));
     }
 
-    private static String buildHtmlIndexes(List<String> indexLinks) {
+    private static String buildHtmlIndexes(Map<String, Boolean> indexLinks) {
         StringBuilder body = new StringBuilder();
-        indexLinks.forEach(fileName -> {
-            body.append(buildLine(buildHyperlink(fileName, fileName)));
+        indexLinks.entrySet().forEach(entry -> {
+            String url = entry.getKey();
+            String linkText = String.format("%s%s",
+                    buildTickOrCross(entry.getValue()), entry.getKey());
+            body.append(buildLine(buildHyperlink(url, linkText)));
         });
         return body.toString();
     }
@@ -157,7 +164,7 @@ public class DroolIntegrationTestSingleton  {
 
     private static String buildError(Error error) {
         StringBuilder body = new StringBuilder();
-        body.append("Error during test execution: ")
+        body.append(ERROR_PREFIX)
             .append(makeHtmlSafe(error.getMessage()));
         return body.toString();
     }
@@ -217,7 +224,7 @@ public class DroolIntegrationTestSingleton  {
         bodyContents.append(contents);
 
         body.append(buildDiv(getCollapseStyle(active),
-                getCollapseContentStyleClass(active), bodyContents.toString()));
+                COLLAPSE_CONTENT_DIV_CLASS, bodyContents.toString()));
 
         return body.toString();
     }
