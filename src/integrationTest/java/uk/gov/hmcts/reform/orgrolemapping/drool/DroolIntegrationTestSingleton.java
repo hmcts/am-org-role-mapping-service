@@ -11,10 +11,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_CONTENT_STYLE_CLASS;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_SCRIPT;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_STYLE;
-import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_HEADER_STYLE_CLASS;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildButton;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildDiv;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHeading2;

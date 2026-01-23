@@ -4,7 +4,7 @@ public class HtmlBuilder {
 
     public static final String COLLAPSE_HEADER_STYLE_CLASS = "collapsible";
     public static final String COLLAPSE_CONTENT_STYLE_CLASS = "content";
-    public static final String COLLAPSE_ACTIVE = " collapsibleActive";
+    public static final String COLLAPSE_ACTIVE = " .collapsibleActive";
     public static final String COLLAPSE_STYLE = """
             .collapsible {
               cursor: pointer;
@@ -129,7 +129,7 @@ public class HtmlBuilder {
     }
 
     public static String getCollapseStyle(boolean active) {
-        return active ? "display:block;" : "display:none;";
+        return active ? "display: block;" : "display: none;";
     }
 
     public static String makeHtmlSafe(String text) {
