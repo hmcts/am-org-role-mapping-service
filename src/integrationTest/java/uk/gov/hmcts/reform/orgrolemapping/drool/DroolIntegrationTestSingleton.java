@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_ACTIVE;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_CONTENT_DIV_CLASS;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_SCRIPT;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.COLLAPSE_STYLE;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.CROSS;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildButton;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildDiv;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.HtmlBuilder.buildHeading2;
@@ -33,7 +33,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
 public class DroolIntegrationTestSingleton  {
 
     private static final String EXPECTED = "expected";
-    private static final String ERROR_PREFIX = "Error during test execution: ";
+    private static final String ERROR_PREFIX = CROSS + " Error: ";
     private static final String HTML_FILENAME_SUFFIX = ".html";
     private static final String JUDICIAL_FILENAME_PREFIX = "JudicialTest_";
     private static final String JUDICIAL_INDEX_FILENAME = "JudicialTestIndex.html";
