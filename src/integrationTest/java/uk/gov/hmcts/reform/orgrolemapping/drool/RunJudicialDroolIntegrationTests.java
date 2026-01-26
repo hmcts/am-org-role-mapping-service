@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper;
 
@@ -36,7 +35,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.getSidamIdsList;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.getSidamIdsSet;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.writeJsonToOutput;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.writeJsonToTestScenarioOutput;
 
 public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
