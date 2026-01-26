@@ -263,12 +263,15 @@ public class DroolIntegrationTestSingleton  {
 
     private static List<String> getFilesInFolder(final String outputLocation) {
         List<String> result = new ArrayList<>();
-        Arrays.stream(new File(outputLocation).listFiles()).sorted()
-                .toList().forEach(file -> {
-                    if (isFileValid(file)) {
-                        result.add(file.getName());
-                    }
-                });
+        File[] files = new File(outputLocation).listFiles();
+        if (files != null) {
+            Arrays.stream(files).sorted()
+                    .toList().forEach(file -> {
+                        if (isFileValid(file)) {
+                            result.add(file.getName());
+                        }
+                    });
+        }
         return result;
     }
 
