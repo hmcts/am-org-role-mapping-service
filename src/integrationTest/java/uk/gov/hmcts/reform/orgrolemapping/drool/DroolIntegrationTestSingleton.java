@@ -35,6 +35,7 @@ public class DroolIntegrationTestSingleton  {
 
     private static final String EXPECTED = "expected";
     private static final String ERROR_PREFIX = CROSS + " Error: ";
+    private static final String FEATUREFLAGS_FILENAME = "FeatureFlags.json";
     private static final String HAPPY_PATH = "HappyPath";
     private static final String HTML_FILENAME_SUFFIX = ".html";
     private static final String JUDICIAL_FILENAME_PREFIX = "JudicialTest_";
@@ -177,10 +178,9 @@ public class DroolIntegrationTestSingleton  {
             String outputPath, Map<String, String> map) {
         StringBuilder body = new StringBuilder();
 
-        // Output the test arguments link
-        String testArgumentsLocation = getTestArgumentsLocation(outputPath,
-                map.values().stream().findFirst().orElse(""));
-        body.append(buildLine(buildHyperlink(testArgumentsLocation, TESTARGUMENTS_FILENAME)));
+        // Output the Featureflags / test arguments link
+        body.append(buildParagraph(buildHtmlTestNameLinks(outputPath,
+                map.values().stream().findFirst().orElse("")), null));
 
         for (Map.Entry entry : map.entrySet()) {
             String description = (String) entry.getKey();
@@ -197,6 +197,14 @@ public class DroolIntegrationTestSingleton  {
             body.append(buildContents(description,
                     buildContentsOfFolder(outputPath, outputLocation), descriptionColour, error));
         }
+        return body.toString();
+    }
+
+    private static String buildHtmlTestNameLinks(String outputPath, String testScenarioOutputLocation) {
+        StringBuilder body = new StringBuilder();
+        String testArgumentsLocation = getTestArgumentsLocation(outputPath,testScenarioOutputLocation);
+        body.append(buildLine(buildHyperlink(testArgumentsLocation + FEATUREFLAGS_FILENAME, FEATUREFLAGS_FILENAME)));
+        body.append(buildLine(buildHyperlink(testArgumentsLocation + TESTARGUMENTS_FILENAME, TESTARGUMENTS_FILENAME)));
         return body.toString();
     }
 
@@ -304,8 +312,7 @@ public class DroolIntegrationTestSingleton  {
                 pos = testScenarioOutputLocation.lastIndexOf(NEGATIVE_TEST);
             }
             if (pos != -1) {
-                String outputLocation = testScenarioOutputLocation.substring(0, pos).replace(outputPath,"");
-                return outputLocation + TESTARGUMENTS_FILENAME;
+                return testScenarioOutputLocation.substring(0, pos).replace(outputPath,"");
             }
         }
         return null;
