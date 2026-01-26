@@ -1,5 +1,5 @@
 data "azurerm_key_vault_secret" "am_prm_support_email" {
-  name      = "am-prm-support-email"
+  name         = "am-prm-support-email"
   key_vault_id = data.azurerm_key_vault.am_key_vault.id
 }
 
