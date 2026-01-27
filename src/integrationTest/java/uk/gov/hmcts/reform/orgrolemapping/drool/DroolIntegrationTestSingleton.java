@@ -38,9 +38,12 @@ public class DroolIntegrationTestSingleton  {
     private static final String FEATUREFLAGS_FILENAME = "FeatureFlags.json";
     private static final String HAPPY_PATH = "HappyPath";
     private static final String HTML_FILENAME_SUFFIX = ".html";
+    private static final String INPUT = "Input";
     private static final String JUDICIAL_FILENAME_PREFIX = "JudicialTest_";
     private static final String JUDICIAL_INDEX_FILENAME = "JudicialTestIndex.html";
     private static final String NEGATIVE_TEST = "NegativeTest";
+    private static final String OTHER = "Other";
+    private static final String OUTPUT = "Output";
     private static final String RED =  "red";
     private static final String REQUEST =  "request";
     private static final String RESPONSE = "response";
@@ -193,9 +196,15 @@ public class DroolIntegrationTestSingleton  {
 
             String descriptionColour = error != null ? RED : null;
 
+            // Get the filesInFolder
+            List<String> filesInFolder = getFilesInFolder(outputLocation);
+            Map<String, String> fileInFolderMap = categoriseFiles(filesInFolder);
+            boolean testSkipped = fileInFolderMap.isEmpty()
+                    || (!fileInFolderMap.containsKey(OUTPUT) && !fileInFolderMap.containsKey(OTHER));
+
             // Output the description collapsible section
-            body.append(buildContents(description,
-                    buildContentsOfFolder(outputPath, outputLocation), descriptionColour, error));
+            body.append(buildContents(description + (testSkipped ? " - Skipped" : ""),
+                    buildContentsOfFolder(fileInFolderMap, outputPath, outputLocation), descriptionColour, error));
         }
         return body.toString();
     }
@@ -246,18 +255,21 @@ public class DroolIntegrationTestSingleton  {
         return body.toString();
     }
 
-    private static String buildContentsOfFolder(String outputPath, String outputLocation) {
+    private static String buildContentsOfFolder(Map<String, String> fileInFolderMap,
+                                                String outputPath, String outputLocation) {
         // Get the list of hyperlinks
         List<String> outputHyperLinks = new ArrayList<>();
         List<String> inputHyperLinks = new ArrayList<>();
         List<String> otherHyperLinks = new ArrayList<>();
-        getFilesInFolder(outputLocation).forEach(filename -> {
+        fileInFolderMap.entrySet().forEach(entry -> {
+            String category = entry.getKey();
+            String filename = entry.getValue();
             // build the hyperlink (minus the relative path to the output folder)
             String filePath = outputLocation.replace(outputPath,"") + filename;
             String hyperlink = buildHyperlink(filePath, filename);
-            if (isInputFileName(filename)) {
+            if (INPUT.equals(category)) {
                 inputHyperLinks.add(hyperlink);
-            } else if (isOutputFileName(filename)) {
+            } else if (OUTPUT.equals(category)) {
                 outputHyperLinks.add(hyperlink);
             } else {
                 otherHyperLinks.add(hyperlink);
@@ -265,9 +277,23 @@ public class DroolIntegrationTestSingleton  {
         });
 
         String lineFormat = "%s - %s";
-        return buildLine(String.format(lineFormat,"Input",buildStringList(inputHyperLinks)))
-                + buildLine(String.format(lineFormat,"Output",buildStringList(outputHyperLinks)))
-                + buildLine(String.format(lineFormat,"Other",buildStringList(otherHyperLinks)));
+        return buildLine(String.format(lineFormat,INPUT,buildStringList(inputHyperLinks)))
+                + buildLine(String.format(lineFormat,OUTPUT,buildStringList(outputHyperLinks)))
+                + buildLine(String.format(lineFormat,OTHER,buildStringList(otherHyperLinks)));
+    }
+
+    private static Map<String,String> categoriseFiles(List<String> files) {
+        Map<String,String> fileInFolderMap = new HashMap<>();
+        files.forEach(filename -> {
+            if (isInputFileName(filename)) {
+                fileInFolderMap.put(INPUT, filename);
+            } else if (isOutputFileName(filename)) {
+                fileInFolderMap.put(OUTPUT, filename);
+            } else {
+                fileInFolderMap.put(OTHER, filename);
+            }
+        });
+        return fileInFolderMap;
     }
 
     private static String buildStringList(List<String> list) {
