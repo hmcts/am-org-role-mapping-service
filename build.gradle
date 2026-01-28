@@ -24,11 +24,12 @@ def versions = [
         junitPlatform  : '1.12.2',
         lombok         : '1.18.42',
         pitest         : '1.22.0',
-        reformLogging  : '6.1.9',
+        reformLogging  : '7.0.0',
         reformS2sClient: '5.3.3',
         serenity       : '4.3.4',
         spring         : '6.2.15',
-        rest_assured   : '5.5.6',
+        pact_version   : '4.1.41',
+        rest_assured   : '5.5.7',
         cucumber       : '5.7.0',
         feign_jackson  : '13.6',
         jacksondata    : '2.18.3',
@@ -378,13 +379,13 @@ dependencies {
 
     //Azure service bus libraries
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.12.0'
-    implementation group: 'com.azure', name: 'azure-core', version: '1.57.0'
+    implementation group: 'com.azure', name: 'azure-core', version: '1.57.1'
     implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.16'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.8.2'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.11.0'
     implementation group: 'com.google.guava', name: 'guava', version: '33.5.0-jre'
     implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.2.3'
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.8'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.9'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.7'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.0'
@@ -401,7 +402,7 @@ dependencies {
     implementation group: 'io.netty', name: 'netty-all', version: versions.netty_version
 
 
-    implementation 'net.bytebuddy:byte-buddy:1.18.3'
+    implementation 'net.bytebuddy:byte-buddy:1.18.4'
 
     testImplementation('com.opentable.components:otj-pg-embedded:1.1.1')
 
