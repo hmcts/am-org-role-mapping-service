@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper;
 
@@ -91,8 +90,6 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
         boolean includeBookingScenario = true; // NB: with booking
 
-        writeTestArgumentsToOutput(testArguments);
-
         assertCreateOrmMappingApiForTestScenarios(
             DroolJudicialTestArgumentsHelper.generateJudicialHappyPathScenarios(
                 testArguments,
@@ -101,7 +98,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
             testArguments.getJrdResponseFileName(),
             testArguments.getRasRequestFileNameWithBooking(), // NB: with booking
             includeBookingScenario,
-            testArguments.getTurnOffFlags()
+            testArguments
         );
 
     }
@@ -114,8 +111,6 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
         boolean includeBookingScenario = false; // NB: without booking
 
-        writeTestArgumentsToOutput(testArguments);
-
         assertCreateOrmMappingApiForTestScenarios(
             DroolJudicialTestArgumentsHelper.generateJudicialHappyPathScenarios(
                 testArguments,
@@ -124,7 +119,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
             testArguments.getJrdResponseFileName(),
             testArguments.getRasRequestFileNameWithoutBooking(), // NB: without booking
             includeBookingScenario,
-            testArguments.getTurnOffFlags()
+            testArguments
         );
 
     }
@@ -134,15 +129,12 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
     @ParameterizedTest(name = DISPLAY_NAME)
     void testCreateOrmMappingApiWithExpiredDates(String ignoredDisplayName,
                                                  DroolJudicialTestArguments testArguments) throws Exception {
-
-        writeTestArgumentsToOutput(testArguments);
-
         assertCreateOrmMappingApiForTestScenarios(
             DroolJudicialTestArgumentsHelper.generateJudicialNegativePathScenarios(testArguments),
             testArguments.getJrdResponseFileName(),
             EMPTY_ROLE_ASSIGNMENT_TEMPLATE, // negative test so always expect empty RAS request
             true, // NB: include valid booking to prove it is ignored when other values are expired
-            testArguments.getTurnOffFlags()
+            testArguments
         );
 
     }
@@ -151,9 +143,11 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
                                                            String jrdResponseFileName,
                                                            String rasRequestFileName,
                                                            boolean includeBookings,
-                                                           List<FeatureFlagEnum> turnOffFlags) throws Exception {
+                                                           DroolJudicialTestArguments testArguments) throws Exception {
+        writeTestArgumentsToOutput(testArguments);
+
         // GIVEN
-        setAllFlags(turnOffFlags);
+        setAllFlags(testArguments.getTurnOffFlags());
 
         stubGetJudicialDetailsById(jrdResponseFileName, testScenarios);
         stubGetJudicialBookingByUserIds(testScenarios, includeBookings);
@@ -164,6 +158,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
         // WHEN
         triggerCreateOrmMappingApi(UserType.JUDICIAL, testScenarios);
         Map<String, Boolean> featureFlags = triggerFeatureFlagApi();
+        writeFeatureFlagsToOutput(testArguments, featureFlags);
 
         // THEN
         assertWireMockAssignmentRequests(expectedAssignmentRequests, testScenarios, featureFlags);
@@ -223,6 +218,15 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
             writeValueAsPrettyJson(testArguments),
             formatJudicialTestOutputLocation(testArguments, ""),
             "TestArguments"
+        );
+    }
+
+    private void writeFeatureFlagsToOutput(DroolJudicialTestArguments testArguments,
+                                           Map<String, Boolean> featureFlags) throws JsonProcessingException {
+        writeJsonToOutput(
+                writeValueAsPrettyJson(featureFlags),
+                formatJudicialTestOutputLocation(testArguments, ""),
+                "FeatureFlags"
         );
     }
 
