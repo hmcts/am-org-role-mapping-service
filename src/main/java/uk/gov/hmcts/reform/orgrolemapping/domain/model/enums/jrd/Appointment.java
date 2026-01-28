@@ -29,7 +29,8 @@ public enum Appointment implements AppointmentEnum {
     TRIBUNAL_MEMBER_VALUER_CHAIRMAN("Tribunal Member Valuer Chairman", List.of("89")),
 
     VICE_PRESIDENT("Vice President", List.of("91")),
-    VICE_PRESIDENT_ET_SCOTLAND("Vice-President, Employment Tribunal (Scotland)", List.of("213"));
+    VICE_PRESIDENT_ET_SCOTLAND("Vice-President, Employment Tribunal (Scotland)", List.of("213")),
+    RESIDENT_TRIBUNAL_JUDGE("Resident Tribunal Judge", List.of("212"));
 
 
     private final String name;
