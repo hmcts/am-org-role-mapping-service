@@ -1,6 +1,8 @@
 package validationrules.iac;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialOfficeHolder.Office;
+
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
@@ -8,6 +10,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.lang.String;
@@ -18,6 +21,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.time.ZonedDateTime;
 import java.time.LocalDateTime;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRole;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.Appointment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentGroup;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRoleEnum;
+
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.addAndGetTicketCodes;
@@ -490,4 +499,64 @@ then
   $jap.setStatus("JOH_Mapped");
   update($jap);
   logMsg("Rule : iac_default_tribunal_judge_fee_paid_joh_with_iac_appointment_based_on_roles_and_appointment");
+end;
+
+/*
+ * "IAC Resident of Tribunals" business role mapping to JOH for v1_6.
+ */
+
+rule "v1_6_iac_resident_of_tribunals_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_6.getValue())
+   $jap: JudicialAccessProfile(hasAppointmentCode(Appointment.RESIDENT_TRIBUNAL_JUDGE),
+                               hasValidAuthorisation(Jurisdiction.IAC),
+                               hasValidEndDate())
+then
+    insert(
+        JudicialOfficeHolder.builder()
+            .userId($jap.getUserId())
+            .office(Office.IAC.RESIDENT_OF_TRIBUNAL_JUDGE)
+            .jurisdiction(Jurisdiction.IAC.getName())
+            .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
+            .beginTime($jap.getBeginTime())
+            .endTime($jap.getEndTime())
+            .regionId($jap.getRegionId())
+            .baseLocationId($jap.getBaseLocationId())
+            .primaryLocation($jap.getPrimaryLocationId())
+            .contractType($jap.getAppointmentType())
+            .build()
+    );
+    $jap.setStatus("JOH_Mapped");
+    update($jap);
+    logMsg("Rule : v1_6_iac_resident_of_tribunals_joh");
+end;
+
+/*
+ * "IAC Acting Resident Judge" business role mapping to JOH for v1_6.
+ */
+
+rule "v1_6_iac_acting_resident_judge_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_6.getValue())
+   $jap: JudicialAccessProfile(hasValidAuthorisation(Jurisdiction.IAC),
+                              hasValidEndDate(),
+                              hasValidAdditionalRole(AdditionalRole.ACTING_RESIDENT_JUDGE))
+then
+    insert(
+        JudicialOfficeHolder.builder()
+            .userId($jap.getUserId())
+            .office(Office.IAC.ACTING_RESIDENT_JUDGE)
+            .jurisdiction(Jurisdiction.IAC.getName())
+            .ticketCodes($jap.getTicketCodes() == null ? Arrays.asList("373") : $jap.getTicketCodes().contains("373") ? $jap.getTicketCodes() : addAndGetTicketCodes($jap.getTicketCodes(), "373"))
+            .beginTime($jap.getBeginTime())
+            .endTime($jap.getEndTime())
+            .regionId($jap.getRegionId())
+            .baseLocationId($jap.getBaseLocationId())
+            .primaryLocation($jap.getPrimaryLocationId())
+            .contractType($jap.getAppointmentType())
+            .build()
+    );
+    $jap.setStatus("JOH_Mapped");
+    update($jap);
+    logMsg("Rule : v1_6_iac_acting_resident_judge_joh");
 end;
