@@ -6,7 +6,7 @@ public enum Jurisdiction {
 
     CIVIL("CIVIL", List.of("AAA6", "AAA7")),
     EMPLOYMENT("EMPLOYMENT", List.of("BHA1")),
-    IAC("IA",List.of("BFA1"));
+    IAC("IA", List.of("BFA1"));
 
     private final String name;
     private final List<String> serviceCodes;
