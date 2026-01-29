@@ -4,6 +4,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCaseWorkerProfile;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInJudicialProfileV2;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInCaseWorkerProfileResponse;
+import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertListInJudicialProfileV2;
 
 @Service
 @Slf4j
@@ -53,6 +55,7 @@ public class RetrieveDataService {
 
      */
 
+    public static final String ERROR_INVALID_USER_TYPE = "Invalid user type";
 
     private final ParseRequestService parseRequestService;
     private final CRDService crdService;
@@ -126,16 +129,37 @@ public class RetrieveDataService {
 
     public Map<String, Set<UserAccessProfile>> retrieveProfilesByServiceName(ResponseEntity<List<Object>>
                                                                      userProfileResponsesEntity, UserType userType) {
-        //check the response if it's not null
-        List<CaseWorkerProfilesResponse> caseWorkerProfilesResponse =
-                Objects
-                        .requireNonNull(convertListInCaseWorkerProfileResponse(
-                                requireNonNull(userProfileResponsesEntity.getBody())));
-
         //Fetch the user profile from the response
         List<Object> userProfiles = new ArrayList<>();
-        caseWorkerProfilesResponse.forEach(cwpr -> userProfiles.add(cwpr
-                .getUserProfile()));
+        if (UserType.CASEWORKER.equals(userType)) {
+            log.info("Caseworker Service");
+            List<CaseWorkerProfilesResponse> caseWorkerProfilesResponse =
+                    Objects
+                            .requireNonNull(convertListInCaseWorkerProfileResponse(
+                                    requireNonNull(userProfileResponsesEntity.getBody())));
+
+            caseWorkerProfilesResponse.forEach(cwpr -> userProfiles.add(cwpr
+                    .getUserProfile()));
+        } else if (UserType.JUDICIAL.equals(userType)) {
+            log.info("Judicial Service");
+            List<JudicialProfileV2> judicialProfiles =
+                    Objects
+                            .requireNonNull(convertListInJudicialProfileV2(
+                                    requireNonNull(userProfileResponsesEntity.getBody())));
+
+            judicialProfiles.forEach(judicialProfileV2 -> {
+                // filter out unmapped profiles: i.e. those missing an IDAM ID
+                if (StringUtils.isNotBlank(judicialProfileV2.getSidamId())) {
+                    userProfiles.add(judicialProfileV2);
+                }
+            });
+
+            log.info("Judicial Profile filter: remove unmapped profiles: before {}, after {}",
+                    judicialProfiles.size(), userProfiles.size()
+            );
+        } else {
+            throw new UnprocessableEntityException(ERROR_INVALID_USER_TYPE);
+        }
 
         //Collect the userIds to build the UserRequest
         var userRequest = UserRequest.builder().userIds(Collections.emptyList()).build();
@@ -147,7 +171,6 @@ public class RetrieveDataService {
 
         getAccessProfile(userRequest, userType, invalidUserProfilesCount, invalidProfiles,
                 usersAccessProfiles, userProfileResponsesEntity, userProfiles);
-
 
         return usersAccessProfiles;
     }
