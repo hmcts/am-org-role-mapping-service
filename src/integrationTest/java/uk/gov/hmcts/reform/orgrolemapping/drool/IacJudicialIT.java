@@ -48,7 +48,7 @@ public class IacJudicialIT {
 
 
         // adjust test arguments ready for use
-        return adjustTestArguments(arguments, "Iac");
+        return adjustTestArguments(arguments, "IAC");
     }
 
     private static List<DroolJudicialTestArguments> flagOffTestsIacWa16(
