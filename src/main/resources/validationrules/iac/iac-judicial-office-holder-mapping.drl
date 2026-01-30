@@ -526,8 +526,6 @@ then
             .contractType($jap.getAppointmentType())
             .build()
     );
-    $jap.setStatus("JOH_Mapped");
-    update($jap);
     logMsg("Rule : v1_6_iac_resident_of_tribunals_joh");
 end;
 
@@ -556,7 +554,5 @@ then
             .contractType($jap.getAppointmentType())
             .build()
     );
-    $jap.setStatus("JOH_Mapped");
-    update($jap);
     logMsg("Rule : v1_6_iac_acting_resident_judge_joh");
 end;
