@@ -1,10 +1,14 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialOfficeHolder;
 
 import java.util.List;
 
@@ -12,11 +16,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ExtendWith(MockitoExtension.class)
+@Slf4j
 class DroolIacJudicialRoleMappingTest extends DroolBase {
 
     String workTypes = "hearing_work,upper_tribunal,decision_making_work,applications";
     String workTypesFP = "hearing_work,decision_making_work,applications";
     String workTypesAccess = "hearing_work,upper_tribunal,decision_making_work,applications,access_requests";
+
+    @BeforeEach
+    @Override
+    public void setUp() {
+        super.setUp();
+        allProfiles.clear();
+    }
 
     @Test
     void shouldReturnPresidentRoles() {
@@ -81,6 +93,8 @@ class DroolIacJudicialRoleMappingTest extends DroolBase {
         assertEquals(workTypes, roleAssignments.get(5).getAttributes().get("workTypes").asText());
     }
 
+    //Make it parameterised
+    // Fadd 4 roles
     @Test
     void shouldReturnImmigrationJudgeRoles() {
 
@@ -152,6 +166,7 @@ class DroolIacJudicialRoleMappingTest extends DroolBase {
         List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
 
         //assertion
+
         assertFalse(roleAssignments.isEmpty());
         assertEquals(3, roleAssignments.size());
         assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
@@ -186,8 +201,58 @@ class DroolIacJudicialRoleMappingTest extends DroolBase {
         assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
     }
 
-    private List<FeatureFlag> getFeatureFlags() {
-        return List.of(FeatureFlag.builder().flagName("iac_jrd_1_0").status(true).build(),
-                FeatureFlag.builder().flagName("iac_jrd_1_1").status(true).build());
+    @Test
+    void shouldReturnResidentOfTribunalRoles() {
+
+        judicialOfficeHolders.forEach(joh ->
+                joh.setOffice(JudicialOfficeHolder.Office.IAC.RESIDENT_OF_TRIBUNAL_JUDGE));
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(5, roleAssignments.size());
+        assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
+        assertEquals("leadership-judge",roleAssignments.get(1).getRoleName());
+        assertEquals("case-allocator",roleAssignments.get(2).getRoleName());
+        assertEquals("task-supervisor",roleAssignments.get(3).getRoleName());
+        assertEquals("judge",roleAssignments.get(4).getRoleName());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(4).getActorId());
+
     }
+
+    @Test
+    void shouldReturnActingResidentJudgeRoles() {
+
+        judicialOfficeHolders.forEach(joh ->
+                joh.setOffice(JudicialOfficeHolder.Office.IAC.ACTING_RESIDENT_JUDGE));
+
+        //Execute Kie session
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
+
+        //assertion
+        assertFalse(roleAssignments.isEmpty());
+        assertEquals(5, roleAssignments.size());
+        assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
+        assertEquals("leadership-judge",roleAssignments.get(1).getRoleName());
+        assertEquals("case-allocator",roleAssignments.get(2).getRoleName());
+        assertEquals("task-supervisor",roleAssignments.get(3).getRoleName());
+        assertEquals("judge",roleAssignments.get(4).getRoleName());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
+        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(4).getActorId());
+
+    }
+
+    private List<FeatureFlag> getFeatureFlags() {
+        return getAllFeatureFlagsToggleByJurisdiction("IAC", true);
+    }
+
 }
