@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
