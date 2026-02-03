@@ -43,12 +43,31 @@ public class IacJudicialIT {
         );
 
 
+        // adjust all test to use temporary work around for Appointment Expired fallback
+        arguments = adjustAllTestsToUseAppointmentExpiredFallback(arguments);
+
+
         // generate extra flag off tests for IAC_WA_1_6
         arguments.addAll(flagOffTestsIacWa16(arguments));
 
 
         // adjust test arguments ready for use
         return adjustTestArguments(arguments, "IAC");
+    }
+
+    private static List<DroolJudicialTestArguments> adjustAllTestsToUseAppointmentExpiredFallback(
+        List<DroolJudicialTestArguments> inputArguments
+    ) {
+        // temporary work around as existing IAC drool rules do not handle Authorisation End Date expiry correctly
+        return new ArrayList<>(inputArguments.stream()
+            .map(argument -> argument.cloneBuilder()
+                .authorisationExpiredFallbackFileName(
+                    // fallback to normal template when running Authorisation Expired scenario
+                    SALARIED_JUDGE_OUTPUT_TEMPLATE
+                )
+                .build()
+            )
+            .toList());
     }
 
     private static List<DroolJudicialTestArguments> flagOffTestsIacWa16(
