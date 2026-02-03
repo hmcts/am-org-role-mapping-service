@@ -14,29 +14,39 @@ public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRol
 
     @Modifying
     @Query(value = """
-        insert into idam_role_management_queue (user_id, user_type, data, last_updated, active)
-        values (:userId, :userType, :data, :lastUpdated, true)
+        insert into idam_role_management_queue (user_id, user_type, published_as, data, last_updated, active)
+        values (:userId, :userType, :publishedAs, :data, :lastUpdated, true)
         on conflict (user_id) do update
         set last_updated = now(),
             active = true,
             retry = 0,
             retry_after = now(),
-            user_type = excluded.user_type,
             data = excluded.data
         where excluded.last_updated > idam_role_management_queue.last_updated
         """, nativeQuery = true)
-    void upsert(String userId, String userType, String data, LocalDateTime lastUpdated);
+    void upsert(String userId, String userType, String publishedAs, String data, LocalDateTime lastUpdated);
 
     @Modifying
     @Query(value = """
         update idam_role_management_queue
         set active = false,
             retry = 0,
-            retry_after = now()
+            retry_after = now(),
+            last_published = now()
         where user_id = :userId
         and last_updated <= :lastUpdated
         """, nativeQuery = true)
-    void clearRecord(String userId, LocalDateTime lastUpdated);
+    void setAsPublished(String userId, LocalDateTime lastUpdated);
+
+    @Query(value = """
+        select * 
+        from idam_role_management_queue 
+        where active = true 
+        and retry <= 4 
+        and (retry_after < now() or retry_after is null)
+        limit 1 for update skip locked
+        """, nativeQuery = true)
+    IdamRoleManagementQueueEntity findAndLockSingleActiveRecord();
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Modifying

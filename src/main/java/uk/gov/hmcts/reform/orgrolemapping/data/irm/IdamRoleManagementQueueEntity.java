@@ -35,6 +35,12 @@ public class IdamRoleManagementQueueEntity {
     @Column(name = "last_updated", nullable = false)
     private LocalDateTime lastUpdated;
 
+    @Column(name = "last_published")
+    private LocalDateTime lastPublished;
+
+    @Column(name = "published_as", nullable = false)
+    private String publishedAs;
+
     @Column(name = "active", nullable = false)
     private Boolean active;
 
