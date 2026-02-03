@@ -1,193 +1,229 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import org.junit.jupiter.api.Test;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialOfficeHolder;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ExtendWith(MockitoExtension.class)
+@Slf4j
 class DroolIacJudicialRoleMappingTest extends DroolBase {
 
-    String workTypes = "hearing_work,upper_tribunal,decision_making_work,applications";
-    String workTypesFP = "hearing_work,decision_making_work,applications";
-    String workTypesAccess = "hearing_work,upper_tribunal,decision_making_work,applications,access_requests";
+    static String workTypes = "hearing_work,upper_tribunal,decision_making_work,applications";
+    static String workTypesFP = "hearing_work,decision_making_work,applications";
+    static String workTypesAccess = "hearing_work,upper_tribunal,decision_making_work,applications,access_requests";
 
-    @Test
-    void shouldReturnPresidentRoles() {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC President of Tribunals"));
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(4, roleAssignments.size());
-        assertEquals("senior-judge",roleAssignments.get(0).getRoleName());
-        assertEquals("hmcts-judiciary",roleAssignments.get(1).getRoleName());
-        assertEquals("case-allocator",roleAssignments.get(2).getRoleName());
-        assertEquals("judge",roleAssignments.get(3).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
-        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
-        assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes, roleAssignments.get(3).getAttributes().get("workTypes").asText());
-
-
+    @BeforeEach
+    @Override
+    public void setUp() {
+        super.setUp();
+        allProfiles.clear();
     }
 
-    @Test
-    void shouldReturnResidentJudgeRoles() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("iacRoleScenarios")
+    void shouldReturnCorrectIacRoles(
+            String scenario,
+            String office,
+            List<String> expectedRoles,
+            String expectedContractType,
+            Map<Integer, String> expectedWorkTypesByIndex) {
 
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Resident Immigration Judge"));
+        // given
+        judicialOfficeHolders.forEach(joh -> joh.setOffice(office));
 
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
+        // when
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags());
 
-        //assertion
+        // then
         assertFalse(roleAssignments.isEmpty());
-        assertEquals(6, roleAssignments.size());
-        assertEquals("senior-judge",roleAssignments.get(0).getRoleName());
-        assertEquals("hmcts-judiciary",roleAssignments.get(1).getRoleName());
-        assertEquals("leadership-judge",roleAssignments.get(2).getRoleName());
-        assertEquals("case-allocator",roleAssignments.get(3).getRoleName());
-        assertEquals("task-supervisor",roleAssignments.get(4).getRoleName());
-        assertEquals("judge",roleAssignments.get(5).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(4).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(5).getActorId());
-        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(4).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(5).getAttributes().get("contractType").asText());
-        assertEquals(workTypes, roleAssignments.get(0).getAttributes().get("workTypes").asText());
-        assertEquals(workTypesAccess, roleAssignments.get(2).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes, roleAssignments.get(5).getAttributes().get("workTypes").asText());
+        assertEquals(expectedRoles.size(), roleAssignments.size());
+
+        String expectedActorId =
+                judicialOfficeHolders.iterator().next().getUserId();
+
+        for (int i = 0; i < expectedRoles.size(); i++) {
+            RoleAssignment ra = roleAssignments.get(i);
+
+            assertEquals(expectedRoles.get(i), ra.getRoleName());
+            assertEquals(expectedActorId, ra.getActorId());
+            assertEquals(
+                    expectedContractType,
+                    ra.getAttributes().get("contractType").asText()
+            );
+        }
+
+        expectedWorkTypesByIndex.forEach((index, expectedWorkType) ->
+                assertEquals(
+                        expectedWorkType,
+                        roleAssignments.get(index)
+                                .getAttributes()
+                                .get("workTypes")
+                                .asText()
+                )
+        );
     }
 
-    @Test
-    void shouldReturnImmigrationJudgeRoles() {
+    static Stream<Arguments> iacRoleScenarios() {
+        return Stream.of(
 
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Designated Immigration Judge"));
+                // IAC President
+                Arguments.of(
+                        "IAC President of Tribunals",
+                        "IAC President of Tribunals",
+                        List.of(
+                                "senior-judge",
+                                "hmcts-judiciary",
+                                "case-allocator",
+                                "judge"
+                        ),
+                        "Salaried",
+                        Map.of(
+                                0, workTypes,
+                                3, workTypes
+                        )
+                ),
 
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
+                // IAC Resident Immigration Judge
+                Arguments.of(
+                        "IAC Resident Immigration Judge",
+                        "IAC Resident Immigration Judge",
+                        List.of(
+                                "senior-judge",
+                                "hmcts-judiciary",
+                                "leadership-judge",
+                                "case-allocator",
+                                "task-supervisor",
+                                "judge"
+                        ),
+                        "Salaried",
+                        Map.of(
+                                0, workTypes,
+                                2, workTypesAccess,
+                                5, workTypes
+                        )
+                ),
 
-        //assertion
+                // IAC Designated Immigration Judge
+                Arguments.of(
+                        "IAC Designated Immigration Judge",
+                        "IAC Designated Immigration Judge",
+                        List.of(
+                                "hmcts-judiciary",
+                                "leadership-judge",
+                                "case-allocator",
+                                "task-supervisor",
+                                "judge"
+                        ),
+                        "Salaried",
+                        Map.of(
+                                1, workTypesAccess,
+                                4, workTypes
+                        )
+                ),
+
+                // IAC Assistant Resident Judge
+                Arguments.of(
+                        "IAC Assistant Resident Judge",
+                        "IAC Assistant Resident Judge",
+                        List.of(
+                                "hmcts-judiciary",
+                                "leadership-judge",
+                                "case-allocator",
+                                "task-supervisor",
+                                "judge"
+                        ),
+                        "Salaried",
+                        Map.of(
+                                1, workTypesAccess,
+                                4, workTypes
+                        )
+                ),
+
+                // IAC Tribunal Judge (Salaried)
+                Arguments.of(
+                        "IAC Tribunal Judge (Salaried)",
+                        "IAC Tribunal Judge (Salaried)",
+                        List.of(
+                                "hmcts-judiciary",
+                                "case-allocator",
+                                "judge"
+                        ),
+                        "Salaried",
+                        Map.of(
+                                2, workTypes
+                        )
+                ),
+
+                // IAC Tribunal Judge (Fee-Paid)
+                Arguments.of(
+                        "IAC Tribunal Judge (Fee-Paid)",
+                        "IAC Tribunal Judge (Fee-Paid)",
+                        List.of(
+                                "hmcts-judiciary",
+                                "fee-paid-judge"
+                        ),
+                        "Fee-Paid",
+                        Map.of(
+                                1, workTypesFP
+                        )
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("residentAndActingResidentIacOffices")
+    void shouldReturnResidentAndActingResidentJudgeRoles(
+            String office) {
+
+        // given
+        judicialOfficeHolders.forEach(joh ->
+                joh.setOffice(office));
+
+        // when
+        List<RoleAssignment> roleAssignments =
+                buildExecuteKieSession(getFeatureFlags());
+
+        // then
         assertFalse(roleAssignments.isEmpty());
         assertEquals(5, roleAssignments.size());
-        assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
-        assertEquals("leadership-judge",roleAssignments.get(1).getRoleName());
-        assertEquals("case-allocator",roleAssignments.get(2).getRoleName());
-        assertEquals("task-supervisor",roleAssignments.get(3).getRoleName());
-        assertEquals("judge",roleAssignments.get(4).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(4).getActorId());
-        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(4).getAttributes().get("contractType").asText());
-        assertEquals(workTypesAccess, roleAssignments.get(1).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes, roleAssignments.get(4).getAttributes().get("workTypes").asText());
 
+        assertEquals("hmcts-judiciary", roleAssignments.get(0).getRoleName());
+        assertEquals("leadership-judge", roleAssignments.get(1).getRoleName());
+        assertEquals("case-allocator", roleAssignments.get(2).getRoleName());
+        assertEquals("task-supervisor", roleAssignments.get(3).getRoleName());
+        assertEquals("judge", roleAssignments.get(4).getRoleName());
+
+        String expectedActorId =
+                judicialOfficeHolders.iterator().next().getUserId();
+
+        roleAssignments.forEach(ra ->
+                assertEquals(expectedActorId, ra.getActorId()));
     }
 
-    @Test
-    void shouldReturnAssistantResidentJudgeRoles() {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Assistant Resident Judge"));
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(5, roleAssignments.size());
-        assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
-        assertEquals("leadership-judge",roleAssignments.get(1).getRoleName());
-        assertEquals("case-allocator",roleAssignments.get(2).getRoleName());
-        assertEquals("task-supervisor",roleAssignments.get(3).getRoleName());
-        assertEquals("judge",roleAssignments.get(4).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(3).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(4).getActorId());
-        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(3).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(4).getAttributes().get("contractType").asText());
-        assertEquals(workTypesAccess, roleAssignments.get(1).getAttributes().get("workTypes").asText());
-        assertEquals(workTypes, roleAssignments.get(4).getAttributes().get("workTypes").asText());
-
-    }
-
-    @Test
-    void shouldReturnSalariedTribunalJudgeRoles() {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Tribunal Judge (Salaried)"));
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(3, roleAssignments.size());
-        assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
-        assertEquals("case-allocator",roleAssignments.get(1).getRoleName());
-        assertEquals("judge",roleAssignments.get(2).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(2).getActorId());
-        assertEquals("Salaried", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals("Salaried", roleAssignments.get(2).getAttributes().get("contractType").asText());
-        assertEquals(workTypes, roleAssignments.get(2).getAttributes().get("workTypes").asText());
-    }
-
-    @Test
-    void shouldReturnFeePaidTribunalJudgeRoles() {
-
-        judicialOfficeHolders.forEach(joh -> joh.setOffice("IAC Tribunal Judge (Fee-Paid)"));
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
-
-        //assertion
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(2, roleAssignments.size());
-        assertEquals("hmcts-judiciary",roleAssignments.get(0).getRoleName());
-        assertEquals("fee-paid-judge",roleAssignments.get(1).getRoleName());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(0).getActorId());
-        assertEquals(judicialOfficeHolders.stream().iterator().next().getUserId(),roleAssignments.get(1).getActorId());
-        assertEquals("Fee-Paid", roleAssignments.get(0).getAttributes().get("contractType").asText());
-        assertEquals("Fee-Paid", roleAssignments.get(1).getAttributes().get("contractType").asText());
-        assertEquals(workTypesFP, roleAssignments.get(1).getAttributes().get("workTypes").asText());
+    static Stream<String> residentAndActingResidentIacOffices() {
+        return Stream.of(
+                JudicialOfficeHolder.Office.IAC.RESIDENT_OF_TRIBUNAL_JUDGE,
+                JudicialOfficeHolder.Office.IAC.ACTING_RESIDENT_JUDGE
+        );
     }
 
     private List<FeatureFlag> getFeatureFlags() {
-        return List.of(FeatureFlag.builder().flagName("iac_jrd_1_0").status(true).build(),
-                FeatureFlag.builder().flagName("iac_jrd_1_1").status(true).build());
+        return getAllFeatureFlagsToggleByJurisdiction("IAC", true);
     }
+
 }
