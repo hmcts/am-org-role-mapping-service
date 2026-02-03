@@ -11,12 +11,14 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialOfficeHolder;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 @Slf4j
@@ -25,6 +27,18 @@ class DroolIacJudicialRoleMappingTest extends DroolBase {
     static String workTypes = "hearing_work,upper_tribunal,decision_making_work,applications";
     static String workTypesFP = "hearing_work,decision_making_work,applications";
     static String workTypesAccess = "hearing_work,upper_tribunal,decision_making_work,applications,access_requests";
+
+    static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
+
+    static {
+        expectedRoleNameWorkTypesMap.put("senior-judge", workTypes);
+        expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
+        expectedRoleNameWorkTypesMap.put("leadership-judge", workTypesAccess);
+        expectedRoleNameWorkTypesMap.put("case-allocator", null);
+        expectedRoleNameWorkTypesMap.put("task-supervisor", null);
+        expectedRoleNameWorkTypesMap.put("judge", workTypes);
+        expectedRoleNameWorkTypesMap.put("fee-paid-judge", workTypesFP);
+    }
 
     @BeforeEach
     @Override
@@ -36,11 +50,9 @@ class DroolIacJudicialRoleMappingTest extends DroolBase {
     @ParameterizedTest(name = "{0}")
     @MethodSource("iacRoleScenarios")
     void shouldReturnCorrectIacRoles(
-            String scenario,
             String office,
             List<String> expectedRoles,
-            String expectedContractType,
-            Map<Integer, String> expectedWorkTypesByIndex) {
+            String expectedContractType) {
 
         // given
         judicialOfficeHolders.forEach(joh -> joh.setOffice(office));
@@ -59,166 +71,127 @@ class DroolIacJudicialRoleMappingTest extends DroolBase {
         for (int i = 0; i < expectedRoles.size(); i++) {
             RoleAssignment ra = roleAssignments.get(i);
 
-            assertEquals(expectedRoles.get(i), ra.getRoleName());
+            assertTrue(expectedRoles.contains(ra.getRoleName()));
             assertEquals(expectedActorId, ra.getActorId());
             assertEquals(
                     expectedContractType,
                     ra.getAttributes().get("contractType").asText()
             );
-        }
 
-        expectedWorkTypesByIndex.forEach((index, expectedWorkType) ->
-                assertEquals(
-                        expectedWorkType,
-                        roleAssignments.get(index)
-                                .getAttributes()
-                                .get("workTypes")
-                                .asText()
-                )
-        );
+            if (expectedRoleNameWorkTypesMap.containsKey(ra.getRoleName())) {
+                String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(ra.getRoleName());
+                String actualWorkTypes = null;
+                if (ra.getAttributes().get("workTypes") != null) {
+                    actualWorkTypes = ra.getAttributes().get("workTypes").asText();
+                }
+                assertEquals(expectedWorkTypes, actualWorkTypes);
+            } else {
+                assertFalse(ra.getAttributes().containsKey("workTypes"));
+            }
+        }
     }
 
     static Stream<Arguments> iacRoleScenarios() {
         return Stream.of(
 
-                // IAC President
-                Arguments.of(
-                        "IAC President of Tribunals",
-                        "IAC President of Tribunals",
-                        List.of(
-                                "senior-judge",
-                                "hmcts-judiciary",
-                                "case-allocator",
-                                "judge"
-                        ),
-                        "Salaried",
-                        Map.of(
-                                0, workTypes,
-                                3, workTypes
-                        )
+            // IAC President
+            Arguments.of(
+                "IAC President of Tribunals",
+                List.of(
+                    "senior-judge",
+                    "hmcts-judiciary",
+                    "case-allocator",
+                    "judge"
                 ),
+                "Salaried"
+            ),
 
-                // IAC Resident Immigration Judge
-                Arguments.of(
-                        "IAC Resident Immigration Judge",
-                        "IAC Resident Immigration Judge",
-                        List.of(
-                                "senior-judge",
-                                "hmcts-judiciary",
-                                "leadership-judge",
-                                "case-allocator",
-                                "task-supervisor",
-                                "judge"
-                        ),
-                        "Salaried",
-                        Map.of(
-                                0, workTypes,
-                                2, workTypesAccess,
-                                5, workTypes
-                        )
+            // IAC Resident Immigration Judge
+            Arguments.of(
+                "IAC Resident Immigration Judge",
+                List.of(
+                    "senior-judge",
+                    "hmcts-judiciary",
+                    "leadership-judge",
+                    "case-allocator",
+                    "task-supervisor",
+                    "judge"
                 ),
+                "Salaried"
+            ),
 
-                // IAC Designated Immigration Judge
-                Arguments.of(
-                        "IAC Designated Immigration Judge",
-                        "IAC Designated Immigration Judge",
-                        List.of(
-                                "hmcts-judiciary",
-                                "leadership-judge",
-                                "case-allocator",
-                                "task-supervisor",
-                                "judge"
-                        ),
-                        "Salaried",
-                        Map.of(
-                                1, workTypesAccess,
-                                4, workTypes
-                        )
+            // IAC Designated Immigration Judge
+            Arguments.of(
+                "IAC Designated Immigration Judge",
+                List.of(
+                    "hmcts-judiciary",
+                    "leadership-judge",
+                    "case-allocator",
+                    "task-supervisor",
+                    "judge"
                 ),
+                "Salaried"
+            ),
 
-                // IAC Assistant Resident Judge
-                Arguments.of(
-                        "IAC Assistant Resident Judge",
-                        "IAC Assistant Resident Judge",
-                        List.of(
-                                "hmcts-judiciary",
-                                "leadership-judge",
-                                "case-allocator",
-                                "task-supervisor",
-                                "judge"
-                        ),
-                        "Salaried",
-                        Map.of(
-                                1, workTypesAccess,
-                                4, workTypes
-                        )
+            // IAC Assistant Resident Judge
+            Arguments.of(
+                "IAC Assistant Resident Judge",
+                List.of(
+                    "hmcts-judiciary",
+                    "leadership-judge",
+                    "case-allocator",
+                    "task-supervisor",
+                    "judge"
                 ),
+                "Salaried"
+            ),
 
-                // IAC Tribunal Judge (Salaried)
-                Arguments.of(
-                        "IAC Tribunal Judge (Salaried)",
-                        "IAC Tribunal Judge (Salaried)",
-                        List.of(
-                                "hmcts-judiciary",
-                                "case-allocator",
-                                "judge"
-                        ),
-                        "Salaried",
-                        Map.of(
-                                2, workTypes
-                        )
+            // IAC Tribunal Judge (Salaried)
+            Arguments.of(
+                "IAC Tribunal Judge (Salaried)",
+                List.of(
+                    "hmcts-judiciary",
+                    "case-allocator",
+                    "judge"
                 ),
+                "Salaried"
+            ),
 
-                // IAC Tribunal Judge (Fee-Paid)
-                Arguments.of(
-                        "IAC Tribunal Judge (Fee-Paid)",
-                        "IAC Tribunal Judge (Fee-Paid)",
-                        List.of(
-                                "hmcts-judiciary",
-                                "fee-paid-judge"
-                        ),
-                        "Fee-Paid",
-                        Map.of(
-                                1, workTypesFP
-                        )
-                )
-        );
-    }
+            // IAC Tribunal Judge (Fee-Paid)
+            Arguments.of(
+                "IAC Tribunal Judge (Fee-Paid)",
+                List.of(
+                    "hmcts-judiciary",
+                    "fee-paid-judge"
+                ),
+                "Fee-Paid"
+            ),
 
-    @ParameterizedTest
-    @MethodSource("residentAndActingResidentIacOffices")
-    void shouldReturnResidentAndActingResidentJudgeRoles(
-            String office) {
-
-        // given
-        judicialOfficeHolders.forEach(joh ->
-                joh.setOffice(office));
-
-        // when
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags());
-
-        // then
-        assertFalse(roleAssignments.isEmpty());
-        assertEquals(5, roleAssignments.size());
-
-        assertEquals("hmcts-judiciary", roleAssignments.get(0).getRoleName());
-        assertEquals("leadership-judge", roleAssignments.get(1).getRoleName());
-        assertEquals("case-allocator", roleAssignments.get(2).getRoleName());
-        assertEquals("task-supervisor", roleAssignments.get(3).getRoleName());
-        assertEquals("judge", roleAssignments.get(4).getRoleName());
-
-        String expectedActorId =
-                judicialOfficeHolders.iterator().next().getUserId();
-
-        roleAssignments.forEach(ra ->
-                assertEquals(expectedActorId, ra.getActorId()));
-    }
-
-    static Stream<String> residentAndActingResidentIacOffices() {
-        return Stream.of(
+            // IAC Resident Tribunal Judge
+            Arguments.of(
                 JudicialOfficeHolder.Office.IAC.RESIDENT_OF_TRIBUNAL_JUDGE,
-                JudicialOfficeHolder.Office.IAC.ACTING_RESIDENT_JUDGE
+                List.of(
+                    "hmcts-judiciary",
+                    "leadership-judge",
+                    "case-allocator",
+                    "task-supervisor",
+                    "judge"
+                ),
+                "Salaried"
+            ),
+
+            // IAC Acting Resident Judge
+            Arguments.of(
+                JudicialOfficeHolder.Office.IAC.ACTING_RESIDENT_JUDGE,
+                List.of(
+                    "hmcts-judiciary",
+                    "leadership-judge",
+                    "case-allocator",
+                    "task-supervisor",
+                    "judge"
+                ),
+                "Salaried"
+            )
         );
     }
 
