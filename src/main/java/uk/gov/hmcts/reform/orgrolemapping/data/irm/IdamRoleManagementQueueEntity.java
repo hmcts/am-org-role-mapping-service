@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "irm_queue")
+@Entity(name = "idam_role_management_queue")
 public class IdamRoleManagementQueueEntity {
 
     @Id

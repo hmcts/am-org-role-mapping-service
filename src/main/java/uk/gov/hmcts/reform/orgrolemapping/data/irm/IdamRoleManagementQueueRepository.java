@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.data.irm;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Propagation;
@@ -10,11 +10,11 @@ import org.springframework.transaction.annotation.Propagation;
 import java.time.LocalDateTime;
 
 @Repository
-public interface IdamRoleManagementQueueRepository extends CrudRepository<IdamRoleManagementQueueEntity, Long> {
+public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRoleManagementQueueEntity, String> {
 
     @Modifying
     @Query(value = """
-        insert into idam_role_management_queue (user_id, userType, data, last_updated, active)
+        insert into idam_role_management_queue (user_id, user_type, data, last_updated, active)
         values (:userId, :userType, :data, :lastUpdated, true)
         on conflict (user_id) do update
         set last_updated = now(),
