@@ -23,7 +23,7 @@ def versions = [
         junit          : '5.11.3',
         junitPlatform  : '1.11.3',
         lombok         : '1.18.42',
-        pitest         : '1.22.0',
+        pitest         : '1.22.1',
         reformLogging  : '7.0.0',
         reformS2sClient: '5.3.3',
         serenity       : '4.3.4',
