@@ -30,13 +30,16 @@ public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRol
     @Query(value = """
         update idam_role_management_queue
         set active = false,
+            last_updated = now(),
             retry = 0,
             retry_after = now(),
-            last_published = now()
-        where user_id = :userId
-        and last_updated <= :lastUpdated
+            last_published = case
+              when last_published > now() then last_published 
+              else now() 
+              end
+        where user_id = :userId and active
         """, nativeQuery = true)
-    void setAsPublished(String userId, LocalDateTime lastUpdated);
+    int setAsPublished(String userId);
 
     @Query(value = """
         select * 
