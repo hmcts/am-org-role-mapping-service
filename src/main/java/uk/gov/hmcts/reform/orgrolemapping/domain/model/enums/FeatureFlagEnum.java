@@ -66,7 +66,8 @@ public enum FeatureFlagEnum {
     PUBLICLAW_WA_2_1("publiclaw_wa_2_1"),
     PUBLICLAW_WA_2_2("publiclaw_wa_2_2"),
     IAC_JRD_1_1("iac_jrd_1_1"),
-    PUBLICLAW_HEARING_1_0("publiclaw_hearing_1_0");
+    PUBLICLAW_HEARING_1_0("publiclaw_hearing_1_0"),
+    PROBATE_WA_1_0("probate_wa_1_0");
 
 
     private final String value;
