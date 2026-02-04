@@ -25,8 +25,8 @@ public class IdamRoleManagementConfigRepositoryIntegrationTest extends BaseTestI
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/irm/insert_flag_config.sql",
-        "classpath:sql/irm/insert_idam_role_management_config.sql"})
+        "classpath:sql/irm/config/insert_flag_config.sql",
+        "classpath:sql/irm/config/insert_idam_role_management_config.sql"})
     public void shouldFindAllForDeletion() {
         // local - All roles exist and set to true
         findAllForDeletionTest("local", List.of(SENIOR_LEGAL_CASEWORKER, LEGAL_CASEWORKER));
