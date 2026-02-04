@@ -78,33 +78,6 @@ class DroolEmploymentHearingJudicialRoleMappingTest extends DroolBase {
             "hearing_work");
     }
 
-    // NB: to be retired after DTSAM-970
-    private enum LegacyAppointment implements AppointmentEnum {
-
-        ANY_OTHER_APPOINTMENT("Any Other Appointment", List.of("any-code")),
-        EMPLOYMENT_JUDGE("Employment Judge", List.of("48")),
-        EMPLOYMENT_JUDGE_SITTING_IN_RETIREMENT("Employment Judge (sitting in retirement)", List.of("128", "215")),
-        RECORDER("Recorder", List.of("67")),
-        REGIONAL_TRIBUNAL_JUDGE("Regional Tribunal Judge", List.of("74")),
-        TRIBUNAL_JUDGE("Tribunal Judge", List.of("84"));
-
-        private final String name;
-        private final List<String> codes;
-
-        LegacyAppointment(String name, List<String> codes) {
-            this.name = name;
-            this.codes = codes;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public List<String> getCodes() {
-            return codes;
-        }
-    }
-
     static Stream<Arguments> endToEndDataAppointments() {
         return Stream.of(
                 Arguments.of(Appointment.PRESIDENT_OF_TRIBUNAL,
