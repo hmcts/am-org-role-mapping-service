@@ -34,7 +34,7 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/init_idam_role_management_queue.sql"})
+        "classpath:sql/irm/init_idam_role_management_queue.sql"})
     public void shouldUpsertToIdamRoleManagementQueue() {
         // WHEN
         idamRoleManagementQueueRepository.upsert(USER_ID, USER_TYPE, PUBLISHED_AS, DATA,
@@ -49,8 +49,8 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/insert_idam_role_management_queue.sql"})
+        "classpath:sql/irm/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/insert_idam_role_management_queue.sql"})
     public void shouldSetAsPublished() {
         // WHEN
         int result = idamRoleManagementQueueRepository.setAsPublished(USER_ID);
@@ -65,8 +65,8 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/insert_idam_role_management_queue_published.sql"})
+        "classpath:sql/irm/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/insert_idam_role_management_queue_published.sql"})
     public void shouldNotSetAsPublished() {
         // WHEN
         int result = idamRoleManagementQueueRepository.setAsPublished(USER_ID);
@@ -77,8 +77,8 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/insert_idam_role_management_queue_future.sql"})
+        "classpath:sql/irm/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/insert_idam_role_management_queue_future.sql"})
     public void shouldSetAsFuturePublished() {
         // WHEN
         int result = idamRoleManagementQueueRepository.setAsPublished(USER_ID);
@@ -93,8 +93,8 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/insert_idam_role_management_queue.sql"})
+        "classpath:sql/irm/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/insert_idam_role_management_queue.sql"})
     public void shouldUpdateRetry() {
         // WHEN
         idamRoleManagementQueueRepository.updateRetry(USER_ID,
