@@ -396,15 +396,13 @@ public class DroolJudicialTestArgumentsHelper {
         }
 
         // Scenario: soft deleted flag is true
-        if (testArguments.isAdditionalRoleTest()) {
-            testScenarios.add(createNegativeTestScenario(
-                testArguments,
-                SOFT_DELETE_FLAG_SET,
-                "NegativeTest/SoftDeleteFlagSet/",
-                setBooleanInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), DELETED_FLAG, true),
-                null // no override implemented for this scenario
-            ));
-        }
+        testScenarios.add(createNegativeTestScenario(
+            testArguments,
+            SOFT_DELETE_FLAG_SET,
+            "NegativeTest/SoftDeleteFlagSet/",
+            setBooleanInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), DELETED_FLAG, true),
+            null // no override implemented for this scenario
+        ));
 
         return testScenarios;
     }
