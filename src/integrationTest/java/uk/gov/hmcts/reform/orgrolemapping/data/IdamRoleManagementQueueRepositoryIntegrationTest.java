@@ -26,7 +26,7 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
     private static final String RETRY_INTERVAL2 = "20";
     private static final String RETRY_INTERVAL3 = "30";
     private static final String DATA = """
-            {"email_id": "someone@somewhere.com", "roles": [{"role_name": "Role1"}, {"role_name": "Role2"}]}
+            {"roles":[{"role_name":"Role1"},{"role_name":"Role2"}],"email_id":"someone@somewhere.com"}
             """;
 
     @Autowired
@@ -95,7 +95,7 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
         "classpath:sql/irm/queue/insert_idam_role_management_queue.sql"})
-    public void shouldUpdateRetry() {
+    public void shouldUpdateRetryMin() {
         // WHEN
         idamRoleManagementQueueRepository.updateRetry(USER_ID,
                 RETRY_INTERVAL1, RETRY_INTERVAL2, RETRY_INTERVAL3);
@@ -105,6 +105,37 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         // THEN
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
                 USER_ID, USER_TYPE, PUBLISHED_AS, DATA, null, 1);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry.sql"})
+    public void shouldUpdateRetryMax() {
+        // WHEN
+        idamRoleManagementQueueRepository.updateRetry(USER_ID,
+                RETRY_INTERVAL1, RETRY_INTERVAL2, RETRY_INTERVAL3);
+        Optional<IdamRoleManagementQueueEntity> idamRoleManagementQueueEntity =
+                idamRoleManagementQueueRepository.findById(USER_ID);
+
+        // THEN
+        assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
+                USER_ID, USER_TYPE, PUBLISHED_AS, DATA, null, 0);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry.sql"})
+    public void findAndLockSingleActiveRecordTest() {
+        // WHEN
+        IdamRoleManagementQueueEntity idamRoleManagementQueueEntity =
+                idamRoleManagementQueueRepository.findAndLockSingleActiveRecord();
+
+        // THEN
+        assertIdamRoleManagementQueueEntity(
+                Optional.ofNullable(idamRoleManagementQueueEntity),
+                USER_ID, USER_TYPE, PUBLISHED_AS, DATA, null, 4);
     }
 
     private void assertIdamRoleManagementQueueEntity(
@@ -119,11 +150,21 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         assertEquals(userId, result.getUserId(), "User ID should match");
         assertEquals(userType, result.getUserType(), "User Type should match");
         assertNotNull(result.getData(), "Data should not be null");
+        assertEquals(removeWhiteSpace(data), removeWhiteSpace(result.getData()), "Data should match");
         assertEquals(publishedAs, result.getPublishedAs(), "Published As should match");
         assertEquals(retry, result.getRetry(), "Retry should match");
         if (lastPublished != null) {
             assertNotNull(result.getLastPublished(), "Last Published should not be null");
             assertThat(result.getLastPublished().minusMinutes(1)).isBefore(lastPublished);
         }
+        if (retry != 0) {
+            assertNotNull(result.getRetryAfter(), "Retry After should not be null");
+            assertThat(result.getRetryAfter()
+                    .minusMinutes(Integer.valueOf(RETRY_INTERVAL1))).isBefore(LocalDateTime.now());
+        }
+    }
+
+    private String removeWhiteSpace(String input) {
+        return input.replaceAll("\\s+", "");
     }
 }
