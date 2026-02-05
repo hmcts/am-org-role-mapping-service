@@ -596,6 +596,8 @@ configurations.all {
     exclude group: 'io.netty', module: 'netty-tcnative-classes'
     exclude group: 'io.netty.incubator', module: 'netty-incubator-codec-native-quic'
     exclude group: 'io.netty.incubator', module: 'netty-incubator-codec-classes-quic'
+    // spring-cloud 2025.x brings in spring-boot-restclient 4.x which is incompatible with our Boot 3.x stack
+    exclude group: 'org.springframework.boot', module: 'spring-boot-restclient'
 
     resolutionStrategy {
         force "net.logstash.logback:logstash-logback-encoder:${versions.logstashEncoder}"
