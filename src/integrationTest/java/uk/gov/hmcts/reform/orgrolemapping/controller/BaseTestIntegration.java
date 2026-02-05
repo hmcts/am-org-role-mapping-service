@@ -5,8 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -17,6 +17,7 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.lang.NonNull;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 
@@ -33,17 +34,19 @@ import java.util.Properties;
 @ActiveProfiles("itest")
 public abstract class BaseTestIntegration extends BaseTest {
 
+    private static final String EMBEDDED_POSTGRES_ENABLED = "integration-tests.use-embedded-postgres";
+
     protected static final MediaType JSON_CONTENT_TYPE = new MediaType(
             MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
             StandardCharsets.UTF_8
     );
 
-    @MockBean
+    @MockitoBean
     @Qualifier("crdPublisher")
     ServiceBusSenderClient serviceBusSenderClient;
 
-    @MockBean
+    @MockitoBean
     @Qualifier("jrdPublisher")
     ServiceBusSenderClient serviceBusSenderClientJrd;
 
@@ -52,6 +55,7 @@ public abstract class BaseTestIntegration extends BaseTest {
         Connection connection;
 
         @Bean
+        @ConditionalOnProperty(name = EMBEDDED_POSTGRES_ENABLED, havingValue = "true", matchIfMissing = true)
         public EmbeddedPostgres embeddedPostgres() throws IOException {
             return EmbeddedPostgres
                     .builder()
@@ -59,6 +63,7 @@ public abstract class BaseTestIntegration extends BaseTest {
         }
 
         @Bean
+        @ConditionalOnProperty(name = EMBEDDED_POSTGRES_ENABLED, havingValue = "true", matchIfMissing = true)
         public DataSource dataSource(@Autowired EmbeddedPostgres pg) throws Exception {
 
             final Properties props = new Properties();
