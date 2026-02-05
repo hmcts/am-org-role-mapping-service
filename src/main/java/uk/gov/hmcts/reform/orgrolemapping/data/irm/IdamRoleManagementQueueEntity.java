@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.data.irm;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -10,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
 
 import java.time.LocalDateTime;
 
@@ -29,8 +32,9 @@ public class IdamRoleManagementQueueEntity {
     private String userType;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "data", nullable = false)
-    private String data;
+    @Column(name = "data", nullable = false, columnDefinition = "jsonb")
+    @Convert(converter = IdamRoleDataJsonBConverter.class)
+    private JsonNode data;
 
     @Column(name = "last_updated", nullable = false)
     private LocalDateTime lastUpdated;

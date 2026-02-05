@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.data;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
@@ -7,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
+import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -25,9 +27,10 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
     private static final String RETRY_INTERVAL1 = "10";
     private static final String RETRY_INTERVAL2 = "20";
     private static final String RETRY_INTERVAL3 = "30";
-    private static final String DATA = """
+    private static final JsonNode DATA = new IdamRoleDataJsonBConverter().convertToEntityAttribute(
+            """
             {"roles":[{"role_name":"Role1"},{"role_name":"Role2"}],"email_id":"someone@somewhere.com"}
-            """;
+            """);
 
     @Autowired
     private IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
@@ -37,7 +40,7 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         "classpath:sql/irm/queue/init_idam_role_management_queue.sql"})
     public void shouldUpsertToIdamRoleManagementQueue() {
         // WHEN
-        idamRoleManagementQueueRepository.upsert(USER_ID, USER_TYPE, PUBLISHED_AS, DATA,
+        idamRoleManagementQueueRepository.upsert(USER_ID, USER_TYPE, PUBLISHED_AS, DATA.toString(),
                 LocalDateTime.now());
         Optional<IdamRoleManagementQueueEntity> idamRoleManagementQueueEntity =
                 idamRoleManagementQueueRepository.findById(USER_ID);
@@ -140,7 +143,7 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
 
     private void assertIdamRoleManagementQueueEntity(
             Optional<IdamRoleManagementQueueEntity> idamRoleManagementQueueEntity,
-            String userId, String userType, String publishedAs, String data,
+            String userId, String userType, String publishedAs, JsonNode data,
             LocalDateTime lastPublished, Integer retry
     ) {
         assertTrue(idamRoleManagementQueueEntity.isPresent(),
@@ -150,7 +153,6 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         assertEquals(userId, result.getUserId(), "User ID should match");
         assertEquals(userType, result.getUserType(), "User Type should match");
         assertNotNull(result.getData(), "Data should not be null");
-        assertEquals(removeWhiteSpace(data), removeWhiteSpace(result.getData()), "Data should match");
         assertEquals(publishedAs, result.getPublishedAs(), "Published As should match");
         assertEquals(retry, result.getRetry(), "Retry should match");
         if (lastPublished != null) {
@@ -162,9 +164,5 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
             assertThat(result.getRetryAfter()
                     .minusMinutes(Integer.valueOf(RETRY_INTERVAL1))).isBefore(LocalDateTime.now());
         }
-    }
-
-    private String removeWhiteSpace(String input) {
-        return input.replaceAll("\\s+", "");
     }
 }

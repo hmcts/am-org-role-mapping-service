@@ -8,8 +8,6 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.extern.slf4j.Slf4j;
 
-
-
 @Slf4j
 @Converter(autoApply = true)
 public abstract class JsonBConverter implements AttributeConverter<JsonNode, String> {
