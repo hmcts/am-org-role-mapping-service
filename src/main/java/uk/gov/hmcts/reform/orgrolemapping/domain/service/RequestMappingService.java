@@ -26,6 +26,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestReso
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRole;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
@@ -51,6 +52,8 @@ public class RequestMappingService<T> {
     public static final String STAFF_ORGANISATIONAL_ROLE_MAPPING = "staff-organisational-role-mapping";
     public static final String JUDICIAL_ORGANISATIONAL_ROLE_MAPPING = "judicial-organisational-role-mapping";
     public static final String AM_ORG_ROLE_MAPPING_SERVICE = "am_org_role_mapping_service";
+    public static final String IDAM_ROLES_QUERY_NAME = "getIdamRoles";
+    public static final String IDAM_ROLES_RESULTS_KEY = "idamRoles";
     public static final String ROLE_ASSIGNMENTS_QUERY_NAME = "getRoleAssignments";
     public static final String ROLE_ASSIGNMENTS_RESULTS_KEY = "roleAssignments";
 
@@ -200,6 +203,7 @@ public class RequestMappingService<T> {
         commands.add(CommandFactory.newInsertElements(judicialBookings));
         commands.add(CommandFactory.newFireAllRules());
         commands.add(CommandFactory.newQuery(ROLE_ASSIGNMENTS_RESULTS_KEY, ROLE_ASSIGNMENTS_QUERY_NAME));
+        commands.add(CommandFactory.newQuery(IDAM_ROLES_RESULTS_KEY, IDAM_ROLES_QUERY_NAME));
 
         // Run the rules
         ExecutionResults results = kieSession.execute(CommandFactory.newBatchExecution(commands));
@@ -210,7 +214,16 @@ public class RequestMappingService<T> {
         for (QueryResultsRow row : queryResults) {
             roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
         }
-        return distinctRoleAssignments(roleAssignments);
+
+        // Extract all created idam roles using the query defined in the rules.
+        List<IdamRole> idamRoles = new ArrayList<>();
+        queryResults = (QueryResults) results.getValue(IDAM_ROLES_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            idamRoles.add((IdamRole) row.get("$idamRole"));
+        }
+        List<RoleAssignment> roleAssignmentsList = distinctRoleAssignments(roleAssignments);
+        // List<IdamRole> idamRolesList = distinctIdamRoles(idamRoles);
+        return roleAssignmentsList;
     }
 
 
