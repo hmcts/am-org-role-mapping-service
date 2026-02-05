@@ -21,13 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Transactional
 public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIntegration {
 
+    private static final IdamRoleDataJsonBConverter IDAM_ROLE_DATA_JSON_B_CONVERTER =
+            new IdamRoleDataJsonBConverter();
     private static final String USER_ID = "some-user-id";
     private static final String USER_TYPE = "JUDICIAL";
     private static final String PUBLISHED_AS = "User";
     private static final String RETRY_INTERVAL1 = "10";
     private static final String RETRY_INTERVAL2 = "20";
     private static final String RETRY_INTERVAL3 = "30";
-    private static final JsonNode DATA = new IdamRoleDataJsonBConverter().convertToEntityAttribute(
+    private static final JsonNode DATA = IDAM_ROLE_DATA_JSON_B_CONVERTER.convertToEntityAttribute(
             """
             {"roles":[{"role_name":"Role1"},{"role_name":"Role2"}],"email_id":"someone@somewhere.com"}
             """);
@@ -153,6 +155,8 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         assertEquals(userId, result.getUserId(), "User ID should match");
         assertEquals(userType, result.getUserType(), "User Type should match");
         assertNotNull(result.getData(), "Data should not be null");
+        assertEquals(data.toString(), IDAM_ROLE_DATA_JSON_B_CONVERTER.convertToDatabaseColumn(
+                result.getData()).toString(), "Data should match");
         assertEquals(publishedAs, result.getPublishedAs(), "Published As should match");
         assertEquals(retry, result.getRetry(), "Retry should match");
         if (lastPublished != null) {
