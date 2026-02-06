@@ -122,9 +122,9 @@ public class RequestMappingService<T> {
         // who have been deleted, for whom no role assignments will be created by the rules.
         usersAccessProfiles.keySet().forEach(k -> usersRoleAssignments.put(k, new ArrayList<>()));
         // Get all the role assignments created for the set of access profiles.
-        List<RoleAssignment> roleAssignments = mapUserAccessProfiles(usersAccessProfiles, judicialBookings);
+        RoleMapping roleMapping = mapUserAccessProfiles(usersAccessProfiles, judicialBookings);
         // Add each role assignment to the results map.
-        roleAssignments.forEach(ra -> usersRoleAssignments.get(ra.getActorId()).add(ra));
+        roleMapping.getRoleAssignments().forEach(ra -> usersRoleAssignments.get(ra.getActorId()).add(ra));
 
 
         // if List<RoleAssignment> is empty in case of suspended false in corresponding
@@ -176,18 +176,18 @@ public class RequestMappingService<T> {
     /**
      * Run the mapping rules to generate all the role assignments each caseworker represented in the map.
      */
-    private List<RoleAssignment> mapUserAccessProfiles(Map<String, Set<T>> usersAccessProfiles,
+    private RoleMapping mapUserAccessProfiles(Map<String, Set<T>> usersAccessProfiles,
                                                        List<JudicialBooking> judicialBookings) {
         var startTime = System.currentTimeMillis();
-        List<RoleAssignment> roleAssignments = runMappingEngine(usersAccessProfiles, judicialBookings);
-        log.debug("Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
+        RoleMapping roleMapping = runMappingEngine(usersAccessProfiles, judicialBookings);
+        log.debug("Execution time of mapUserAccessProfiles() in RunMappingEngine : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
-        return roleAssignments;
+        return roleMapping;
     }
 
     @NotNull
-    List<RoleAssignment> runMappingEngine(Map<String, Set<T>> usersAccessProfiles,
+    RoleMapping runMappingEngine(Map<String, Set<T>> usersAccessProfiles,
                                           List<JudicialBooking> judicialBookings) {
         // Combine all the user profiles into a single collection for the rules engine.
         Set<T> allProfiles = new HashSet<>();
@@ -225,9 +225,7 @@ public class RequestMappingService<T> {
         }
         List<RoleAssignment> roleAssignmentsList = distinctRoleAssignments(roleAssignments);
         List<IdamRole> idamRolesList = distinctIdamRoles(idamRoles);
-        RoleMapping roleMapping = new RoleMapping(roleAssignmentsList, idamRolesList);
-
-        return roleMapping.getRoleAssignments();
+        return new RoleMapping(roleAssignmentsList, idamRolesList);
     }
 
 
