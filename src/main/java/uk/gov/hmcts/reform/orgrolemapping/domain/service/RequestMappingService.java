@@ -23,6 +23,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleMapping;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
@@ -43,6 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil.distinctIdamRoles;
 import static uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil.distinctRoleAssignments;
 
 @Service
@@ -177,7 +179,7 @@ public class RequestMappingService<T> {
     private List<RoleAssignment> mapUserAccessProfiles(Map<String, Set<T>> usersAccessProfiles,
                                                        List<JudicialBooking> judicialBookings) {
         var startTime = System.currentTimeMillis();
-        List<RoleAssignment> roleAssignments = getRoleAssignments(usersAccessProfiles, judicialBookings);
+        List<RoleAssignment> roleAssignments = runMappingEngine(usersAccessProfiles, judicialBookings);
         log.debug("Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
@@ -185,8 +187,8 @@ public class RequestMappingService<T> {
     }
 
     @NotNull
-    List<RoleAssignment> getRoleAssignments(Map<String, Set<T>> usersAccessProfiles,
-                                            List<JudicialBooking> judicialBookings) {
+    List<RoleAssignment> runMappingEngine(Map<String, Set<T>> usersAccessProfiles,
+                                          List<JudicialBooking> judicialBookings) {
         // Combine all the user profiles into a single collection for the rules engine.
         Set<T> allProfiles = new HashSet<>();
         usersAccessProfiles.forEach((k, v) -> allProfiles.addAll(v));
@@ -222,8 +224,10 @@ public class RequestMappingService<T> {
             idamRoles.add((IdamRole) row.get("$idamRole"));
         }
         List<RoleAssignment> roleAssignmentsList = distinctRoleAssignments(roleAssignments);
-        // List<IdamRole> idamRolesList = distinctIdamRoles(idamRoles);
-        return roleAssignmentsList;
+        List<IdamRole> idamRolesList = distinctIdamRoles(idamRoles);
+        RoleMapping roleMapping = new RoleMapping(roleAssignmentsList, idamRolesList);
+
+        return roleMapping.getRoleAssignments();
     }
 
 
