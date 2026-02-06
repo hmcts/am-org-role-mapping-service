@@ -1,0 +1,31 @@
+{
+  "_guid_": "S-014.04__VerifyProfessionalUser",
+  "_extends_": "FetchProfessionalUsersById__PositiveResponse_Base",
+
+  "specs": [
+    "to verify professional user has userAccessTypes disabled"
+  ],
+
+  "request": {
+    "queryParams": {
+      "userId": "${[scenarioContext][parentContext][testData][request][queryParams][userId]}"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "users": [
+        {
+          "_extends_": "ProfessionalUser",
+          "organisationInfo": {
+            "status": "ACTIVE",
+            "organisationProfileIds" : [ "SOLICITOR_PROFILE" ]
+          },
+          "userAccessTypes": []
+        }
+      ]
+    }
+  }
+
+}
