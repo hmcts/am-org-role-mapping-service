@@ -17,7 +17,9 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleMapping;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRole;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
@@ -29,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.IDAM_ROLES_QUERY_NAME;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.IDAM_ROLES_RESULTS_KEY;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_QUERY_NAME;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.ROLE_ASSIGNMENTS_RESULTS_KEY;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.MAPPER;
@@ -67,11 +71,12 @@ public abstract class DroolBase {
     }
 
     List<RoleAssignment> buildExecuteKieSession(List<FeatureFlag> featureFlags) {
-        return buildExecuteKieSession(featureFlags, null);
+        RoleMapping roleMapping = buildExecuteKieSession(featureFlags, null);
+        return roleMapping.getRoleAssignments();
     }
 
     @SuppressWarnings("unchecked")
-    List<RoleAssignment> buildExecuteKieSession(List<FeatureFlag> featureFlags,
+    RoleMapping buildExecuteKieSession(List<FeatureFlag> featureFlags,
                                                 List<JudicialOfficeHolder> outputJudicialOfficeHolders) {
         // Sequence of processing for executing the rules:
         //   1. add all the profiles
@@ -86,6 +91,7 @@ public abstract class DroolBase {
                 CommandFactory.newInsertElements(featureFlags),
                 CommandFactory.newFireAllRules(),
                 CommandFactory.newQuery(ROLE_ASSIGNMENTS_RESULTS_KEY, ROLE_ASSIGNMENTS_QUERY_NAME),
+                CommandFactory.newQuery(IDAM_ROLES_RESULTS_KEY, IDAM_ROLES_QUERY_NAME),
                 CommandFactory.newQuery(JUDICIAL_OFFICE_HOLDERS_RESULTS_KEY, JUDICIAL_OFFICE_HOLDERS_QUERY_NAME)
         );
 
@@ -101,6 +107,14 @@ public abstract class DroolBase {
             "$roleAssignment"
         );
 
+        List<IdamRole> idamRoles = new ArrayList<>();
+        populateListFromQueryResults(
+                idamRoles,
+                results,
+                IDAM_ROLES_RESULTS_KEY,
+                "$idamRole"
+        );
+
         if (outputJudicialOfficeHolders != null) {
             populateListFromQueryResults(
                 outputJudicialOfficeHolders,
@@ -110,7 +124,8 @@ public abstract class DroolBase {
             );
         }
 
-        return ValidationUtil.distinctRoleAssignments(roleAssignments);
+        return new RoleMapping(ValidationUtil.distinctRoleAssignments(roleAssignments),
+                ValidationUtil.distinctIdamRoles(idamRoles));
     }
 
     @SuppressWarnings("unchecked")

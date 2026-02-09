@@ -95,11 +95,11 @@ public class RequestMappingService<T> {
                                                      List<JudicialBooking> judicialBookings,
                                                      UserType userType) {
         var startTime = System.currentTimeMillis();
-        // Get the role assignments for each caseworker in the input profiles.
-        Map<String, List<RoleAssignment>> usersRoleAssignments = getProfileRoleAssignments(usersAccessProfiles,
+        // Get the role mappings for each caseworker in the input profiles.
+        Map<String, RoleMapping> usersRoleMappings = getProfileRoleAssignments(usersAccessProfiles,
                 judicialBookings, userType);
         // The response body is a list of ....???....
-        ResponseEntity<Object> responseEntity = updateProfilesRoleAssignments(usersRoleAssignments, userType);
+        ResponseEntity<Object> responseEntity = updateProfilesRoleAssignments(usersRoleMappings, userType);
         log.debug("Execution time of createCaseWorkerAssignments() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
@@ -112,19 +112,29 @@ public class RequestMappingService<T> {
      * for each user profile represented in the map.
      */
     @SuppressWarnings("unchecked")
-    private Map<String, List<RoleAssignment>> getProfileRoleAssignments(Map<String,
+    private Map<String, RoleMapping> getProfileRoleAssignments(Map<String,
             Set<T>> usersAccessProfiles, List<JudicialBooking> judicialBookings, UserType userType) {
 
-        // Create a map to hold the role assignments for each user.
-        Map<String, List<RoleAssignment>> usersRoleAssignments = new HashMap<>();
+        // Create a map to hold the role mappings for each user.
+        Map<String, RoleMapping> userRoleMappings = new HashMap<>();
 
         // Make sure every user in the input collection has a list in the map.  This includes users
         // who have been deleted, for whom no role assignments will be created by the rules.
-        usersAccessProfiles.keySet().forEach(k -> usersRoleAssignments.put(k, new ArrayList<>()));
-        // Get all the role assignments created for the set of access profiles.
-        RoleMapping roleMapping = mapUserAccessProfiles(usersAccessProfiles, judicialBookings);
+        usersAccessProfiles.keySet().forEach(k -> userRoleMappings.put(k,
+                new RoleMapping(new ArrayList<>(), new ArrayList<>())));
+
+        // Get all the all role mappings created for the set of access profiles.
+        RoleMapping allRoleMappings = mapUserAccessProfiles(usersAccessProfiles, judicialBookings);
+
         // Add each role assignment to the results map.
-        roleMapping.getRoleAssignments().forEach(ra -> usersRoleAssignments.get(ra.getActorId()).add(ra));
+        allRoleMappings.getRoleAssignments().forEach(ra -> {
+            userRoleMappings.get(ra.getActorId()).getRoleAssignments().add(ra);
+        });
+
+        // Add each idam role to the results map.
+        allRoleMappings.getIdamRoles().forEach(ir -> {
+            userRoleMappings.get(ir.getUserId()).getIdamRoles().add(ir);
+        });
 
 
         // if List<RoleAssignment> is empty in case of suspended false in corresponding
@@ -135,8 +145,8 @@ public class RequestMappingService<T> {
         if (userType.equals(UserType.CASEWORKER)) {
 
             //Identify the user with empty List<RoleAssignment> in case of suspended is false.
-            usersRoleAssignments.forEach((k, v) -> {
-                if (v.isEmpty()) {
+            userRoleMappings.forEach((k, v) -> {
+                if (v.getRoleAssignments().isEmpty()) {
                     Set<CaseWorkerAccessProfile> accessProfiles = (Set<CaseWorkerAccessProfile>) usersAccessProfiles
                             .get(k);
                     if (!requireNonNull(accessProfiles.stream().findFirst().orElse(null)).isSuspended()) {
@@ -147,8 +157,8 @@ public class RequestMappingService<T> {
             });
         } else if (userType.equals(UserType.JUDICIAL)) {
             //Identify the user with empty List<RoleAssignment> in case of suspended is false.
-            usersRoleAssignments.forEach((k, v) -> {
-                if (v.isEmpty()) {
+            userRoleMappings.forEach((k, v) -> {
+                if (v.getRoleAssignments().isEmpty()) {
                     needToRemoveUAP.add(k);
                 }
             });
@@ -160,17 +170,22 @@ public class RequestMappingService<T> {
         log.info("Access profiles for empty request for RAS: {} ", needToRemoveUAP);
 
         Map<String, Integer> roleAssignmentsCount = new HashMap<>();
+        Map<String, Integer> idamRolesCount = new HashMap<>();
         //print usersRoleAssignments
-        usersRoleAssignments.forEach((k, v) -> {
-            roleAssignmentsCount.put(k, v.size());
+        userRoleMappings.forEach((k, v) -> {
+            roleAssignmentsCount.put(k, v.getRoleAssignments().size());
             log.debug("UserId {} having the RoleAssignments created by the drool  {}  ", k,
-                    v);
+                    v.getRoleAssignments());
+            idamRolesCount.put(k, v.getIdamRoles().size());
+            log.debug("UserId {} having the IdamRoles created by the drool  {}  ", k,
+                    v.getIdamRoles());
         });
 
         log.info("Count of RoleAssignments corresponding to the UserId ::{}  ", roleAssignmentsCount);
+        log.info("Count of IdamRoles corresponding to the UserId ::{}  ", idamRolesCount);
 
 
-        return usersRoleAssignments;
+        return userRoleMappings;
     }
 
     /**
@@ -258,15 +273,15 @@ public class RequestMappingService<T> {
      * Note that some caseworker IDs may have empty role assignment collections.
      * This is OK - these caseworkers have been deleted (or just don't have any appointments which map to roles).
      */
-    ResponseEntity<Object> updateProfilesRoleAssignments(Map<String, List<RoleAssignment>> usersRoleAssignments,
+    ResponseEntity<Object> updateProfilesRoleAssignments(Map<String, RoleMapping> usersRoleMappings,
                                                          UserType userType) {
         //prepare an empty list of responses
         List<Object> finalResponse = new ArrayList<>();
         AtomicInteger failureResponseCount = new AtomicInteger();
 
-        usersRoleAssignments
+        usersRoleMappings
                 .forEach((k, v) -> finalResponse.add(updateProfileRoleAssignments(k,
-                        v, failureResponseCount, userType)));
+                        v.getRoleAssignments(), failureResponseCount, userType)));
         log.info("Count of failure responses from RAS : {} ", failureResponseCount.get());
         log.info("Count of Success responses from RAS : {} ", (finalResponse.size() - failureResponseCount.get()));
         return ResponseEntity.status(HttpStatus.OK).body(finalResponse);
