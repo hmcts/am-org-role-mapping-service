@@ -5,6 +5,7 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
+import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCaseWorkerProfile;
@@ -44,9 +45,13 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCase
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
-@PactTestFor(providerName = "referenceData_caseworkerRefUsers", port = "8991")
+@PactTestFor(providerName = "referenceData_caseworkerRefUsers", port = "8991", pactVersion = PactSpecVersion.V3)
 @ContextConfiguration(classes = {RefDataCaseworkerConsumerApplication.class})
-@TestPropertySource(properties = {"feign.client.config.crdclient.url=http://localhost:8991"})
+@TestPropertySource(properties = {
+    "feign.client.config.crdclient.url=http://localhost:8991",
+    "idam.api.url=http://localhost:5000",
+    "spring.cache.type=none"
+})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class RefDataCaseworkerConsumerTest {
 
