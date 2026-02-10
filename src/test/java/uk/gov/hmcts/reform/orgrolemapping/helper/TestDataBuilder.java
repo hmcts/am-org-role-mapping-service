@@ -318,6 +318,19 @@ public class TestDataBuilder {
         }
     }
 
+    public static JsonNode buildJsonNodeFromFile(String jsonNodeFileName) {
+        try (InputStream inputStream =
+                     TestDataBuilder.class.getClassLoader().getResourceAsStream(jsonNodeFileName)) {
+            assert inputStream != null;
+            JsonNode result = new ObjectMapper().readValue(inputStream, new TypeReference<>() {
+            });
+            inputStream.close();
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static CaseWorkerProfilesResponse buildUserProfilesResponse() {
         return  CaseWorkerProfilesResponse.builder()
                 .serviceName("ccd_service_name")
