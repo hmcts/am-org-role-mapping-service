@@ -35,7 +35,7 @@ def versions = [
         jacksondata    : '2.18.3',
         drools         : '9.44.0.Final',
         log4JVersion   : '2.24.3',
-        netty_version  : '4.2.9.Final',
+        netty_version  : '4.2.10.Final',
         bouncycastle   : '1.83',
         poi            : '5.5.1'
 ]
