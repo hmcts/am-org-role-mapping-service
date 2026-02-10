@@ -1,0 +1,51 @@
+{
+  "users": [
+    {
+      "userIdentifier": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "lastUpdated": "2023-11-20T15:51:33.046Z",
+      "organisationInfo": {
+        "organisationIdentifier": "ORG1",
+        "status": "ACTIVE",
+        "lastUpdated": "2023-12-20T12:01:20.578Z",
+        "organisationProfileIds": [
+          "SOLICITOR_ORG",
+          "DWP_GOV_ORG"
+        ]
+      },
+      "userAccessTypes": [
+        {
+          "jurisdictionId": "CIVIL",
+          "organisationProfileId": "SOLICITOR_ORG",
+          "accessTypeId": "civil-cases-1",
+          "enabled": "true"
+        },
+        {
+          "jurisdictionId": "CIVIL",
+          "organisationProfileId": "SOLICITOR_ORG",
+          "accessTypeId": "2",
+          "enabled": "true"
+        },
+        {
+          "jurisdictionId": "SSCS",
+          "organisationProfileId": "SOLICITOR_ORG",
+          "accessTypeId": "sscs-cases-1",
+          "enabled": "true"
+        },
+        {
+          "jurisdictionId": "SSCS",
+          "organisationProfileId": "DWP_GOV_ORG",
+          "accessTypeId": "sscs-ogd-cases",
+          "enabled": "true"
+        },
+        {
+          "jurisdictionId": "SSCS",
+          "organisationProfileId": "DWP_GOV_ORG",
+          "accessTypeId": "non-exist-id",
+          "enabled": "true"
+        }
+      ]
+    }
+  ],
+  "lastRecordInPage": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "moreAvailable": false
+}
