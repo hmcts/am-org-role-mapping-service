@@ -1,5 +1,8 @@
 package validationrules.iac;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialOfficeHolder.Office;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.Attributes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.RoleName;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
@@ -14,6 +17,7 @@ import java.util.HashMap
 import java.util.Map
 import com.fasterxml.jackson.databind.JsonNode;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
@@ -60,7 +64,9 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("IAC President of Tribunals", "IAC Resident Immigration Judge",
                                         "IAC Designated Immigration Judge", "IAC Assistant Resident Judge",
-                                        "IAC Tribunal Judge (Salaried)", "IAC Tribunal Judge (Fee-Paid)"))
+                                        "IAC Tribunal Judge (Salaried)", "IAC Tribunal Judge (Fee-Paid)",
+                                        Office.IAC.RESIDENT_OF_TRIBUNAL_JUDGE,
+                                        Office.IAC.ACTING_RESIDENT_JUDGE))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    if($joh.getOffice().equals("IAC Tribunal Judge (Fee-Paid)")) {
@@ -94,7 +100,9 @@ rule "iac_leadership_judge_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("IAC Assistant Resident Judge", "IAC Resident Immigration Judge",
-                                        "IAC Designated Immigration Judge"))
+                                        "IAC Designated Immigration Judge",
+                                        Office.IAC.RESIDENT_OF_TRIBUNAL_JUDGE,
+                                        Office.IAC.ACTING_RESIDENT_JUDGE))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
@@ -130,7 +138,9 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("IAC Assistant Resident Judge", "IAC Resident Immigration Judge",
                                         "IAC Designated Immigration Judge", "IAC President of Tribunals",
-                                        "IAC Tribunal Judge (Salaried)"))
+                                        "IAC Tribunal Judge (Salaried)",
+                                        Office.IAC.RESIDENT_OF_TRIBUNAL_JUDGE,
+                                        Office.IAC.ACTING_RESIDENT_JUDGE))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
@@ -163,7 +173,9 @@ rule "iac_task_supervisor_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("IAC Assistant Resident Judge", "IAC Resident Immigration Judge",
-                                        "IAC Designated Immigration Judge"))
+                                        "IAC Designated Immigration Judge",
+                                        Office.IAC.RESIDENT_OF_TRIBUNAL_JUDGE,
+                                        Office.IAC.ACTING_RESIDENT_JUDGE))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
@@ -199,7 +211,9 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
   $joh: JudicialOfficeHolder(office in ("IAC Assistant Resident Judge", "IAC Resident Immigration Judge",
                                         "IAC Designated Immigration Judge", "IAC President of Tribunals",
-                                        "IAC Tribunal Judge (Salaried)"))
+                                        "IAC Tribunal Judge (Salaried)",
+                                        Office.IAC.RESIDENT_OF_TRIBUNAL_JUDGE,
+                                        Office.IAC.ACTING_RESIDENT_JUDGE))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
