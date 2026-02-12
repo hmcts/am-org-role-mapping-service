@@ -76,5 +76,7 @@ class IdamRoleDataJsonBConverterTest {
                 .hasMessageContaining("Unable to deserialize from json");
     }
 
-    private String removeWhitespace(String input) { return input.replaceAll("\\s+", ""); }
+    private String removeWhitespace(String input) {
+        return input.replaceAll("\\s+", "");
+    }
 }

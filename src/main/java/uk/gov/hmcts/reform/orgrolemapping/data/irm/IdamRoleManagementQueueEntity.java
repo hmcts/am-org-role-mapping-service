@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.data.irm;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
