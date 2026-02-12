@@ -8,19 +8,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class IdamRoleData {
-
-    private String emailId;
-    private String activeFlag;
-    private String deletedFlag;
-    private List<IdamRoleDataRole> roles;
-
+public class IdamRoleDataRole {
+    private String roleName;
 }

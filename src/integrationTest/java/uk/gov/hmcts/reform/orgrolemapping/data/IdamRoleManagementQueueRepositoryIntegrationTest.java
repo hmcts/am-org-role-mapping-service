@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.data;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
@@ -8,9 +7,12 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleDataRole;
 import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,10 +31,14 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
     private static final String RETRY_INTERVAL1 = "10";
     private static final String RETRY_INTERVAL2 = "20";
     private static final String RETRY_INTERVAL3 = "30";
-    private static final JsonNode DATA = IDAM_ROLE_DATA_JSON_B_CONVERTER.convertToEntityAttribute(
-            """
-            {"roles":[{"role_name":"Role1"},{"role_name":"Role2"}],"email_id":"someone@somewhere.com"}
-            """);
+    private static final IdamRoleData DATA = IdamRoleData.builder()
+            .emailId("someone@somewhere.com")
+            .roles(List.of(
+                    IdamRoleDataRole.builder().roleName("Role1").build(),
+                    IdamRoleDataRole.builder().roleName("Role2").build()))
+            .build();
+    private static final String JSON_DATA =
+            IDAM_ROLE_DATA_JSON_B_CONVERTER.convertToDatabaseColumn(DATA);
 
     @Autowired
     private IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
@@ -42,14 +48,14 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         "classpath:sql/irm/queue/init_idam_role_management_queue.sql"})
     public void shouldUpsertToIdamRoleManagementQueue() {
         // WHEN
-        idamRoleManagementQueueRepository.upsert(USER_ID, USER_TYPE, PUBLISHED_AS, DATA.toString(),
+        idamRoleManagementQueueRepository.upsert(USER_ID, USER_TYPE, PUBLISHED_AS, JSON_DATA,
                 LocalDateTime.now());
         Optional<IdamRoleManagementQueueEntity> idamRoleManagementQueueEntity =
                 idamRoleManagementQueueRepository.findById(USER_ID);
 
         // THEN
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
-                USER_ID, USER_TYPE, PUBLISHED_AS, DATA, null, 0);
+                USER_ID, USER_TYPE, PUBLISHED_AS, JSON_DATA, null, 0);
     }
 
     @Test
@@ -65,7 +71,7 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         // THEN
         assertEquals(1, result, "One record should be updated");
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
-                USER_ID, USER_TYPE, PUBLISHED_AS, DATA, LocalDateTime.now(), 0);
+                USER_ID, USER_TYPE, PUBLISHED_AS, JSON_DATA, LocalDateTime.now(), 0);
     }
 
     @Test
@@ -93,7 +99,7 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         // THEN
         assertEquals(1, result, "One record should be updated");
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
-                USER_ID, USER_TYPE, PUBLISHED_AS, DATA, LocalDateTime.now().plusYears(1), 0);
+                USER_ID, USER_TYPE, PUBLISHED_AS, JSON_DATA, LocalDateTime.now().plusYears(1), 0);
     }
 
     @Test
@@ -109,7 +115,7 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
 
         // THEN
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
-                USER_ID, USER_TYPE, PUBLISHED_AS, DATA, null, 1);
+                USER_ID, USER_TYPE, PUBLISHED_AS, JSON_DATA, null, 1);
     }
 
     @Test
@@ -125,7 +131,7 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
 
         // THEN
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
-                USER_ID, USER_TYPE, PUBLISHED_AS, DATA, null, 0);
+                USER_ID, USER_TYPE, PUBLISHED_AS, JSON_DATA, null, 0);
     }
 
     @Test
@@ -140,12 +146,12 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         // THEN
         assertIdamRoleManagementQueueEntity(
                 Optional.ofNullable(idamRoleManagementQueueEntity),
-                USER_ID, USER_TYPE, PUBLISHED_AS, DATA, null, 4);
+                USER_ID, USER_TYPE, PUBLISHED_AS, JSON_DATA, null, 4);
     }
 
     private void assertIdamRoleManagementQueueEntity(
             Optional<IdamRoleManagementQueueEntity> idamRoleManagementQueueEntity,
-            String userId, String userType, String publishedAs, JsonNode data,
+            String userId, String userType, String publishedAs, String data,
             LocalDateTime lastPublished, Integer retry
     ) {
         assertTrue(idamRoleManagementQueueEntity.isPresent(),
@@ -155,8 +161,9 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         assertEquals(userId, result.getUserId(), "User ID should match");
         assertEquals(userType, result.getUserType(), "User Type should match");
         assertNotNull(result.getData(), "Data should not be null");
-        assertEquals(data.toString(), IDAM_ROLE_DATA_JSON_B_CONVERTER.convertToDatabaseColumn(
-                result.getData()).toString(), "Data should match");
+        assertEquals(data,
+                IDAM_ROLE_DATA_JSON_B_CONVERTER.convertToDatabaseColumn(result.getData()),
+                "Data should match");
         assertEquals(publishedAs, result.getPublishedAs(), "Published As should match");
         assertEquals(retry, result.getRetry(), "Retry should match");
         if (lastPublished != null) {
