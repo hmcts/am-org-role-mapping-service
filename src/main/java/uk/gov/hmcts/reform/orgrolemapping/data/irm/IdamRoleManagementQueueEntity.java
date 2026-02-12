@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
 
 import java.time.LocalDateTime;
@@ -34,7 +35,7 @@ public class IdamRoleManagementQueueEntity {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "data", nullable = false, columnDefinition = "jsonb")
     @Convert(converter = IdamRoleDataJsonBConverter.class)
-    private JsonNode data;
+    private IdamRoleData data;
 
     @Column(name = "last_updated", nullable = false)
     private LocalDateTime lastUpdated;
