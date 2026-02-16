@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleMapping;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
@@ -38,6 +39,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRoleEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRole;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 
 import java.io.File;
@@ -332,6 +334,20 @@ public class TestDataBuilder {
         }
     }
 
+    public static RoleMapping buildRoleMapping() {
+        return RoleMapping.builder()
+                .roleAssignments(buildRequestedRoleCollection(Status.CREATED).stream().toList())
+                .idamRoles(buildIdamRoleCollection().stream().toList())
+                .build();
+    }
+
+    public static Collection<IdamRole> buildIdamRoleCollection() {
+        List<IdamRole> idamRoles = new ArrayList<>();
+        idamRoles.add(IdamRole.builder().roleName("caseworker").build());
+        idamRoles.add(IdamRole.builder().roleName("caseworker-ia").build());
+        return idamRoles;
+    }
+
     public static CaseWorkerProfilesResponse buildUserProfilesResponse() {
         return  CaseWorkerProfilesResponse.builder()
                 .serviceName("ccd_service_name")
@@ -432,6 +448,8 @@ public class TestDataBuilder {
     public static JudicialAccessProfile buildJudicialAccessProfile() {
         JudicialAccessProfile.JudicialAccessProfileBuilder builder = JudicialAccessProfile.builder();
         builder.userId(id_1);
+        builder.emailId("someone@somewhere.com");
+        builder.activeFlag("Y");
         builder.contractTypeId("5");
         builder.beginTime(ZonedDateTime.now(ZoneOffset.UTC).plusDays(1));
         builder.endTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1));
