@@ -103,6 +103,7 @@ public class RequestMappingService<T> {
         // Get the role mappings for each caseworker in the input profiles.
         Map<String, RoleMapping> usersRoleMappings = getProfileRoleAssignments(usersAccessProfiles,
                 judicialBookings, userType);
+        // Take the role mapping and add the idam role mapping to the queue.
         Map<String, IdamRoleData> idamRoleList =
                 IdamRoleBuilder.buildIdamRoleData(userType, usersAccessProfiles, usersRoleMappings);
         idamRoleMappingService.addToQueue(userType, idamRoleList);
