@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-051__VerifyCaseworkerDetails",
+  "_guid_": "S-211__VerifyCaseworkerDetails",
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
@@ -9,7 +9,7 @@
   "request": {
     "body": {
       "userIds": [
-        "${[scenarioContext][parentContext][childContexts][S-051_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}"
+        "${[scenarioContext][parentContext][childContexts][S-211_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}"
       ]
     }
   },
@@ -20,7 +20,7 @@
         {
           "_extends_": "CaseworkerDetails",
 
-          "id": "${[scenarioContext][parentContext][childContexts][S-051_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}",
+          "id": "${[scenarioContext][parentContext][childContexts][S-211_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}",
 
           "case_allocator": "N",
           "task_supervisor": "N",
@@ -33,7 +33,7 @@
 
           "work_area": [
             {
-              "_extends_": "WorkArea_BBA3_SSCS"
+              "_extends_": "WorkArea_BHA1_ET"
             }
             ]
         }
