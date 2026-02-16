@@ -28,6 +28,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRole;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
+import uk.gov.hmcts.reform.orgrolemapping.helper.IdamRoleBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
@@ -98,6 +100,8 @@ public class RequestMappingService<T> {
         // Get the role mappings for each caseworker in the input profiles.
         Map<String, RoleMapping> usersRoleMappings = getProfileRoleAssignments(usersAccessProfiles,
                 judicialBookings, userType);
+        Map<String, IdamRoleData> idamRoleList =
+                IdamRoleBuilder.buildIdamRoleData(userType, usersAccessProfiles, usersRoleMappings);
         // The response body is a list of ....???....
         ResponseEntity<Object> responseEntity = updateProfilesRoleAssignments(usersRoleMappings, userType);
         log.debug("Execution time of createCaseWorkerAssignments() : {} ms",
