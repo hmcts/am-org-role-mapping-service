@@ -64,6 +64,7 @@ public class RequestMappingService<T> {
     private final PersistenceService persistenceService;
     private final EnvironmentConfiguration environmentConfiguration;
     private final RoleAssignmentService roleAssignmentService;
+    private final IdamRoleMappingService idamRoleMappingService;
     private final StatelessKieSession kieSession;
     private final SecurityUtils securityUtils;
 
@@ -71,11 +72,13 @@ public class RequestMappingService<T> {
     public RequestMappingService(PersistenceService persistenceService,
                                  EnvironmentConfiguration environmentConfiguration,
                                  RoleAssignmentService roleAssignmentService,
+                                 IdamRoleMappingService idamRoleMappingService,
                                  StatelessKieSession kieSession,
                                  SecurityUtils securityUtils) {
         this.persistenceService = persistenceService;
         this.environmentConfiguration = environmentConfiguration;
         this.roleAssignmentService = roleAssignmentService;
+        this.idamRoleMappingService = idamRoleMappingService;
         this.kieSession = kieSession;
         this.securityUtils = securityUtils;
     }
@@ -102,6 +105,7 @@ public class RequestMappingService<T> {
                 judicialBookings, userType);
         Map<String, IdamRoleData> idamRoleList =
                 IdamRoleBuilder.buildIdamRoleData(userType, usersAccessProfiles, usersRoleMappings);
+        idamRoleMappingService.addToQueue(userType, idamRoleList);
         // The response body is a list of ....???....
         ResponseEntity<Object> responseEntity = updateProfilesRoleAssignments(usersRoleMappings, userType);
         log.debug("Execution time of createCaseWorkerAssignments() : {} ms",
