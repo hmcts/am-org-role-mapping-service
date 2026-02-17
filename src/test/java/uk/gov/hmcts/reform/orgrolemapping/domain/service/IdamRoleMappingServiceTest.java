@@ -91,7 +91,7 @@ class IdamRoleMappingServiceTest {
 
     }
 
-    private void assertLastUpdated(LocalDateTime startTime, Integer noRowsExpected){
+    private void assertLastUpdated(LocalDateTime startTime, Integer noRowsExpected) {
         assertNotNull(lastUpdatedCaptor.getAllValues());
         assertEquals(noRowsExpected, lastUpdatedCaptor.getAllValues().size());
         lastUpdatedCaptor.getAllValues().forEach(dateTime ->
