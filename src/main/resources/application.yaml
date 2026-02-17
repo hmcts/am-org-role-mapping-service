@@ -124,6 +124,8 @@ idam:
     management:
       scheduling:
         enabled: ${IRM_SCHEDULING_ENABLED:false}
+        judicial:
+          cron: ${CRON_IRM_JUDICIAL:*/5 * * * * *}
 
 feign:
   client:

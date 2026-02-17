@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,8 @@ import java.util.Map;
 @AllArgsConstructor
 @Slf4j
 public class IdamRoleMappingService {
+
+    private static final String JUDICIAL_QUEUE = "IRM Process Judicial Queue";
 
     @Autowired
     private IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
@@ -32,5 +35,11 @@ public class IdamRoleMappingService {
                     idamRoleDataJsonBConverter.convertToDatabaseColumn(idamRoleData),
                     LocalDateTime.now());
         });
+    }
+
+    public ProcessMonitorDto processJudicialQueue() {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(JUDICIAL_QUEUE);
+        processMonitorDto.markAsSuccess();
+        return processMonitorDto;
     }
 }
