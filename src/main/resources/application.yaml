@@ -120,6 +120,10 @@ idam:
       userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:}
       secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:}
       scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
+  role:
+    management:
+      scheduling:
+        enabled: ${IRM_SCHEDULING_ENABLED:false}
 
 feign:
   client:
@@ -191,3 +195,9 @@ springdoc:
     enabled: true
     operationsSorter: method
   writer-with-order-by-keys: true
+
+professional:
+  role:
+    mapping:
+      scheduling:
+        enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}
