@@ -59,7 +59,7 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
             "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue.sql"})
+            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry.sql"})
     public void shouldUpdateIdamRoleManagementQueue() {
         // GIVEN
         IdamRoleData NEW_DATA = IdamRoleData.builder()
