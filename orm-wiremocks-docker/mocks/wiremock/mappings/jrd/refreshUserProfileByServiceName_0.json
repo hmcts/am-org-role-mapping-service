@@ -10,17 +10,22 @@
     },
     "bodyPatterns" : [ {
       "matchesJsonPath" : {
-        "expression": "$.sidam_ids",
+        "expression": "$.ccdServiceName",
         "matches": ".*"
       }
-    } ]
+    } ],
+    "queryParameters": {
+      "page_number": {
+        "equalTo": "0"
+      }
+    }
   },
   "response": {
     "status": 200,
     "headers": {
       "Content-Type": "application/vnd.jrd.api+json;Version=2.0"
     },
-    "bodyFileName": "jrd/refreshUserProfile.json.hbs",
+    "bodyFileName": "jrd/refreshUserProfileByServiceName_0.json.hbs",
     "transformers": ["response-template"]
   }
 }

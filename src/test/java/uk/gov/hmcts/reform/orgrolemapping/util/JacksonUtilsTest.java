@@ -2,10 +2,12 @@ package uk.gov.hmcts.reform.orgrolemapping.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,8 +57,43 @@ class JacksonUtilsTest {
 
     @Test
     void convertInJudicialProfileV2() throws IOException {
-        JudicialProfileV2 judicialProfile = TestDataBuilder.buildJudicialProfileV2();
-        assertNotNull(JacksonUtils.convertInJudicialProfileV2(judicialProfile));
+
+        // GIVEN
+        JudicialProfileV2 judicialProfileV2 = TestDataBuilder.buildJudicialProfileV2();
+
+        // WHEN
+        JudicialProfileV2 response = (JacksonUtils.convertInJudicialProfileV2(judicialProfileV2));
+
+        // THEN
+        assertNotNull(response);
+
+    }
+
+    @Test
+    void convertListInJudicialProfileV2() throws IOException {
+
+        // GIVEN
+        JudicialProfileV2 judicialProfileV2 = TestDataBuilder.buildJudicialProfileV2();
+
+        // WHEN
+        List<JudicialProfileV2> response = (JacksonUtils.convertListInJudicialProfileV2(List.of(judicialProfileV2)));
+
+        // THEN
+        assertNotNull(response);
+        assertTrue(response.size() > 0);
+
+    }
+
+    @Test
+    void convertListInJudicialProfileV2_empty() {
+
+        // WHEN
+        List<JudicialProfileV2> response = (JacksonUtils.convertListInJudicialProfileV2(List.of()));
+
+        // THEN
+        assertNotNull(response);
+        assertEquals(0, response.size());
+
     }
 
     @Test
@@ -67,9 +104,44 @@ class JacksonUtilsTest {
 
     @Test
     void convertInCaseWorkerProfileResponse() {
+
+        // GIVEN
         CaseWorkerProfilesResponse from = new CaseWorkerProfilesResponse("",
                 CaseWorkerProfile.builder().build());
-        assertNotNull(JacksonUtils.convertInCaseWorkerProfileResponse(from));
+
+        // WHEN
+        var response = JacksonUtils.convertInCaseWorkerProfileResponse(from);
+
+        // THEN
+        assertNotNull(response);
+    }
+
+    @Test
+    void convertListInCaseWorkerProfileResponse() {
+
+        // GIVEN
+        CaseWorkerProfilesResponse from = new CaseWorkerProfilesResponse("",
+                CaseWorkerProfile.builder().build());
+
+        // WHEN
+        List<CaseWorkerProfilesResponse> response = JacksonUtils.convertListInCaseWorkerProfileResponse(List.of(from));
+
+        // THEN
+        assertNotNull(response);
+        assertTrue(response.size() > 0);
+
+    }
+
+    @Test
+    void convertListInCaseWorkerProfileResponse_empty() {
+
+        // WHEN
+        List<CaseWorkerProfilesResponse> response = JacksonUtils.convertListInCaseWorkerProfileResponse(List.of());
+
+        // THEN
+        assertNotNull(response);
+        assertEquals(0, response.size());
+
     }
 
     @Test
@@ -77,4 +149,5 @@ class JacksonUtilsTest {
         JudicialBooking judicialBooking = TestDataBuilder.buildJudicialBooking();
         assertNotNull(JacksonUtils.convertInJudicialBooking(judicialBooking));
     }
+
 }
