@@ -1,0 +1,38 @@
+{
+  "_guid_": "S-008.03a",
+  "title": "must successfully create org role mapping for Hearing Centre Team Leader + Task Supervisor",
+  "_extends_": "S-008.03",
+  "specs": [
+    "contains the actorId of the user just published who has Hearing Centre Team Leader role + Task Supervisor"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "9f4c1ea9-f881-4e68-8969-495769aa6da6"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW",
+            "substantive": "N",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "routine_work,hearing_work,applications"
+          }
+        }
+      ]
+    }
+  }
+}
