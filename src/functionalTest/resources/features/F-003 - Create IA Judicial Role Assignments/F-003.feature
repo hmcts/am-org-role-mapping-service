@@ -9,6 +9,7 @@ Feature: F-003 : Create Role Assignments for Judicial Users
   Scenario: must successfully create judicial role mapping for Tribunal Judge - fee paid appointment.
      Given a user with [an active IDAM profile with full permissions],
      And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-022_DeleteDataForRoleAssignments01],
+     And a successful call [to snapshot judicial details] as in [S-022__SnapshotJudicialDetails],
      And a successful call [to publish existing JRD user ids to endpoint] as in [S-022_PushMessageToJRDService],
      And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
      And the request [contains the actorIds of the user just published],
@@ -23,6 +24,7 @@ Feature: F-003 : Create Role Assignments for Judicial Users
   Scenario: must successfully create judicial role mapping for Tribunal Judge - salaried appointment.
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-023_DeleteDataForRoleAssignments01],
+    And a successful call [to snapshot judicial details] as in [S-023__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-023_PushMessageToJRDService],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
     And the request [contains the actorIds of the user just published],

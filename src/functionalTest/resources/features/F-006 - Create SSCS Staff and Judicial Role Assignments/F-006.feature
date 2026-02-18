@@ -101,6 +101,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
   Scenario: must successfully create judicial role mapping for Tribunal Judge - Salaried appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-058_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-058__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-058_PushMessageToJRDService],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
     And the request [contains the actorId of the user just published],
@@ -115,6 +116,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
   Scenario: must successfully create judicial role mapping for Tribunal Judge - Fee Paid appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-059_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-059__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-059_PushMessageToJRDService],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
     And the request [contains the actorId of the user just published],
@@ -129,6 +131,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
    Scenario: must successfully create judicial role mapping for Tribunal Member Disability - Fee Paid appointment
      Given a user with [an active IDAM profile with full permissions],
      And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-060_DeleteDataForRoleAssignments],
+     And a successful call [to snapshot judicial details] as in [S-060__SnapshotJudicialDetails],
      And a successful call [to publish existing JRD user ids to endpoint] as in [S-060_PushMessageToJRDService],
      And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
      And the request [contains the actorId of the user just published],
@@ -144,6 +147,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
   Scenario: must successfully create judicial role mapping for President of Tribunal - Salaried appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-161_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-161__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-161_PushMessageToJRDService],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
     And the request [contains the actorId of the user just published],
@@ -171,6 +175,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
     Given a user with [a judicial profile for SSCS that does not support judicial bookings (i.e. no ticketCode=368)],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-163_DeleteDataForRoleAssignments],
     And a successful call [to delete existing bookings corresponding to the test actorId] as in [S-163_DeleteDataForBookings],
+    And a successful call [to snapshot judicial details] as in [S-163__SnapshotJudicialDetails],
     And a successful call [to create single booking for this user] as in [S-163_CreateDataForBookings],
     And a successful call [to refresh a judicial user's role assignments] as in [S-163_PostRefreshRequestToORM],
     When a request is prepared with appropriate values,
@@ -189,6 +194,7 @@ Feature: F-006 : Create Role Assignments for SSCS Staff and Judicial Org Roles
     Given a user with [a judicial profile for SSCS that supports judicial bookings (i.e. ticketCode=368)],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-164_DeleteDataForRoleAssignments],
     And a successful call [to delete existing bookings corresponding to the test actorId] as in [S-164_DeleteDataForBookings],
+    And a successful call [to snapshot judicial details] as in [S-164__SnapshotJudicialDetails],
     And a successful call [to create single booking for this user] as in [S-164_CreateDataForBookings],
     And a successful call [to refresh a judicial user's role assignments] as in [S-164_PostRefreshRequestToORM],
     When a request is prepared with appropriate values,

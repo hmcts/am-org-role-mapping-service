@@ -1,0 +1,25 @@
+{ 
+  "_guid_": "JudicialDetails",
+   "arrayInMap" : [
+   {
+     "__ordering__": "ORDERED"
+   },
+   {
+     "sidam_id" : "[[ANYTHING_PRESENT]]",
+     "object_id" : "[[ANYTHING_PRESENT]]",
+     "known_as" : "[[ANYTHING_PRESENT]]",
+     "surname" : "[[ANYTHING_PRESENT]]",
+     "full_name" : "[[ANYTHING_PRESENT]]",
+     "post_nominals" : "[[ANY_NULLABLE]]",
+     "email_id" : "[[ANYTHING_PRESENT]]",
+     "personal_code" : "[[ANYTHING_PRESENT]]",
+     "title" : "[[ANYTHING_PRESENT]]",
+     "initials" : "[[ANYTHING_PRESENT]]",
+     "retirement_date" : "[[ANYTHING_PRESENT]]",
+     "active_flag" : "[[ANYTHING_PRESENT]]",
+     "deleted_flag" : "[[ANYTHING_PRESENT]]",
+     "appointments" : "[[ANYTHING_PRESENT]]",
+     "authorisations" : "[[ANYTHING_PRESENT]]",
+     "roles" : "[[ANYTHING_PRESENT]]"
+   } ]
+}
