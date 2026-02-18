@@ -44,7 +44,7 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/irm/queue/init_idam_role_management_queue.sql"})
-    public void shouldUpsertToIdamRoleManagementQueue() {
+    public void shouldInsertToIdamRoleManagementQueue() {
         // WHEN
         idamRoleManagementQueueRepository.upsert(USER_ID, UserType.JUDICIAL.name(),
                 JSON_DATA, LocalDateTime.now());
@@ -54,6 +54,32 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         // THEN
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
                 USER_ID, UserType.JUDICIAL, null, JSON_DATA, null, 0, true);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+            "classpath:sql/irm/queue/insert_idam_role_management_queue.sql"})
+    public void shouldUpdateIdamRoleManagementQueue() {
+        // GIVEN
+        IdamRoleData NEW_DATA = IdamRoleData.builder()
+                .emailId("someoneelse@somewhereelse.com")
+                .roles(List.of(
+                        IdamRoleDataRole.builder().roleName("Role4").build(),
+                        IdamRoleDataRole.builder().roleName("Role5").build()))
+                .build();
+        String NEW_JSON_DATA =
+                IDAM_ROLE_DATA_JSON_B_CONVERTER.convertToDatabaseColumn(NEW_DATA);
+
+        // WHEN
+        idamRoleManagementQueueRepository.upsert(USER_ID, UserType.JUDICIAL.name(),
+                NEW_JSON_DATA, LocalDateTime.now());
+        Optional<IdamRoleManagementQueueEntity> idamRoleManagementQueueEntity =
+                idamRoleManagementQueueRepository.findById(USER_ID);
+
+        // THEN
+        assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
+                USER_ID, UserType.JUDICIAL, IdamRecordType.USER, NEW_JSON_DATA, null, 0, true);
     }
 
     @Test
