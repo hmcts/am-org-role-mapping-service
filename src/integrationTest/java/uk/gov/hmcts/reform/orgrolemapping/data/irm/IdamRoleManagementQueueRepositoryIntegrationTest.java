@@ -1,12 +1,10 @@
-package uk.gov.hmcts.reform.orgrolemapping.data;
+package uk.gov.hmcts.reform.orgrolemapping.data.irm;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
-import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
-import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleDataRole;
 import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
