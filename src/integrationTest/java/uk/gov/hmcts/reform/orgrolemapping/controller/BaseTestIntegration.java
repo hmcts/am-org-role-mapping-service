@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -22,7 +21,6 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 
 import jakarta.annotation.PreDestroy;
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -52,14 +50,14 @@ public abstract class BaseTestIntegration extends BaseTest {
         Connection connection;
 
         @Bean
-        public EmbeddedPostgres embeddedPostgres() throws IOException {
-            return EmbeddedPostgres
+        public PostgresTestContainer embeddedPostgres() {
+            return PostgresTestContainer
                     .builder()
                     .start();
         }
 
         @Bean
-        public DataSource dataSource(@Autowired EmbeddedPostgres pg) throws Exception {
+        public DataSource dataSource(@Autowired PostgresTestContainer pg) throws Exception {
 
             final Properties props = new Properties();
             // Instruct JDBC to accept JSON string for JSONB

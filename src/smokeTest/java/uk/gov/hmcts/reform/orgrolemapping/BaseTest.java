@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import feign.Feign;
 import feign.jackson.JacksonEncoder;
 import net.serenitybdd.junit5.SerenityJUnit5Extension;
@@ -19,7 +18,6 @@ import uk.gov.hmcts.reform.authorisation.generators.ServiceAuthTokenGenerator;
 
 import jakarta.annotation.PreDestroy;
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -57,15 +55,15 @@ public abstract class BaseTest {
         Connection connection;
 
         @Bean
-        public EmbeddedPostgres embeddedPostgres() throws IOException {
-            return EmbeddedPostgres
+        public PostgresTestContainer embeddedPostgres() {
+            return PostgresTestContainer
                     .builder()
                     .start();
         }
 
         @Bean
-        public DataSource dataSource() throws IOException, SQLException {
-            final EmbeddedPostgres pg = embeddedPostgres();
+        public DataSource dataSource() throws SQLException {
+            final PostgresTestContainer pg = embeddedPostgres();
 
             final Properties props = new Properties();
             // Instruct JDBC to accept JSON string for JSONB
@@ -76,7 +74,7 @@ public abstract class BaseTest {
         }
 
         @PreDestroy
-        public void contextDestroyed() throws IOException, SQLException {
+        public void contextDestroyed() throws SQLException {
             if (connection != null) {
                 connection.close();
             }
