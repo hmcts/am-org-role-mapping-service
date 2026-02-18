@@ -47,7 +47,7 @@ public class IdamRoleManagementQueueEntity {
     @Column(name = "last_published")
     private LocalDateTime lastPublished;
 
-    @Column(name = "published_as", nullable = false)
+    @Column(name = "published_as")
     @Enumerated(EnumType.STRING)
     private IdamRecordType publishedAs;
 

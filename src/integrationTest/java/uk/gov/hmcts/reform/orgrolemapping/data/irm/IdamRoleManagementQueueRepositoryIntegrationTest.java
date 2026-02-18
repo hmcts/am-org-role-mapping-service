@@ -26,7 +26,6 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
     private static final IdamRoleDataJsonBConverter IDAM_ROLE_DATA_JSON_B_CONVERTER =
             new IdamRoleDataJsonBConverter();
     private static final String USER_ID = "some-user-id";
-    private static final IdamRecordType PUBLISHED_AS = IdamRecordType.USER;
     private static final String RETRY_INTERVAL1 = "10";
     private static final String RETRY_INTERVAL2 = "20";
     private static final String RETRY_INTERVAL3 = "30";
@@ -48,13 +47,13 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
     public void shouldUpsertToIdamRoleManagementQueue() {
         // WHEN
         idamRoleManagementQueueRepository.upsert(USER_ID, UserType.JUDICIAL.name(),
-                PUBLISHED_AS.name(), JSON_DATA, LocalDateTime.now());
+                JSON_DATA, LocalDateTime.now());
         Optional<IdamRoleManagementQueueEntity> idamRoleManagementQueueEntity =
                 idamRoleManagementQueueRepository.findById(USER_ID);
 
         // THEN
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
-                USER_ID, UserType.JUDICIAL, PUBLISHED_AS, JSON_DATA, null, 0, true);
+                USER_ID, UserType.JUDICIAL, null, JSON_DATA, null, 0, true);
     }
 
     @Test
@@ -63,14 +62,16 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         "classpath:sql/irm/queue/insert_idam_role_management_queue.sql"})
     public void shouldSetAsPublished() {
         // WHEN
-        int result = idamRoleManagementQueueRepository.setAsPublished(USER_ID);
+        int result = idamRoleManagementQueueRepository.setAsPublished(USER_ID,
+                IdamRecordType.USER.name());
         Optional<IdamRoleManagementQueueEntity> idamRoleManagementQueueEntity =
                 idamRoleManagementQueueRepository.findById(USER_ID);
 
         // THEN
         assertEquals(1, result, "One record should be updated");
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
-                USER_ID, UserType.JUDICIAL, PUBLISHED_AS, JSON_DATA, LocalDateTime.now(), 0, false);
+                USER_ID, UserType.JUDICIAL, IdamRecordType.USER, JSON_DATA,
+                LocalDateTime.now(), 0, false);
     }
 
     @Test
@@ -79,7 +80,8 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         "classpath:sql/irm/queue/insert_idam_role_management_queue_published.sql"})
     public void shouldNotSetAsPublished() {
         // WHEN
-        int result = idamRoleManagementQueueRepository.setAsPublished(USER_ID);
+        int result = idamRoleManagementQueueRepository.setAsPublished(USER_ID,
+                IdamRecordType.USER.name());
 
         // THEN
         assertEquals(0, result, "Zero records should be updated");
@@ -91,14 +93,15 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         "classpath:sql/irm/queue/insert_idam_role_management_queue_future.sql"})
     public void shouldSetAsFuturePublished() {
         // WHEN
-        int result = idamRoleManagementQueueRepository.setAsPublished(USER_ID);
+        int result = idamRoleManagementQueueRepository.setAsPublished(USER_ID,
+                IdamRecordType.INVITE.name());
         Optional<IdamRoleManagementQueueEntity> idamRoleManagementQueueEntity =
                 idamRoleManagementQueueRepository.findById(USER_ID);
 
         // THEN
         assertEquals(1, result, "One record should be updated");
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
-                USER_ID, UserType.JUDICIAL, PUBLISHED_AS, JSON_DATA,
+                USER_ID, UserType.JUDICIAL, IdamRecordType.INVITE, JSON_DATA,
                 LocalDateTime.now().plusYears(1), 0, false);
     }
 
@@ -115,7 +118,8 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
 
         // THEN
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
-                USER_ID, UserType.JUDICIAL, PUBLISHED_AS, JSON_DATA, null, 1, true);
+                USER_ID, UserType.JUDICIAL, IdamRecordType.USER, JSON_DATA,
+                null, 1, true);
     }
 
     @Test
@@ -131,7 +135,8 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
 
         // THEN
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
-                USER_ID, UserType.JUDICIAL, PUBLISHED_AS, JSON_DATA, null, 0, true);
+                USER_ID, UserType.JUDICIAL, IdamRecordType.USER, JSON_DATA,
+                null, 0, true);
     }
 
     @Test
@@ -141,12 +146,14 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
     public void findAndLockSingleActiveRecordTest() {
         // WHEN
         IdamRoleManagementQueueEntity idamRoleManagementQueueEntity =
-                idamRoleManagementQueueRepository.findAndLockSingleActiveRecord();
+                idamRoleManagementQueueRepository.findAndLockSingleActiveRecord(
+                        UserType.JUDICIAL.name());
 
         // THEN
         assertIdamRoleManagementQueueEntity(
                 Optional.ofNullable(idamRoleManagementQueueEntity),
-                USER_ID, UserType.JUDICIAL, PUBLISHED_AS, JSON_DATA, null, 4, true);
+                USER_ID, UserType.JUDICIAL, IdamRecordType.USER, JSON_DATA,
+                null, 4, true);
     }
 
     private void assertIdamRoleManagementQueueEntity(
