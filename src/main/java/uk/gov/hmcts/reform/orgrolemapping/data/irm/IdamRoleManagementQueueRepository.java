@@ -14,8 +14,8 @@ public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRol
 
     @Modifying
     @Query(value = """
-        insert into idam_role_management_queue (user_id, user_type, published_as, data, last_updated, active)
-        values (:userId, :userType, :publishedAs, :data, :lastUpdated, true)
+        insert into idam_role_management_queue (user_id, user_type, data, last_updated, active)
+        values (:userId, :userType, :data, :lastUpdated, true)
         on conflict (user_id) do update
         set last_updated = now(),
             active = true,
@@ -24,12 +24,13 @@ public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRol
             data = excluded.data
         where excluded.last_updated > idam_role_management_queue.last_updated
         """, nativeQuery = true)
-    void upsert(String userId, String userType, String publishedAs, String data, LocalDateTime lastUpdated);
+    void upsert(String userId, String userType, String data, LocalDateTime lastUpdated);
 
     @Modifying
     @Query(value = """
         update idam_role_management_queue
         set active = false,
+            published_as = :publishedAs,
             last_updated = now(),
             retry = 0,
             retry_after = now(),
@@ -39,7 +40,7 @@ public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRol
               end
         where user_id = :userId and active
         """, nativeQuery = true)
-    int setAsPublished(String userId);
+    int setAsPublished(String userId, String publishedAs);
 
     @Query(value = """
         select * 
@@ -47,9 +48,10 @@ public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRol
         where active = true 
         and retry <= 4 
         and (retry_after < now() or retry_after is null)
+        and user_type = :userType
         limit 1 for update skip locked
         """, nativeQuery = true)
-    IdamRoleManagementQueueEntity findAndLockSingleActiveRecord();
+    IdamRoleManagementQueueEntity findAndLockSingleActiveRecord(String userType);
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Modifying

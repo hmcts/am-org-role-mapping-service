@@ -1,12 +1,10 @@
-package uk.gov.hmcts.reform.orgrolemapping.data;
+package uk.gov.hmcts.reform.orgrolemapping.data.irm;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
-import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementConfigEntity;
-import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementConfigRepository;
 
 import java.util.List;
 
@@ -25,6 +23,8 @@ public class IdamRoleManagementConfigRepositoryIntegrationTest extends BaseTestI
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/irm/config/init_flag_config.sql",
+        "classpath:sql/irm/config/init_idam_role_management_config.sql",
         "classpath:sql/irm/config/insert_flag_config.sql",
         "classpath:sql/irm/config/insert_idam_role_management_config.sql"})
     public void shouldFindAllForDeletion() {

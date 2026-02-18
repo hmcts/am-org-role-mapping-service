@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.orgrolemapping.data.irm;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +13,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.IdamRecordType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
 
@@ -29,7 +33,8 @@ public class IdamRoleManagementQueueEntity {
     private String userId;
 
     @Column(name = "user_type", nullable = false)
-    private String userType;
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "data", nullable = false, columnDefinition = "jsonb")
@@ -42,8 +47,9 @@ public class IdamRoleManagementQueueEntity {
     @Column(name = "last_published")
     private LocalDateTime lastPublished;
 
-    @Column(name = "published_as", nullable = false)
-    private String publishedAs;
+    @Column(name = "published_as")
+    @Enumerated(EnumType.STRING)
+    private IdamRecordType publishedAs;
 
     @Column(name = "active", nullable = false)
     private Boolean active;
