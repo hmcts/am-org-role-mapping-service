@@ -19,7 +19,7 @@ import java.util.Map;
 @Slf4j
 public class IdamRoleMappingService {
 
-    private static final String JUDICIAL_QUEUE = "IRM Process Judicial Queue";
+    private static final String QUEUE_NAME = "IRM Process {} Queue";
 
     @Autowired
     private IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
@@ -38,7 +38,12 @@ public class IdamRoleMappingService {
     }
 
     public ProcessMonitorDto processJudicialQueue() {
-        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(JUDICIAL_QUEUE);
+        return processQueue(UserType.JUDICIAL);
+    }
+
+    private ProcessMonitorDto processQueue(UserType userType) {
+        String queueName = String.format(QUEUE_NAME, userType.name());
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(queueName);
         processMonitorDto.markAsSuccess();
         return processMonitorDto;
     }

@@ -47,9 +47,10 @@ public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRol
         where active = true 
         and retry <= 4 
         and (retry_after < now() or retry_after is null)
+        and user_type = :userType
         limit 1 for update skip locked
         """, nativeQuery = true)
-    IdamRoleManagementQueueEntity findAndLockSingleActiveRecord();
+    IdamRoleManagementQueueEntity findAndLockSingleActiveRecord(String userType);
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Modifying

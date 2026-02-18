@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleDataRole;
 import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
@@ -141,7 +142,8 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
     public void findAndLockSingleActiveRecordTest() {
         // WHEN
         IdamRoleManagementQueueEntity idamRoleManagementQueueEntity =
-                idamRoleManagementQueueRepository.findAndLockSingleActiveRecord();
+                idamRoleManagementQueueRepository.findAndLockSingleActiveRecord(
+                        UserType.JUDICIAL.name());
 
         // THEN
         assertIdamRoleManagementQueueEntity(
