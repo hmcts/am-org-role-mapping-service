@@ -322,7 +322,7 @@ configurations.all {
 }
 
 dependencies {
-    implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.0'
+    implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.1'
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-web')
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-validation')
     implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa')
@@ -380,7 +380,7 @@ dependencies {
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.9'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.7'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-    implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.0'
+    implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.1'
     implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '3.0.5'
     implementation 'commons-io:commons-io:20030203.000550'
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
