@@ -124,6 +124,9 @@ idam:
     management:
       scheduling:
         enabled: ${IRM_SCHEDULING_ENABLED:false}
+        retryOneIntervalMin: ${IRM_RETRY_ONE_INTERVAL_MIN:2}
+        retryTwoIntervalMin: ${IRM_RETRY_TWO_INTERVAL_MIN:15}
+        retryThreeIntervalMin: ${IRM_RETRY_THREE_INTERVAL_MIN:60}
         judicial:
           cron: ${CRON_IRM_JUDICIAL:*/5 * * * * *}
 
