@@ -6,10 +6,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.PlatformTransactionManager;
+import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleDataRole;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
 
@@ -26,6 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class IdamRoleMappingServiceTest {
@@ -50,6 +54,15 @@ class IdamRoleMappingServiceTest {
     private static final String[] ROLES = {"Role1", "Role2", "Role3"};
     private static final String[] USERS = {"user1", "user2"};
 
+    @Captor
+    private ArgumentCaptor<String> userIdCaptor;
+
+    @Captor
+    private ArgumentCaptor<String> dataCaptor;
+
+    @Captor
+    private ArgumentCaptor<LocalDateTime> lastUpdatedCaptor;
+
     @Test
     void addToQueueTest_Judicial() {
         addToQueueTest(UserType.JUDICIAL);
@@ -59,15 +72,6 @@ class IdamRoleMappingServiceTest {
     void addToQueueTest_CaseWorker() {
         addToQueueTest(UserType.CASEWORKER);
     }
-
-    @Captor
-    private ArgumentCaptor<String> userIdCaptor;
-
-    @Captor
-    private ArgumentCaptor<String> dataCaptor;
-
-    @Captor
-    private ArgumentCaptor<LocalDateTime> lastUpdatedCaptor;
 
     private void addToQueueTest(UserType userType) {
         // GIVEN
@@ -97,7 +101,31 @@ class IdamRoleMappingServiceTest {
         assertEquals(USERS.length, dataCaptor.getAllValues().size());
         dataCaptor.getAllValues().forEach(data ->
             assertIdamRoleData(idamRoleDataJsonBConverter.convertToEntityAttribute(data)));
+    }
 
+    @Test
+    void processQueueTest_Judicial() {
+        processQueueTest(UserType.JUDICIAL, IdamRoleManagementQueueEntity.builder().build());
+    }
+
+    @Test
+    void processQueueTest_Judicial_NoRecords() {
+        processQueueTest(UserType.JUDICIAL, null);
+    }
+
+    private void processQueueTest(UserType userType,
+                                  IdamRoleManagementQueueEntity idamRoleManagementQueueEntity) {
+        // GIVEN
+        when(idamRoleManagementQueueRepository.findAndLockSingleActiveRecord(userType.name()))
+                .thenReturn(idamRoleManagementQueueEntity);
+
+        //WHEN
+        ProcessMonitorDto processMonitorDto = sut.processJudicialQueue();
+
+        // THEN
+        verify(processEventTracker, times(1)).trackEventStarted(any());
+        assertNotNull(processMonitorDto);
+        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
     }
 
     private void assertLastUpdated(LocalDateTime startTime, Integer noRowsExpected) {
