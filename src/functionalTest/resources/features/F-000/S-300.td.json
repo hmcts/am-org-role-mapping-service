@@ -1,0 +1,96 @@
+{
+  "_guid_": "S-300",
+  "title": "must report feature flags API",
+  "_extends_": "F-000_Test_Data_Base",
+  "operationName": "Fetch status of feature flags",
+  "productName": "Organisation Role Mapping",
+  "specs": [
+    "an active IDAM profile with full permissions"
+  ],
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+  "uri": "/am/role-mapping/fetchAllFlagStatuses",
+  "request": {
+    "headers": {
+      "_extends_": "Common_Request_Headers"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "civil_wa_1_0" : "[[ANYTHING_PRESENT]]",
+      "civil_wa_1_1" : "[[ANYTHING_PRESENT]]",
+      "civil_wa_1_2" : "[[ANYTHING_PRESENT]]",
+      "civil_wa_1_3" : "[[ANYTHING_PRESENT]]",
+      "civil_wa_1_4" : "[[ANYTHING_PRESENT]]",
+      "civil_wa_1_5" : "[[ANYTHING_PRESENT]]",
+      "civil_wa_1_6" : "[[ANYTHING_PRESENT]]",
+      "civil_wa_1_7" : "[[ANYTHING_PRESENT]]",
+      "civil_wa_1_8" : "[[ANYTHING_PRESENT]]",
+      "civil_wa_1_9" : "[[ANYTHING_PRESENT]]",
+      "civil_wa_2_0" : "[[ANYTHING_PRESENT]]",
+      "civil_wa_2_1" : "[[ANYTHING_PRESENT]]",
+      "civil_wa_2_2" : "[[ANYTHING_PRESENT]]",
+      "civil_wa_2_3" : "[[ANYTHING_PRESENT]]",
+      "civil_wa_2_4" : "[[ANYTHING_PRESENT]]",
+      "civil_wa_2_5" : "[[ANYTHING_PRESENT]]",
+      "employment_wa_1_0" : "[[ANYTHING_PRESENT]]",
+      "employment_wa_1_1" : "[[ANYTHING_PRESENT]]",
+      "employment_wa_1_2" : "[[ANYTHING_PRESENT]]",
+      "employment_wa_1_3" : "[[ANYTHING_PRESENT]]",
+      "employment_wa_1_4" : "[[ANYTHING_PRESENT]]",
+      "employment_wa_1_5" : "[[ANYTHING_PRESENT]]",
+      "employment_wa_3_0" : "[[ANYTHING_PRESENT]]",
+      "iac_1_1" : "[[ANYTHING_PRESENT]]",
+      "iac_jrd_1_0" : "[[ANYTHING_PRESENT]]",
+      "iac_jrd_1_1" : "[[ANYTHING_PRESENT]]",
+      "iac_wa_1_2" : "[[ANYTHING_PRESENT]]",
+      "iac_wa_1_3" : "[[ANYTHING_PRESENT]]",
+      "iac_wa_1_4" : "[[ANYTHING_PRESENT]]",
+      "iac_wa_1_5" : "[[ANYTHING_PRESENT]]",
+      "privatelaw_hearing_1_0" : "[[ANYTHING_PRESENT]]",
+      "privatelaw_wa_1_0" : "[[ANYTHING_PRESENT]]",
+      "privatelaw_wa_1_1" : "[[ANYTHING_PRESENT]]",
+      "privatelaw_wa_1_2" : "[[ANYTHING_PRESENT]]",
+      "privatelaw_wa_1_3" : "[[ANYTHING_PRESENT]]",
+      "privatelaw_wa_1_4" : "[[ANYTHING_PRESENT]]",
+      "privatelaw_wa_1_5" : "[[ANYTHING_PRESENT]]",
+      "privatelaw_wa_1_6" : "[[ANYTHING_PRESENT]]",
+      "privatelaw_wa_1_7" : "[[ANYTHING_PRESENT]]",
+      "privatelaw_wa_1_8" : "[[ANYTHING_PRESENT]]",
+      "publiclaw_hearing_1_0" : "[[ANYTHING_PRESENT]]",
+      "publiclaw_wa_1_0" : "[[ANYTHING_PRESENT]]",
+      "publiclaw_wa_1_1" : "[[ANYTHING_PRESENT]]",
+      "publiclaw_wa_1_2" : "[[ANYTHING_PRESENT]]",
+      "publiclaw_wa_1_3" : "[[ANYTHING_PRESENT]]",
+      "publiclaw_wa_1_4" : "[[ANYTHING_PRESENT]]",
+      "publiclaw_wa_1_5" : "[[ANYTHING_PRESENT]]",
+      "publiclaw_wa_1_6" : "[[ANYTHING_PRESENT]]",
+      "publiclaw_wa_1_7" : "[[ANYTHING_PRESENT]]",
+      "publiclaw_wa_1_8" : "[[ANYTHING_PRESENT]]",
+      "publiclaw_wa_1_9" : "[[ANYTHING_PRESENT]]",
+      "publiclaw_wa_2_0" : "[[ANYTHING_PRESENT]]",
+      "publiclaw_wa_2_1" : "[[ANYTHING_PRESENT]]",
+      "publiclaw_wa_2_2" : "[[ANYTHING_PRESENT]]",
+      "sscs_hearing_1_0" : "[[ANYTHING_PRESENT]]",
+      "sscs_hearing_1_1" : "[[ANYTHING_PRESENT]]",
+      "sscs_wa_1_0" : "[[ANYTHING_PRESENT]]",
+      "sscs_wa_1_1" : "[[ANYTHING_PRESENT]]",
+      "sscs_wa_1_2" : "[[ANYTHING_PRESENT]]",
+      "sscs_wa_1_3" : "[[ANYTHING_PRESENT]]",
+      "sscs_wa_1_4" : "[[ANYTHING_PRESENT]]",
+      "sscs_wa_1_5" : "[[ANYTHING_PRESENT]]",
+      "st_cic_wa_1_0" : "[[ANYTHING_PRESENT]]",
+      "st_cic_wa_1_1" : "[[ANYTHING_PRESENT]]",
+      "st_cic_wa_1_2" : "[[ANYTHING_PRESENT]]",
+      "st_cic_wa_1_3" : "[[ANYTHING_PRESENT]]"
+    }
+  }
+}
