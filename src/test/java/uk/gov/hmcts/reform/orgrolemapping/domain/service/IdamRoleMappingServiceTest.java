@@ -1,11 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.PlatformTransactionManager;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
@@ -17,6 +19,7 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker
 import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -105,7 +108,14 @@ class IdamRoleMappingServiceTest {
 
     @Test
     void processQueueTest_Judicial() {
-        processQueueTest(UserType.JUDICIAL, IdamRoleManagementQueueEntity.builder().build());
+        // GIVEN
+        String[] users = { "user1", "user2" };
+        List<IdamRoleManagementQueueEntity> irmQueue = new ArrayList<>();
+        Arrays.stream(users).forEach(user -> irmQueue.add(
+                IdamRoleManagementQueueEntity.builder().userId(user).build()));
+
+        // WHEN
+        processQueueTest(UserType.JUDICIAL, irmQueue);
     }
 
     @Test
@@ -114,10 +124,12 @@ class IdamRoleMappingServiceTest {
     }
 
     private void processQueueTest(UserType userType,
-                                  IdamRoleManagementQueueEntity idamRoleManagementQueueEntity) {
+                                  List<IdamRoleManagementQueueEntity> irmQueue) {
         // GIVEN
         when(idamRoleManagementQueueRepository.findAndLockSingleActiveRecord(userType.name()))
-                .thenReturn(idamRoleManagementQueueEntity);
+                .thenReturn(irmQueue != null && !irmQueue.isEmpty() ? irmQueue.get(0) : null)
+                .thenReturn(irmQueue != null && !irmQueue.isEmpty() ? irmQueue.get(1) : null)
+                .thenReturn(null);
 
         //WHEN
         ProcessMonitorDto processMonitorDto = sut.processJudicialQueue();
@@ -125,7 +137,20 @@ class IdamRoleMappingServiceTest {
         // THEN
         verify(processEventTracker, times(1)).trackEventStarted(any());
         assertNotNull(processMonitorDto);
-        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
+        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus(), "Statis is incorrect");
+        assertEquals(String.format(sut.QUEUE_NAME,userType.name()), processMonitorDto.getProcessType(),
+                "Process type is incorrect");
+    }
+
+    @Test
+    void processQueueTest_Judicial_Exception() {
+        // GIVEN
+        when(idamRoleManagementQueueRepository
+                .findAndLockSingleActiveRecord(UserType.JUDICIAL.name()))
+                .thenThrow(new ServiceException("Exception thrown"));
+
+        //WHEN
+        Assertions.assertThrows(ServiceException.class, () -> sut.processJudicialQueue());
     }
 
     private void assertLastUpdated(LocalDateTime startTime, Integer noRowsExpected) {

@@ -27,7 +27,7 @@ import java.util.Map;
 public class IdamRoleMappingService {
 
     private static final String NO_ENTITIES = "No entities to process";
-    private static final String QUEUE_NAME = "IRM Process {} Queue";
+    protected static final String QUEUE_NAME = "IRM Process %s Queue";
 
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
     private final TransactionTemplate transactionTemplate;
@@ -81,9 +81,23 @@ public class IdamRoleMappingService {
         int failedJobCount = 0;
         String errorMessage;
         try {
-            // Get the next record to process and lock it.
-            IdamRoleManagementQueueEntity idamRoleManagementQueueEntity
-                    = idamRoleManagementQueueRepository.findAndLockSingleActiveRecord(userType.name());
+            boolean anyEntitiesInQueue = true;
+            while (anyEntitiesInQueue) {
+                // Get the next record to process and lock it.
+                IdamRoleManagementQueueEntity idamRoleManagementQueueEntity
+                        = idamRoleManagementQueueRepository.findAndLockSingleActiveRecord(userType.name());
+                if (idamRoleManagementQueueEntity != null) {
+                    errorMessage = processQueueEntry(idamRoleManagementQueueEntity);
+                    if (errorMessage.isEmpty()) {
+                        successfulJobCount++;
+                    } else {
+                        failedJobCount++;
+                        errorMessageBuilder.append(errorMessage);
+                    }
+                }
+                // If there is another record to process then continue, otherwise exit the loop.
+                anyEntitiesInQueue = idamRoleManagementQueueEntity != null;
+            }
             // If nothing was processed then record that fact in the process steps.
             if (successfulJobCount == 0 && failedJobCount == 0) {
                 processMonitorDto.addProcessStep(NO_ENTITIES);
@@ -102,6 +116,10 @@ public class IdamRoleMappingService {
                 errorMessageBuilder.toString());
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
+    }
+
+    private String processQueueEntry(IdamRoleManagementQueueEntity idamRoleManagementQueueEntity) {
+        return "";
     }
 
     private void markProcessStatus(ProcessMonitorDto processMonitorDto, int successfulJobCount,
