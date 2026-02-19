@@ -46,7 +46,7 @@ public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRol
         select * 
         from idam_role_management_queue 
         where active = true 
-        and retry <= 4 
+        and retry < 4 
         and (retry_after < now() or retry_after is null)
         and user_type = :userType
         limit 1 for update skip locked
@@ -61,14 +61,12 @@ public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRol
                 when retry = 0 then 1 
                 when retry = 1 then 2 
                 when retry = 2 then 3 
-                when retry = 4 then 0 
                 else 4 
             end, 
             retry_after = case 
                 when retry = 0 then now() + (interval '1' Minute) * CAST(:retryOneIntervalMin AS INTEGER) 
                 when retry = 1 then now() + (interval '1' Minute) * CAST(:retryTwoIntervalMin AS INTEGER) 
                 when retry = 2 then now() + (interval '1' Minute) * CAST(:retryThreeIntervalMin AS INTEGER) 
-                when retry = 4 then now() 
                 else NULL 
             end 
         where user_id = :userId

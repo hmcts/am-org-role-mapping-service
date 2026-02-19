@@ -18,6 +18,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
@@ -53,13 +54,13 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
 
         // THEN
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
-                USER_ID, UserType.JUDICIAL, null, JSON_DATA, null, 0, true);
+                USER_ID, UserType.JUDICIAL, null, JSON_DATA, null, 0, null, true);
     }
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry.sql"})
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry4.sql"})
     public void shouldUpdateIdamRoleManagementQueue() {
         // GIVEN
         IdamRoleData newData = IdamRoleData.builder()
@@ -79,7 +80,8 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
 
         // THEN
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
-                USER_ID, UserType.JUDICIAL, IdamRecordType.USER, newJsonData, null, 0, true);
+                USER_ID, UserType.JUDICIAL, IdamRecordType.USER, newJsonData, null,
+                0, null, true);
     }
 
     @Test
@@ -97,7 +99,7 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         assertEquals(1, result, "One record should be updated");
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
                 USER_ID, UserType.JUDICIAL, IdamRecordType.USER, JSON_DATA,
-                LocalDateTime.now(), 0, false);
+                LocalDateTime.now(), 0, null, false);
     }
 
     @Test
@@ -128,31 +130,50 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         assertEquals(1, result, "One record should be updated");
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
                 USER_ID, UserType.JUDICIAL, IdamRecordType.INVITE, JSON_DATA,
-                LocalDateTime.now().plusYears(1), 0, false);
+                LocalDateTime.now().plusYears(1), 0, null, false);
     }
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
         "classpath:sql/irm/queue/insert_idam_role_management_queue.sql"})
-    public void shouldUpdateRetryMin() {
-        // WHEN
-        idamRoleManagementQueueRepository.updateRetry(USER_ID,
-                RETRY_INTERVAL1, RETRY_INTERVAL2, RETRY_INTERVAL3);
-        Optional<IdamRoleManagementQueueEntity> idamRoleManagementQueueEntity =
-                    idamRoleManagementQueueRepository.findById(USER_ID);
+    public void shouldUpdateRetry0To1() {
+        testRetry(1, RETRY_INTERVAL1);
+    }
 
-        // THEN
-        assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
-                USER_ID, UserType.JUDICIAL, IdamRecordType.USER, JSON_DATA,
-                null, 1, true);
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry1.sql"})
+    public void shouldUpdateRetry1To2() {
+        testRetry(2, RETRY_INTERVAL2);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry2.sql"})
+    public void shouldUpdateRetry2To3() {
+        testRetry(3, RETRY_INTERVAL3);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry3.sql"})
+    public void shouldUpdateRetry3To4() {
+        testRetry(4, null);
     }
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry.sql"})
-    public void shouldUpdateRetryMax() {
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry4.sql"})
+    public void shouldUpdateRetryAtMax() {
+        testRetry(4, null);
+    }
+
+    private void testRetry(Integer retry, String retryInterval) {
         // WHEN
         idamRoleManagementQueueRepository.updateRetry(USER_ID,
                 RETRY_INTERVAL1, RETRY_INTERVAL2, RETRY_INTERVAL3);
@@ -162,13 +183,13 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         // THEN
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
                 USER_ID, UserType.JUDICIAL, IdamRecordType.USER, JSON_DATA,
-                null, 0, true);
+                null, retry, retryInterval, true);
     }
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry.sql"})
+        "classpath:sql/irm/queue/insert_idam_role_management_queue.sql"})
     public void findAndLockSingleActiveRecordTest() {
         // WHEN
         IdamRoleManagementQueueEntity idamRoleManagementQueueEntity =
@@ -179,14 +200,25 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         assertIdamRoleManagementQueueEntity(
                 Optional.ofNullable(idamRoleManagementQueueEntity),
                 USER_ID, UserType.JUDICIAL, IdamRecordType.USER, JSON_DATA,
-                null, 4, true);
+                null, 0, null, true);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry4.sql"})
+    public void shouldNotFindAndLockSingleActiveRecordTest() {
+        assertNull(idamRoleManagementQueueRepository.findAndLockSingleActiveRecord(
+                UserType.JUDICIAL.name()),
+                "Records at max retry should not be found");
     }
 
     private void assertIdamRoleManagementQueueEntity(
             Optional<IdamRoleManagementQueueEntity> idamRoleManagementQueueEntity,
             String userId, UserType userType, IdamRecordType publishedAs, String data,
-            LocalDateTime lastPublished, Integer retry, boolean active
-    ) {
+            LocalDateTime lastPublished, Integer retry,
+            String retryInterval, boolean active
+            ) {
         assertTrue(idamRoleManagementQueueEntity.isPresent(),
                 "IdamRoleManagementQueueEntity should be present");
         IdamRoleManagementQueueEntity result = idamRoleManagementQueueEntity.get();
@@ -204,10 +236,12 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
             assertNotNull(result.getLastPublished(), "Last Published should not be null");
             assertThat(result.getLastPublished().minusMinutes(1)).isBefore(lastPublished);
         }
-        if (retry != 0) {
+        if (retry == 4) {
+            assertNull(result.getRetryAfter(), "Retry After should be null");
+        } else if (retry != 0) {
             assertNotNull(result.getRetryAfter(), "Retry After should not be null");
             assertThat(result.getRetryAfter()
-                    .minusMinutes(Integer.valueOf(RETRY_INTERVAL1))).isBefore(LocalDateTime.now());
+                    .minusMinutes(Integer.parseInt(retryInterval))).isBefore(LocalDateTime.now());
         }
     }
 }
