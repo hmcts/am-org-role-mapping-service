@@ -37,6 +37,17 @@ public final class JudicialOfficeHolder {
 
         }
 
+        @UtilityClass
+        public static final class IAC {
+            // tribunal member (group)
+            public static final String RESIDENT_OF_TRIBUNAL_JUDGE
+                    = "IAC Resident Tribunal Judge";
+            public static final String ACTING_RESIDENT_JUDGE
+                    = "IAC Acting Resident Judge";
+
+
+        }
+
     }
 
 }
