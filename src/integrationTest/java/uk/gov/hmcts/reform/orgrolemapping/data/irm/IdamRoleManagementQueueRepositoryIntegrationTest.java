@@ -205,8 +205,8 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry4.sql"})
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry4.sql"})
     public void shouldNotFindAndLockSingleActiveRecordTest() {
         assertNull(idamRoleManagementQueueRepository.findAndLockSingleActiveRecord(
                 UserType.JUDICIAL.name()),
@@ -217,8 +217,7 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
             Optional<IdamRoleManagementQueueEntity> idamRoleManagementQueueEntity,
             String userId, UserType userType, IdamRecordType publishedAs, String data,
             LocalDateTime lastPublished, Integer retry,
-            String retryInterval, boolean active
-            ) {
+            String retryInterval, boolean active) {
         assertTrue(idamRoleManagementQueueEntity.isPresent(),
                 "IdamRoleManagementQueueEntity should be present");
         IdamRoleManagementQueueEntity result = idamRoleManagementQueueEntity.get();
