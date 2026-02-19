@@ -62,7 +62,7 @@ public class IdamRoleMappingService {
     public void addToQueue(UserType userType, Map<String, IdamRoleData> idamRoleList) {
         log.info("Adding users to idam role mapping queue, total users: {}", idamRoleList.size());
         idamRoleList.forEach((userId, idamRoleData) -> {
-            idamRoleManagementQueueRepository.upsert(userId, userType.name(), "user",
+            idamRoleManagementQueueRepository.upsert(userId, userType.name(),
                     idamRoleDataJsonBConverter.convertToDatabaseColumn(idamRoleData),
                     LocalDateTime.now());
         });

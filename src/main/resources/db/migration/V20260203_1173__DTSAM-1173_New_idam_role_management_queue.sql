@@ -5,7 +5,7 @@ CREATE TABLE idam_role_management_queue(
    last_updated timestamp without time zone NOT NULL default now(),
    last_published timestamp without time zone,
    data jsonb NOT NULL default '[]'::jsonb,
-   published_as text NOT NULL,
+   published_as text,
    active boolean NOT NULL,
    retry integer default 0,
    retry_after timestamp without time zone default now()

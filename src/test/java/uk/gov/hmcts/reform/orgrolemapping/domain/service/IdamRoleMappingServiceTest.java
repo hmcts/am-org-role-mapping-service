@@ -87,7 +87,7 @@ class IdamRoleMappingServiceTest {
 
         // THIS
         verify(idamRoleManagementQueueRepository, times(idamRoleList.size()))
-                .upsert(userIdCaptor.capture(), any(), any(),
+                .upsert(userIdCaptor.capture(), any(),
                         dataCaptor.capture(), lastUpdatedCaptor.capture());
 
         assertLastUpdated(startTime, idamRoleList.size());

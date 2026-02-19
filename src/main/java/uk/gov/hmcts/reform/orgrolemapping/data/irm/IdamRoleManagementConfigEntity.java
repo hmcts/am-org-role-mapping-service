@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.orgrolemapping.data.irm;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import lombok.AllArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 
 import java.io.Serializable;
 
@@ -27,7 +30,8 @@ public class IdamRoleManagementConfigEntity {
 
     @Id
     @Column(name = "user_type", nullable = false)
-    private String userType;
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
 
     @Column(name = "allow_delete_flag", nullable = false)
     private String allowDeleteFlag;
@@ -36,6 +40,6 @@ public class IdamRoleManagementConfigEntity {
     @Setter
     public static class CompositeKey implements Serializable {
         private String roleName;
-        private String userType;
+        private UserType userType;
     }
 }
