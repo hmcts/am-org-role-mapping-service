@@ -7,7 +7,8 @@ public enum AdditionalRole implements AdditionalRoleEnum {
     // NB: for codes see:
     //  https://tools.hmcts.net/confluence/display/DTSAM/Judicial+Reconciliation#JudicialReconciliation-AdditionalRoleCodes
 
-    ACTING_REGIONAL_EMPLOYMENT_JUDGE("Acting Regional Employment Judge", List.of("90004"));
+    ACTING_REGIONAL_EMPLOYMENT_JUDGE("Acting Regional Employment Judge", List.of("90004")),
+    ACTING_RESIDENT_JUDGE("Acting Resident Judge", List.of("90153"));
 
     private final String name;
     private final List<String> codes; // support for multiple codes in future (i.e. different spellings for same role)
