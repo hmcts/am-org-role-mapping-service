@@ -26,6 +26,8 @@ public class DroolJudicialTestArguments {
     private boolean additionalRoleTest;
     // if supplied will use this fallback template when running expired Additional Role End Date scenario
     private String additionalRoleExpiredFallbackFileName;
+    // if supplied will use this fallback template when running expired Authorisation End Date scenario
+    private String authorisationExpiredFallbackFileName;
 
     private Map<String, String> overrideMapValues;
 
@@ -52,6 +54,7 @@ public class DroolJudicialTestArguments {
             .rasRequestFileNameWithBooking(this.rasRequestFileNameWithBooking)
             .additionalRoleTest(this.additionalRoleTest)
             .additionalRoleExpiredFallbackFileName(this.additionalRoleExpiredFallbackFileName)
+            .authorisationExpiredFallbackFileName(this.authorisationExpiredFallbackFileName)
             .overrideMapValues(cloneAndOverrideMap(this.overrideMapValues, null))
             .turnOffFlags(this.turnOffFlags);
     }
