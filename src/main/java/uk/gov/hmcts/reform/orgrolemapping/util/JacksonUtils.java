@@ -10,16 +10,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+import lombok.SneakyThrows;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
 
-import jakarta.inject.Named;
-import jakarta.inject.Singleton;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,14 +36,17 @@ public class JacksonUtils {
     private JacksonUtils() {
     }
 
-
-
     public static final ObjectMapper MAPPER = JsonMapper.builder()
             .configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true)
             .configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
             .configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).build()
             .registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+    @SneakyThrows
+    public static String writeValueAsPrettyJson(Object input) {
+        return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(input);
+    }
 
     public static Map<String, JsonNode> convertValue(Object from) {
         return MAPPER.convertValue(from, new TypeReference<HashMap<String, JsonNode>>() {
@@ -94,4 +102,24 @@ public class JacksonUtils {
         return MAPPER.convertValue(from, new TypeReference<>() {
         });
     }
+
+    public static RestructuredAccessTypes getRestructuredAccessTypes(String content)
+            throws JsonProcessingException {
+        MAPPER.registerModule(new JavaTimeModule());
+        return MAPPER.readValue(content, RestructuredAccessTypes.class);
+    }
+
+    public static List<UserAccessType> convertUserAccessTypes(String userAccessType) throws JsonProcessingException {
+        MAPPER.registerModule(new JavaTimeModule());
+        return Arrays.asList(MAPPER.readValue(userAccessType, UserAccessType[].class));
+    }
+
+    public static String convertObjectToString(Object from) {
+        try {
+            return MAPPER.writeValueAsString(from);
+        } catch (JsonProcessingException e) {
+            throw new ServiceException("Error occurred when serializing object");
+        }
+    }
+
 }

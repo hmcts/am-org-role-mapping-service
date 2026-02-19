@@ -1,0 +1,21 @@
+{
+  "_guid_": "S-013.04_VerifyOrganisationRefreshQueueValueIsNotActive",
+  "_extends_": "FindOrganisationRefreshQueue__PositiveResponse_Base",
+
+  "specs": [
+    "to verify the ORGANISATION exists in the refresh queue and is not active"
+  ],
+
+  "request": {
+    "queryParams": {
+      "organisationId": "${[scenarioContext][siblingContexts][S-013.04_MakeOrganisationRefreshQueueValueActive][testData][request][queryParams][organisationId]}"
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "active" : false
+    }
+  }
+
+}

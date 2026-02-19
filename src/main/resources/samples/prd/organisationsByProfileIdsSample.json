@@ -1,0 +1,22 @@
+{
+  "organisationInfo": [
+    {
+      "organisationIdentifier": "1",
+      "status": "ACTIVE",
+      "lastUpdated": "2023-11-20T15:51:33.046Z",
+      "organisationProfileIds": [
+        "SOLICITOR_PROFILE"
+      ]
+    },
+    {
+      "organisationIdentifier": "2",
+      "status": "ACTIVE",
+      "lastUpdated": "2023-11-20T15:51:33.046Z",
+      "organisationProfileIds": [
+        "SOLICITOR_PROFILE"
+      ]
+    }
+  ],
+  "lastRecordInPage": "8fa85g43-5717-4562-b3fc-2c963f66afa6",
+  "moreAvailable": false
+}

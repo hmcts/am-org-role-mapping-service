@@ -1,0 +1,28 @@
+{
+  "_guid_": "S-014.02",
+  "title": "unsuccessful refresh of professional user - single user",
+  "_extends_": "RefreshProfessionalUserRoleAssignments__Base",
+
+  "specs": [
+    "an active IDAM profile with full permissions"
+  ],
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+
+  "request": {
+    "queryParams": {
+      "userId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "ORM_404_Response",
+    "body" : {
+      "errorDescription" : "Resource not found User with ID xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx not found in PRD"
+    }
+  }
+}
