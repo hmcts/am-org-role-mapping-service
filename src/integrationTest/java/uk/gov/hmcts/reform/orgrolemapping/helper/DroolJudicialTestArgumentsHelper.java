@@ -99,6 +99,9 @@ public class DroolJudicialTestArgumentsHelper {
                     .additionalRoleExpiredFallbackFileName(
                         formatRasRequestFileName(testArguments.getAdditionalRoleExpiredFallbackFileName(), jurisdiction)
                     )
+                    .authorisationExpiredFallbackFileName(
+                        formatRasRequestFileName(testArguments.getAuthorisationExpiredFallbackFileName(), jurisdiction)
+                    )
                     .build()
             )
             .toList();
@@ -363,57 +366,43 @@ public class DroolJudicialTestArgumentsHelper {
 
         // NB: JBS only returns valid bookings so no need to test with expired booking end date
 
-        testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-            .description(String.format(NEGATIVE_TEST_DESCRIPTION, APPOINTMENT_END_DATE_EXPIRED))
-            .outputLocation(
-                formatJudicialTestOutputLocation(testArguments, "NegativeTest/AppointmentEndDateExpired/")
-            )
-            .replaceMap(
-                expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), APPOINTMENT_END_TIME)
-            )
-            .build());
+        // Scenario: expired Appointment end date
+        testScenarios.add(createNegativeTestScenario(
+            testArguments,
+            APPOINTMENT_END_DATE_EXPIRED,
+            "NegativeTest/AppointmentEndDateExpired/",
+            expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), APPOINTMENT_END_TIME),
+            null // no override implemented for this scenario
+        ));
 
-        testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-            .description(String.format(NEGATIVE_TEST_DESCRIPTION, AUTHORISATION_END_DATE_EXPIRED))
-            .outputLocation(
-                formatJudicialTestOutputLocation(testArguments, "NegativeTest/AuthorisationEndDateExpired/")
-            )
-            .replaceMap(
-                expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), AUTHORISATION_END_TIME)
-            )
-            .build());
+        // Scenario: expired Authorisation end date
+        testScenarios.add(createNegativeTestScenario(
+            testArguments,
+            AUTHORISATION_END_DATE_EXPIRED,
+            "NegativeTest/AuthorisationEndDateExpired/",
+            expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), AUTHORISATION_END_TIME),
+            testArguments.getAuthorisationExpiredFallbackFileName()
+        ));
 
+        // Scenario: expired AdditionalRole end date
         if (testArguments.isAdditionalRoleTest()) {
-            String description = String.format(NEGATIVE_TEST_DESCRIPTION, ADDITIONAL_ROLE_END_DATE_EXPIRED);
-            String scenarioOutputPath = "NegativeTest/AdditionalRoleEndDateExpired/";
-
-            if (StringUtils.isNotEmpty(testArguments.getAdditionalRoleExpiredFallbackFileName())) {
-                description += " - using RAS fallback file";
-                scenarioOutputPath += "WithFallback/";
-            }
-
-            testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-                .description(description)
-                .outputLocation(
-                    formatJudicialTestOutputLocation(testArguments, scenarioOutputPath)
-                )
-                .replaceMap(
-                    expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), ROLE_END_TIME)
-                )
-                // NB: may need to override RAS request file to use fallback template when additional role is expired
-                .overrideRasRequestFileName(testArguments.getAdditionalRoleExpiredFallbackFileName())
-                .build());
+            testScenarios.add(createNegativeTestScenario(
+                testArguments,
+                ADDITIONAL_ROLE_END_DATE_EXPIRED,
+                "NegativeTest/AdditionalRoleEndDateExpired/",
+                expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), ROLE_END_TIME),
+                testArguments.getAdditionalRoleExpiredFallbackFileName()
+            ));
         }
 
-        testScenarios.add(createTestScenarioBuilderWithDefaults(testArguments)
-            .description(String.format(NEGATIVE_TEST_DESCRIPTION, SOFT_DELETE_FLAG_SET))
-            .outputLocation(
-                formatJudicialTestOutputLocation(testArguments, "NegativeTest/SoftDeleteFlagSet/")
-            )
-            .replaceMap(
-                setBooleanInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), DELETED_FLAG, true)
-            )
-            .build());
+        // Scenario: soft deleted flag is true
+        testScenarios.add(createNegativeTestScenario(
+            testArguments,
+            SOFT_DELETE_FLAG_SET,
+            "NegativeTest/SoftDeleteFlagSet/",
+            setBooleanInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), DELETED_FLAG, true),
+            null // no override implemented for this scenario
+        ));
 
         return testScenarios;
     }
@@ -656,6 +645,11 @@ public class DroolJudicialTestArgumentsHelper {
                         override.getOverrideAdditionalRoleExpiredFallbackFileName()
                     );
                 }
+                if (override.getOverrideAuthorisationExpiredFallbackFileName() != null) {
+                    argumentBuilder.authorisationExpiredFallbackFileName(
+                        override.getOverrideAuthorisationExpiredFallbackFileName()
+                    );
+                }
                 if (CollectionUtils.isNotEmpty(override.getOverrideTurnOffFlags())) {
                     argumentBuilder.turnOffFlags(override.getOverrideTurnOffFlags());
                 }
@@ -686,6 +680,29 @@ public class DroolJudicialTestArgumentsHelper {
 
         // return true if no missing match found (i.e. all match checks must have passed)
         return !foundMissingMatch;
+    }
+
+    private static TestScenario createNegativeTestScenario(DroolJudicialTestArguments testArguments,
+                                                           String testDescription,
+                                                           String scenarioOutputPath,
+                                                           Map<String, String> replaceMap,
+                                                           String rasFallbackFileName) {
+
+        testDescription = String.format(NEGATIVE_TEST_DESCRIPTION, testDescription);
+
+        if (StringUtils.isNotEmpty(rasFallbackFileName)) {
+            testDescription += " - using RAS fallback file";
+            scenarioOutputPath += "WithFallback/";
+        }
+
+        return createTestScenarioBuilderWithDefaults(testArguments)
+            .description(testDescription)
+            .outputLocation(
+                formatJudicialTestOutputLocation(testArguments, scenarioOutputPath)
+            )
+            .replaceMap(replaceMap)
+            .overrideRasRequestFileName(rasFallbackFileName)
+            .build();
     }
 
     private static TestScenarioBuilder createTestScenarioBuilderWithDefaults(DroolJudicialTestArguments testArguments) {
