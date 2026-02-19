@@ -23,9 +23,13 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleMapping;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRole;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
+import uk.gov.hmcts.reform.orgrolemapping.helper.IdamRoleBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
@@ -42,6 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil.distinctIdamRoles;
 import static uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil.distinctRoleAssignments;
 
 @Service
@@ -51,12 +56,15 @@ public class RequestMappingService<T> {
     public static final String STAFF_ORGANISATIONAL_ROLE_MAPPING = "staff-organisational-role-mapping";
     public static final String JUDICIAL_ORGANISATIONAL_ROLE_MAPPING = "judicial-organisational-role-mapping";
     public static final String AM_ORG_ROLE_MAPPING_SERVICE = "am_org_role_mapping_service";
+    public static final String IDAM_ROLES_QUERY_NAME = "getIdamRoles";
+    public static final String IDAM_ROLES_RESULTS_KEY = "idamRoles";
     public static final String ROLE_ASSIGNMENTS_QUERY_NAME = "getRoleAssignments";
     public static final String ROLE_ASSIGNMENTS_RESULTS_KEY = "roleAssignments";
 
     private final PersistenceService persistenceService;
     private final EnvironmentConfiguration environmentConfiguration;
     private final RoleAssignmentService roleAssignmentService;
+    private final IdamRoleMappingService idamRoleMappingService;
     private final StatelessKieSession kieSession;
     private final SecurityUtils securityUtils;
 
@@ -64,11 +72,13 @@ public class RequestMappingService<T> {
     public RequestMappingService(PersistenceService persistenceService,
                                  EnvironmentConfiguration environmentConfiguration,
                                  RoleAssignmentService roleAssignmentService,
+                                 IdamRoleMappingService idamRoleMappingService,
                                  StatelessKieSession kieSession,
                                  SecurityUtils securityUtils) {
         this.persistenceService = persistenceService;
         this.environmentConfiguration = environmentConfiguration;
         this.roleAssignmentService = roleAssignmentService;
+        this.idamRoleMappingService = idamRoleMappingService;
         this.kieSession = kieSession;
         this.securityUtils = securityUtils;
     }
@@ -90,11 +100,15 @@ public class RequestMappingService<T> {
                                                      List<JudicialBooking> judicialBookings,
                                                      UserType userType) {
         var startTime = System.currentTimeMillis();
-        // Get the role assignments for each caseworker in the input profiles.
-        Map<String, List<RoleAssignment>> usersRoleAssignments = getProfileRoleAssignments(usersAccessProfiles,
+        // Get the role mappings for each caseworker in the input profiles.
+        Map<String, RoleMapping> usersRoleMappings = getProfileRoleAssignments(usersAccessProfiles,
                 judicialBookings, userType);
+        // Take the role mapping and add the idam role mapping to the queue.
+        Map<String, IdamRoleData> idamRoleList =
+                IdamRoleBuilder.buildIdamRoleData(userType, usersAccessProfiles, usersRoleMappings);
+        idamRoleMappingService.addToQueue(userType, idamRoleList);
         // The response body is a list of ....???....
-        ResponseEntity<Object> responseEntity = updateProfilesRoleAssignments(usersRoleAssignments, userType);
+        ResponseEntity<Object> responseEntity = updateProfilesRoleAssignments(usersRoleMappings, userType);
         log.debug("Execution time of createCaseWorkerAssignments() : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
@@ -107,19 +121,29 @@ public class RequestMappingService<T> {
      * for each user profile represented in the map.
      */
     @SuppressWarnings("unchecked")
-    private Map<String, List<RoleAssignment>> getProfileRoleAssignments(Map<String,
+    private Map<String, RoleMapping> getProfileRoleAssignments(Map<String,
             Set<T>> usersAccessProfiles, List<JudicialBooking> judicialBookings, UserType userType) {
 
-        // Create a map to hold the role assignments for each user.
-        Map<String, List<RoleAssignment>> usersRoleAssignments = new HashMap<>();
+        // Create a map to hold the role mappings for each user.
+        Map<String, RoleMapping> userRoleMappings = new HashMap<>();
 
         // Make sure every user in the input collection has a list in the map.  This includes users
         // who have been deleted, for whom no role assignments will be created by the rules.
-        usersAccessProfiles.keySet().forEach(k -> usersRoleAssignments.put(k, new ArrayList<>()));
-        // Get all the role assignments created for the set of access profiles.
-        List<RoleAssignment> roleAssignments = mapUserAccessProfiles(usersAccessProfiles, judicialBookings);
+        usersAccessProfiles.keySet().forEach(k -> userRoleMappings.put(k,
+                new RoleMapping(new ArrayList<>(), new ArrayList<>())));
+
+        // Get all the all role mappings created for the set of access profiles.
+        RoleMapping allRoleMappings = mapUserAccessProfiles(usersAccessProfiles, judicialBookings);
+
         // Add each role assignment to the results map.
-        roleAssignments.forEach(ra -> usersRoleAssignments.get(ra.getActorId()).add(ra));
+        allRoleMappings.getRoleAssignments().forEach(ra -> {
+            userRoleMappings.get(ra.getActorId()).getRoleAssignments().add(ra);
+        });
+
+        // Add each idam role to the results map.
+        allRoleMappings.getIdamRoles().forEach(ir -> {
+            userRoleMappings.get(ir.getUserId()).getIdamRoles().add(ir);
+        });
 
 
         // if List<RoleAssignment> is empty in case of suspended false in corresponding
@@ -130,8 +154,8 @@ public class RequestMappingService<T> {
         if (userType.equals(UserType.CASEWORKER)) {
 
             //Identify the user with empty List<RoleAssignment> in case of suspended is false.
-            usersRoleAssignments.forEach((k, v) -> {
-                if (v.isEmpty()) {
+            userRoleMappings.forEach((k, v) -> {
+                if (v.getRoleAssignments().isEmpty()) {
                     Set<CaseWorkerAccessProfile> accessProfiles = (Set<CaseWorkerAccessProfile>) usersAccessProfiles
                             .get(k);
                     if (!requireNonNull(accessProfiles.stream().findFirst().orElse(null)).isSuspended()) {
@@ -142,8 +166,8 @@ public class RequestMappingService<T> {
             });
         } else if (userType.equals(UserType.JUDICIAL)) {
             //Identify the user with empty List<RoleAssignment> in case of suspended is false.
-            usersRoleAssignments.forEach((k, v) -> {
-                if (v.isEmpty()) {
+            userRoleMappings.forEach((k, v) -> {
+                if (v.getRoleAssignments().isEmpty()) {
                     needToRemoveUAP.add(k);
                 }
             });
@@ -155,35 +179,40 @@ public class RequestMappingService<T> {
         log.info("Access profiles for empty request for RAS: {} ", needToRemoveUAP);
 
         Map<String, Integer> roleAssignmentsCount = new HashMap<>();
+        Map<String, Integer> idamRolesCount = new HashMap<>();
         //print usersRoleAssignments
-        usersRoleAssignments.forEach((k, v) -> {
-            roleAssignmentsCount.put(k, v.size());
+        userRoleMappings.forEach((k, v) -> {
+            roleAssignmentsCount.put(k, v.getRoleAssignments().size());
             log.debug("UserId {} having the RoleAssignments created by the drool  {}  ", k,
-                    v);
+                    v.getRoleAssignments());
+            idamRolesCount.put(k, v.getIdamRoles().size());
+            log.debug("UserId {} having the IdamRoles created by the drool  {}  ", k,
+                    v.getIdamRoles());
         });
 
         log.info("Count of RoleAssignments corresponding to the UserId ::{}  ", roleAssignmentsCount);
+        log.info("Count of IdamRoles corresponding to the UserId ::{}  ", idamRolesCount);
 
 
-        return usersRoleAssignments;
+        return userRoleMappings;
     }
 
     /**
      * Run the mapping rules to generate all the role assignments each caseworker represented in the map.
      */
-    private List<RoleAssignment> mapUserAccessProfiles(Map<String, Set<T>> usersAccessProfiles,
+    private RoleMapping mapUserAccessProfiles(Map<String, Set<T>> usersAccessProfiles,
                                                        List<JudicialBooking> judicialBookings) {
         var startTime = System.currentTimeMillis();
-        List<RoleAssignment> roleAssignments = getRoleAssignments(usersAccessProfiles, judicialBookings);
-        log.debug("Execution time of mapUserAccessProfiles() in RoleAssignment : {} ms",
+        RoleMapping roleMapping = runMappingEngine(usersAccessProfiles, judicialBookings);
+        log.debug("Execution time of mapUserAccessProfiles() in RunMappingEngine : {} ms",
                 (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
-        return roleAssignments;
+        return roleMapping;
     }
 
     @NotNull
-    List<RoleAssignment> getRoleAssignments(Map<String, Set<T>> usersAccessProfiles,
-                                            List<JudicialBooking> judicialBookings) {
+    RoleMapping runMappingEngine(Map<String, Set<T>> usersAccessProfiles,
+                                          List<JudicialBooking> judicialBookings) {
         // Combine all the user profiles into a single collection for the rules engine.
         Set<T> allProfiles = new HashSet<>();
         usersAccessProfiles.forEach((k, v) -> allProfiles.addAll(v));
@@ -200,6 +229,7 @@ public class RequestMappingService<T> {
         commands.add(CommandFactory.newInsertElements(judicialBookings));
         commands.add(CommandFactory.newFireAllRules());
         commands.add(CommandFactory.newQuery(ROLE_ASSIGNMENTS_RESULTS_KEY, ROLE_ASSIGNMENTS_QUERY_NAME));
+        commands.add(CommandFactory.newQuery(IDAM_ROLES_RESULTS_KEY, IDAM_ROLES_QUERY_NAME));
 
         // Run the rules
         ExecutionResults results = kieSession.execute(CommandFactory.newBatchExecution(commands));
@@ -210,7 +240,16 @@ public class RequestMappingService<T> {
         for (QueryResultsRow row : queryResults) {
             roleAssignments.add((RoleAssignment) row.get("$roleAssignment"));
         }
-        return distinctRoleAssignments(roleAssignments);
+
+        // Extract all created idam roles using the query defined in the rules.
+        List<IdamRole> idamRoles = new ArrayList<>();
+        queryResults = (QueryResults) results.getValue(IDAM_ROLES_RESULTS_KEY);
+        for (QueryResultsRow row : queryResults) {
+            idamRoles.add((IdamRole) row.get("$idamRole"));
+        }
+        List<RoleAssignment> roleAssignmentsList = distinctRoleAssignments(roleAssignments);
+        List<IdamRole> idamRolesList = distinctIdamRoles(idamRoles);
+        return new RoleMapping(roleAssignmentsList, idamRolesList);
     }
 
 
@@ -243,15 +282,15 @@ public class RequestMappingService<T> {
      * Note that some caseworker IDs may have empty role assignment collections.
      * This is OK - these caseworkers have been deleted (or just don't have any appointments which map to roles).
      */
-    ResponseEntity<Object> updateProfilesRoleAssignments(Map<String, List<RoleAssignment>> usersRoleAssignments,
+    ResponseEntity<Object> updateProfilesRoleAssignments(Map<String, RoleMapping> usersRoleMappings,
                                                          UserType userType) {
         //prepare an empty list of responses
         List<Object> finalResponse = new ArrayList<>();
         AtomicInteger failureResponseCount = new AtomicInteger();
 
-        usersRoleAssignments
+        usersRoleMappings
                 .forEach((k, v) -> finalResponse.add(updateProfileRoleAssignments(k,
-                        v, failureResponseCount, userType)));
+                        v.getRoleAssignments(), failureResponseCount, userType)));
         log.info("Count of failure responses from RAS : {} ", failureResponseCount.get());
         log.info("Count of Success responses from RAS : {} ", (finalResponse.size() - failureResponseCount.get()));
         return ResponseEntity.status(HttpStatus.OK).body(finalResponse);

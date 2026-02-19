@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Primary;
 import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CRDService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.IdamRoleMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JRDService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialBookingService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
@@ -46,6 +47,7 @@ public class ProviderTestConfiguration {
     @Primary
     public RequestMappingService<UserAccessProfile> getRequestMappingService() {
         return new RequestMappingService<>(persistenceService, getEnvironmentConfiguration(), roleAssignmentService,
+                idamRoleMappingService,
                 getStatelessKieSession(), securityUtils);
     }
 
@@ -54,6 +56,9 @@ public class ProviderTestConfiguration {
 
     @MockBean
     PersistenceService persistenceService;
+
+    @MockBean
+    IdamRoleMappingService idamRoleMappingService;
 
     @Bean
     @Primary
