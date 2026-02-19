@@ -5,6 +5,7 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
+import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
@@ -18,16 +19,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_roleAssignment_deleteAssignment")
+@PactTestFor(providerName = "am_roleAssignment_deleteAssignment", pactVersion = PactSpecVersion.V3)
 @PactFolder("pacts")
 public class OrgRoleMappingConsumerTestForAdvanceDelete  extends BaseTestContract {
     private static final String RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL = "/am/role-assignments/query";
@@ -38,16 +39,16 @@ public class OrgRoleMappingConsumerTestForAdvanceDelete  extends BaseTestContrac
     public static final String DELETE_ASSIGNMENTS = SERVICE
             + ".post-assignments-delete-request+json;charset=UTF-8;version=1.0";
 
-    @MockBean
+    @MockitoBean
     JRDTopicPublisher jrdPublisher;
-    @MockBean
+    @MockitoBean
     CRDTopicPublisher crdPublisher;
 
-    @MockBean
+    @MockitoBean
     @Qualifier("crdPublisher")
     ServiceBusSenderClient serviceBusSenderClient;
 
-    @MockBean
+    @MockitoBean
     @Qualifier("jrdPublisher")
     ServiceBusSenderClient serviceBusSenderClientJrd;
 
