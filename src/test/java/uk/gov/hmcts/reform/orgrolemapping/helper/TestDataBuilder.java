@@ -38,6 +38,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRoleEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 
 import java.io.File;
 import java.io.IOException;
@@ -310,6 +311,19 @@ public class TestDataBuilder {
                      AssignmentRequestBuilder.class.getClassLoader().getResourceAsStream("attributes.json")) {
             assert inputStream != null;
             JsonNode result = new ObjectMapper().readValue(inputStream, new TypeReference<>() {
+            });
+            inputStream.close();
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static IdamRoleData buildIdamRoleDataFromFile(String fileName) {
+        try (InputStream inputStream =
+                     TestDataBuilder.class.getClassLoader().getResourceAsStream(fileName)) {
+            assert inputStream != null;
+            IdamRoleData result = new ObjectMapper().readValue(inputStream, new TypeReference<>() {
             });
             inputStream.close();
             return result;
