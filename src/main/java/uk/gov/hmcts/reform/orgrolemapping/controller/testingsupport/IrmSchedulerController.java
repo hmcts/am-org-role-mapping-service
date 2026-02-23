@@ -24,12 +24,12 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUT
 @Slf4j
 @NoArgsConstructor
 @ConditionalOnProperty(name = "testing.support.enabled", havingValue = "true")
-public class IrmSchdulerController {
+public class IrmSchedulerController {
 
     private IrmScheduler irmScheduler;
 
     @Autowired
-    public IrmSchdulerController(IrmScheduler irmScheduler) {
+    public IrmSchedulerController(IrmScheduler irmScheduler) {
         this.irmScheduler = irmScheduler;
     }
 
