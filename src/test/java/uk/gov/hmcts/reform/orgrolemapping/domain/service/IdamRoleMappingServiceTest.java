@@ -161,11 +161,22 @@ class IdamRoleMappingServiceTest {
         assertEquals(endStatus, processMonitorDto.getEndStatus(), "Status is incorrect");
         assertEquals(String.format(IdamRoleMappingService.QUEUE_NAME, userType.name()),
                 processMonitorDto.getProcessType(), "Process type is incorrect");
+        // Verify the event is tracked as started
         verify(processEventTracker, times(1)).trackEventStarted(any());
+        // Verify the queue is polled until no records are left
         verify(idamRoleManagementQueueRepository, times(irmQueue.size() + 1))
                 .findAndLockSingleActiveRecord(userType.name());
+        // Verify the records are marked as published
         verify(idamRoleManagementQueueRepository, times(irmQueue.size()))
                 .setAsPublished(any(), any());
+        // Verify the retries
+        Integer retries = EndStatus.FAILED.equals(endStatus) ? irmQueue.size()
+                : EndStatus.PARTIAL_SUCCESS.equals(endStatus) ? irmQueue.size() - 1
+                : 0;
+        verify(idamRoleManagementQueueRepository, times(retries))
+                .updateRetry(any(), any(), any(), any());
+        // Verify the event is tracked as ended
+        verify(processEventTracker, times(1)).trackEventCompleted(processMonitorDto);
     }
 
     @ParameterizedTest
