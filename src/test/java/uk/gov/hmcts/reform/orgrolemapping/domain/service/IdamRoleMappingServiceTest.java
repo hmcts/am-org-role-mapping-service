@@ -135,7 +135,8 @@ class IdamRoleMappingServiceTest {
                 .thenReturn(null);
         when(transactionManager.getTransaction(any()))
                 .thenReturn(mock(org.springframework.transaction.TransactionStatus.class));
-        RuntimeException exception = new RuntimeException("Failed to process queue entry");
+        ServiceException exception =
+                new ServiceException("Error occurred while processing idam role mapping");
         if (EndStatus.PARTIAL_SUCCESS.equals(endStatus)) {
             when(idamRoleManagementQueueRepository.setAsPublished(any(), any()))
                     .thenReturn(1)
@@ -157,10 +158,7 @@ class IdamRoleMappingServiceTest {
         }
 
         // THEN
-        assertNotNull(processMonitorDto);
-        assertEquals(endStatus, processMonitorDto.getEndStatus(), "Status is incorrect");
-        assertEquals(String.format(IdamRoleMappingService.QUEUE_NAME, userType.name()),
-                processMonitorDto.getProcessType(), "Process type is incorrect");
+        assertProcessMonitor(processMonitorDto, endStatus, userType, exception);
         // Verify the event is tracked as started
         verify(processEventTracker, times(1)).trackEventStarted(any());
         // Verify the queue is polled until no records are left
@@ -192,6 +190,24 @@ class IdamRoleMappingServiceTest {
             Assertions.assertThrows(ServiceException.class, sut::processCaseWorkerQueue);
         } else {
             Assertions.assertThrows(ServiceException.class, sut::processJudicialQueue);
+        }
+    }
+
+    private void assertProcessMonitor(ProcessMonitorDto processMonitorDto, EndStatus expectedStatus,
+                              UserType userType, Exception exception) {
+        assertNotNull(processMonitorDto);
+        // EndStatus
+        assertEquals(expectedStatus, processMonitorDto.getEndStatus(), "Status is incorrect");
+        // ProcessSteps
+        assertNotNull(processMonitorDto.getProcessSteps(), "Process Steps should be present");
+        // ProcessType
+        assertEquals(String.format(IdamRoleMappingService.QUEUE_NAME, userType.name()),
+                processMonitorDto.getProcessType(), "Process type is incorrect");
+        // EndDetail
+        if (!EndStatus.SUCCESS.equals(expectedStatus)) {
+            assertNotNull(processMonitorDto.getEndDetail(), "End Detail should be present");
+            assertTrue(processMonitorDto.getEndDetail().contains(exception.getMessage()),
+                    "End Detail  should contain expected detail");
         }
     }
 

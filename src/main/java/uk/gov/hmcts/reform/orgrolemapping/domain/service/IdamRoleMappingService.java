@@ -27,7 +27,7 @@ import java.util.Map;
 @Slf4j
 public class IdamRoleMappingService {
 
-    private static final String NO_ENTITIES = "No entities to process";
+    protected static final String NO_ENTITIES = "No entities to process";
     protected static final String QUEUE_NAME = "IRM Process %s Queue";
 
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
@@ -88,6 +88,7 @@ public class IdamRoleMappingService {
         int failedJobCount = 0;
         String errorMessage;
         try {
+            processMonitorDto.addProcessStep(queueName);
             boolean anyEntitiesInQueue = true;
             while (anyEntitiesInQueue) {
                 // Get the next record to process and lock it.
