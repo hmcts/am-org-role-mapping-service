@@ -107,38 +107,56 @@ class IdamRoleMappingServiceTest {
     }
 
     @Test
-    void processQueueTest_Judicial() {
-        // GIVEN
-        String[] users = { "user1", "user2" };
-        List<IdamRoleManagementQueueEntity> irmQueue = new ArrayList<>();
-        Arrays.stream(users).forEach(user -> irmQueue.add(
-                IdamRoleManagementQueueEntity.builder().userId(user).build()));
+    void processQueueTest_Judicial_Success() {
+        processQueueTest(UserType.JUDICIAL, getIrmQueue(), EndStatus.SUCCESS);
+    }
 
-        // WHEN
-        processQueueTest(UserType.JUDICIAL, irmQueue);
+    @Test
+    void processQueueTest_Judicial_Partial() {
+        processQueueTest(UserType.JUDICIAL, getIrmQueue(), EndStatus.PARTIAL_SUCCESS);
+    }
+
+    @Test
+    void processQueueTest_Judicial_Failure() {
+        processQueueTest(UserType.JUDICIAL, getIrmQueue(), EndStatus.FAILED);
     }
 
     @Test
     void processQueueTest_Judicial_NoRecords() {
-        processQueueTest(UserType.JUDICIAL, new ArrayList<>());
+        processQueueTest(UserType.JUDICIAL, new ArrayList<>(), EndStatus.SUCCESS);
     }
 
     private void processQueueTest(UserType userType,
-                                  List<IdamRoleManagementQueueEntity> irmQueue) {
+                                  List<IdamRoleManagementQueueEntity> irmQueue,
+                                  EndStatus endStatus) {
         // GIVEN
         when(idamRoleManagementQueueRepository.findAndLockSingleActiveRecord(userType.name()))
                 .thenReturn(irmQueue != null && !irmQueue.isEmpty() ? irmQueue.get(0) : null)
                 .thenReturn(irmQueue != null && !irmQueue.isEmpty() ? irmQueue.get(1) : null)
                 .thenReturn(null);
+        when(transactionManager.getTransaction(any()))
+                .thenReturn(mock(org.springframework.transaction.TransactionStatus.class));
+        RuntimeException exception = new RuntimeException("Failed to process queue entry");
+        if (EndStatus.PARTIAL_SUCCESS.equals(endStatus)) {
+            when(idamRoleManagementQueueRepository.setAsPublished(any(), any()))
+                    .thenReturn(1)
+                    .thenThrow(exception);
+        } else if (EndStatus.FAILED.equals(endStatus))  {
+            when(idamRoleManagementQueueRepository.setAsPublished(any(), any()))
+                    .thenThrow(exception);
+        } else {
+            when(idamRoleManagementQueueRepository.setAsPublished(any(), any()))
+                    .thenReturn(1);
+        }
 
         //WHEN
         ProcessMonitorDto processMonitorDto = sut.processJudicialQueue();
 
         // THEN
         assertNotNull(processMonitorDto);
-        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus(), "Statis is incorrect");
-        assertEquals(String.format(sut.QUEUE_NAME,userType.name()), processMonitorDto.getProcessType(),
-                "Process type is incorrect");
+        assertEquals(endStatus, processMonitorDto.getEndStatus(), "Status is incorrect");
+        assertEquals(String.format(IdamRoleMappingService.QUEUE_NAME,userType.name()),
+                processMonitorDto.getProcessType(), "Process type is incorrect");
         verify(processEventTracker, times(1)).trackEventStarted(any());
         verify(idamRoleManagementQueueRepository, times(irmQueue.size() + 1))
                 .findAndLockSingleActiveRecord(userType.name());
@@ -154,7 +172,7 @@ class IdamRoleMappingServiceTest {
                 .thenThrow(new ServiceException("Exception thrown"));
 
         //WHEN
-        Assertions.assertThrows(ServiceException.class, () -> sut.processJudicialQueue());
+        Assertions.assertThrows(ServiceException.class, sut::processJudicialQueue);
     }
 
     private void assertLastUpdated(LocalDateTime startTime, Integer noRowsExpected) {
@@ -172,6 +190,14 @@ class IdamRoleMappingServiceTest {
         idamRoleData.getRoles().forEach(idamRole ->
                 assertTrue(Arrays.stream(ROLES).toList().contains(idamRole.getRoleName()))
         );
+    }
+
+    private List<IdamRoleManagementQueueEntity> getIrmQueue() {
+        String[] users = new String[] {"user1", "user2"};
+        List<IdamRoleManagementQueueEntity> irmQueue = new ArrayList<>();
+        Arrays.stream(users).forEach(user -> irmQueue.add(
+                IdamRoleManagementQueueEntity.builder().userId(user).build()));
+        return irmQueue;
     }
 
     private IdamRoleData buildIdamRoleData(String email, List<IdamRoleDataRole> roles) {
