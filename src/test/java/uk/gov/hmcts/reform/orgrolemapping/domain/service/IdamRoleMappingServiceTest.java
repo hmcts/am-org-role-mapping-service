@@ -1,8 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,6 +34,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.CASEWORKER;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.JUDICIAL;
 
 @ExtendWith(MockitoExtension.class)
 class IdamRoleMappingServiceTest {
@@ -66,17 +69,9 @@ class IdamRoleMappingServiceTest {
     @Captor
     private ArgumentCaptor<LocalDateTime> lastUpdatedCaptor;
 
-    @Test
-    void addToQueueTest_Judicial() {
-        addToQueueTest(UserType.JUDICIAL);
-    }
-
-    @Test
-    void addToQueueTest_CaseWorker() {
-        addToQueueTest(UserType.CASEWORKER);
-    }
-
-    private void addToQueueTest(UserType userType) {
+    @ParameterizedTest
+    @EnumSource(UserType.class)
+    void addToQueueTest(UserType userType) {
         // GIVEN
         Map<String, IdamRoleData> idamRoleList = new HashMap<>();
         idamRoleList.put(USERS[0], buildIdamRoleData(EMAILS[0],
@@ -106,24 +101,28 @@ class IdamRoleMappingServiceTest {
             assertIdamRoleData(idamRoleDataJsonBConverter.convertToEntityAttribute(data)));
     }
 
-    @Test
-    void processQueueTest_Judicial_Success() {
-        processQueueTest(UserType.JUDICIAL, getIrmQueue(), EndStatus.SUCCESS);
+    @ParameterizedTest
+    @EnumSource(UserType.class)
+    void processQueueTest_Success(UserType userType) {
+        processQueueTest(userType, getIrmQueue(), EndStatus.SUCCESS);
     }
 
-    @Test
-    void processQueueTest_Judicial_Partial() {
-        processQueueTest(UserType.JUDICIAL, getIrmQueue(), EndStatus.PARTIAL_SUCCESS);
+    @ParameterizedTest
+    @EnumSource(UserType.class)
+    void processQueueTest_Partial(UserType userType) {
+        processQueueTest(userType, getIrmQueue(), EndStatus.PARTIAL_SUCCESS);
     }
 
-    @Test
-    void processQueueTest_Judicial_Failure() {
-        processQueueTest(UserType.JUDICIAL, getIrmQueue(), EndStatus.FAILED);
+    @ParameterizedTest
+    @EnumSource(UserType.class)
+    void processQueueTest_Failure(UserType userType) {
+        processQueueTest(userType, getIrmQueue(), EndStatus.FAILED);
     }
 
-    @Test
-    void processQueueTest_Judicial_NoRecords() {
-        processQueueTest(UserType.JUDICIAL, new ArrayList<>(), EndStatus.SUCCESS);
+    @ParameterizedTest
+    @EnumSource(UserType.class)
+    void processQueueTest_NoRecords(UserType userType) {
+        processQueueTest(userType, new ArrayList<>(), EndStatus.SUCCESS);
     }
 
     private void processQueueTest(UserType userType,
@@ -150,12 +149,17 @@ class IdamRoleMappingServiceTest {
         }
 
         //WHEN
-        ProcessMonitorDto processMonitorDto = sut.processJudicialQueue();
+        ProcessMonitorDto processMonitorDto;
+        if (JUDICIAL.equals(userType)) {
+            processMonitorDto = sut.processJudicialQueue();
+        } else {
+            processMonitorDto = sut.processCaseWorkerQueue();
+        }
 
         // THEN
         assertNotNull(processMonitorDto);
         assertEquals(endStatus, processMonitorDto.getEndStatus(), "Status is incorrect");
-        assertEquals(String.format(IdamRoleMappingService.QUEUE_NAME,userType.name()),
+        assertEquals(String.format(IdamRoleMappingService.QUEUE_NAME, userType.name()),
                 processMonitorDto.getProcessType(), "Process type is incorrect");
         verify(processEventTracker, times(1)).trackEventStarted(any());
         verify(idamRoleManagementQueueRepository, times(irmQueue.size() + 1))
@@ -164,15 +168,20 @@ class IdamRoleMappingServiceTest {
                 .setAsPublished(any(), any());
     }
 
-    @Test
-    void processQueueTest_Judicial_Exception() {
+    @ParameterizedTest
+    @EnumSource(UserType.class)
+    void processQueueTest_Exception(UserType userType) {
         // GIVEN
         when(idamRoleManagementQueueRepository
-                .findAndLockSingleActiveRecord(UserType.JUDICIAL.name()))
+                .findAndLockSingleActiveRecord(userType.name()))
                 .thenThrow(new ServiceException("Exception thrown"));
 
         //WHEN
-        Assertions.assertThrows(ServiceException.class, sut::processJudicialQueue);
+        if (CASEWORKER.equals(userType)) {
+            Assertions.assertThrows(ServiceException.class, sut::processCaseWorkerQueue);
+        } else {
+            Assertions.assertThrows(ServiceException.class, sut::processJudicialQueue);
+        }
     }
 
     private void assertLastUpdated(LocalDateTime startTime, Integer noRowsExpected) {

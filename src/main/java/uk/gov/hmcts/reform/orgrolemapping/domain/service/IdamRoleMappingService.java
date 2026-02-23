@@ -74,6 +74,11 @@ public class IdamRoleMappingService {
         return processQueue(UserType.JUDICIAL);
     }
 
+    @Transactional
+    public ProcessMonitorDto processCaseWorkerQueue() {
+        return processQueue(UserType.CASEWORKER);
+    }
+
     private ProcessMonitorDto processQueue(UserType userType) {
         String queueName = String.format(QUEUE_NAME, userType.name());
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(queueName);
