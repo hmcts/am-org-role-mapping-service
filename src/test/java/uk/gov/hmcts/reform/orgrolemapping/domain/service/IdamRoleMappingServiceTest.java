@@ -196,6 +196,12 @@ class IdamRoleMappingServiceTest {
     private void assertProcessMonitor(ProcessMonitorDto processMonitorDto, EndStatus expectedStatus,
                               UserType userType, Exception exception) {
         assertNotNull(processMonitorDto);
+        // StartTime
+        assertTrue(processMonitorDto.getStartTime().isAfter(LocalDateTime.now().minusMinutes(1)),
+                "Start time should be recent");
+        // EndTime
+        assertTrue(processMonitorDto.getEndTime().isAfter(processMonitorDto.getStartTime()),
+                "End time should be after start time");
         // EndStatus
         assertEquals(expectedStatus, processMonitorDto.getEndStatus(), "Status is incorrect");
         // ProcessSteps
@@ -207,7 +213,7 @@ class IdamRoleMappingServiceTest {
         if (!EndStatus.SUCCESS.equals(expectedStatus)) {
             assertNotNull(processMonitorDto.getEndDetail(), "End Detail should be present");
             assertTrue(processMonitorDto.getEndDetail().contains(exception.getMessage()),
-                    "End Detail  should contain expected detail");
+                    "End Detail should contain exception message");
         }
     }
 
