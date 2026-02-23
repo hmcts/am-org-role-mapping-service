@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceExc
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.IdamRecordType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
@@ -68,6 +69,7 @@ public class IdamRoleMappingService {
         });
     }
 
+    @Transactional
     public ProcessMonitorDto processJudicialQueue() {
         return processQueue(UserType.JUDICIAL);
     }
@@ -87,7 +89,7 @@ public class IdamRoleMappingService {
                 IdamRoleManagementQueueEntity idamRoleManagementQueueEntity
                         = idamRoleManagementQueueRepository.findAndLockSingleActiveRecord(userType.name());
                 if (idamRoleManagementQueueEntity != null) {
-                    errorMessage = processQueueEntry(idamRoleManagementQueueEntity);
+                    errorMessage = processQueueEntry(idamRoleManagementQueueEntity, IdamRecordType.USER);
                     if (errorMessage.isEmpty()) {
                         successfulJobCount++;
                     } else {
@@ -118,8 +120,35 @@ public class IdamRoleMappingService {
         return processMonitorDto;
     }
 
-    private String processQueueEntry(IdamRoleManagementQueueEntity idamRoleManagementQueueEntity) {
-        return "";
+    private String processQueueEntry(IdamRoleManagementQueueEntity idamRoleManagementQueueEntity,
+                                     IdamRecordType idamRecordType) {
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
+            try {
+                // Set the record as published.
+                idamRoleManagementQueueRepository.setAsPublished(
+                        idamRoleManagementQueueEntity.getUserId(),
+                        idamRecordType.name());
+                return true;
+            } catch (Exception ex) {
+                String message = String.format("Error occurred while processing queue entry: %s. "
+                                + "Retry attempt %d. Rolling back.",
+                        idamRoleManagementQueueEntity.getUserId(),
+                        idamRoleManagementQueueEntity.getRetry());
+                errorMessageBuilder.append(ex.getMessage());
+                log.error(message, ex);
+                status.setRollbackOnly();
+                return false;
+            }
+        }));
+
+        if (!isSuccess) {
+            // Failed, so ncrease the retry count.
+            idamRoleManagementQueueRepository.updateRetry(
+                    idamRoleManagementQueueEntity.getUserId(),
+                    retryOneIntervalMin, retryTwoIntervalMin, retryThreeIntervalMin);
+        }
+        return errorMessageBuilder.toString();
     }
 
     private void markProcessStatus(ProcessMonitorDto processMonitorDto, int successfulJobCount,

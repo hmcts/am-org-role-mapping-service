@@ -120,7 +120,7 @@ class IdamRoleMappingServiceTest {
 
     @Test
     void processQueueTest_Judicial_NoRecords() {
-        processQueueTest(UserType.JUDICIAL, null);
+        processQueueTest(UserType.JUDICIAL, new ArrayList<>());
     }
 
     private void processQueueTest(UserType userType,
@@ -135,11 +135,15 @@ class IdamRoleMappingServiceTest {
         ProcessMonitorDto processMonitorDto = sut.processJudicialQueue();
 
         // THEN
-        verify(processEventTracker, times(1)).trackEventStarted(any());
         assertNotNull(processMonitorDto);
         assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus(), "Statis is incorrect");
         assertEquals(String.format(sut.QUEUE_NAME,userType.name()), processMonitorDto.getProcessType(),
                 "Process type is incorrect");
+        verify(processEventTracker, times(1)).trackEventStarted(any());
+        verify(idamRoleManagementQueueRepository, times(irmQueue.size() + 1))
+                .findAndLockSingleActiveRecord(userType.name());
+        verify(idamRoleManagementQueueRepository, times(irmQueue.size()))
+                .setAsPublished(any(), any());
     }
 
     @Test
