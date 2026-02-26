@@ -58,7 +58,7 @@ then
 end;
 
 /*
- * IAC "senior-judge" org role can be created by any existing judicial office holder having for 1.7
+ * IAC "senior-judge" org role can be created by any existing judicial office holder having 
  * "IAC President of Tribunals" or "IAC Resident Immigration Judge" business role.
  */
 
@@ -171,13 +171,13 @@ then
 end;
 
 /*
- * IAC "leadership-judge" org role can be created by any existing judicial office holder having for 1.7
+ * IAC "leadership-judge" org role can be created by any existing judicial office holder having 
  * "IAC Assistant Resident Judge" or "IAC Resident Immigration Judge"  or "IAC Designated Immigration Judge" business role.
  */
 
 rule "v1_7_iac_leadership_judge_org_role"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_JRD_1_0.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_7.getValue())
   $joh: JudicialOfficeHolder(office in ("IAC Assistant Resident Judge", "IAC Resident Immigration Judge",
                                         "IAC Designated Immigration Judge",
                                         Office.IAC.RESIDENT_OF_TRIBUNAL_JUDGE,
@@ -325,8 +325,9 @@ then
 end;
 
 /*
- * IAC "judge" org role can be created by any existing judicial office holder having for 1.7
+ * IAC "judge" org role can be created by any existing judicial office holder having
  * "IAC Assistant Resident Judge" or "IAC Resident Immigration Judge"  or "IAC Designated Immigration Judge" or
+ * "IAC President of Tribunals" or "IAC Tribunal Judge (Salaried)" business role.
  */
 
 rule "v1_7_iac_judge_org_role"
@@ -402,8 +403,9 @@ then
 end;
 
 /*
- * IAC "fee-paid-judge" org role can be created by any existing judicial office holder having for 1.7
+ * IAC "fee-paid-judge" org role can be created by any existing judicial office holder having
  * "IAC Assistant Resident Judge" or "IAC Resident Judge"  or "IAC Designated Immigration Judge" or
+ * "IAC President of Tribunals" or "IAC Tribunal Judge (Salaried)" business role.
  */
 
 rule "v1_7_iac_fee_paid_judge_org_role"

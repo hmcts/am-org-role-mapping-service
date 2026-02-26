@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
-import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -39,11 +38,6 @@ public abstract class BaseTestIntegration extends BaseTest {
             MediaType.APPLICATION_JSON.getSubtype(),
             StandardCharsets.UTF_8
     );
-
-    @BeforeAll
-    static void setup() {
-        System.setProperty("api.version", "1.44");
-    }
 
     @MockBean
     @Qualifier("crdPublisher")
