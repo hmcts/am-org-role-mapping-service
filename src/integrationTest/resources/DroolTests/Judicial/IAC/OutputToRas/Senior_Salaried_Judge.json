@@ -23,7 +23,7 @@
         "contractType": "Salaried",
         "primaryLocation": "123456",
         "jurisdiction": "IA",
-        "workTypes": "hearing_work,upper_tribunal,decision_making_work,applications"
+        "workTypes": "hearing_work,upper_tribunal,decision_making_work,applications,stf_24w_hearing_work,stf_24w_upper_tribunal,stf_24w_decision_making_work,stf_24w_applications"
       },
       "authorisations": [
         "373"
@@ -45,7 +45,7 @@
         "contractType": "Salaried",
         "primaryLocation": "123456",
         "jurisdiction": "IA",
-        "workTypes": "hearing_work,upper_tribunal,decision_making_work,applications"
+        "workTypes": "hearing_work,upper_tribunal,decision_making_work,applications,stf_24w_hearing_work,stf_24w_upper_tribunal,stf_24w_decision_making_work,stf_24w_applications"
       },
       "authorisations": [
         "373"

@@ -54,8 +54,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
         arguments.addAll(EmploymentJudicialIT.getTestArguments());
 
-        // To be re-enabled in DTSAM-1218
-        // arguments.addAll(IacJudicialIT.getTestArguments());
+        arguments.addAll(IacJudicialIT.getTestArguments());
 
         arguments.addAll(PrivateLawJudicialIT.getTestArguments());
 
