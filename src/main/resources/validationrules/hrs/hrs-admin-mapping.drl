@@ -56,7 +56,7 @@ end;
 /*
  * 2: HRS admin "HRS Sharer" role mapping.
  */
-rule "hrs_sharer"
+rule "hrs_sharer_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.HRS_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HRS_TEAM_LEADER),
@@ -81,13 +81,13 @@ then
             .build()
     );
 
-    logMsg("Rule : hrs_sharer");
+    logMsg("Rule : hrs_sharer_role");
 end;
 
 /*
  * 3: HRS admin "HRS Listener" role mapping.
  */
-rule "hrs_listener"
+rule "hrs_listener_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.HRS_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HRS_TEAM_LEADER),
@@ -112,5 +112,5 @@ then
             .build()
     );
 
-    logMsg("Rule : hrs_listener");
+    logMsg("Rule : hrs_listener_role");
 end;
