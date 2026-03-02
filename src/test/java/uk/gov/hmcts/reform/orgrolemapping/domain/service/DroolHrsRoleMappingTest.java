@@ -34,7 +34,9 @@ class DroolHrsRoleMappingTest extends DroolBase {
             Arguments.of(
                 JobTitle.HRS_TEAM_LEADER,
                 List.of(
-                    RoleName.HRS_TEAM_LEADER
+                    RoleName.HRS_TEAM_LEADER,
+                    RoleName.HRS_SHARER,
+                    RoleName.HRS_LISTENER
                 )
             )
         );

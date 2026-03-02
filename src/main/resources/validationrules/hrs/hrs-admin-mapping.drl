@@ -44,7 +44,6 @@ then
             .roleType(RoleType.ORGANISATION)
             .roleName(RoleName.HRS_TEAM_LEADER)
             .grantType(GrantType.STANDARD)
-            .authorisations($cap.getSkillCodes())
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
@@ -52,4 +51,66 @@ then
     );
 
     logMsg("Rule : hrs_team_leader_role");
+end;
+
+/*
+ * 2: HRS admin "HRS Sharer" role mapping.
+ */
+rule "hrs_sharer"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.HRS_1_0.getValue())
+    $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HRS_TEAM_LEADER),
+                                  hasValidServiceCode(Jurisdiction.HRS),
+                                  !suspended)
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.HRS.getName()));
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($cap.getId())
+            .roleCategory(RoleCategory.ADMIN)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.HRS_SHARER)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .attributes(attribute)
+            .build()
+    );
+
+    logMsg("Rule : hrs_sharer");
+end;
+
+/*
+ * 3: HRS admin "HRS Listener" role mapping.
+ */
+rule "hrs_listener"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.HRS_1_0.getValue())
+    $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HRS_TEAM_LEADER),
+                                  hasValidServiceCode(Jurisdiction.HRS),
+                                  !suspended)
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.HRS.getName()));
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($cap.getId())
+            .roleCategory(RoleCategory.ADMIN)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.HRS_LISTENER)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .attributes(attribute)
+            .build()
+    );
+
+    logMsg("Rule : hrs_listener");
 end;

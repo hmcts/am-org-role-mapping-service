@@ -60,7 +60,10 @@ public final class RoleAssignmentConstants {
         public static final String CTSC_TEAM_LEADER = "ctsc-team-leader";
         public static final String HEARING_CENTRE_ADMIN = "hearing-centre-admin";
         public static final String HEARING_CENTRE_TEAM_LEADER = "hearing-centre-team-leader";
+        public static final String HRS_LISTENER = "hrs-listener";
+        public static final String HRS_SHARER = "hrs-sharer";
         public static final String HRS_TEAM_LEADER = "hrs-team-leader";
+
         public static final String NBC = "national-business-centre";
         public static final String NBC_TEAM_LEADER = "nbc-team-leader";
         public static final String REGIONAL_CENTRE_ADMIN = "regional-centre-admin";
