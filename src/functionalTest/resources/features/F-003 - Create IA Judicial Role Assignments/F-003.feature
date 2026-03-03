@@ -5,7 +5,7 @@ Feature: F-003 : Create Role Assignments for Judicial Users
     Given an appropriate test context as detailed in the test data source
 
   @S-022
-  @FeatureToggle(DB:sscs_hearing_1_0=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_7=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   Scenario: must successfully create judicial role mapping for Tribunal Judge - fee paid appointment.
      Given a user with [an active IDAM profile with full permissions],
      And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-022_DeleteDataForRoleAssignments01],
@@ -19,7 +19,7 @@ Feature: F-003 : Create Role Assignments for Judicial Users
      And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-022_DeleteDataForRoleAssignments01].
 
   @S-023
-  @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_7=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   Scenario: must successfully create judicial role mapping for Tribunal Judge - salaried appointment.
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-023_DeleteDataForRoleAssignments01],
