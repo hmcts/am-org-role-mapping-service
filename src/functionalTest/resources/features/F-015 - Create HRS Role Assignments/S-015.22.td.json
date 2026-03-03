@@ -1,0 +1,74 @@
+{
+  "_guid_": "S-015.22",
+  "title": "must successfully create org role mapping for HRS Team Leader",
+  "_extends_": "F-015_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published who has HRS Team Leader role"
+  ],
+ "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "request": {
+    "pathVariables": {
+      "actorId": "3f9c7e42-8b1d-4a6f-9e53-7c2d1a8b5f90"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "hrs-team-leader",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "Admin",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "HRS"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "hrs-sharer",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "Admin",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "HRS"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "hrs-listener",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "Admin",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "HRS"
+          }
+        }
+      ]
+    }
+  }
+}
