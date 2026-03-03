@@ -15,7 +15,9 @@ import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
+import org.springframework.security.oauth2.jwt.JwtIssuerValidator;
 import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
+import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter;
@@ -23,6 +25,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import uk.gov.hmcts.reform.authorisation.filters.ServiceAuthFilter;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -35,6 +38,12 @@ public class SecurityConfiguration {
 
     @Value("${spring.security.oauth2.client.provider.oidc.issuer-uri}")
     private String issuerUri;
+
+    @Value("${oidc.issuers.validation:true}")
+    private Boolean jwtIssuerValidationEnabled;
+
+    @Value("${oidc.issuer}")
+    private String issuerOverride;
 
     @Order(1)
     private final ServiceAuthFilter serviceAuthFilter;
@@ -94,7 +103,16 @@ public class SecurityConfiguration {
     JwtDecoder jwtDecoder() {
         NimbusJwtDecoder jwtDecoder = JwtDecoders.fromOidcIssuerLocation(issuerUri);
         OAuth2TokenValidator<Jwt> withTimestamp = new JwtTimestampValidator();
-        OAuth2TokenValidator<Jwt> validator = new DelegatingOAuth2TokenValidator<>(withTimestamp);
+        OAuth2TokenValidator<Jwt> validator;
+        if (jwtIssuerValidationEnabled) {
+            validator = new DelegatingOAuth2TokenValidator<>(withTimestamp,
+                    JwtValidators.createDefaultWithValidators(
+                            Arrays.asList(new JwtIssuerValidator(issuerUri),
+                                    new JwtIssuerValidator(issuerOverride))
+                    ));
+        } else {
+            validator = new DelegatingOAuth2TokenValidator<>(withTimestamp);
+        }
         jwtDecoder.setJwtValidator(validator);
         return jwtDecoder;
     }

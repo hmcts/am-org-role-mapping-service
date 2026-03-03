@@ -100,7 +100,10 @@ spring:
     cache-names: token, userToken
     caffeine:
       spec: maximumSize=50,expireAfterWrite=3600s
-oidc.issuer: ${OIDC_ISSUER_URL:https://forgerock-am.service.core-compute-idam-aat.internal:8443/openam/oauth2/hmcts}
+oidc:
+  issuer: ${OIDC_ISSUER_URL:https://forgerock-am.service.core-compute-idam-aat.internal:8443/openam/oauth2/hmcts}
+  issuers:
+    validation: ${JWT_ISSUER_VALIDATION_ENABLED:true}
 
 ### dependency configuration
 idam:
