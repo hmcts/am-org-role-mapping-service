@@ -101,9 +101,9 @@ spring:
     caffeine:
       spec: maximumSize=50,expireAfterWrite=3600s
 oidc:
-  issuer: ${OIDC_ISSUER_URL:https://forgerock-am.service.core-compute-idam-aat.internal:8443/openam/oauth2/hmcts}
   issuers:
-    validation: ${JWT_ISSUER_VALIDATION_ENABLED:true}
+    validation: ${JWT_ISSUER_VALIDATION_ENABLED:false}
+    list: ${OIDC_ISSUER_URL:https://idam-web-public.aat.platform.hmcts.net/o}
 
 ### dependency configuration
 idam:

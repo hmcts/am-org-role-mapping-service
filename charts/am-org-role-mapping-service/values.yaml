@@ -48,7 +48,7 @@ java:
     CRD_SUBSCRIPTION_NAME: rd-caseworker-subscription-{{ .Values.global.environment }}
     JRD_TOPIC_NAME: rd-judicial-topic-{{ .Values.global.environment }}
     JRD_SUBSCRIPTION_NAME: rd-judicial-subscription-{{ .Values.global.environment }}
-    JWT_ISSUER_VALIDATION_ENABLED: true
+    JWT_ISSUER_VALIDATION_ENABLED: false
     ORG_ROLE_MAPPING_IDAM_ADMIN_USERID: orm.admin@hmcts.NET
     ORG_ROLE_MAPPING_DB_PORT: 5432
     ORG_ROLE_MAPPING_DB_NAME: org_role_mapping

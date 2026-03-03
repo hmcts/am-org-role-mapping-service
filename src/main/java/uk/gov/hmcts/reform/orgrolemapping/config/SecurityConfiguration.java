@@ -25,7 +25,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import uk.gov.hmcts.reform.authorisation.filters.ServiceAuthFilter;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -39,11 +38,11 @@ public class SecurityConfiguration {
     @Value("${spring.security.oauth2.client.provider.oidc.issuer-uri}")
     private String issuerUri;
 
-    @Value("${oidc.issuers.validation:true}")
+    @Value("${oidc.issuers.validation}")
     private Boolean jwtIssuerValidationEnabled;
 
-    @Value("${oidc.issuer}")
-    private String issuerOverride;
+    @Value("#{'${oidc.issuers.list}'.split(',')}")
+    private List<String> issuerOverride;
 
     @Order(1)
     private final ServiceAuthFilter serviceAuthFilter;
@@ -105,11 +104,10 @@ public class SecurityConfiguration {
         OAuth2TokenValidator<Jwt> withTimestamp = new JwtTimestampValidator();
         OAuth2TokenValidator<Jwt> validator;
         if (jwtIssuerValidationEnabled) {
+            List<JwtIssuerValidator> issuerValidators = List.of(new JwtIssuerValidator(issuerUri));
+            issuerOverride.forEach(issuer -> issuerValidators.add(new JwtIssuerValidator(issuer)));
             validator = new DelegatingOAuth2TokenValidator<>(withTimestamp,
-                    JwtValidators.createDefaultWithValidators(
-                            Arrays.asList(new JwtIssuerValidator(issuerUri),
-                                    new JwtIssuerValidator(issuerOverride))
-                    ));
+                    JwtValidators.createDefaultWithValidators(issuerValidators.toArray(new JwtIssuerValidator[0])));
         } else {
             validator = new DelegatingOAuth2TokenValidator<>(withTimestamp);
         }
