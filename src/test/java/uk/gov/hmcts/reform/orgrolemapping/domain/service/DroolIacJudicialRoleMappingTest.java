@@ -24,9 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Slf4j
 class DroolIacJudicialRoleMappingTest extends DroolBase {
 
-    static String workTypes = "hearing_work,upper_tribunal,decision_making_work,applications";
-    static String workTypesFP = "hearing_work,decision_making_work,applications";
-    static String workTypesAccess = "hearing_work,upper_tribunal,decision_making_work,applications,access_requests";
+    static String workTypes = "hearing_work,upper_tribunal,decision_making_work,applications,stf_24w_hearing_work,"
+        + "stf_24w_upper_tribunal,stf_24w_decision_making_work,stf_24w_applications";
+    static String workTypesFP = "hearing_work,decision_making_work,applications,stf_24w_hearing_work,"
+        + "stf_24w_decision_making_work,stf_24w_applications";
+    static String workTypesAccess = "hearing_work,upper_tribunal,decision_making_work,applications,access_requests,"
+        + "stf_24w_hearing_work,stf_24w_upper_tribunal,stf_24w_decision_making_work,stf_24w_applications,"
+        + "stf_24w_access_requests";
 
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
