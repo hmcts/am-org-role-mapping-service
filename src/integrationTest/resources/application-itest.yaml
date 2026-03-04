@@ -9,9 +9,8 @@ spring:
             issuer-uri: http://localhost:${wiremock.server.port:5000}/o
 
 oidc:
-  issuers:
-    validation: ${JWT_ISSUER_VALIDATION_ENABLED:false}
-    list: ${OIDC_ISSUER_URL:http://localhost:${wiremock.server.port:5000}/o}
+  issuer: ${OIDC_ISSUER_URL:}
+  issuerValidation: ${JWT_ISSUER_VALIDATION_ENABLED:false}
 
 idam:
   s2s-auth:
