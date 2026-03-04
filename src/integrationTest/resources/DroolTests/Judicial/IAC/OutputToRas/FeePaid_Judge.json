@@ -11,7 +11,7 @@
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
-      "roleName": "judge",
+      "roleName": "fee-paid-judge",
       "classification": "PUBLIC",
       "grantType": "STANDARD",
       "roleCategory": "JUDICIAL",
@@ -20,10 +20,10 @@
       "endTime": "[[APPOINTMENT_END_TIME]]",
       "created": "[[NOW_DATE_TIME]]",
       "attributes": {
-        "contractType": "Salaried",
+        "contractType": "Fee-Paid",
         "primaryLocation": "123456",
         "jurisdiction": "IA",
-        "workTypes": "hearing_work,upper_tribunal,decision_making_work,applications,stf_24w_hearing_work,stf_24w_upper_tribunal,stf_24w_decision_making_work,stf_24w_applications"
+        "workTypes": "hearing_work,decision_making_work,applications,stf_24w_hearing_work,stf_24w_decision_making_work,stf_24w_applications"
       },
       "authorisations": [
         "373"
@@ -42,29 +42,8 @@
       "endTime": "[[APPOINTMENT_END_TIME]]",
       "created": "[[NOW_DATE_TIME]]",
       "attributes": {
-        "contractType": "Salaried"
+        "contractType": "Fee-Paid"
       }
-    },
-    {
-      "actorIdType": "IDAM",
-      "actorId": "[[IDAM_ID]]",
-      "roleType": "ORGANISATION",
-      "roleName": "case-allocator",
-      "classification": "PUBLIC",
-      "grantType": "STANDARD",
-      "roleCategory": "JUDICIAL",
-      "readOnly": false,
-      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
-      "endTime": "[[APPOINTMENT_END_TIME]]",
-      "created": "[[NOW_DATE_TIME]]",
-      "attributes": {
-        "contractType": "Salaried",
-        "primaryLocation": "123456",
-        "jurisdiction": "IA"
-      },
-      "authorisations": [
-        "373"
-      ]
     },
     {
       "actorIdType": "IDAM",
