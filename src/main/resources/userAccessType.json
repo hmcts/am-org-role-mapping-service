@@ -1,0 +1,8 @@
+[
+  {
+    "jurisdictionId": "CIVIL",
+    "organisationProfileId": "SOLICITOR_PROFILE",
+    "accessTypeId": "CIVIL_ACCESS_TYPE_ID",
+    "enabled": true
+  }
+]
