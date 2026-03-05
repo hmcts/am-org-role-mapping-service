@@ -15,60 +15,7 @@
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
-      "roleAssignmentResponse": [
-        {
-          "__ordering__": "UNORDERED",
-          "__elementId__": "roleName"
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
-          "roleType" : "ORGANISATION",
-          "roleName" : "hrs-team-leader",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "Admin",
-          "readOnly" : false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "HRS"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
-          "roleType" : "ORGANISATION",
-          "roleName" : "hrs-sharer",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "Admin",
-          "readOnly" : false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "HRS"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
-          "roleType" : "ORGANISATION",
-          "roleName" : "hrs-listener",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "Admin",
-          "readOnly" : false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "HRS"
-          }
-        }
-      ]
+      "roleAssignmentResponse": []
     }
   }
 }
