@@ -61,6 +61,8 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
 
     public static final String EMPTY_ROLE_ASSIGNMENT_TEMPLATE = "Common/Empty__RasAssignmentRequest";
 
+    public static final boolean NO_BOOKABLE_ROLES_FLAG = false;
+
     protected final WiremockFixtures wiremockFixtures = new WiremockFixtures();
 
     protected final ObjectMapper mapper = JacksonUtils.MAPPER;
