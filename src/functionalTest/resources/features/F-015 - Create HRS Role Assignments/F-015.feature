@@ -6,7 +6,7 @@ Feature: F-015 : Create HRS Role Assignments
 
 
   @S-015.22
-  @FeatureToggle(DB:hrs_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:hrs_1_0=off) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for HRS Team Leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for HRS Team Leader (HRS)] as in [S-015.22__VerifyCaseworkerDetails],
