@@ -28,7 +28,7 @@
           "roleName" : "hrs-team-leader",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
-          "roleCategory" : "Admin",
+          "roleCategory" : "ADMIN",
           "readOnly" : false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
@@ -44,7 +44,7 @@
           "roleName" : "hrs-sharer",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
-          "roleCategory" : "Admin",
+          "roleCategory" : "ADMIN",
           "readOnly" : false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
@@ -60,7 +60,7 @@
           "roleName" : "hrs-listener",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
-          "roleCategory" : "Admin",
+          "roleCategory" : "ADMIN",
           "readOnly" : false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
