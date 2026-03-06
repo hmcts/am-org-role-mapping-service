@@ -32,7 +32,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.MAPPER;
 public class RoleAssignmentAssertIntegrationHelper {
 
     public static void assertWireMockAssignmentRequests(List<AssignmentRequest> expectedAssignmentRequests,
-                                                        List<TestScenario> testScenarios)
+                                                        List<TestScenario> testScenarios,
+                                                        Map<String, Boolean> featureFlags)
         throws IOException {
 
         Map<String, AssignmentRequest> requestMap = getMapOfRasRequests();
@@ -50,6 +51,12 @@ public class RoleAssignmentAssertIntegrationHelper {
             log.info("ASSERT for: {}", testScenario.getDescription());
             log.info("... with overrides for: {}", testScenario.getReplaceMap());
             log.info("#####################################################");
+
+            writeJsonToTestScenarioOutput(
+                    writeValueAsPrettyJson(featureFlags),
+                    testScenario,
+                    "FeatureFlags"
+            );
 
             writeJsonToTestScenarioOutput(
                 writeValueAsPrettyJson(testScenario),
