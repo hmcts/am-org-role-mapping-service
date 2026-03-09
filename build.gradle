@@ -33,6 +33,7 @@ def versions = [
         cucumber       : '5.7.0',
         feign_jackson  : '13.8',
         jacksondata    : '2.18.3',
+        testcontainers : '1.21.4',
         drools         : '9.44.0.Final',
         log4JVersion   : '2.24.3',
         netty_version  : '4.2.10.Final',
@@ -318,6 +319,9 @@ configurations.all {
         if (details.requested.group == 'org.springframework'){
             details.useVersion versions.spring
         }
+        if (details.requested.group == 'org.testcontainers') {
+            details.useVersion versions.testcontainers
+        }
     }
 }
 
@@ -397,6 +401,8 @@ dependencies {
     implementation 'net.bytebuddy:byte-buddy:1.18.7'
 
     testImplementation('com.opentable.components:otj-pg-embedded:1.1.1')
+    testImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
+    testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
 
     pitest 'org.pitest:pitest-junit5-plugin:1.2.3'
 
