@@ -3,6 +3,10 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -18,6 +22,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
@@ -27,9 +32,13 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,6 +71,70 @@ class ProfessionalRefreshOrchestrationHelperTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void isAccessTypeMandatoryTest(boolean isMandatory) {
+        OrganisationProfileAccessType orgProfileAccessType = OrganisationProfileAccessType.builder()
+                .accessTypeId("accessType1")
+                .accessMandatory(isMandatory)
+                .build();
+        boolean result = professionalRefreshOrchestrationHelper
+                .isAccessTypeMandatory(orgProfileAccessType);
+        assertEquals(isMandatory, result);
+    }
+
+    @ParameterizedTest
+    @MethodSource("isAccessTypeDefaultedParams")
+    void isAccessTypeDefaultedTest(boolean isDefault, List<UserAccessType> accessTypes,
+                                   boolean expectedResult) {
+        OrganisationProfileAccessType orgProfileAccessType = OrganisationProfileAccessType.builder()
+                .accessTypeId("accessType1")
+                .accessMandatory(false)
+                .accessDefault(isDefault)
+                .build();
+        boolean result = professionalRefreshOrchestrationHelper
+                .isAccessTypeDefaulted(orgProfileAccessType, accessTypes);
+        assertEquals(expectedResult, result);
+    }
+
+    public static Stream<Arguments> isAccessTypeDefaultedParams() {
+        UserAccessType enabledUserAccessType = buildUserAccessType(true);
+        UserAccessType disabledUserAccessType = buildUserAccessType(false);
+        return Stream.of(
+                // isDefault, UserAccessTypes, expectedResult
+                Arguments.of(true, List.of(enabledUserAccessType), false),
+                Arguments.of(true, List.of(disabledUserAccessType), true),
+                Arguments.of(true, List.of(enabledUserAccessType, disabledUserAccessType), false),
+                Arguments.of(true, Collections.emptyList(), true),
+                Arguments.of(false, List.of(enabledUserAccessType), false),
+                Arguments.of(false, List.of(disabledUserAccessType), false),
+                Arguments.of(false, List.of(enabledUserAccessType, disabledUserAccessType), false),
+                Arguments.of(true, Collections.emptyList(), true)
+
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("isAccessTypeEnabledParams")
+    void isAccessTypeEnabledTest(List<UserAccessType> accessTypes,
+                                   boolean expectedResult) {
+        boolean result = professionalRefreshOrchestrationHelper
+                .isAccessTypeEnabled(accessTypes);
+        assertEquals(expectedResult, result);
+    }
+
+    public static Stream<Arguments> isAccessTypeEnabledParams() {
+        UserAccessType enabledUserAccessType = buildUserAccessType(true);
+        UserAccessType disabledUserAccessType = buildUserAccessType(false);
+        return Stream.of(
+                // UserAccessTypes, expectedResult
+                Arguments.of(List.of(enabledUserAccessType), true),
+                Arguments.of(List.of(disabledUserAccessType), false),
+                Arguments.of(List.of(enabledUserAccessType, disabledUserAccessType), true),
+                Arguments.of(Collections.emptyList(), false)
+        );
     }
 
     @Test
@@ -400,4 +473,9 @@ class ProfessionalRefreshOrchestrationHelperTest {
                 + "\"organisationProfileId\": \"SOLICITOR_PROFILE\"}]}";
     }
 
+    private static UserAccessType buildUserAccessType(boolean isEnabled) {
+        return UserAccessType.builder()
+                .accessTypeId(UUID.randomUUID().toString())
+                .enabled(isEnabled).build();
+    }
 }

@@ -241,12 +241,20 @@ public class ProfessionalRefreshOrchestrationHelper {
     }
 
     private boolean isAccessEnabled(OrganisationProfileAccessType accessType, List<UserAccessType> userAccessTypes) {
-        return accessType.isAccessMandatory()
-                || accessType.isAccessDefault() && !isActiveAccessTypes(userAccessTypes)
-                || isActiveAccessTypes(userAccessTypes);
+        return isAccessTypeMandatory(accessType)
+                || isAccessTypeDefaulted(accessType, userAccessTypes)
+                || isAccessTypeEnabled(userAccessTypes);
     }
 
-    private boolean isActiveAccessTypes(List<UserAccessType> accessTypes) {
+    protected boolean isAccessTypeMandatory(OrganisationProfileAccessType accessType) {
+        return accessType.isAccessMandatory();
+    }
+
+    protected boolean isAccessTypeDefaulted(OrganisationProfileAccessType accessType, List<UserAccessType> userAccessTypes) {
+        return accessType.isAccessDefault() && !isAccessTypeEnabled(userAccessTypes);
+    }
+
+    protected boolean isAccessTypeEnabled(List<UserAccessType> accessTypes) {
         return accessTypes != null && accessTypes.stream()
                 .anyMatch(userAccessType -> Boolean.TRUE.equals(userAccessType.getEnabled()));
     }
