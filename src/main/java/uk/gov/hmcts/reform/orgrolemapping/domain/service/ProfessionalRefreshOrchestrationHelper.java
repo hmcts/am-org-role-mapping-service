@@ -311,6 +311,9 @@ public class ProfessionalRefreshOrchestrationHelper {
     @NotNull
     private static Set<OrganisationProfile> getFilteredOrganisationProfiles(
             UserRefreshQueueEntity userRefreshQueue, Set<OrganisationProfile> organisationProfiles) {
+        if (organisationProfiles.isEmpty()) {
+            return Collections.emptySet();
+        }
         String[] ids = userRefreshQueue.getOrganisationProfileIds();
         List<String> idsList = Arrays.stream(ids).toList();
         return organisationProfiles
