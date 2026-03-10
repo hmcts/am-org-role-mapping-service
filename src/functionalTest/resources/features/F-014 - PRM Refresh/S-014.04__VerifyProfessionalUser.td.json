@@ -20,7 +20,7 @@
           "_extends_": "ProfessionalUser",
           "organisationInfo": {
             "status": "ACTIVE",
-            "organisationProfileIds" : [ "SOLICITOR_PROFILE" ]
+            "organisationProfileIds" : [ "SOLICITOR_PROFILE", "ORGANISATION_PROFILE" ]
           },
           "userAccessTypes": []
         }
