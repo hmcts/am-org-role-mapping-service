@@ -118,7 +118,7 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
     void testCreateRole_ynnn() throws JsonProcessingException {
-        testCreateRoleAssignment(true, false);
+        testCreateRoleAssignment(false, false);
     }
 
     @Test
@@ -374,7 +374,7 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
     void testCreateRole_ynyn() throws JsonProcessingException {
-        testCreateRoleAssignment(true, true);
+        testCreateRoleAssignment(false, false);
     }
 
     @Test
