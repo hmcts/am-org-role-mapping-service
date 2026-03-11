@@ -250,7 +250,8 @@ public class ProfessionalRefreshOrchestrationHelper {
         return accessType.isAccessMandatory();
     }
 
-    protected boolean isAccessTypeDefaulted(OrganisationProfileAccessType accessType, List<UserAccessType> userAccessTypes) {
+    protected boolean isAccessTypeDefaulted(OrganisationProfileAccessType accessType,
+                                            List<UserAccessType> userAccessTypes) {
         return accessType.isAccessDefault() && !isAccessTypeEnabled(userAccessTypes);
     }
 
