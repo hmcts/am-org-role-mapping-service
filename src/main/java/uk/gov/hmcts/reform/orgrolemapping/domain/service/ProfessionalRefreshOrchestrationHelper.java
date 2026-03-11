@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
@@ -253,7 +254,7 @@ public class ProfessionalRefreshOrchestrationHelper {
 
     protected boolean isAccessTypeDefaulted(OrganisationProfileAccessType accessType,
                                             List<UserAccessType> userAccessTypes) {
-        return accessType.isAccessDefault() && !isAccessTypeEnabled(userAccessTypes);
+        return accessType.isAccessDefault() && CollectionUtils.isEmpty(userAccessTypes);
     }
 
     protected boolean isAccessTypeEnabled(List<UserAccessType> accessTypes) {

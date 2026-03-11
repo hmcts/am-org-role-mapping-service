@@ -72,6 +72,9 @@ class ProfessionalRefreshOrchestrationHelperTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * RULE: access_type.access_mandatory = true.
+     */
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void isAccessTypeMandatoryTest(boolean isMandatory) {
@@ -84,6 +87,9 @@ class ProfessionalRefreshOrchestrationHelperTest {
         assertEquals(isMandatory, result);
     }
 
+    /**
+     * RULE: user_access_type == null AND access_type.access_default = true.
+     */
     @ParameterizedTest
     @MethodSource("isAccessTypeDefaultedParams")
     void isAccessTypeDefaultedTest(boolean isDefault, List<UserAccessType> accessTypes,
@@ -106,7 +112,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
         return Stream.of(
                 // isDefault, UserAccessTypes, expectedResult
                 Arguments.of(true, enabledUserAccessType, false),
-                Arguments.of(true, disabledUserAccessType, true),
+                Arguments.of(true, disabledUserAccessType, false),
                 Arguments.of(true, bothUserAccessTypes, false),
                 Arguments.of(true, Collections.emptyList(), true),
                 Arguments.of(false, enabledUserAccessType, false),
@@ -116,6 +122,9 @@ class ProfessionalRefreshOrchestrationHelperTest {
         );
     }
 
+    /**
+     * RULE: user_access_type.enabled = true.
+     */
     @ParameterizedTest
     @MethodSource("isAccessTypeEnabledParams")
     void isAccessTypeEnabledTest(List<UserAccessType> accessTypes,
@@ -166,7 +175,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
                 Arguments.of(true, true, Collections.emptyList(), true),
 
                 Arguments.of(true, false, enabledUserAccessType, true),
-                Arguments.of(true, false, disabledUserAccessType, true),
+                Arguments.of(true, false, disabledUserAccessType, false),
                 Arguments.of(true, false, bothUserAccessTypes, true),
                 Arguments.of(true, false, Collections.emptyList(), true),
 
