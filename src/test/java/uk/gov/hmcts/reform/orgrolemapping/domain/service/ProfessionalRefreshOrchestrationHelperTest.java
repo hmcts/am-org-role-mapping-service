@@ -99,19 +99,20 @@ class ProfessionalRefreshOrchestrationHelperTest {
     }
 
     public static Stream<Arguments> isAccessTypeDefaultedParams() {
-        UserAccessType enabledUserAccessType = buildUserAccessType(true);
-        UserAccessType disabledUserAccessType = buildUserAccessType(false);
+        List<UserAccessType> enabledUserAccessType = List.of(buildUserAccessType(true));
+        List<UserAccessType> disabledUserAccessType = List.of(buildUserAccessType(false));
+        List<UserAccessType> bothUserAccessTypes =
+                List.of(buildUserAccessType(true), buildUserAccessType(false));
         return Stream.of(
                 // isDefault, UserAccessTypes, expectedResult
-                Arguments.of(true, List.of(enabledUserAccessType), false),
-                Arguments.of(true, List.of(disabledUserAccessType), true),
-                Arguments.of(true, List.of(enabledUserAccessType, disabledUserAccessType), false),
+                Arguments.of(true, enabledUserAccessType, false),
+                Arguments.of(true, disabledUserAccessType, true),
+                Arguments.of(true, bothUserAccessTypes, false),
                 Arguments.of(true, Collections.emptyList(), true),
-                Arguments.of(false, List.of(enabledUserAccessType), false),
-                Arguments.of(false, List.of(disabledUserAccessType), false),
-                Arguments.of(false, List.of(enabledUserAccessType, disabledUserAccessType), false),
-                Arguments.of(true, Collections.emptyList(), true)
-
+                Arguments.of(false, enabledUserAccessType, false),
+                Arguments.of(false, disabledUserAccessType, false),
+                Arguments.of(false, bothUserAccessTypes, false),
+                Arguments.of(false, Collections.emptyList(), false)
         );
     }
 
@@ -125,14 +126,59 @@ class ProfessionalRefreshOrchestrationHelperTest {
     }
 
     public static Stream<Arguments> isAccessTypeEnabledParams() {
-        UserAccessType enabledUserAccessType = buildUserAccessType(true);
-        UserAccessType disabledUserAccessType = buildUserAccessType(false);
+        List<UserAccessType> enabledUserAccessType = List.of(buildUserAccessType(true));
+        List<UserAccessType> disabledUserAccessType = List.of(buildUserAccessType(false));
+        List<UserAccessType> bothUserAccessTypes =
+                List.of(buildUserAccessType(true), buildUserAccessType(false));
         return Stream.of(
                 // UserAccessTypes, expectedResult
-                Arguments.of(List.of(enabledUserAccessType), true),
-                Arguments.of(List.of(disabledUserAccessType), false),
-                Arguments.of(List.of(enabledUserAccessType, disabledUserAccessType), true),
+                Arguments.of(enabledUserAccessType, true),
+                Arguments.of(disabledUserAccessType, false),
+                Arguments.of(bothUserAccessTypes, true),
                 Arguments.of(Collections.emptyList(), false)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("isAccessTypeValidParams")
+    void isAccessTypeValidTest(boolean isDefault, boolean isMandatory, List<UserAccessType> accessTypes,
+                               boolean expectedResult) {
+        OrganisationProfileAccessType orgProfileAccessType = OrganisationProfileAccessType.builder()
+                .accessTypeId("accessType1")
+                .accessMandatory(isMandatory)
+                .accessDefault(isDefault)
+                .build();
+        boolean result = professionalRefreshOrchestrationHelper
+                .isAccessTypeValid(orgProfileAccessType, accessTypes);
+        assertEquals(expectedResult, result);
+    }
+
+    public static Stream<Arguments> isAccessTypeValidParams() {
+        List<UserAccessType> enabledUserAccessType = List.of(buildUserAccessType(true));
+        List<UserAccessType> disabledUserAccessType = List.of(buildUserAccessType(false));
+        List<UserAccessType> bothUserAccessTypes =
+                List.of(buildUserAccessType(true), buildUserAccessType(false));
+        return Stream.of(
+                // isDefault, isMandatory, UserAccessTypes, expectedResult
+                Arguments.of(true, true, enabledUserAccessType, true),
+                Arguments.of(true, true, disabledUserAccessType, true),
+                Arguments.of(true, true, bothUserAccessTypes, true),
+                Arguments.of(true, true, Collections.emptyList(), true),
+
+                Arguments.of(true, false, enabledUserAccessType, true),
+                Arguments.of(true, false, disabledUserAccessType, true),
+                Arguments.of(true, false, bothUserAccessTypes, true),
+                Arguments.of(true, false, Collections.emptyList(), true),
+
+                Arguments.of(false, true, enabledUserAccessType, true),
+                Arguments.of(false, true, disabledUserAccessType, true),
+                Arguments.of(false, true, bothUserAccessTypes, true),
+                Arguments.of(false, true, Collections.emptyList(), true),
+
+                Arguments.of(false, false, enabledUserAccessType, true),
+                Arguments.of(false, false, disabledUserAccessType, false),
+                Arguments.of(false, false, bothUserAccessTypes, true),
+                Arguments.of(false, false, Collections.emptyList(), false)
         );
     }
 

@@ -236,11 +236,12 @@ public class ProfessionalRefreshOrchestrationHelper {
         return organisationProfiles.stream()
                 .filter(organisationProfile -> organisationProfile.getJurisdictions().stream()
                         .flatMap(jurisdiction -> jurisdiction.getAccessTypes().stream())
-                        .anyMatch(accessType -> isAccessEnabled(accessType, userAccessTypes)))
+                        .anyMatch(accessType -> isAccessTypeValid(accessType, userAccessTypes)))
                 .collect(Collectors.toSet());
     }
 
-    private boolean isAccessEnabled(OrganisationProfileAccessType accessType, List<UserAccessType> userAccessTypes) {
+    protected boolean isAccessTypeValid(OrganisationProfileAccessType accessType,
+                                        List<UserAccessType> userAccessTypes) {
         return isAccessTypeMandatory(accessType)
                 || isAccessTypeDefaulted(accessType, userAccessTypes)
                 || isAccessTypeEnabled(userAccessTypes);
