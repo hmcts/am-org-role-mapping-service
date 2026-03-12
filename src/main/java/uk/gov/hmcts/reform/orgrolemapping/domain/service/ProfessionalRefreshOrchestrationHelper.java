@@ -113,7 +113,9 @@ public class ProfessionalRefreshOrchestrationHelper {
     }
 
     private void generateRoleAssignments(UserRefreshQueueEntity userRefreshQueue, AccessTypesEntity accessTypes) {
-        if (userRefreshQueue.getAccessTypesMinVersion() > accessTypes.getVersion().intValue()) {
+        // STEP 1. If user_refresh_queue.access_types_min_version > access_types.version,
+        // then abort processing for this user and do not clear the user_refresh_queue record.
+        if (isMinVersionExpired(userRefreshQueue, accessTypes)) {
             String errorMessage = String.format(
                     "User %s has access types version %d which is higher than the latest version %d",
                     userRefreshQueue.getUserId(),
@@ -126,9 +128,12 @@ public class ProfessionalRefreshOrchestrationHelper {
         AssignmentRequest assignmentRequest =
                 createAssignmentRequest(userRefreshQueue, accessTypes);
         ResponseEntity<Object> responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
-        log.info("generateRoleAssignments responseEntity" + responseEntity);
+        log.info("generateRoleAssignments responseEntity {}", responseEntity);
     }
 
+    protected boolean isMinVersionExpired(UserRefreshQueueEntity userRefreshQueue, AccessTypesEntity accessTypes) {
+        return userRefreshQueue.getAccessTypesMinVersion() > accessTypes.getVersion().intValue();
+    }
 
     private AssignmentRequest createAssignmentRequest(UserRefreshQueueEntity userRefreshQueue,
                                                       AccessTypesEntity accessTypes) {
@@ -162,10 +167,13 @@ public class ProfessionalRefreshOrchestrationHelper {
 
     private List<RoleAssignment> prepareRoleAssignments(UserRefreshQueueEntity userRefreshQueue,
                                                         AccessTypesEntity accessTypes) throws JsonProcessingException {
-        if (null != userRefreshQueue.getDeleted()) {
+        // STEP 2. If user_refresh_queue.deleted != null then halt and return an empty set of role assignments.
+        if (isUserRefreshQueueDeleted(userRefreshQueue)) {
             return Collections.emptyList();
         }
 
+        // STEP 3. If user_refresh_queue.organisation_status is not an active status, then halt and return an empty
+        // set of role assignments.
         if (!isOrganisationStatusActive(userRefreshQueue.getOrganisationStatus())) {
             return Collections.emptyList();
         }
@@ -177,15 +185,26 @@ public class ProfessionalRefreshOrchestrationHelper {
 
         List<UserAccessType> userAccessTypes = JacksonUtils.convertUserAccessTypes(userRefreshQueue.getAccessTypes());
 
+        // STEP 4. Filter access_types to contain only data for the organisation profiles in
+        // user_refresh_queue.organisation_profile_ids.
         Set<OrganisationProfile> filteredOrganisationProfiles =
                 getFilteredOrganisationProfiles(userRefreshQueue, organisationProfiles);
 
+        // STEP 5a. For each remaining access type record, extract the corresponding user_refresh_queue.access_types
+        // record, matching on jurisdiction ID, organisation profile ID and access type ID.
         filteredOrganisationProfiles =
                 getFilteredOrgProfilesUserAccessTypes(filteredOrganisationProfiles, userAccessTypes);
 
+        // STEP 5b. Filter the remaining access type records (access_type) using their corresponding user_access_type
+        // records.
         filteredOrganisationProfiles = extractOrganisationProfiles(filteredOrganisationProfiles, userAccessTypes);
 
+        // STEP 6. Process the access type role records for each remaining access type record.
         return createRoleAssignments(userRefreshQueue, filteredOrganisationProfiles).stream().toList();
+    }
+
+    private boolean isUserRefreshQueueDeleted(UserRefreshQueueEntity userRefreshQueue) {
+        return null != userRefreshQueue.getDeleted();
     }
 
     private Set<RoleAssignment> createRoleAssignments(UserRefreshQueueEntity userRefreshQueue,
@@ -320,10 +339,9 @@ public class ProfessionalRefreshOrchestrationHelper {
     }
 
     @NotNull
-    private static Set<OrganisationProfile> getFilteredOrganisationProfiles(
+    protected Set<OrganisationProfile> getFilteredOrganisationProfiles(
             UserRefreshQueueEntity userRefreshQueue, Set<OrganisationProfile> organisationProfiles) {
-        String[] ids = userRefreshQueue.getOrganisationProfileIds();
-        List<String> idsList = Arrays.stream(ids).toList();
+        List<String> idsList = Arrays.stream(userRefreshQueue.getOrganisationProfileIds()).toList();
         return organisationProfiles
                 .stream()
                 .filter(organisationProfile ->
