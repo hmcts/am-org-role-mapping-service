@@ -110,7 +110,7 @@ class JacksonUtilsTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"", "[]"})
+    @ValueSource(strings = {"", "[]","{  }"})
     void getRestructuredAccessTypes_Empty(String content) throws JsonProcessingException {
         RestructuredAccessTypes restructuredAccessTypes = JacksonUtils.getRestructuredAccessTypes(content);
         assertNotNull(restructuredAccessTypes);
