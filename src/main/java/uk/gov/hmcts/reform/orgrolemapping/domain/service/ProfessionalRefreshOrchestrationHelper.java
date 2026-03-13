@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +18,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypeRole;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileAccessType;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileJurisdiction;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
@@ -38,8 +36,6 @@ import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,8 +44,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Status.CREATE_REQUESTED;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.NO_ACCESS_TYPES_FOUND;
@@ -185,46 +179,130 @@ public class ProfessionalRefreshOrchestrationHelper {
 
         List<UserAccessType> userAccessTypes = JacksonUtils.convertUserAccessTypes(userRefreshQueue.getAccessTypes());
 
-        // STEP 4. Filter access_types to contain only data for the organisation profiles in
-        // user_refresh_queue.organisation_profile_ids.
-        Set<OrganisationProfile> filteredOrganisationProfiles =
-                getFilteredOrganisationProfiles(userRefreshQueue, organisationProfiles);
+        // Create a map of the userAccessTypes from PRD.
+        Map<String, Map<String, List<UserAccessType>>> userAccessTypeMap =
+                buildUserAccessTypeMap(userAccessTypes);
 
-        // STEP 5a. For each remaining access type record, extract the corresponding user_refresh_queue.access_types
-        // record, matching on jurisdiction ID, organisation profile ID and access type ID.
-        filteredOrganisationProfiles =
-                getFilteredOrgProfilesUserAccessTypes(filteredOrganisationProfiles, userAccessTypes);
+        // Create a filtered map of accessTypes from CCD (matched against the userAccessTypesMap).
+        Map<String, Map<String, List<OrganisationProfileAccessType>>> accessTypeMap =
+                buildAccessTypeMap(userAccessTypeMap, organisationProfiles);
 
-        // STEP 5b. Filter the remaining access type records (access_type) using their corresponding user_access_type
-        // records.
-        filteredOrganisationProfiles = extractOrganisationProfiles(filteredOrganisationProfiles, userAccessTypes);
+        // Validate the remaining accessTypes against the rules.
+        Map<String, List<OrganisationProfileAccessType>> validatedAccessTypesMap =
+                buiildValidatedAccessTypesMap(userAccessTypeMap, accessTypeMap);
 
         // STEP 6. Process the access type role records for each remaining access type record.
-        return createRoleAssignments(userRefreshQueue, filteredOrganisationProfiles).stream().toList();
+        Set<RoleAssignment> roleAssignments = new HashSet<>();
+        validatedAccessTypesMap.forEach((jurisdictionId, organisationProfileAccessTypes) ->
+                organisationProfileAccessTypes.forEach(accessType -> accessType.getRoles()
+                        .forEach(role -> roleAssignments.addAll(
+                                        createRoleAssignmentsForRole(role, jurisdictionId, userRefreshQueue)))));
+
+        // STEP 7. Deduplicate the role assignments. (...by using a Set rather than a list).
+        return roleAssignments.stream().toList();
     }
 
     private boolean isUserRefreshQueueDeleted(UserRefreshQueueEntity userRefreshQueue) {
         return null != userRefreshQueue.getDeleted();
     }
 
-    private Set<RoleAssignment> createRoleAssignments(UserRefreshQueueEntity userRefreshQueue,
-                                                      Set<OrganisationProfile> organisationProfiles) {
-        return organisationProfiles.stream()
-                .flatMap(organisationProfile -> organisationProfile.getJurisdictions().stream())
-                .flatMap(jurisdiction -> createRoleAssignmentsForJurisdiction(jurisdiction, userRefreshQueue))
-                .collect(Collectors.toSet());
+    protected Map<String, Map<String, List<UserAccessType>>> buildUserAccessTypeMap(
+            List<UserAccessType> userAccessTypes) {
+        Map<String, Map<String, List<UserAccessType>>> map = new HashMap<>();
+        userAccessTypes.forEach(userAccessType ->
+            // Add the OranisationProfileId.
+            map.computeIfAbsent(userAccessType.getOrganisationProfileId(), k -> new HashMap<>())
+                // Add the jurisdictionId.
+                .computeIfAbsent(userAccessType.getJurisdictionId(), k -> new ArrayList<>())
+                // Add the accessType.
+                .add(userAccessType)
+        );
+        return map;
     }
 
-    private Stream<RoleAssignment> createRoleAssignmentsForJurisdiction(OrganisationProfileJurisdiction jurisdiction,
-                                                                        UserRefreshQueueEntity userRefreshQueue) {
-        return jurisdiction.getAccessTypes().stream()
-                .flatMap(accessType -> accessType.getRoles().stream())
-                .map(role -> createRoleAssignmentsForRole(role, jurisdiction, userRefreshQueue))
-                .flatMap(Collection::stream);
+    protected Map<String, Map<String, List<OrganisationProfileAccessType>>> buildAccessTypeMap(
+            Map<String, Map<String, List<UserAccessType>>> userAccessMap,
+            Set<OrganisationProfile> organisationProfiles) {
+        Map<String, Map<String, List<OrganisationProfileAccessType>>> map = new HashMap<>();
+        organisationProfiles.stream()
+
+            // STEP 4. Filter access_types to contain only data for the organisation profiles in
+            // user_refresh_queue.organisation_profile_ids.
+
+            .filter(organisationProfile ->
+                    userAccessMap.containsKey(organisationProfile.getOrganisationProfileId()))
+            .forEach(organisationProfile -> {
+
+                // STEP 5a. For each remaining access type record, extract the corresponding user_refresh_queue
+                // access_types record, matching on jurisdiction ID, organisation profile ID and access type ID.
+
+                // Add the OrganisatioinProfileId.
+                map.computeIfAbsent(organisationProfile.getOrganisationProfileId(),
+                        jurisdictionIds -> new HashMap<>());
+
+                organisationProfile.getJurisdictions().stream()
+                    .filter(jurisdiction ->
+                            userAccessMap.get(organisationProfile.getOrganisationProfileId())
+                                    .containsKey(jurisdiction.getJurisdictionId()))
+                    .forEach(jurisdiction -> {
+
+                        // Add the jurisdictionId.
+                        map.computeIfAbsent(organisationProfile.getOrganisationProfileId(),
+                                        jurisdictionIds -> new HashMap<>())
+                                .computeIfAbsent(jurisdiction.getJurisdictionId(),
+                                        accessTypes -> new ArrayList<>());
+
+                        jurisdiction.getAccessTypes().stream()
+                            .filter(accessType ->
+                                userAccessMap.get(organisationProfile.getOrganisationProfileId())
+                                    .get(jurisdiction.getJurisdictionId()).stream()
+                                    .anyMatch(userAccessType ->
+                                            userAccessType.getAccessTypeId().equals(accessType.getAccessTypeId())))
+                            .forEach(accessType ->
+
+                                // Add the accessType.
+                                map.computeIfAbsent(organisationProfile.getOrganisationProfileId(),
+                                                jurisdictionIds -> new HashMap<>())
+                                        .computeIfAbsent(jurisdiction.getJurisdictionId(),
+                                                accessTypes -> new ArrayList<>())
+                                        .add(accessType)
+                        );
+                    });
+            });
+        return map;
+    }
+
+    private Map<String, List<OrganisationProfileAccessType>> buiildValidatedAccessTypesMap(
+            Map<String, Map<String, List<UserAccessType>>> userAccessTypeMap,
+            Map<String, Map<String, List<OrganisationProfileAccessType>>> accessTypeMap) {
+        Map<String, List<OrganisationProfileAccessType>> map = new HashMap<>();
+        // Loop the organisationProfileIds
+        accessTypeMap.forEach((organisationProfileId, jurisdictionMap) ->
+
+            // Loop the jurisdictionIds
+            jurisdictionMap.forEach((jurisdictionId, accessTypes) ->
+
+                // Loop the accessTypes
+                accessTypes.forEach(accessType -> {
+
+                    // Get the corresponding userAccessTypes for the organisationProfile and Jurisdiction.
+                    List<UserAccessType> userAccessTypes =
+                            userAccessTypeMap.get(organisationProfileId).get(jurisdictionId);
+
+                    // STEP 5b. Filter the remaining access type records (access_type) using their corresponding
+                    // user_access_type records.
+                    if (isAccessTypeValid(accessType, userAccessTypes)) {
+                        map.computeIfAbsent(jurisdictionId, k -> new ArrayList<>())
+                                .add(accessType);
+                    }
+                })
+            )
+        );
+        return map;
     }
 
     private List<RoleAssignment> createRoleAssignmentsForRole(AccessTypeRole role,
-                                                              OrganisationProfileJurisdiction jurisdiction,
+                                                              String jurisdictionId,
                                                               UserRefreshQueueEntity userRefreshQueue) {
         List<RoleAssignment> roleAssignments =  new ArrayList<>();
 
@@ -232,7 +310,7 @@ public class ProfessionalRefreshOrchestrationHelper {
         String organisationalRoleName = role.getOrganisationalRoleName();
         if (StringUtils.isNotBlank(organisationalRoleName)) {
             roleAssignments.add(createRoleAssignment(organisationalRoleName, userRefreshQueue.getUserId(),
-                    jurisdiction.getJurisdictionId(), role.getCaseTypeId(), null));
+                    jurisdictionId, role.getCaseTypeId(), null));
         }
 
         // if contains GroupRole config (and is GA enabled)
@@ -245,19 +323,10 @@ public class ProfessionalRefreshOrchestrationHelper {
             String caseAccessGroupId =
                     generateCaseAccessGroupId(caseGroupIdTemplate, userRefreshQueue.getOrganisationId());
             roleAssignments.add(createRoleAssignment(groupRoleName, userRefreshQueue.getUserId(),
-                    jurisdiction.getJurisdictionId(), role.getCaseTypeId(), caseAccessGroupId));
+                    jurisdictionId, role.getCaseTypeId(), caseAccessGroupId));
         }
 
         return roleAssignments;
-    }
-
-    private Set<OrganisationProfile> extractOrganisationProfiles(Set<OrganisationProfile> organisationProfiles,
-                                                                 List<UserAccessType> userAccessTypes) {
-        return organisationProfiles.stream()
-                .filter(organisationProfile -> organisationProfile.getJurisdictions().stream()
-                        .flatMap(jurisdiction -> jurisdiction.getAccessTypes().stream())
-                        .anyMatch(accessType -> isAccessTypeValid(accessType, userAccessTypes)))
-                .collect(Collectors.toSet());
     }
 
     protected boolean isAccessTypeValid(OrganisationProfileAccessType accessType,
@@ -279,74 +348,6 @@ public class ProfessionalRefreshOrchestrationHelper {
     protected boolean isAccessTypeEnabled(List<UserAccessType> accessTypes) {
         return accessTypes != null && accessTypes.stream()
                 .anyMatch(userAccessType -> Boolean.TRUE.equals(userAccessType.getEnabled()));
-    }
-
-    private static Set<OrganisationProfile> getFilteredOrgProfilesUserAccessTypes(
-            Set<OrganisationProfile> organisationProfiles, List<UserAccessType> userAccessTypes) {
-
-        Set<OrganisationProfile> filteredOrganisationProfiles = new HashSet<>();
-        for (OrganisationProfile organisationProfile : organisationProfiles) {
-            Set<OrganisationProfileJurisdiction> organisationProfileJurisdictionSet;
-            organisationProfileJurisdictionSet =
-                    getMatchingOrganisationProfileJurisdiction(organisationProfile, userAccessTypes);
-            organisationProfile.getJurisdictions().clear();
-            organisationProfile.setJurisdictions(organisationProfileJurisdictionSet);
-            filteredOrganisationProfiles.add(organisationProfile);
-        }
-        return filteredOrganisationProfiles;
-    }
-
-    private static Set<OrganisationProfileJurisdiction> getMatchingOrganisationProfileJurisdiction(
-            OrganisationProfile organisationProfile, List<UserAccessType> userAccessTypes) {
-        Set<OrganisationProfileJurisdiction> matchingResults = new HashSet<>();
-        String organisationProfileId = organisationProfile.getOrganisationProfileId();
-        if (null != organisationProfileId) {
-            for (UserAccessType userAccessType : userAccessTypes) {
-                matchByOrganisationProfileId(matchingResults, organisationProfile, userAccessType);
-            }
-        }
-        return matchingResults;
-    }
-
-    private static void matchByOrganisationProfileId(
-            Set<OrganisationProfileJurisdiction> matchingResults,
-            OrganisationProfile organisationProfile, UserAccessType userAccessType) {
-        if (organisationProfile.getOrganisationProfileId().equals(userAccessType.getOrganisationProfileId())) {
-            for (OrganisationProfileJurisdiction opj : organisationProfile.getJurisdictions()) {
-                matchByOrganisationJurisdiction(matchingResults, opj, userAccessType);
-            }
-        }
-    }
-
-    private static void matchByOrganisationJurisdiction(
-            Set<OrganisationProfileJurisdiction> matchingResults,
-            OrganisationProfileJurisdiction opj, UserAccessType userAccessType) {
-        String jurisdictionId = opj.getJurisdictionId();
-        if (null != jurisdictionId && (jurisdictionId.equals(userAccessType.getJurisdictionId()))) {
-            for (OrganisationProfileAccessType opat : opj.getAccessTypes()) {
-                matchByAccessType(matchingResults, opat, userAccessType, opj);
-            }
-        }
-    }
-
-    private static void matchByAccessType(
-            Set<OrganisationProfileJurisdiction> matchingResults,
-            OrganisationProfileAccessType opat, UserAccessType userAccessType, OrganisationProfileJurisdiction opj) {
-        String accessTypeID = opat.getAccessTypeId();
-        if (accessTypeID != null && accessTypeID.equals(userAccessType.getAccessTypeId())) {
-            matchingResults.add(opj);
-        }
-    }
-
-    @NotNull
-    protected Set<OrganisationProfile> getFilteredOrganisationProfiles(
-            UserRefreshQueueEntity userRefreshQueue, Set<OrganisationProfile> organisationProfiles) {
-        List<String> idsList = Arrays.stream(userRefreshQueue.getOrganisationProfileIds()).toList();
-        return organisationProfiles
-                .stream()
-                .filter(organisationProfile ->
-                        idsList.contains(organisationProfile.getOrganisationProfileId())
-                ).collect(Collectors.toSet());
     }
 
     private RoleAssignment createRoleAssignment(String roleName, String userId, String jurisdictionId,
