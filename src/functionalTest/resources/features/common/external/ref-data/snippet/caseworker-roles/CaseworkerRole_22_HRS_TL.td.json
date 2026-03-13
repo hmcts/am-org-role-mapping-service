@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_22_HRS_TL",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "22",
+  "role": "HRS Team Leader"
+}
