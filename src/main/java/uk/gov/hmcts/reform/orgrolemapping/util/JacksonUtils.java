@@ -25,6 +25,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,6 +106,12 @@ public class JacksonUtils {
 
     public static RestructuredAccessTypes getRestructuredAccessTypes(String content)
             throws JsonProcessingException {
+        // If there is no content then return an empty object.
+        if (content == null || content.replace(" ","").replace("[]","").replace("{}","").isEmpty()) {
+            return RestructuredAccessTypes.builder()
+                    .organisationProfiles(Collections.emptySet())
+                    .build();
+        }
         MAPPER.registerModule(new JavaTimeModule());
         return MAPPER.readValue(content, RestructuredAccessTypes.class);
     }
