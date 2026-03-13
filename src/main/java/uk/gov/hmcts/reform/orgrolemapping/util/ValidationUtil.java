@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.text.ParseException;
@@ -53,10 +56,7 @@ public class ValidationUtil {
     public static void validateDateTime(String strDate, String timeParam) {
         LOG.debug("validateDateTime");
         if (strDate.length() < 16) {
-            throw new BadRequestException(String.format(
-                    "Incorrect date format %s",
-                    strDate
-            ));
+            throw new BadRequestException(incorrectDateFormat(strDate));
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DATE_PATTERN);
         simpleDateFormat.setLenient(false);
@@ -67,10 +67,7 @@ public class ValidationUtil {
                 LOG.debug(javaDate.toString());
             }
         } catch (ParseException e) {
-            throw new BadRequestException(String.format(
-                    "Incorrect date format %s",
-                    strDate
-            ));
+            throw new BadRequestException(incorrectDateFormat(strDate));
         }
         assert javaDate != null;
         if (javaDate.before(new Date())) {
@@ -141,5 +138,18 @@ public class ValidationUtil {
                     .toList();
             return seen.putIfAbsent(keys, Boolean.TRUE) == null;
         };
+    }
+
+    public static void validateDateTimeFormat(String pattern, String strDate) {
+        try {
+            LocalDateTime.parse(strDate, DateTimeFormatter.ofPattern(pattern));
+        } catch (DateTimeParseException e) {
+            throw new BadRequestException(
+                    incorrectDateFormat(pattern));
+        }
+    }
+
+    private static String incorrectDateFormat(String strDate) {
+        return String.format("Incorrect date format %s", strDate);
     }
 }

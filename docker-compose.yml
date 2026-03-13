@@ -20,6 +20,7 @@ services:
       - CASE_WORKER_REF_APP_URL=http://localhost:4099
       - JUDICIAL_REF_APP_URL=http://localhost:8091
       - ROLE_ASSIGNMENT_APP_URL=http://localhost:4096
+      - PROFESSIONAL_REF_APP_URL=http://localhost:8090
       - ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE=openid profile roles authorities
       - app-insights-connection-string
       - REFORM_SERVICE_NAME=am-org-role-mapping-service
