@@ -20,9 +20,12 @@ import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypeRole;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationInfo;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileAccessType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileJurisdiction;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
@@ -34,12 +37,18 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -47,6 +56,16 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 class ProfessionalRefreshOrchestrationHelperTest {
+
+    private static final String ORG_PROFILE1 = "orgProfile1";
+    private static final String ORG_PROFILE2 = "orgProfile2";
+    private static final String ORG_PROFILE3 = "orgProfile3";
+    private static final String ORG_PROFILE4 = "orgProfile4";
+    private static final String JURISDICTION1 = "jurisdiction1";
+    private static final String JURISDICTION2 = "jurisdiction2";
+    private static final String JURISDICTION3 = "jurisdiction3";
+    private static final String JURISDICTION4 = "jurisdiction4";
+
 
     @Mock
     private UserRefreshQueueRepository userRefreshQueueRepository;
@@ -70,6 +89,102 @@ class ProfessionalRefreshOrchestrationHelperTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    /**
+     * BUILD MAP: filter the user access types.
+     */
+    @Test
+    void buildUserAccessTypeMapTest() {
+        // GIVEN
+        List<UserAccessType> userAccessTypes = List.of(buildUserAccessType(true), buildUserAccessType(false));
+
+        // WHEN
+        // Map = OrgamisationId, JurisdictionId, UserAccessType
+        Map<String, Map<String, List<UserAccessType>>> results =
+                professionalRefreshOrchestrationHelper.buildUserAccessTypeMap(userAccessTypes);
+
+        // THEN
+        assertNotNull(results);
+        assertEquals(userAccessTypes.size(), results.size());
+        userAccessTypes.forEach(userAccessType -> {
+            assertTrue(results.containsKey(userAccessType.getOrganisationProfileId()));
+            assertTrue(results.get(userAccessType.getOrganisationProfileId())
+                    .containsKey(userAccessType.getJurisdictionId()));
+            assertTrue(results.get(userAccessType.getOrganisationProfileId())
+                    .get(userAccessType.getJurisdictionId()).contains(userAccessType));
+        });
+    }
+
+    /**
+     * BUILD MAP: filter the organisation profile access types.
+     */
+    @ParameterizedTest
+    @MethodSource("buildAccessTypeMapParams")
+    void buildAccessTypeMapTest(Map<String, Map<String, List<UserAccessType>>> userAccessMap,
+                                Set<OrganisationProfile> organisationProfiles, List<String> ignoredList) {
+        // WHEN
+        // Map = OrgamisationProfileId, JurisdictionId, OrganisationProfileAccessType
+        Map<String, Map<String, List<OrganisationProfileAccessType>>> results =
+                professionalRefreshOrchestrationHelper.buildAccessTypeMap(userAccessMap, organisationProfiles);
+
+        // THEN
+        assertNotNull(results);
+        userAccessMap.forEach((organisationProfileId, map) -> {
+            assertTrue(ignoredList.contains(organisationProfileId) || results.containsKey(organisationProfileId));
+            map.forEach((jurisdictionId, userAccessTypes) -> {
+                assertTrue(ignoredList.contains(jurisdictionId)
+                        || results.get(organisationProfileId).containsKey(jurisdictionId));
+            });
+        });
+        results.forEach((orgamisationProfileId, jurisdictionMap) -> {
+            assertTrue(userAccessMap.containsKey(orgamisationProfileId));
+            jurisdictionMap.forEach((jurisdictionId, orgProfileAccessTypes) -> {
+                assertTrue(userAccessMap.get(orgamisationProfileId).containsKey(jurisdictionId)
+                        || ignoredList.contains(jurisdictionId));
+            });
+        });
+    }
+
+    public static Stream<Arguments> buildAccessTypeMapParams() {
+        Map<String, Map<String, List<UserAccessType>>> userAccessMap = Map.of(
+                ORG_PROFILE1, Map.of(
+                        JURISDICTION1, List.of(buildUserAccessType(true), buildUserAccessType(false)),
+                        JURISDICTION2, List.of(buildUserAccessType(true))
+                ),
+                ORG_PROFILE2, Map.of(
+                        JURISDICTION3, List.of(buildUserAccessType(false)),
+                        JURISDICTION4, List.of(buildUserAccessType(false))
+                ),
+                ORG_PROFILE3, Collections.emptyMap()
+        );
+        Set<OrganisationProfile> organisationProfiles = Set.of(
+                OrganisationProfile.builder()
+                        .organisationProfileId(ORG_PROFILE1)
+                        .jurisdictions(Set.of(
+                            buildOrganisationProfileJurisdiction(JURISDICTION1)))
+                        // Ignore jurisdiction2
+                        .build(),
+                OrganisationProfile.builder()
+                        .organisationProfileId(ORG_PROFILE2)
+                        .jurisdictions(Set.of(
+                            buildOrganisationProfileJurisdiction(JURISDICTION3),
+                            buildOrganisationProfileJurisdiction(JURISDICTION4)))
+                        .build(),
+                // Igbore orgProfile3
+                OrganisationProfile.builder()
+                        .organisationProfileId(ORG_PROFILE4)
+                        .build()
+        );
+        return Stream.of(
+                // userAccessMap, organisationProfiles
+                Arguments.of(userAccessMap, organisationProfiles, List.of(ORG_PROFILE3, JURISDICTION2)),
+                Arguments.of(userAccessMap, new HashSet<>(),
+                        List.of(ORG_PROFILE1, ORG_PROFILE2, ORG_PROFILE3,
+                                JURISDICTION1, JURISDICTION2, JURISDICTION3, JURISDICTION4)),
+                Arguments.of(new HashMap<>(), organisationProfiles, new ArrayList<>()),
+                Arguments.of(new HashMap<>(), new HashSet<>(), new ArrayList<>())
+        );
     }
 
     /**
@@ -530,6 +645,29 @@ class ProfessionalRefreshOrchestrationHelperTest {
     private static UserAccessType buildUserAccessType(boolean isEnabled) {
         return UserAccessType.builder()
                 .accessTypeId(UUID.randomUUID().toString())
+                .organisationProfileId(UUID.randomUUID().toString())
+                .jurisdictionId(UUID.randomUUID().toString())
                 .enabled(isEnabled).build();
+    }
+
+    private static OrganisationProfileJurisdiction buildOrganisationProfileJurisdiction(String jurisdictionId) {
+        return OrganisationProfileJurisdiction.builder()
+                .jurisdictionId(jurisdictionId)
+                .accessTypes(Collections.emptySet())
+                .build();
+    }
+
+    private static OrganisationProfileAccessType buildOrganisationProfileAccessType(
+            boolean isDefault, boolean isMandatory) {
+        return OrganisationProfileAccessType.builder()
+                .accessTypeId(UUID.randomUUID().toString())
+                .accessDefault(isDefault)
+                .accessMandatory(isMandatory)
+                .roles(Collections.emptySet())
+                .build();
+    }
+
+    private static AccessTypeRole buildAccessTypeRole() {
+        return AccessTypeRole.builder().organisationalRoleName(UUID.randomUUID().toString()).build();
     }
 }
