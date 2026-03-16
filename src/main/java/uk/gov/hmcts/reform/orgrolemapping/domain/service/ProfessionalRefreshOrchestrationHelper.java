@@ -247,8 +247,7 @@ public class ProfessionalRefreshOrchestrationHelper {
                     .forEach(jurisdiction -> {
 
                         // Add the jurisdictionId.
-                        map.computeIfAbsent(organisationProfile.getOrganisationProfileId(),
-                                        jurisdictionIds -> new HashMap<>())
+                        map.get(organisationProfile.getOrganisationProfileId())
                                 .computeIfAbsent(jurisdiction.getJurisdictionId(),
                                         accessTypes -> new ArrayList<>());
 
