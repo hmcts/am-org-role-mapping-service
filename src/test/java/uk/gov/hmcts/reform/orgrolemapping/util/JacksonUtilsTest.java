@@ -1,16 +1,20 @@
 package uk.gov.hmcts.reform.orgrolemapping.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -105,4 +109,12 @@ class JacksonUtilsTest {
         assertEquals(true, userAccessTypes.get(0).getEnabled());
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"", "[]","{  }"})
+    void getRestructuredAccessTypes_Empty(String content) throws JsonProcessingException {
+        RestructuredAccessTypes restructuredAccessTypes = JacksonUtils.getRestructuredAccessTypes(content);
+        assertNotNull(restructuredAccessTypes);
+        assertNotNull(restructuredAccessTypes.getOrganisationProfiles());
+        assertEquals(0, restructuredAccessTypes.getOrganisationProfiles().size());
+    }
 }

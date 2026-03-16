@@ -295,9 +295,18 @@ class ProfessionalRefreshOrchestrationHelperTest {
 
     @Test
     void shouldRefreshSingleUser() {
+        refreshSingleUserTest(getGroupAccessTypes(true), 1);
+    }
+
+    @Test
+    void shouldRefreshSingleUser_NoAccessTypes() {
+        refreshSingleUserTest("[]", 0);
+    }
+
+    private void refreshSingleUserTest(String accessTypes, int expectedRolesCount) {
         AccessTypesEntity accessTypesEntity = AccessTypesEntity.builder()
                 .version(1L)
-                .accessTypes(getGroupAccessTypes(true))
+                .accessTypes(accessTypes)
                 .build();
 
         String[] orgProfileIds = {"SOLICITOR_PROFILE"};
@@ -324,18 +333,20 @@ class ProfessionalRefreshOrchestrationHelperTest {
         ArrayList<RoleAssignment> requestedRoles = new ArrayList<>(
             assignmentRequestArgumentCaptor.getValue().getRequestedRoles()
         );
-        assertEquals(1, requestedRoles.size());
-        assertEquals(1, assignmentRequestArgumentCaptor.getValue().getRequestedRoles().size());
-        RoleAssignment roleAssignment = requestedRoles.get(0);
-        assertEquals("Uid1", roleAssignment.getActorId());
-        assertEquals("ORGANISATION", roleAssignment.getRoleType().name());
-        assertEquals("CIVIL_Group_Role1", roleAssignment.getRoleName());
-        assertEquals("RESTRICTED", roleAssignment.getClassification().name());
-        assertEquals("STANDARD", roleAssignment.getGrantType().name());
-        assertEquals("PROFESSIONAL", roleAssignment.getRoleCategory().name());
-        assertEquals("CREATE_REQUESTED", roleAssignment.getStatus().name());
-        assertEquals("CIVIL", roleAssignment.getAttributes().get("jurisdiction").asText());
-        assertEquals("CIVIL_Case_TYPE", roleAssignment.getAttributes().get("caseType").asText());
+        assertEquals(expectedRolesCount, requestedRoles.size());
+        assertEquals(expectedRolesCount, assignmentRequestArgumentCaptor.getValue().getRequestedRoles().size());
+        if (expectedRolesCount > 0) {
+            RoleAssignment roleAssignment = requestedRoles.get(0);
+            assertEquals("Uid1", roleAssignment.getActorId());
+            assertEquals("ORGANISATION", roleAssignment.getRoleType().name());
+            assertEquals("CIVIL_Group_Role1", roleAssignment.getRoleName());
+            assertEquals("RESTRICTED", roleAssignment.getClassification().name());
+            assertEquals("STANDARD", roleAssignment.getGrantType().name());
+            assertEquals("PROFESSIONAL", roleAssignment.getRoleCategory().name());
+            assertEquals("CREATE_REQUESTED", roleAssignment.getStatus().name());
+            assertEquals("CIVIL", roleAssignment.getAttributes().get("jurisdiction").asText());
+            assertEquals("CIVIL_Case_TYPE", roleAssignment.getAttributes().get("caseType").asText());
+        }
     }
 
     private String getUserAccessTypes() {

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
@@ -311,13 +312,19 @@ public class ProfessionalRefreshOrchestrationHelper {
     @NotNull
     private static Set<OrganisationProfile> getFilteredOrganisationProfiles(
             UserRefreshQueueEntity userRefreshQueue, Set<OrganisationProfile> organisationProfiles) {
-        String[] ids = userRefreshQueue.getOrganisationProfileIds();
-        List<String> idsList = Arrays.stream(ids).toList();
-        return organisationProfiles
-                .stream()
-                .filter(organisationProfile ->
-                        idsList.contains(organisationProfile.getOrganisationProfileId())
-                ).collect(Collectors.toSet());
+        Set<OrganisationProfile> filteredOrganisationProfiles;
+        if (CollectionUtils.isEmpty(organisationProfiles)) {
+            filteredOrganisationProfiles = Collections.emptySet();
+        } else {
+            String[] ids = userRefreshQueue.getOrganisationProfileIds();
+            List<String> idsList = Arrays.stream(ids).toList();
+            filteredOrganisationProfiles = organisationProfiles
+                    .stream()
+                    .filter(organisationProfile ->
+                            idsList.contains(organisationProfile.getOrganisationProfileId())
+                    ).collect(Collectors.toSet());
+        }
+        return filteredOrganisationProfiles;
     }
 
     private RoleAssignment createRoleAssignment(String roleName, String userId, String jurisdictionId,
