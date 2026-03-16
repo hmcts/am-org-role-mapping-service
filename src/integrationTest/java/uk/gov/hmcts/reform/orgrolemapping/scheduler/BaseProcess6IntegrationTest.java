@@ -342,6 +342,19 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
     }
 
     /**
+     *  accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = Null.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_yyy.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_missing.sql"
+    })
+    void testCreateRole_yyy_null() throws JsonProcessingException {
+        testCreateRoleAssignment(false, false);
+    }
+
+    /**
      *  accessDefault = Y, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = Y.
      */
     @Test
