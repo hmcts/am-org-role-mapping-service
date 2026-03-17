@@ -15,15 +15,16 @@ import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
-import org.springframework.security.oauth2.jwt.JwtIssuerValidator;
 import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import uk.gov.hmcts.reform.authorisation.filters.ServiceAuthFilter;
+import uk.gov.hmcts.reform.orgrolemapping.config.security.validator.MultiIssuerValidator;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.JwtGrantedAuthoritiesConverter;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -103,7 +104,8 @@ public class SecurityConfiguration {
         OAuth2TokenValidator<Jwt> withTimestamp = new JwtTimestampValidator();
         OAuth2TokenValidator<Jwt> validator;
         if (issuerValidationEnabled) {
-            OAuth2TokenValidator<Jwt> withIssuer = new JwtIssuerValidator(issuerOverride);
+            List<String> validIssuers = Arrays.asList(issuerUri, issuerOverride);
+            OAuth2TokenValidator<Jwt> withIssuer = new MultiIssuerValidator(validIssuers);
             validator = new DelegatingOAuth2TokenValidator<>(withTimestamp, withIssuer);
         } else {
             validator = new DelegatingOAuth2TokenValidator<>(withTimestamp);
