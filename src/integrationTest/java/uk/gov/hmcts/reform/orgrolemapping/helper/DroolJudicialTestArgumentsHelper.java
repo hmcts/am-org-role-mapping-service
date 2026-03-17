@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -407,14 +408,51 @@ public class DroolJudicialTestArgumentsHelper {
         return testScenarios;
     }
 
+    public static List<DroolJudicialTestArguments> generateFlagOffTestArgumentsWithOutputFolder(
+        List<DroolJudicialTestArguments> inputArguments,
+        String changeDescription,
+        String outputLocationFolder,
+        FeatureFlagEnum... flags
+    ) {
+        // adjust all arguments to use new folder
+        List<DroolJudicialTestArguments> updateArguments = inputArguments.stream()
+            .map(argument -> argument.cloneBuilder()
+                // ras file names
+                .rasRequestFileNameWithBooking(
+                    formatFileNameWithFolder(argument.getRasRequestFileNameWithBooking(), outputLocationFolder)
+                )
+                .rasRequestFileNameWithoutBooking(
+                    formatFileNameWithFolder(argument.getRasRequestFileNameWithoutBooking(), outputLocationFolder)
+                )
+                // fallbacks
+                .additionalRoleExpiredFallbackFileName(
+                    formatFileNameWithFolder(argument.getAdditionalRoleExpiredFallbackFileName(), outputLocationFolder)
+                )
+                .authorisationExpiredFallbackFileName(
+                    formatFileNameWithFolder(argument.getAuthorisationExpiredFallbackFileName(), outputLocationFolder)
+                )
+                .build()
+            )
+            .toList();
+
+        // generate override with description and flags
+        DroolJudicialTestArgumentOverrides testOverrides = DroolJudicialTestArgumentOverrides.builder()
+            .overrideDescription(changeDescription)
+            .overrideTurnOffFlags(Arrays.stream(flags).toList())
+            .build();
+
+        // combine to create new test arguments with overrides applied
+        return overrideTestArguments(updateArguments, List.of(testOverrides));
+    }
+
     public static DroolJudicialTestArgumentOverrides generateOverrideFlagOffCatchAll(
-        FeatureFlagEnum overrideTurnOffFlag
+        FeatureFlagEnum... overrideTurnOffFlags
     ) {
         // This is a catch-all override tha will match on all test arguments.
-        // It should be the final override used in Flag Off Tests, so we repeat all test arguments with the flag off,
+        // It should be the final override used in Flag Off Tests, so we repeat all test arguments with the flags off,
         // even those without any change in behaviour.
         return DroolJudicialTestArgumentOverrides.builder()
-            .overrideTurnOffFlags(List.of(overrideTurnOffFlag))
+            .overrideTurnOffFlags(Arrays.asList(overrideTurnOffFlags))
             .build();
     }
 
@@ -717,6 +755,17 @@ public class DroolJudicialTestArgumentsHelper {
         return jurisdiction + ": " + joinFileNameAndDescription(args, "__");
     }
 
+    private static String formatFileNameWithFolder(String fileName, String folder) {
+        if (StringUtils.isEmpty(fileName)) {
+            return null;
+        }
+
+        // NB: don't apply folder name on common EMPTY_ROLE_ASSIGNMENT_TEMPLATE as this location will not change
+        return EMPTY_ROLE_ASSIGNMENT_TEMPLATE.equals(fileName)
+            ? EMPTY_ROLE_ASSIGNMENT_TEMPLATE
+            : folder + "/" + fileName;
+    }
+
     private static String formatOutputLocation(DroolJudicialTestArguments args,
                                                String jurisdiction) {
         return jurisdiction + "/" + joinFileNameAndDescription(args, "/") + "/";
@@ -727,16 +776,11 @@ public class DroolJudicialTestArgumentsHelper {
     }
 
     private static String formatRasRequestFileName(String fileName, String jurisdiction) {
-        if (StringUtils.isEmpty(fileName)) {
-            return null;
-        }
-
-        return EMPTY_ROLE_ASSIGNMENT_TEMPLATE.equals(fileName)
-            ? EMPTY_ROLE_ASSIGNMENT_TEMPLATE
-            : jurisdiction + "/OutputToRas/" + fileName;
+        return formatFileNameWithFolder(fileName, jurisdiction + "/OutputToRas");
     }
 
     private static String formatRasRequestFileNameWithSuffix(String fileName, String suffix) {
+        // NB: don't apply suffix on common EMPTY_ROLE_ASSIGNMENT_TEMPLATE as this filename will not change
         return EMPTY_ROLE_ASSIGNMENT_TEMPLATE.equals(fileName)
             ? EMPTY_ROLE_ASSIGNMENT_TEMPLATE
             : fileName + "__" + suffix;
