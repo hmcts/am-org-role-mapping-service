@@ -172,4 +172,59 @@ class CaseWorkerAccessProfileTest {
 
     }
 
+    @Nested
+    @DisplayName("isCaseAllocator Tests")
+    class IsCaseAllocatorTests {
+        @org.junit.jupiter.api.Test
+        void shouldReturnTrueWhenCaseAllocatorFlagIsY() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .caseAllocatorFlag("Y")
+                .build();
+            org.junit.jupiter.api.Assertions.assertTrue(profile.isCaseAllocator(), "Should return true when caseAllocatorFlag is 'Y'");
+        }
+
+        @org.junit.jupiter.api.Test
+        void shouldReturnFalseWhenCaseAllocatorFlagIsN() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .caseAllocatorFlag("N")
+                .build();
+            org.junit.jupiter.api.Assertions.assertFalse(profile.isCaseAllocator(), "Should return false when caseAllocatorFlag is not 'Y'");
+        }
+
+        @org.junit.jupiter.api.Test
+        void shouldReturnFalseWhenCaseAllocatorFlagIsNull() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .caseAllocatorFlag(null)
+                .build();
+            org.junit.jupiter.api.Assertions.assertFalse(profile.isCaseAllocator(), "Should return false when caseAllocatorFlag is null");
+        }
+    }
+
+    @Nested
+    @DisplayName("isTaskSupervisor Tests")
+    class IsTaskSupervisorTests {
+        @org.junit.jupiter.api.Test
+        void shouldReturnTrueWhenTaskSupervisorFlagIsY() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .taskSupervisorFlag("Y")
+                .build();
+            org.junit.jupiter.api.Assertions.assertTrue(profile.isTaskSupervisor(), "Should return true when taskSupervisorFlag is 'Y'");
+        }
+
+        @org.junit.jupiter.api.Test
+        void shouldReturnFalseWhenTaskSupervisorFlagIsN() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .taskSupervisorFlag("N")
+                .build();
+            org.junit.jupiter.api.Assertions.assertFalse(profile.isTaskSupervisor(), "Should return false when taskSupervisorFlag is not 'Y'");
+        }
+
+        @org.junit.jupiter.api.Test
+        void shouldReturnFalseWhenTaskSupervisorFlagIsNull() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .taskSupervisorFlag(null)
+                .build();
+            org.junit.jupiter.api.Assertions.assertFalse(profile.isTaskSupervisor(), "Should return false when taskSupervisorFlag is null");
+        }
+    }
 }
