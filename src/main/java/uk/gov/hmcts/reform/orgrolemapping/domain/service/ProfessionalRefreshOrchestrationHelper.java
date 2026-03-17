@@ -36,6 +36,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -122,7 +123,8 @@ public class ProfessionalRefreshOrchestrationHelper {
         AssignmentRequest assignmentRequest =
                 createAssignmentRequest(userRefreshQueue, accessTypes);
         ResponseEntity<Object> responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
-        log.info("generateRoleAssignments responseEntity {}", responseEntity);
+        log.info("Count of RoleAssignments for {}={}", userRefreshQueue.getUserId(),
+                assignmentRequest.getRequestedRoles().size());
     }
 
     protected boolean isMinVersionExpired(UserRefreshQueueEntity userRefreshQueue, AccessTypesEntity accessTypes) {
@@ -181,7 +183,8 @@ public class ProfessionalRefreshOrchestrationHelper {
 
         // Create a map of the userAccessTypes from PRD.
         Map<String, Map<String, List<UserAccessType>>> userAccessTypeMap =
-                buildUserAccessTypeMap(userAccessTypes);
+                buildUserAccessTypeMap(Arrays.stream(userRefreshQueue.getOrganisationProfileIds()).toList(),
+                        userAccessTypes);
 
         // Create a filtered map of accessTypes from CCD (matched against the userAccessTypesMap).
         Map<String, Map<String, List<OrganisationProfileAccessType>>> accessTypeMap =
@@ -207,8 +210,13 @@ public class ProfessionalRefreshOrchestrationHelper {
     }
 
     protected Map<String, Map<String, List<UserAccessType>>> buildUserAccessTypeMap(
+            List<String> organisationProfileIdsList,
             List<UserAccessType> userAccessTypes) {
         Map<String, Map<String, List<UserAccessType>>> map = new HashMap<>();
+        // Add the userAccessTypes.organisationProfileIds
+        organisationProfileIdsList.forEach(organizationProfileId ->
+                map.computeIfAbsent(organizationProfileId, k -> new HashMap<>()));
+        // Add the userAccessTypes, nested by organisationProfileId and jurisdictionId.
         userAccessTypes.forEach(userAccessType ->
             // Add the OranisationProfileId.
             map.computeIfAbsent(userAccessType.getOrganisationProfileId(), k -> new HashMap<>())

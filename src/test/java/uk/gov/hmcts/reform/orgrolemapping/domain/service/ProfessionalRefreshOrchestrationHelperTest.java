@@ -98,15 +98,22 @@ class ProfessionalRefreshOrchestrationHelperTest {
     void buildUserAccessTypeMapTest() {
         // GIVEN
         List<UserAccessType> userAccessTypes = List.of(buildUserAccessType(true), buildUserAccessType(false));
+        List<String> organisationProfileIdsList = new ArrayList<>();
+        userAccessTypes.forEach(userAccessType -> {
+            organisationProfileIdsList.add(userAccessType.getOrganisationProfileId());
+        });
+        // Add one to be ignored
+        organisationProfileIdsList.add(ORG_PROFILE4);
 
         // WHEN
         // Map = OrgamisationId, JurisdictionId, UserAccessType
         Map<String, Map<String, List<UserAccessType>>> results =
-                professionalRefreshOrchestrationHelper.buildUserAccessTypeMap(userAccessTypes);
+                professionalRefreshOrchestrationHelper.buildUserAccessTypeMap(
+                        organisationProfileIdsList, userAccessTypes);
 
         // THEN
         assertNotNull(results);
-        assertEquals(userAccessTypes.size(), results.size());
+        assertEquals(organisationProfileIdsList.size(), results.size());
         userAccessTypes.forEach(userAccessType -> {
             assertTrue(results.containsKey(userAccessType.getOrganisationProfileId()));
             assertTrue(results.get(userAccessType.getOrganisationProfileId())
@@ -171,7 +178,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
                             buildOrganisationProfileJurisdiction(JURISDICTION3),
                             buildOrganisationProfileJurisdiction(JURISDICTION4)))
                         .build(),
-                // Igbore orgProfile3
+                // Ignore orgProfile3
                 OrganisationProfile.builder()
                         .organisationProfileId(ORG_PROFILE4)
                         .build()
