@@ -189,7 +189,7 @@ public class ProfessionalRefreshOrchestrationHelper {
 
         // Validate the remaining accessTypes against the rules.
         Map<String, List<OrganisationProfileAccessType>> validatedAccessTypesMap =
-                buiildValidatedAccessTypesMap(userAccessTypeMap, accessTypeMap);
+                buildValidatedAccessTypesMap(userAccessTypeMap, accessTypeMap);
 
         // STEP 6. Process the access type role records for each remaining access type record.
         Set<RoleAssignment> roleAssignments = new HashSet<>();
@@ -271,7 +271,7 @@ public class ProfessionalRefreshOrchestrationHelper {
         return map;
     }
 
-    private Map<String, List<OrganisationProfileAccessType>> buiildValidatedAccessTypesMap(
+    private Map<String, List<OrganisationProfileAccessType>> buildValidatedAccessTypesMap(
             Map<String, Map<String, List<UserAccessType>>> userAccessTypeMap,
             Map<String, Map<String, List<OrganisationProfileAccessType>>> accessTypeMap) {
         Map<String, List<OrganisationProfileAccessType>> map = new HashMap<>();
