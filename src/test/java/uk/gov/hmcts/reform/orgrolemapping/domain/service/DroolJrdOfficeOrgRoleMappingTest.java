@@ -1,11 +1,13 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -24,8 +26,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
-    String workTypes = "hearing_work,upper_tribunal,decision_making_work,applications";
-    String workTypesFP = "hearing_work,decision_making_work,applications";
+    String workTypes = "hearing_work,upper_tribunal,decision_making_work,applications,stf_24w_hearing_work,"
+        + "stf_24w_upper_tribunal,stf_24w_decision_making_work,stf_24w_applications";
+    String workTypesFP = "hearing_work,decision_making_work,applications,stf_24w_hearing_work,"
+        + "stf_24w_decision_making_work,stf_24w_applications";
+
+    @BeforeEach
+    @Override
+    public void setUp() {
+        super.setUp();
+        allProfiles.clear();
+    }
 
     @Test
     void shouldReturnPresidentRoles_withIAC() {
@@ -48,7 +59,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
     private void validatePresidentRoles() {
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -99,7 +110,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -118,7 +129,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -151,7 +162,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
         });
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -185,7 +196,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -224,7 +235,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -255,7 +266,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -291,7 +302,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -328,7 +339,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -364,7 +375,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -396,7 +407,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -429,7 +440,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -462,7 +473,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(3, roleAssignments.size());
@@ -500,7 +511,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -531,7 +542,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", false));
+                buildExecuteKieSession(getFeatureFlags(false));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -552,7 +563,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -592,7 +603,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -630,7 +641,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -675,7 +686,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -728,7 +739,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -769,7 +780,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                         LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -814,7 +825,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                         LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -859,7 +870,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                         LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -907,7 +918,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                         LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -946,7 +957,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                         .startDate(LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -982,7 +993,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                         .startDate(LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -1024,7 +1035,7 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                         .startDate(LocalDateTime.now().minusMonths(10)).build())));
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("iac_jrd_1_0", true));
+                buildExecuteKieSession(getFeatureFlags(true));
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -1042,5 +1053,9 @@ class DroolJrdOfficeOrgRoleMappingTest extends DroolBase {
                 assertEquals("primary location", r.getAttributes().get("primaryLocation").asText());
             }
         });
+    }
+
+    private List<FeatureFlag> getFeatureFlags(Boolean status) {
+        return getAllFeatureFlagsToggleByJurisdiction("IAC", status);
     }
 }
