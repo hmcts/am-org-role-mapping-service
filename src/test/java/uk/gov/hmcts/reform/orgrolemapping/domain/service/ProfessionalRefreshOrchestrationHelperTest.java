@@ -132,17 +132,17 @@ class ProfessionalRefreshOrchestrationHelperTest {
         assertNotNull(results);
         userAccessMap.forEach((organisationProfileId, map) -> {
             assertTrue(ignoredList.contains(organisationProfileId) || results.containsKey(organisationProfileId));
-            map.forEach((jurisdictionId, userAccessTypes) -> {
+            map.forEach((jurisdictionId, userAccessTypes) ->
                 assertTrue(ignoredList.contains(jurisdictionId)
-                        || results.get(organisationProfileId).containsKey(jurisdictionId));
-            });
+                        || results.get(organisationProfileId).containsKey(jurisdictionId))
+            );
         });
         results.forEach((orgamisationProfileId, jurisdictionMap) -> {
             assertTrue(userAccessMap.containsKey(orgamisationProfileId));
-            jurisdictionMap.forEach((jurisdictionId, orgProfileAccessTypes) -> {
+            jurisdictionMap.forEach((jurisdictionId, orgProfileAccessTypes) ->
                 assertTrue(userAccessMap.get(orgamisationProfileId).containsKey(jurisdictionId)
-                        || ignoredList.contains(jurisdictionId));
-            });
+                        || ignoredList.contains(jurisdictionId))
+            );
         });
     }
 
@@ -664,7 +664,11 @@ class ProfessionalRefreshOrchestrationHelperTest {
     private static OrganisationProfileJurisdiction buildOrganisationProfileJurisdiction(String jurisdictionId) {
         return OrganisationProfileJurisdiction.builder()
                 .jurisdictionId(jurisdictionId)
-                .accessTypes(Collections.emptySet())
+                .accessTypes(Set.of(
+                        buildOrganisationProfileAccessType(true, false),
+                        buildOrganisationProfileAccessType(false, true),
+                        buildOrganisationProfileAccessType(false, false),
+                        buildOrganisationProfileAccessType(true, true)))
                 .build();
     }
 
@@ -674,7 +678,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
                 .accessTypeId(UUID.randomUUID().toString())
                 .accessDefault(isDefault)
                 .accessMandatory(isMandatory)
-                .roles(Collections.emptySet())
+                .roles(Set.of(buildAccessTypeRole()))
                 .build();
     }
 
