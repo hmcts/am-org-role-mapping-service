@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildUserAccessProfile;
 
 class CaseWorkerAccessProfileTest {
@@ -175,56 +177,56 @@ class CaseWorkerAccessProfileTest {
     @Nested
     @DisplayName("isCaseAllocator Tests")
     class IsCaseAllocatorTests {
-        @org.junit.jupiter.api.Test
+        @Test
         void shouldReturnTrueWhenCaseAllocatorFlagIsY() {
             CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
                 .caseAllocatorFlag("Y")
                 .build();
-            org.junit.jupiter.api.Assertions.assertTrue(profile.isCaseAllocator(), "Should return true when caseAllocatorFlag is 'Y'");
+            assertTrue(profile.isCaseAllocator(), "Should return true when caseAllocatorFlag is 'Y'");
         }
 
-        @org.junit.jupiter.api.Test
+        @Test
         void shouldReturnFalseWhenCaseAllocatorFlagIsN() {
             CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
                 .caseAllocatorFlag("N")
                 .build();
-            org.junit.jupiter.api.Assertions.assertFalse(profile.isCaseAllocator(), "Should return false when caseAllocatorFlag is not 'Y'");
+            assertFalse(profile.isCaseAllocator(), "Should return false when caseAllocatorFlag is not 'Y'");
         }
 
-        @org.junit.jupiter.api.Test
+        @Test
         void shouldReturnFalseWhenCaseAllocatorFlagIsNull() {
             CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
                 .caseAllocatorFlag(null)
                 .build();
-            org.junit.jupiter.api.Assertions.assertFalse(profile.isCaseAllocator(), "Should return false when caseAllocatorFlag is null");
+            assertFalse(profile.isCaseAllocator(), "Should return false when caseAllocatorFlag is null");
         }
     }
 
     @Nested
     @DisplayName("isTaskSupervisor Tests")
     class IsTaskSupervisorTests {
-        @org.junit.jupiter.api.Test
+        @Test
         void shouldReturnTrueWhenTaskSupervisorFlagIsY() {
             CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
                 .taskSupervisorFlag("Y")
                 .build();
-            org.junit.jupiter.api.Assertions.assertTrue(profile.isTaskSupervisor(), "Should return true when taskSupervisorFlag is 'Y'");
+            assertTrue(profile.isTaskSupervisor(), "Should return true when taskSupervisorFlag is 'Y'");
         }
 
-        @org.junit.jupiter.api.Test
+        @Test
         void shouldReturnFalseWhenTaskSupervisorFlagIsN() {
             CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
                 .taskSupervisorFlag("N")
                 .build();
-            org.junit.jupiter.api.Assertions.assertFalse(profile.isTaskSupervisor(), "Should return false when taskSupervisorFlag is not 'Y'");
+            assertFalse(profile.isTaskSupervisor(), "Should return false when taskSupervisorFlag is not 'Y'");
         }
 
-        @org.junit.jupiter.api.Test
+        @Test
         void shouldReturnFalseWhenTaskSupervisorFlagIsNull() {
             CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
                 .taskSupervisorFlag(null)
                 .build();
-            org.junit.jupiter.api.Assertions.assertFalse(profile.isTaskSupervisor(), "Should return false when taskSupervisorFlag is null");
+            assertFalse(profile.isTaskSupervisor(), "Should return false when taskSupervisorFlag is null");
         }
     }
 }
