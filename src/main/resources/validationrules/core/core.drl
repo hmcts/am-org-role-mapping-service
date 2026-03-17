@@ -1,5 +1,7 @@
 package validationrules.core;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRole;
 
 /*
  * Query which returns all role assignments currently in working memory.
@@ -14,4 +16,12 @@ end;
  */
 query getJudicialOfficeHolders ()
     $judicialOfficeHolder: JudicialOfficeHolder()
+end;
+
+
+/*
+ * Query which returns all IDAM Rp;es currently in working memory.
+ */
+query getIdamRoles ()
+    $idamRole: IdamRole()
 end;
