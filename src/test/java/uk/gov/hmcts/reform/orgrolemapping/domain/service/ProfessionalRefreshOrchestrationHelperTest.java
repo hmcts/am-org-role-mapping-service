@@ -37,8 +37,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -99,9 +97,9 @@ class ProfessionalRefreshOrchestrationHelperTest {
         // GIVEN
         List<UserAccessType> userAccessTypes = List.of(buildUserAccessType(true), buildUserAccessType(false));
         List<String> organisationProfileIdsList = new ArrayList<>();
-        userAccessTypes.forEach(userAccessType -> {
-            organisationProfileIdsList.add(userAccessType.getOrganisationProfileId());
-        });
+        userAccessTypes.forEach(userAccessType ->
+            organisationProfileIdsList.add(userAccessType.getOrganisationProfileId())
+        );
         // Add one to be ignored
         organisationProfileIdsList.add(ORG_PROFILE4);
 
@@ -128,33 +126,42 @@ class ProfessionalRefreshOrchestrationHelperTest {
      */
     @ParameterizedTest
     @MethodSource("buildAccessTypeMapParams")
-    void buildAccessTypeMapTest(Map<String, Map<String, List<UserAccessType>>> userAccessMap,
-                                Set<OrganisationProfile> organisationProfiles, List<String> ignoredList) {
+    void buildAccessTypeMapTest(Map<String, Map<String, List<UserAccessType>>> givenUserAccessMap,
+                                Set<OrganisationProfile> givenOrganisationProfiles,
+                                Map<String, List<String>> expectedResults) {
         // WHEN
         // Map = OrgamisationProfileId, JurisdictionId, OrganisationProfileAccessType
-        Map<String, Map<String, List<OrganisationProfileAccessType>>> results =
-                professionalRefreshOrchestrationHelper.buildAccessTypeMap(userAccessMap, organisationProfiles);
+        Map<String, Map<String, List<OrganisationProfileAccessType>>> actualResults =
+            professionalRefreshOrchestrationHelper.buildAccessTypeMap(givenUserAccessMap, givenOrganisationProfiles);
 
         // THEN
-        assertNotNull(results);
-        userAccessMap.forEach((organisationProfileId, map) -> {
-            assertTrue(ignoredList.contains(organisationProfileId) || results.containsKey(organisationProfileId));
-            map.forEach((jurisdictionId, userAccessTypes) ->
-                assertTrue(ignoredList.contains(jurisdictionId)
-                        || results.get(organisationProfileId).containsKey(jurisdictionId))
-            );
+        assertNotNull(actualResults);
+        assertEquals(expectedResults.size(), actualResults.size(),
+                "Incorrect number of organisation profiles in results");
+        // Validate the expected results against the actual results
+        expectedResults.forEach((organisationProfileId, jurisdictionIds) -> {
+            assertTrue(actualResults.containsKey(organisationProfileId),
+                    String.format("results should contain organisationProfileId %s", organisationProfileId));
+            jurisdictionIds.forEach(jurisdictionId -> {
+                assertTrue(actualResults.get(organisationProfileId).containsKey(jurisdictionId),
+                        String.format("results for organisationProfileId %s should contain jurisdictionId %s",
+                                organisationProfileId, jurisdictionId));
+            });
         });
-        results.forEach((orgamisationProfileId, jurisdictionMap) -> {
-            assertTrue(userAccessMap.containsKey(orgamisationProfileId));
+        // Validate the actual results against the expected results
+        actualResults.forEach((organisationProfileId, jurisdictionMap) -> {
+            assertTrue(expectedResults.containsKey(organisationProfileId),
+                    String.format("results contains unexpected organisationProfileId %s", organisationProfileId));
             jurisdictionMap.forEach((jurisdictionId, orgProfileAccessTypes) ->
-                assertTrue(userAccessMap.get(orgamisationProfileId).containsKey(jurisdictionId)
-                        || ignoredList.contains(jurisdictionId))
+                assertTrue(expectedResults.get(organisationProfileId).contains(jurisdictionId),
+                        String.format("results for organisationProfileId %s contains unexpected jurisdictionId %s",
+                                organisationProfileId, jurisdictionId))
             );
         });
     }
 
     public static Stream<Arguments> buildAccessTypeMapParams() {
-        Map<String, Map<String, List<UserAccessType>>> userAccessMap = Map.of(
+        Map<String, Map<String, List<UserAccessType>>> givenUserAccessMap = Map.of(
                 ORG_PROFILE1, Map.of(
                         JURISDICTION1, List.of(buildUserAccessType(true), buildUserAccessType(false)),
                         JURISDICTION2, List.of(buildUserAccessType(true))
@@ -165,7 +172,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
                 ),
                 ORG_PROFILE3, Collections.emptyMap()
         );
-        Set<OrganisationProfile> organisationProfiles = Set.of(
+        Set<OrganisationProfile> givenOrganisationProfiles = Set.of(
                 OrganisationProfile.builder()
                         .organisationProfileId(ORG_PROFILE1)
                         .jurisdictions(Set.of(
@@ -184,13 +191,18 @@ class ProfessionalRefreshOrchestrationHelperTest {
                         .build()
         );
         return Stream.of(
-                // userAccessMap, organisationProfiles
-                Arguments.of(userAccessMap, organisationProfiles, List.of(ORG_PROFILE3, JURISDICTION2)),
-                Arguments.of(userAccessMap, new HashSet<>(),
-                        List.of(ORG_PROFILE1, ORG_PROFILE2, ORG_PROFILE3,
-                                JURISDICTION1, JURISDICTION2, JURISDICTION3, JURISDICTION4)),
-                Arguments.of(new HashMap<>(), organisationProfiles, new ArrayList<>()),
-                Arguments.of(new HashMap<>(), new HashSet<>(), new ArrayList<>())
+                // Parameters: userAccessMap, organisationProfiles
+
+                // Test1 - Ignore OrgProfile3 and Jurisdiction2. Find OrgProfile1 and OrgProfile2.
+                Arguments.of(givenUserAccessMap, givenOrganisationProfiles,
+                        Map.of(ORG_PROFILE1, List.of(JURISDICTION1),
+                               ORG_PROFILE2, List.of(JURISDICTION3, JURISDICTION4))),
+                // Test 2- Nothing in OrganisationProfiles, so everything should be ignored.
+                Arguments.of(givenUserAccessMap, Collections.emptySet(), Collections.emptyMap()),
+                // Test 3 - Nothing in userAccessMap, so everything should be ignored.
+                Arguments.of(Collections.emptyMap(), givenOrganisationProfiles, Collections.emptyMap()),
+                // Test 4 - Nothing in from userAccessMap / OrganisationProfiles, so everything should be ignored.
+                Arguments.of(Collections.emptyMap(), Collections.emptySet(), Collections.emptyMap())
         );
     }
 

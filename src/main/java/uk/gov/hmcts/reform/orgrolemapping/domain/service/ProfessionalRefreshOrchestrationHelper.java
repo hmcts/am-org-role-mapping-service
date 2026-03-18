@@ -213,18 +213,20 @@ public class ProfessionalRefreshOrchestrationHelper {
             List<String> organisationProfileIdsList,
             List<UserAccessType> userAccessTypes) {
         Map<String, Map<String, List<UserAccessType>>> map = new HashMap<>();
-        // Add the userAccessTypes.organisationProfileIds
+        // Add the userRefreshQueue.organisationProfileIds
         organisationProfileIdsList.forEach(organizationProfileId ->
                 map.computeIfAbsent(organizationProfileId, k -> new HashMap<>()));
         // Add the userAccessTypes, nested by organisationProfileId and jurisdictionId.
-        userAccessTypes.forEach(userAccessType ->
+        userAccessTypes.stream()
+            .filter(userAccessType ->
+                    organisationProfileIdsList.contains(userAccessType.getOrganisationProfileId()))
+            .forEach(userAccessType ->
             // Add the OranisationProfileId.
-            map.computeIfAbsent(userAccessType.getOrganisationProfileId(), k -> new HashMap<>())
+            map.get(userAccessType.getOrganisationProfileId())
                 // Add the jurisdictionId.
                 .computeIfAbsent(userAccessType.getJurisdictionId(), k -> new ArrayList<>())
                 // Add the accessType.
-                .add(userAccessType)
-        );
+                .add(userAccessType));
         return map;
     }
 
