@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +15,6 @@ import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AccessTypeRole;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.ProfessionalUserData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
@@ -122,7 +120,7 @@ public class ProfessionalRefreshOrchestrationHelper {
         }
         AssignmentRequest assignmentRequest =
                 createAssignmentRequest(userRefreshQueue, accessTypes);
-        ResponseEntity<Object> responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
+        roleAssignmentService.createRoleAssignment(assignmentRequest);
         log.info("Count of RoleAssignments for {}={}", userRefreshQueue.getUserId(),
                 assignmentRequest.getRequestedRoles().size());
     }
@@ -174,25 +172,21 @@ public class ProfessionalRefreshOrchestrationHelper {
             return Collections.emptyList();
         }
 
-        RestructuredAccessTypes prmRestructuredAccessTypes =
-                getRestructuredAccessTypes(accessTypes.getAccessTypes());
+        RestructuredAccessTypes ccdAccessTypes = getRestructuredAccessTypes(accessTypes.getAccessTypes());
 
-        Set<OrganisationProfile> organisationProfiles = prmRestructuredAccessTypes.getOrganisationProfiles();
+        List<UserAccessType> prmAccessTypes = JacksonUtils.convertUserAccessTypes(userRefreshQueue.getAccessTypes());
 
-        List<UserAccessType> userAccessTypes = JacksonUtils.convertUserAccessTypes(userRefreshQueue.getAccessTypes());
-
-        // Create a map of the userAccessTypes from PRD.
-        Map<String, Map<String, List<UserAccessType>>> userAccessTypeMap =
-                buildUserAccessTypeMap(Arrays.stream(userRefreshQueue.getOrganisationProfileIds()).toList(),
-                        userAccessTypes);
+        // Create a map of the userAccessTypes from PRM.
+        Map<String, Map<String, List<UserAccessType>>> prmAccessTypeMap =
+                buildUserAccessTypeMap(userRefreshQueue, prmAccessTypes);
 
         // Create a filtered map of accessTypes from CCD (matched against the userAccessTypesMap).
-        Map<String, Map<String, List<OrganisationProfileAccessType>>> accessTypeMap =
-                buildAccessTypeMap(userAccessTypeMap, organisationProfiles);
+        Map<String, Map<String, List<OrganisationProfileAccessType>>> ccdAccessTypeMap =
+                buildAccessTypeMap(prmAccessTypeMap, ccdAccessTypes);
 
         // Validate the remaining accessTypes against the rules.
         Map<String, List<OrganisationProfileAccessType>> validatedAccessTypesMap =
-                buildValidatedAccessTypesMap(userAccessTypeMap, accessTypeMap);
+                buildValidatedAccessTypesMap(prmAccessTypeMap, ccdAccessTypeMap);
 
         // STEP 6. Process the access type role records for each remaining access type record.
         Set<RoleAssignment> roleAssignments = new HashSet<>();
@@ -210,14 +204,15 @@ public class ProfessionalRefreshOrchestrationHelper {
     }
 
     protected Map<String, Map<String, List<UserAccessType>>> buildUserAccessTypeMap(
-            List<String> organisationProfileIdsList,
-            List<UserAccessType> userAccessTypes) {
+            UserRefreshQueueEntity userRefreshQueue, List<UserAccessType> prmAccessTypeMap) {
+        // Get the list of organisationProfileIds.
+        List<String> organisationProfileIdsList = Arrays.stream(userRefreshQueue.getOrganisationProfileIds()).toList();
         Map<String, Map<String, List<UserAccessType>>> map = new HashMap<>();
-        // Add the userRefreshQueue.organisationProfileIds
+        // Add the userRefreshQueue.organisationProfileIds.
         organisationProfileIdsList.forEach(organizationProfileId ->
                 map.computeIfAbsent(organizationProfileId, k -> new HashMap<>()));
         // Add the userAccessTypes, nested by organisationProfileId and jurisdictionId.
-        userAccessTypes.stream()
+        prmAccessTypeMap.stream()
             .filter(userAccessType ->
                     organisationProfileIdsList.contains(userAccessType.getOrganisationProfileId()))
             .forEach(userAccessType ->
@@ -230,17 +225,18 @@ public class ProfessionalRefreshOrchestrationHelper {
         return map;
     }
 
+    /**
+     * STEP 4:-
+     * Filter access_types to contain only data for the organisation profiles in
+     * user_refresh_queue.organisation_profile_ids.
+     */
     protected Map<String, Map<String, List<OrganisationProfileAccessType>>> buildAccessTypeMap(
-            Map<String, Map<String, List<UserAccessType>>> userAccessMap,
-            Set<OrganisationProfile> organisationProfiles) {
+            Map<String, Map<String, List<UserAccessType>>> prmAccessMap,
+            RestructuredAccessTypes ccdAccessTypes) {
         Map<String, Map<String, List<OrganisationProfileAccessType>>> map = new HashMap<>();
-        organisationProfiles.stream()
-
-            // STEP 4. Filter access_types to contain only data for the organisation profiles in
-            // user_refresh_queue.organisation_profile_ids.
-
+        ccdAccessTypes.getOrganisationProfiles().stream()
             .filter(organisationProfile ->
-                    userAccessMap.containsKey(organisationProfile.getOrganisationProfileId()))
+                    prmAccessMap.containsKey(organisationProfile.getOrganisationProfileId()))
             .forEach(organisationProfile -> {
 
                 // STEP 5a. For each remaining access type record, extract the corresponding user_refresh_queue
@@ -252,7 +248,7 @@ public class ProfessionalRefreshOrchestrationHelper {
 
                 organisationProfile.getJurisdictions().stream()
                     .filter(jurisdiction ->
-                            userAccessMap.get(organisationProfile.getOrganisationProfileId())
+                            prmAccessMap.get(organisationProfile.getOrganisationProfileId())
                                     .containsKey(jurisdiction.getJurisdictionId()))
                     .forEach(jurisdiction -> {
 
@@ -263,7 +259,7 @@ public class ProfessionalRefreshOrchestrationHelper {
 
                         jurisdiction.getAccessTypes().stream()
                             .filter(accessType ->
-                                userAccessMap.get(organisationProfile.getOrganisationProfileId())
+                                prmAccessMap.get(organisationProfile.getOrganisationProfileId())
                                     .get(jurisdiction.getJurisdictionId()).stream()
                                     .anyMatch(userAccessType ->
                                             userAccessType.getAccessTypeId().equals(accessType.getAccessTypeId())))
@@ -282,21 +278,21 @@ public class ProfessionalRefreshOrchestrationHelper {
     }
 
     private Map<String, List<OrganisationProfileAccessType>> buildValidatedAccessTypesMap(
-            Map<String, Map<String, List<UserAccessType>>> userAccessTypeMap,
-            Map<String, Map<String, List<OrganisationProfileAccessType>>> accessTypeMap) {
+            Map<String, Map<String, List<UserAccessType>>> prmAccessTypeMap,
+            Map<String, Map<String, List<OrganisationProfileAccessType>>> ccdAccessTypeMap) {
         Map<String, List<OrganisationProfileAccessType>> map = new HashMap<>();
         // Loop the organisationProfileIds
-        accessTypeMap.forEach((organisationProfileId, jurisdictionMap) ->
+        ccdAccessTypeMap.forEach((organisationProfileId, jurisdictionMap) ->
 
             // Loop the jurisdictionIds
-            jurisdictionMap.forEach((jurisdictionId, accessTypes) ->
+            jurisdictionMap.forEach((jurisdictionId, ccdAccessTypes) -> {
 
                 // Loop the accessTypes
-                accessTypes.forEach(accessType -> {
+                ccdAccessTypes.forEach(accessType -> {
 
                     // Get the corresponding userAccessTypes for the organisationProfile and Jurisdiction.
                     List<UserAccessType> userAccessTypes =
-                            userAccessTypeMap.get(organisationProfileId).get(jurisdictionId);
+                            prmAccessTypeMap.get(organisationProfileId).get(jurisdictionId);
 
                     // STEP 5b. Filter the remaining access type records (access_type) using their corresponding
                     // user_access_type records.
@@ -304,8 +300,8 @@ public class ProfessionalRefreshOrchestrationHelper {
                         map.computeIfAbsent(jurisdictionId, k -> new ArrayList<>())
                                 .add(accessType);
                     }
-                })
-            )
+                });
+            })
         );
         return map;
     }

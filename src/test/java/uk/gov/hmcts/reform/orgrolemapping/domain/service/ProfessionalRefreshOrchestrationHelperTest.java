@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfileJurisdiction;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RefreshUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.OrganisationStatus;
@@ -102,12 +103,15 @@ class ProfessionalRefreshOrchestrationHelperTest {
         );
         // Add one to be ignored
         organisationProfileIdsList.add(ORG_PROFILE4);
+        UserRefreshQueueEntity userRefreshQueue = UserRefreshQueueEntity.builder()
+                .organisationProfileIds(organisationProfileIdsList.toArray(new String[0]))
+                .build();
 
         // WHEN
         // Map = OrgamisationId, JurisdictionId, UserAccessType
         Map<String, Map<String, List<UserAccessType>>> results =
                 professionalRefreshOrchestrationHelper.buildUserAccessTypeMap(
-                        organisationProfileIdsList, userAccessTypes);
+                        userRefreshQueue, userAccessTypes);
 
         // THEN
         assertNotNull(results);
@@ -127,12 +131,12 @@ class ProfessionalRefreshOrchestrationHelperTest {
     @ParameterizedTest
     @MethodSource("buildAccessTypeMapParams")
     void buildAccessTypeMapTest(Map<String, Map<String, List<UserAccessType>>> givenUserAccessMap,
-                                Set<OrganisationProfile> givenOrganisationProfiles,
+                                RestructuredAccessTypes givenCcdAccessTypes,
                                 Map<String, List<String>> expectedResults) {
         // WHEN
         // Map = OrgamisationProfileId, JurisdictionId, OrganisationProfileAccessType
         Map<String, Map<String, List<OrganisationProfileAccessType>>> actualResults =
-            professionalRefreshOrchestrationHelper.buildAccessTypeMap(givenUserAccessMap, givenOrganisationProfiles);
+            professionalRefreshOrchestrationHelper.buildAccessTypeMap(givenUserAccessMap, givenCcdAccessTypes);
 
         // THEN
         assertNotNull(actualResults);
@@ -194,15 +198,18 @@ class ProfessionalRefreshOrchestrationHelperTest {
                 // Parameters: userAccessMap, organisationProfiles
 
                 // Test1 - Ignore OrgProfile3 and Jurisdiction2. Find OrgProfile1 and OrgProfile2.
-                Arguments.of(givenUserAccessMap, givenOrganisationProfiles,
+                Arguments.of(givenUserAccessMap, buildRestructuredAccessTypes(givenOrganisationProfiles),
                         Map.of(ORG_PROFILE1, List.of(JURISDICTION1),
                                ORG_PROFILE2, List.of(JURISDICTION3, JURISDICTION4))),
                 // Test 2- Nothing in OrganisationProfiles, so everything should be ignored.
-                Arguments.of(givenUserAccessMap, Collections.emptySet(), Collections.emptyMap()),
+                Arguments.of(givenUserAccessMap, buildRestructuredAccessTypes(Collections.emptySet()),
+                        Collections.emptyMap()),
                 // Test 3 - Nothing in userAccessMap, so everything should be ignored.
-                Arguments.of(Collections.emptyMap(), givenOrganisationProfiles, Collections.emptyMap()),
+                Arguments.of(Collections.emptyMap(), buildRestructuredAccessTypes(givenOrganisationProfiles),
+                        Collections.emptyMap()),
                 // Test 4 - Nothing in from userAccessMap / OrganisationProfiles, so everything should be ignored.
-                Arguments.of(Collections.emptyMap(), Collections.emptySet(), Collections.emptyMap())
+                Arguments.of(Collections.emptyMap(), buildRestructuredAccessTypes(Collections.emptySet()),
+                        Collections.emptyMap())
         );
     }
 
@@ -670,6 +677,12 @@ class ProfessionalRefreshOrchestrationHelperTest {
                 + "\"accessMandatory\": true}],"
                 + "\"jurisdictionId\": \"CIVIL\"}], "
                 + "\"organisationProfileId\": \"SOLICITOR_PROFILE\"}]}";
+    }
+
+    private static RestructuredAccessTypes buildRestructuredAccessTypes(Set<OrganisationProfile> organisationProfiles) {
+        return RestructuredAccessTypes.builder()
+                .organisationProfiles(organisationProfiles)
+                .build();
     }
 
     private static UserAccessType buildUserAccessType(boolean isEnabled) {
