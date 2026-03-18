@@ -132,7 +132,7 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $jap: JudicialAccessProfile(hasAppointmentCode(Appointment.CIRCUIT_JUDGE)
                                         || hasAppointmentCode(Appointment.CIRCUIT_JUDGE_SITTING_IN_RETIREMENT)
-                                        || hasAppointmentCode(Appointment.DEPUTY_CIRCUIT_JUDGE)
+                                        || hasAppointmentCode(Appointment.DEPUTY_CIRCUIT_JUDGE),
                                 isFeePaid(),
                                 hasValidEndDate(),
                                 hasValidAuthorisation(Jurisdiction.POSSESSIONS))
@@ -169,7 +169,7 @@ when
                                         || hasAppointmentCode(Appointment.REGIONAL_EMPLOYMENT_JUDGE)
                                         || hasAppointmentCode(Appointment.SENIOR_MASTER)
                                         || hasValidAdditionalRole(AdditionalRole.DESIGNATED_CIVIL_JUDGE)
-                                        || hasValidAdditionalRole(AdditionalRole.ACTING_DESIGNATED_CIVIL_JUDGE)
+                                        || hasValidAdditionalRole(AdditionalRole.ACTING_DESIGNATED_CIVIL_JUDGE),
                                 isSalaried(),
                                 hasValidEndDate(),
                                 hasValidAuthorisation(Jurisdiction.POSSESSIONS))
