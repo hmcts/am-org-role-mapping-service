@@ -233,7 +233,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
      */
     @ParameterizedTest
     @MethodSource("isAccessTypeDefaultedParams")
-    void isAccessTypeDefaultedTest(boolean isDefault, List<UserAccessType> accessTypes,
+    void isAccessTypeDefaultedTest(boolean isDefault, UserAccessType accessType,
                                    boolean expectedResult) {
         OrganisationProfileAccessType orgProfileAccessType = OrganisationProfileAccessType.builder()
                 .accessTypeId("accessType1")
@@ -241,25 +241,21 @@ class ProfessionalRefreshOrchestrationHelperTest {
                 .accessDefault(isDefault)
                 .build();
         boolean result = professionalRefreshOrchestrationHelper
-                .isAccessTypeDefaulted(orgProfileAccessType, accessTypes);
+                .isAccessTypeDefaulted(orgProfileAccessType, accessType);
         assertEquals(expectedResult, result);
     }
 
     public static Stream<Arguments> isAccessTypeDefaultedParams() {
-        List<UserAccessType> enabledUserAccessType = List.of(buildUserAccessType(true));
-        List<UserAccessType> disabledUserAccessType = List.of(buildUserAccessType(false));
-        List<UserAccessType> bothUserAccessTypes =
-                List.of(buildUserAccessType(true), buildUserAccessType(false));
+        UserAccessType enabledUserAccessType = buildUserAccessType(true);
+        UserAccessType disabledUserAccessType = buildUserAccessType(false);
         return Stream.of(
                 // isDefault, UserAccessTypes, expectedResult
                 Arguments.of(true, enabledUserAccessType, false),
                 Arguments.of(true, disabledUserAccessType, false),
-                Arguments.of(true, bothUserAccessTypes, false),
-                Arguments.of(true, Collections.emptyList(), true),
+                Arguments.of(true, null, true),
                 Arguments.of(false, enabledUserAccessType, false),
                 Arguments.of(false, disabledUserAccessType, false),
-                Arguments.of(false, bothUserAccessTypes, false),
-                Arguments.of(false, Collections.emptyList(), false)
+                Arguments.of(false, null, false)
         );
     }
 
@@ -268,30 +264,27 @@ class ProfessionalRefreshOrchestrationHelperTest {
      */
     @ParameterizedTest
     @MethodSource("isAccessTypeEnabledParams")
-    void isAccessTypeEnabledTest(List<UserAccessType> accessTypes,
+    void isAccessTypeEnabledTest(UserAccessType accessType,
                                    boolean expectedResult) {
         boolean result = professionalRefreshOrchestrationHelper
-                .isAccessTypeEnabled(accessTypes);
+                .isAccessTypeEnabled(accessType);
         assertEquals(expectedResult, result);
     }
 
     public static Stream<Arguments> isAccessTypeEnabledParams() {
-        List<UserAccessType> enabledUserAccessType = List.of(buildUserAccessType(true));
-        List<UserAccessType> disabledUserAccessType = List.of(buildUserAccessType(false));
-        List<UserAccessType> bothUserAccessTypes =
-                List.of(buildUserAccessType(true), buildUserAccessType(false));
+        UserAccessType enabledUserAccessType = buildUserAccessType(true);
+        UserAccessType disabledUserAccessType = buildUserAccessType(false);
         return Stream.of(
                 // UserAccessTypes, expectedResult
                 Arguments.of(enabledUserAccessType, true),
                 Arguments.of(disabledUserAccessType, false),
-                Arguments.of(bothUserAccessTypes, true),
-                Arguments.of(Collections.emptyList(), false)
+                Arguments.of(null, false)
         );
     }
 
     @ParameterizedTest
     @MethodSource("isAccessTypeValidParams")
-    void isAccessTypeValidTest(boolean isDefault, boolean isMandatory, List<UserAccessType> accessTypes,
+    void isAccessTypeValidTest(boolean isDefault, boolean isMandatory, UserAccessType accessType,
                                boolean expectedResult) {
         OrganisationProfileAccessType orgProfileAccessType = OrganisationProfileAccessType.builder()
                 .accessTypeId("accessType1")
@@ -299,7 +292,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
                 .accessDefault(isDefault)
                 .build();
         boolean result = professionalRefreshOrchestrationHelper
-                .isAccessTypeValid(orgProfileAccessType, accessTypes);
+                .isAccessTypeValid(orgProfileAccessType, accessType);
         assertEquals(expectedResult, result);
     }
 

@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
@@ -288,22 +287,38 @@ public class ProfessionalRefreshOrchestrationHelper {
             jurisdictionMap.forEach((jurisdictionId, ccdAccessTypes) -> {
 
                 // Loop the accessTypes
-                ccdAccessTypes.forEach(accessType -> {
+                ccdAccessTypes.forEach(ccdAccessType -> {
 
                     // Get the corresponding userAccessTypes for the organisationProfile and Jurisdiction.
-                    List<UserAccessType> userAccessTypes =
-                            prmAccessTypeMap.get(organisationProfileId).get(jurisdictionId);
+                    UserAccessType userAccessType = findUserAccessTypeInMap(prmAccessTypeMap,
+                            organisationProfileId, jurisdictionId, ccdAccessType.getAccessTypeId());
 
                     // STEP 5b. Filter the remaining access type records (access_type) using their corresponding
                     // user_access_type records.
-                    if (isAccessTypeValid(accessType, userAccessTypes)) {
+                    if (isAccessTypeValid(ccdAccessType, userAccessType)) {
                         map.computeIfAbsent(jurisdictionId, k -> new ArrayList<>())
-                                .add(accessType);
+                                .add(ccdAccessType);
                     }
                 });
             })
         );
         return map;
+    }
+
+    private UserAccessType findUserAccessTypeInMap(Map<String, Map<String, List<UserAccessType>>> prmAccessTypeMap,
+                                    String organisationProfileId, String jurisdictionId, String accessTypeId) {
+
+        UserAccessType result = null;
+        if (prmAccessTypeMap.containsKey(organisationProfileId)
+            && prmAccessTypeMap.get(organisationProfileId).containsKey(jurisdictionId)) {
+            // Get the accessType from the map
+            result = prmAccessTypeMap.get(organisationProfileId).get(jurisdictionId)
+                    .stream()
+                    .filter(userAccessType -> userAccessType.getAccessTypeId().equals(accessTypeId))
+                    .findFirst()
+                    .orElse(null);
+        }
+        return result;
     }
 
     private List<RoleAssignment> createRoleAssignmentsForRole(AccessTypeRole role,
@@ -335,10 +350,10 @@ public class ProfessionalRefreshOrchestrationHelper {
     }
 
     protected boolean isAccessTypeValid(OrganisationProfileAccessType accessType,
-                                        List<UserAccessType> userAccessTypes) {
+                                        UserAccessType userAccessType) {
         return isAccessTypeMandatory(accessType)
-                || isAccessTypeDefaulted(accessType, userAccessTypes)
-                || isAccessTypeEnabled(userAccessTypes);
+                || isAccessTypeDefaulted(accessType, userAccessType)
+                || isAccessTypeEnabled(userAccessType);
     }
 
     protected boolean isAccessTypeMandatory(OrganisationProfileAccessType accessType) {
@@ -346,13 +361,12 @@ public class ProfessionalRefreshOrchestrationHelper {
     }
 
     protected boolean isAccessTypeDefaulted(OrganisationProfileAccessType accessType,
-                                            List<UserAccessType> userAccessTypes) {
-        return accessType.isAccessDefault() && CollectionUtils.isEmpty(userAccessTypes);
+                                            UserAccessType userAccessType) {
+        return accessType.isAccessDefault() && userAccessType == null;
     }
 
-    protected boolean isAccessTypeEnabled(List<UserAccessType> accessTypes) {
-        return accessTypes != null && accessTypes.stream()
-                .anyMatch(userAccessType -> Boolean.TRUE.equals(userAccessType.getEnabled()));
+    protected boolean isAccessTypeEnabled(UserAccessType accessType) {
+        return accessType != null && Boolean.TRUE.equals(accessType.getEnabled());
     }
 
     private RoleAssignment createRoleAssignment(String roleName, String userId, String jurisdictionId,
