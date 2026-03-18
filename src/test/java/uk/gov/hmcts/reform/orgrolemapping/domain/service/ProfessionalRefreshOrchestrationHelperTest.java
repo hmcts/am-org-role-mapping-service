@@ -297,31 +297,25 @@ class ProfessionalRefreshOrchestrationHelperTest {
     }
 
     public static Stream<Arguments> isAccessTypeValidParams() {
-        List<UserAccessType> enabledUserAccessType = List.of(buildUserAccessType(true));
-        List<UserAccessType> disabledUserAccessType = List.of(buildUserAccessType(false));
-        List<UserAccessType> bothUserAccessTypes =
-                List.of(buildUserAccessType(true), buildUserAccessType(false));
+        UserAccessType enabledUserAccessType = buildUserAccessType(true);
+        UserAccessType disabledUserAccessType = buildUserAccessType(false);
         return Stream.of(
                 // isDefault, isMandatory, UserAccessTypes, expectedResult
                 Arguments.of(true, true, enabledUserAccessType, true),
                 Arguments.of(true, true, disabledUserAccessType, true),
-                Arguments.of(true, true, bothUserAccessTypes, true),
-                Arguments.of(true, true, Collections.emptyList(), true),
+                Arguments.of(true, true, null, true),
 
                 Arguments.of(true, false, enabledUserAccessType, true),
                 Arguments.of(true, false, disabledUserAccessType, false),
-                Arguments.of(true, false, bothUserAccessTypes, true),
-                Arguments.of(true, false, Collections.emptyList(), true),
+                Arguments.of(true, false, null, true),
 
                 Arguments.of(false, true, enabledUserAccessType, true),
                 Arguments.of(false, true, disabledUserAccessType, true),
-                Arguments.of(false, true, bothUserAccessTypes, true),
-                Arguments.of(false, true, Collections.emptyList(), true),
+                Arguments.of(false, true, null, true),
 
                 Arguments.of(false, false, enabledUserAccessType, true),
                 Arguments.of(false, false, disabledUserAccessType, false),
-                Arguments.of(false, false, bothUserAccessTypes, true),
-                Arguments.of(false, false, Collections.emptyList(), false)
+                Arguments.of(false, false, null, false)
         );
     }
 
