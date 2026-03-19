@@ -251,10 +251,8 @@ when
     $joh: JudicialOfficeHolder(office in (Office.Possessions.POSSESSION_CIRCUIT_JUDGE_SALARIED))
 then
     Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
-    $bk.getLocationId():$joh.getPrimaryLocation()));
-    attribute.put(Attributes.Name.BASE_LOCATION, JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
-    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
     attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.FEE_PAID));
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("appeals"));
