@@ -94,7 +94,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
      * BUILD MAP: filter the user access types.
      */
     @Test
-    void buildUserAccessTypeMapTest() {
+    void buildUserAccessTypeMapTest() throws JsonProcessingException {
         // GIVEN
         List<UserAccessType> userAccessTypes = List.of(buildUserAccessType(true), buildUserAccessType(false));
         List<String> organisationProfileIdsList = new ArrayList<>();
@@ -105,13 +105,14 @@ class ProfessionalRefreshOrchestrationHelperTest {
         organisationProfileIdsList.add(ORG_PROFILE4);
         UserRefreshQueueEntity userRefreshQueue = UserRefreshQueueEntity.builder()
                 .organisationProfileIds(organisationProfileIdsList.toArray(new String[0]))
+                .accessTypes(JacksonUtils.writeValueAsPrettyJson(userAccessTypes))
                 .build();
 
         // WHEN
         // Map = OrgamisationId, JurisdictionId, UserAccessType
         Map<String, Map<String, List<UserAccessType>>> results =
                 professionalRefreshOrchestrationHelper.buildUserAccessTypeMap(
-                        userRefreshQueue, userAccessTypes);
+                        userRefreshQueue);
 
         // THEN
         assertNotNull(results);
@@ -146,11 +147,11 @@ class ProfessionalRefreshOrchestrationHelperTest {
         expectedResults.forEach((organisationProfileId, jurisdictionIds) -> {
             assertTrue(actualResults.containsKey(organisationProfileId),
                     String.format("results should contain organisationProfileId %s", organisationProfileId));
-            jurisdictionIds.forEach(jurisdictionId -> {
+            jurisdictionIds.forEach(jurisdictionId ->
                 assertTrue(actualResults.get(organisationProfileId).containsKey(jurisdictionId),
                         String.format("results for organisationProfileId %s should contain jurisdictionId %s",
-                                organisationProfileId, jurisdictionId));
-            });
+                                organisationProfileId, jurisdictionId))
+            );
         });
         // Validate the actual results against the expected results
         actualResults.forEach((organisationProfileId, jurisdictionMap) -> {
