@@ -26,7 +26,7 @@ public enum JobTitle {
     WLU_ADMIN("WLU Administrator", "20"),
     WLU_TEAM_LEADER("WLU Team Leader", "21"),
     HRS_TEAM_LEADER("HRS Team Leader", "22"),
-    HMCTS_JUDICIARY("hmcts- Judiciary ", "23"),
+    HMCTS_JUDICIARY("hmcts-Judiciary ", "23"),
     FEE_PAID_JUDGE("fee-paid-judge", "24");
 
     private final String roleName;
