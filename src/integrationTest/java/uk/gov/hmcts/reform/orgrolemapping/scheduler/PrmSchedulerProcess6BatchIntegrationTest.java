@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
@@ -36,7 +35,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
-    void testCreateRole_accessVersion() throws JsonProcessingException {
+    void testCreateRole_accessVersion() {
         runTest(1, false, false, EndStatus.FAILED);
     }
 
@@ -49,7 +48,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_user_refresh_queue_orgstatus_pending.sql"
     })
-    void testCreateRole_orgstatus_pending() throws JsonProcessingException {
+    void testCreateRole_orgstatus_pending() {
         testCreateRoleAssignment(false, false);
     }
 
@@ -62,7 +61,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_deleted.sql"
     })
-    void testDeleteRole() throws JsonProcessingException {
+    void testDeleteRole() {
         testCreateRoleAssignment(false, false);
     }
 
@@ -76,7 +75,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_version1.sql"
     })
-    void testCreateRole_partialSuccess() throws JsonProcessingException {
+    void testCreateRole_partialSuccess() {
         runTest(2, true, true, EndStatus.PARTIAL_SUCCESS);
     }
 
@@ -89,7 +88,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_retry.sql"
     })
-    void testCreateRole_retry() throws JsonProcessingException {
+    void testCreateRole_retry() {
         runTest(1, false, false, EndStatus.FAILED);
         assertRetry(1);
     }
@@ -100,7 +99,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_retryLimit.sql"
     })
-    void testCreateRole_retryLimit() throws JsonProcessingException {
+    void testCreateRole_retryLimit() {
         runTest(1, false, false, EndStatus.FAILED);
         assertRetry(1);
     }
