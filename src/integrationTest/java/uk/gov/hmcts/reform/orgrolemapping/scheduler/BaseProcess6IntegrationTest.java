@@ -73,66 +73,55 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
 
 
     /**
-     *  Scenario 16:
-     *  accessDefault = N, accessMandatory = N, groupAccessEnabled = N, PRDenabled = N.
+     *  Scenario 1:
+     *  accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_nnn.sql",
-        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
-    })
-    void testCreateRole_S16_nnnn() throws JsonProcessingException {
-        testCreateRoleAssignment(false, false);
-    }
-
-    /**
-     *  Scenario 15:
-     *  accessDefault = N, accessMandatory = N, groupAccessEnabled = N, PRDenabled = Y.
-     */
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_nnn.sql",
+        "classpath:sql/prm/access_types/insert_accesstypes_yyy.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
-    void testCreateRole_S15_nnny() throws JsonProcessingException {
-        testCreateRoleAssignment(true, false);
+    void testCreateRole_S01_yyyy() throws JsonProcessingException {
+        testCreateRoleAssignment(true, true);
     }
 
     // repeat with no role-names
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_nnn_no_rolenames.sql",
+        "classpath:sql/prm/access_types/insert_accesstypes_yyy_no_rolenames.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
-    void testCreateRole_S15_nnny_no_rolenames() throws JsonProcessingException {
+    void testCreateRole_S01_yyyy_no_rolenames() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
     }
 
     /**
-     *  Scenario 8:
-     *  accessDefault = Y, accessMandatory = N, groupAccessEnabled = N, PRDenabled = N.
+     *  Scenario 2:
+     *  accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_ynn.sql",
+        "classpath:sql/prm/access_types/insert_accesstypes_yyy.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
-    void testCreateRole_S08_ynnn() throws JsonProcessingException {
-        testCreateRoleAssignment(false, false);
+    void testCreateRole_S02_yyyn() throws JsonProcessingException {
+        testCreateRoleAssignment(true, true);
     }
 
-    // repeat with no role-names
+    /**
+     *  Scenario 2a:
+     *  accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = Null.
+     */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_ynn_no_rolenames.sql",
+        "classpath:sql/prm/access_types/insert_accesstypes_yyy.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_missing.sql"
     })
-    void testCreateRole_S08_ynnn_no_rolenames() throws JsonProcessingException {
+    void testCreateRole_S02a_yyy_null() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
     }
 
@@ -187,52 +176,77 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
     }
 
     /**
-     *  Scenario 11:
-     *  accessDefault = N, accessMandatory = Y, groupAccessEnabled = N, PRDenabled = Y.
+     *  Scenario 5:
+     *  accessDefault = Y, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_nyn.sql",
+        "classpath:sql/prm/access_types/insert_accesstypes_yny.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
-    void testCreateRole_S11_nyny() throws JsonProcessingException {
-        testCreateRoleAssignment(true, false);
+    void testCreateRole_S05_ynyy() throws JsonProcessingException {
+        testCreateRoleAssignment(true, true);
     }
 
     // repeat with no role-names
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_nyn_no_rolenames.sql",
+        "classpath:sql/prm/access_types/insert_accesstypes_yny_no_rolenames.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
-    void testCreateRole_S11_nyny_no_rolenames() throws JsonProcessingException {
+    void testCreateRole_S05_ynyy_no_rolenames() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
     }
 
     /**
-     *  Scenario 12:
-     *  accessDefault = N, accessMandatory = Y, groupAccessEnabled = N, PRDenabled = N.
+     *  Scenario 6:
+     *  accessDefault = Y, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_nyn.sql",
+        "classpath:sql/prm/access_types/insert_accesstypes_yny.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
-    void testCreateRole_S12_nynn() throws JsonProcessingException {
-        testCreateRoleAssignment(true, false);
+    void testCreateRole_S06_ynyn() throws JsonProcessingException {
+        testCreateRoleAssignment(false, false);
     }
 
     // repeat with no role-names
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_nyn_no_rolenames.sql",
+        "classpath:sql/prm/access_types/insert_accesstypes_yny_no_rolenames.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
-    void testCreateRole_S12_nynn_no_rolenames() throws JsonProcessingException {
+    void testCreateRole_S06_ynyn_no_rolenames() throws JsonProcessingException {
+        testCreateRoleAssignment(false, false);
+    }
+
+    /**
+     *  Scenario 8:
+     *  accessDefault = Y, accessMandatory = N, groupAccessEnabled = N, PRDenabled = N.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_ynn.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
+    })
+    void testCreateRole_S08_ynnn() throws JsonProcessingException {
+        testCreateRoleAssignment(false, false);
+    }
+
+    // repeat with no role-names
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_ynn_no_rolenames.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
+    })
+    void testCreateRole_S08_ynnn_no_rolenames() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
     }
 
@@ -286,6 +300,56 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
     }
 
     /**
+     *  Scenario 11:
+     *  accessDefault = N, accessMandatory = Y, groupAccessEnabled = N, PRDenabled = Y.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_nyn.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
+    })
+    void testCreateRole_S11_nyny() throws JsonProcessingException {
+        testCreateRoleAssignment(true, false);
+    }
+
+    // repeat with no role-names
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_nyn_no_rolenames.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
+    })
+    void testCreateRole_S11_nyny_no_rolenames() throws JsonProcessingException {
+        testCreateRoleAssignment(false, false);
+    }
+
+    /**
+     *  Scenario 12:
+     *  accessDefault = N, accessMandatory = Y, groupAccessEnabled = N, PRDenabled = N.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_nyn.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
+    })
+    void testCreateRole_S12_nynn() throws JsonProcessingException {
+        testCreateRoleAssignment(true, false);
+    }
+
+    // repeat with no role-names
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_nyn_no_rolenames.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
+    })
+    void testCreateRole_S12_nynn_no_rolenames() throws JsonProcessingException {
+        testCreateRoleAssignment(false, false);
+    }
+
+    /**
      *  Scenario 13:
      *  accessDefault = N, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = Y.
      */
@@ -325,105 +389,41 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
     }
 
     /**
-     *  Scenario 1:
-     *  accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = Y.
+     *  Scenario 15:
+     *  accessDefault = N, accessMandatory = N, groupAccessEnabled = N, PRDenabled = Y.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_yyy.sql",
+        "classpath:sql/prm/access_types/insert_accesstypes_nnn.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
-    void testCreateRole_S01_yyyy() throws JsonProcessingException {
-        testCreateRoleAssignment(true, true);
+    void testCreateRole_S15_nnny() throws JsonProcessingException {
+        testCreateRoleAssignment(true, false);
     }
 
     // repeat with no role-names
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_yyy_no_rolenames.sql",
+        "classpath:sql/prm/access_types/insert_accesstypes_nnn_no_rolenames.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
-    void testCreateRole_S01_yyyy_no_rolenames() throws JsonProcessingException {
+    void testCreateRole_S15_nnny_no_rolenames() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
     }
 
     /**
-     *  Scenario 2:
-     *  accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = N.
+     *  Scenario 16:
+     *  accessDefault = N, accessMandatory = N, groupAccessEnabled = N, PRDenabled = N.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_yyy.sql",
+        "classpath:sql/prm/access_types/insert_accesstypes_nnn.sql",
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
     })
-    void testCreateRole_S02_yyyn() throws JsonProcessingException {
-        testCreateRoleAssignment(true, true);
-    }
-
-    /**
-     *  Scenario 2a:
-     *  accessDefault = Y, accessMandatory = Y, groupAccessEnabled = Y, PRDenabled = Null.
-     */
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_yyy.sql",
-        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_missing.sql"
-    })
-    void testCreateRole_S02a_yyy_null() throws JsonProcessingException {
-        testCreateRoleAssignment(false, false);
-    }
-
-    /**
-     *  Scenario 5:
-     *  accessDefault = Y, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = Y.
-     */
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_yny.sql",
-        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
-    })
-    void testCreateRole_S05_ynyy() throws JsonProcessingException {
-        testCreateRoleAssignment(true, true);
-    }
-
-    // repeat with no role-names
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_yny_no_rolenames.sql",
-        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
-    })
-    void testCreateRole_S05_ynyy_no_rolenames() throws JsonProcessingException {
-        testCreateRoleAssignment(false, false);
-    }
-
-    /**
-     *  Scenario 6:
-     *  accessDefault = Y, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = N.
-     */
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_yny.sql",
-        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
-    })
-    void testCreateRole_S06_ynyn() throws JsonProcessingException {
-        testCreateRoleAssignment(false, false);
-    }
-
-    // repeat with no role-names
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/prm/access_types/insert_accesstypes_yny_no_rolenames.sql",
-        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
-        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_disabled.sql"
-    })
-    void testCreateRole_S06_ynyn_no_rolenames() throws JsonProcessingException {
+    void testCreateRole_S16_nnnn() throws JsonProcessingException {
         testCreateRoleAssignment(false, false);
     }
 
