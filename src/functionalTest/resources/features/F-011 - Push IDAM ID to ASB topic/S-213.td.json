@@ -1,6 +1,6 @@
 {
   "_guid_": "S-213",
-  "title": "must successfully create judicial role mapping for Tribunal Member - Fee Paid appointment",
+  "title": "must successfully create org role mapping from Judicial Azure Service Bus for Tribunal Member - Fee Paid appointment",
   "_extends_": "F-011_Test_Data_Base",
   "specs": [
     "contains the actorIds of the user just published"
