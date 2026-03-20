@@ -134,7 +134,8 @@ class ProfessionalRefreshOrchestrationHelperTest {
 
         // THEN
         assertNotNull(results);
-        assertEquals(organisationProfileIdsList.size(), results.size());
+        // NB: subtract 1 to ignore the one org profile that should be ignored (i.e. orgProfile4)
+        assertEquals(organisationProfileIdsList.size() - 1, results.size());
         userAccessTypes.forEach(userAccessType -> {
             assertTrue(results.containsKey(userAccessType.getOrganisationProfileId()));
             assertTrue(results.get(userAccessType.getOrganisationProfileId())
