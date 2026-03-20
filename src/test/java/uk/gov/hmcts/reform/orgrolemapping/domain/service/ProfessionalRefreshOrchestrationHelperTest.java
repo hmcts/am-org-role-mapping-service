@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.runner.RunWith;
@@ -16,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
@@ -47,11 +49,17 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.OrganisationStatus.ACTIVE;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrationHelper.ACCESS_TYPES_VERSION_INVALID;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator.NO_ACCESS_TYPES_FOUND;
 
 @RunWith(MockitoJUnitRunner.class)
 class ProfessionalRefreshOrchestrationHelperTest {
@@ -60,11 +68,20 @@ class ProfessionalRefreshOrchestrationHelperTest {
     private static final String ORG_PROFILE2 = "orgProfile2";
     private static final String ORG_PROFILE3 = "orgProfile3";
     private static final String ORG_PROFILE4 = "orgProfile4";
+
     private static final String JURISDICTION1 = "jurisdiction1";
     private static final String JURISDICTION2 = "jurisdiction2";
     private static final String JURISDICTION3 = "jurisdiction3";
     private static final String JURISDICTION4 = "jurisdiction4";
 
+    private static final String ACCESS_TYPE_ID1 = "accessTypeId1";
+    private static final String ACCESS_TYPE_ID1_2 = "accessTypeId1.2";
+    private static final String ACCESS_TYPE_ID2 = "accessTypeId2";
+    private static final String ACCESS_TYPE_ID3 = "accessTypeId3";
+    private static final String ACCESS_TYPE_ID4 = "accessTypeId4";
+
+    private static final String GROUP_ROLE_NAME = "CIVIL_Group_Role1";
+    private static final String ORG_ROLE_NAME = "CIVIL_Org_Role1";
 
     @Mock
     private UserRefreshQueueRepository userRefreshQueueRepository;
@@ -95,6 +112,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
      */
     @Test
     void buildUserAccessTypeMapTest() throws JsonProcessingException {
+
         // GIVEN
         List<UserAccessType> userAccessTypes = List.of(buildUserAccessType(true), buildUserAccessType(false));
         List<String> organisationProfileIdsList = new ArrayList<>();
@@ -109,7 +127,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
                 .build();
 
         // WHEN
-        // Map = OrgamisationId, JurisdictionId, UserAccessType
+        // Map = OrganisationId, JurisdictionId, UserAccessType
         Map<String, Map<String, List<UserAccessType>>> results =
                 professionalRefreshOrchestrationHelper.buildUserAccessTypeMap(
                         userRefreshQueue);
@@ -127,17 +145,23 @@ class ProfessionalRefreshOrchestrationHelperTest {
     }
 
     /**
-     * BUILD MAP: filter the organisation profile access types.
+     * BUILD MAP: filter access types by user's OrganisationProfileIds.
      */
     @ParameterizedTest
     @MethodSource("buildAccessTypeMapParams")
-    void buildAccessTypeMapTest(Map<String, Map<String, List<UserAccessType>>> givenUserAccessMap,
+    void buildAccessTypeMapTest(String[] givenUsersOrganisationProfileIds,
                                 RestructuredAccessTypes givenCcdAccessTypes,
                                 Map<String, List<String>> expectedResults) {
+
+        // GIVEN
+        UserRefreshQueueEntity userRefreshQueue = UserRefreshQueueEntity.builder()
+                .organisationProfileIds(givenUsersOrganisationProfileIds)
+                .build();
+
         // WHEN
-        // Map = OrgamisationProfileId, JurisdictionId, OrganisationProfileAccessType
+        // Map = OrganisationProfileId, JurisdictionId, OrganisationProfileAccessType
         Map<String, Map<String, List<OrganisationProfileAccessType>>> actualResults =
-            professionalRefreshOrchestrationHelper.buildAccessTypeMap(givenUserAccessMap, givenCcdAccessTypes);
+            professionalRefreshOrchestrationHelper.buildAccessTypeMap(givenCcdAccessTypes, userRefreshQueue);
 
         // THEN
         assertNotNull(actualResults);
@@ -166,17 +190,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
     }
 
     public static Stream<Arguments> buildAccessTypeMapParams() {
-        Map<String, Map<String, List<UserAccessType>>> givenUserAccessMap = Map.of(
-                ORG_PROFILE1, Map.of(
-                        JURISDICTION1, List.of(buildUserAccessType(true), buildUserAccessType(false)),
-                        JURISDICTION2, List.of(buildUserAccessType(true))
-                ),
-                ORG_PROFILE2, Map.of(
-                        JURISDICTION3, List.of(buildUserAccessType(false)),
-                        JURISDICTION4, List.of(buildUserAccessType(false))
-                ),
-                ORG_PROFILE3, Collections.emptyMap()
-        );
+        String[] givenUsersOrganisationProfileIds = {ORG_PROFILE1, ORG_PROFILE2, ORG_PROFILE3};
         Set<OrganisationProfile> givenOrganisationProfiles = Set.of(
                 OrganisationProfile.builder()
                         .organisationProfileId(ORG_PROFILE1)
@@ -196,21 +210,94 @@ class ProfessionalRefreshOrchestrationHelperTest {
                         .build()
         );
         return Stream.of(
-                // Parameters: userAccessMap, organisationProfiles
+                // Parameters:
+                // * User's OrganisationProfileIds,
+                // * CCD's AccessTypes
+                // * expectedResults (OrgProfileId, List of JurisdictionIds)
 
                 // Test1 - Ignore OrgProfile3 and Jurisdiction2. Find OrgProfile1 and OrgProfile2.
-                Arguments.of(givenUserAccessMap, buildRestructuredAccessTypes(givenOrganisationProfiles),
+                Arguments.of(givenUsersOrganisationProfileIds, buildRestructuredAccessTypes(givenOrganisationProfiles),
                         Map.of(ORG_PROFILE1, List.of(JURISDICTION1),
                                ORG_PROFILE2, List.of(JURISDICTION3, JURISDICTION4))),
                 // Test 2- Nothing in OrganisationProfiles, so everything should be ignored.
-                Arguments.of(givenUserAccessMap, buildRestructuredAccessTypes(Collections.emptySet()),
+                Arguments.of(givenUsersOrganisationProfileIds, buildRestructuredAccessTypes(Collections.emptySet()),
                         Collections.emptyMap()),
-                // Test 3 - Nothing in userAccessMap, so everything should be ignored.
-                Arguments.of(Collections.emptyMap(), buildRestructuredAccessTypes(givenOrganisationProfiles),
+                // Test 3 - Nothing in userOrgProfileList, so everything should be ignored.
+                Arguments.of(new String[] {}, buildRestructuredAccessTypes(givenOrganisationProfiles),
                         Collections.emptyMap()),
-                // Test 4 - Nothing in from userAccessMap / OrganisationProfiles, so everything should be ignored.
-                Arguments.of(Collections.emptyMap(), buildRestructuredAccessTypes(Collections.emptySet()),
+                // Test 4 - Null userOrgProfileList, so everything should be ignored.
+                Arguments.of(null, buildRestructuredAccessTypes(givenOrganisationProfiles),
+                        Collections.emptyMap()),
+                // Test 5 - Nothing in userOrgProfileList / OrganisationProfiles, so everything should be ignored.
+                Arguments.of(new String[] {}, buildRestructuredAccessTypes(Collections.emptySet()),
                         Collections.emptyMap())
+        );
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("findUserAccessTypeInMapParams")
+    void findUserAccessTypeInMapTest(String givenOrganisationProfileId,
+                                     String givenJurisdictionId,
+                                     String givenAccessTypeId,
+                                     boolean expectedNullResult) {
+
+        // GIVEN
+        Map<String, Map<String, List<UserAccessType>>> givenUserAccessMap = Map.of(
+            ORG_PROFILE1, Map.of(
+                JURISDICTION1, List.of(buildUserAccessType(ACCESS_TYPE_ID1), buildUserAccessType(ACCESS_TYPE_ID1_2)),
+                JURISDICTION2, List.of(buildUserAccessType(ACCESS_TYPE_ID2))
+            ),
+            ORG_PROFILE2, Map.of(
+                JURISDICTION3, List.of(buildUserAccessType(ACCESS_TYPE_ID3)),
+                JURISDICTION4, List.of(buildUserAccessType(ACCESS_TYPE_ID4))
+            ),
+            ORG_PROFILE3, Collections.emptyMap()
+        );
+
+        // WHEN
+        UserAccessType actualResults = professionalRefreshOrchestrationHelper.findUserAccessTypeInMap(
+            givenUserAccessMap, givenOrganisationProfileId, givenJurisdictionId, givenAccessTypeId
+        );
+
+        // THEN
+        if (expectedNullResult) {
+            assertNull(actualResults);
+        } else {
+            assertNotNull(actualResults);
+            assertEquals(givenAccessTypeId, actualResults.getAccessTypeId());
+        }
+    }
+
+    public static Stream<Arguments> findUserAccessTypeInMapParams() {
+        return Stream.of(
+            // Parameters:
+            // * given OrganisationProfileId,
+            // * given JurisdictionId,
+            // * given AccessTypeId,
+            // expected Null Result (i.e. not found)
+
+            // Test 1: find accessTypeId1 for orgProfile1 and jurisdiction1
+            Arguments.of(ORG_PROFILE1, JURISDICTION1, ACCESS_TYPE_ID1, false),
+            // Test 2: find accessTypeId1.2 for orgProfile1 and jurisdiction1
+            Arguments.of(ORG_PROFILE1, JURISDICTION1, ACCESS_TYPE_ID1_2, false),
+            // Test 3: find accessTypeId2 for orgProfile1 and jurisdiction2
+            Arguments.of(ORG_PROFILE1, JURISDICTION2, ACCESS_TYPE_ID2, false),
+            // Test 4: find accessTypeId3 for orgProfile2 and jurisdiction3
+            Arguments.of(ORG_PROFILE2, JURISDICTION3, ACCESS_TYPE_ID3, false),
+            // Test 5: find accessTypeId4 for orgProfile2 and jurisdiction4
+            Arguments.of(ORG_PROFILE2, JURISDICTION4, ACCESS_TYPE_ID4, false),
+
+            // Test 6: NOT FOUND jurisdiction3 is for orgProfile2, so should not be found for orgProfile1
+            Arguments.of(ORG_PROFILE1, JURISDICTION3, ACCESS_TYPE_ID3, true),
+            // Test 7: NOT FOUND accessTypeId2 is for jurisdiction2, so should not be found for jurisdiction1
+            Arguments.of(ORG_PROFILE1, JURISDICTION1, ACCESS_TYPE_ID2, true),
+            // Test 8: NOT FOUND orgProfile3 has no jurisdictions, so accessTypeId1 should not be found
+            Arguments.of(ORG_PROFILE3, JURISDICTION1, ACCESS_TYPE_ID1, true),
+            // Test 9: NOT FOUND orgProfileDoesNotExist should not be found for any jurisdiction or access type
+            Arguments.of("orgProfileDoesNotExist", JURISDICTION1, ACCESS_TYPE_ID1, true),
+            // Test 10: NOT FOUND null access type is invalid, so should not be found
+            Arguments.of(ORG_PROFILE1, JURISDICTION1, null, true)
         );
     }
 
@@ -234,7 +321,8 @@ class ProfessionalRefreshOrchestrationHelperTest {
      */
     @ParameterizedTest
     @MethodSource("isAccessTypeDefaultedParams")
-    void isAccessTypeDefaultedTest(boolean isDefault, UserAccessType accessType,
+    void isAccessTypeDefaultedTest(boolean isDefault,
+                                   UserAccessType accessType,
                                    boolean expectedResult) {
         OrganisationProfileAccessType orgProfileAccessType = OrganisationProfileAccessType.builder()
                 .accessTypeId("accessType1")
@@ -266,7 +354,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
     @ParameterizedTest
     @MethodSource("isAccessTypeEnabledParams")
     void isAccessTypeEnabledTest(UserAccessType accessType,
-                                   boolean expectedResult) {
+                                 boolean expectedResult) {
         boolean result = professionalRefreshOrchestrationHelper
                 .isAccessTypeEnabled(accessType);
         assertEquals(expectedResult, result);
@@ -285,7 +373,9 @@ class ProfessionalRefreshOrchestrationHelperTest {
 
     @ParameterizedTest
     @MethodSource("isAccessTypeValidParams")
-    void isAccessTypeValidTest(boolean isDefault, boolean isMandatory, UserAccessType accessType,
+    void isAccessTypeValidTest(boolean isDefault,
+                               boolean isMandatory,
+                               UserAccessType accessType,
                                boolean expectedResult) {
         OrganisationProfileAccessType orgProfileAccessType = OrganisationProfileAccessType.builder()
                 .accessTypeId("accessType1")
@@ -341,7 +431,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
 
         String orgId = "orgId1";
         String orgProfileId = "profileId1";
-        OrganisationStatus orgStatus = OrganisationStatus.ACTIVE;
+        OrganisationStatus orgStatus = ACTIVE;
         OrganisationInfo org1 = OrganisationInfo.builder()
                 .status(orgStatus)
                 .organisationProfileIds(List.of(orgProfileId))
@@ -370,6 +460,70 @@ class ProfessionalRefreshOrchestrationHelperTest {
             eq(orgId), eq(orgStatus.name()), eq(orgProfileId));
 
         assertEquals(userAccessTypes, JacksonUtils.convertUserAccessTypes(userAccessTypesStringCaptor.getValue()));
+    }
+
+    @Test
+    void shouldThrowExceptionOnUpsertUserRefreshQueue_whenNoAccessTypesFound() {
+
+        // GIVEN
+        doReturn(Optional.empty())
+            .when(accessTypesRepository).findFirstByOrderByVersionDesc();
+
+        List<UserAccessType> userAccessTypes = new ArrayList<>();
+        UserAccessType userAccessType1 = UserAccessType.builder()
+            .accessTypeId("accessType1")
+            .enabled(true)
+            .jurisdictionId("jur1")
+            .organisationProfileId("orgProf1")
+            .build();
+        userAccessTypes.add(userAccessType1);
+
+        String orgId = "orgId1";
+        String orgProfileId = "profileId1";
+        OrganisationInfo org1 = OrganisationInfo.builder()
+            .status(ACTIVE)
+            .organisationProfileIds(List.of(orgProfileId))
+            .organisationIdentifier(orgId)
+            .build();
+
+        String userId = "uid1";
+        LocalDateTime updated = LocalDateTime.now().minusDays(1L);
+        LocalDateTime deleted = LocalDateTime.now().minusDays(2L);
+        RefreshUser refreshUser = RefreshUser.builder()
+            .userAccessTypes(userAccessTypes)
+            .lastUpdated(updated)
+            .userIdentifier(userId)
+            .organisationInfo(org1)
+            .dateTimeDeleted(deleted)
+            .build();
+
+        // WHEN
+        ServiceException exception = assertThrows(ServiceException.class,
+            () -> professionalRefreshOrchestrationHelper.upsertUserRefreshQueue(refreshUser)
+        );
+
+        // THEN
+        assertEquals(NO_ACCESS_TYPES_FOUND, exception.getMessage());
+    }
+
+    @Test
+    void shouldProcessActiveUserRefreshQueue_noActionIfNoEntryInQueue() {
+
+        // GIVEN
+        AccessTypesEntity accessTypesEntity = AccessTypesEntity.builder()
+            .version(1L)
+            .accessTypes(getGroupAndOrgAccessTypes(true))
+            .build();
+
+        doReturn(Optional.empty())
+            .when(userRefreshQueueRepository).findFirstByActiveTrue();
+
+        // WHEN
+        professionalRefreshOrchestrationHelper.processActiveUserRefreshQueue(accessTypesEntity);
+
+        // THEN
+        verify(roleAssignmentService, never()).createRoleAssignment(any());
+
     }
 
     @Test
@@ -407,7 +561,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
         RoleAssignment roleAssignment = requestedRoles.get(0);
         assertEquals("Uid1", roleAssignment.getActorId());
         assertEquals("ORGANISATION", roleAssignment.getRoleType().name());
-        assertEquals("CIVIL_Group_Role1", roleAssignment.getRoleName());
+        assertEquals(GROUP_ROLE_NAME, roleAssignment.getRoleName());
         assertEquals("RESTRICTED", roleAssignment.getClassification().name());
         assertEquals("STANDARD", roleAssignment.getGrantType().name());
         assertEquals("PROFESSIONAL", roleAssignment.getRoleCategory().name());
@@ -420,7 +574,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
         roleAssignment = requestedRoles.get(1);
         assertEquals("Uid1", roleAssignment.getActorId());
         assertEquals("ORGANISATION", roleAssignment.getRoleType().name());
-        assertEquals("CIVIL_Org_Role1", roleAssignment.getRoleName());
+        assertEquals(ORG_ROLE_NAME, roleAssignment.getRoleName());
         assertEquals("RESTRICTED", roleAssignment.getClassification().name());
         assertEquals("STANDARD", roleAssignment.getGrantType().name());
         assertEquals("PROFESSIONAL", roleAssignment.getRoleCategory().name());
@@ -464,7 +618,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
         RoleAssignment roleAssignment = requestedRoles.get(0);
         assertEquals("Uid1", roleAssignment.getActorId());
         assertEquals("ORGANISATION", roleAssignment.getRoleType().name());
-        assertEquals("CIVIL_Group_Role1", roleAssignment.getRoleName());
+        assertEquals(GROUP_ROLE_NAME, roleAssignment.getRoleName());
         assertEquals("RESTRICTED", roleAssignment.getClassification().name());
         assertEquals("STANDARD", roleAssignment.getGrantType().name());
         assertEquals("PROFESSIONAL", roleAssignment.getRoleCategory().name());
@@ -510,7 +664,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
         RoleAssignment roleAssignment = requestedRoles.get(0);
         assertEquals("Uid1", roleAssignment.getActorId());
         assertEquals("ORGANISATION", roleAssignment.getRoleType().name());
-        assertEquals("CIVIL_Org_Role1", roleAssignment.getRoleName());
+        assertEquals(ORG_ROLE_NAME, roleAssignment.getRoleName());
         assertEquals("RESTRICTED", roleAssignment.getClassification().name());
         assertEquals("STANDARD", roleAssignment.getGrantType().name());
         assertEquals("PROFESSIONAL", roleAssignment.getRoleCategory().name());
@@ -550,16 +704,110 @@ class ProfessionalRefreshOrchestrationHelperTest {
     }
 
     @Test
+    void shouldThrowExceptionOnRefreshSingleUser_whenMinVersionIsInvalid() {
+
+        // GIVEN
+        AccessTypesEntity accessTypesEntity = AccessTypesEntity.builder()
+            .version(1L)
+            .accessTypes("[]")
+            .build();
+
+        String[] orgProfileIds = {"SOLICITOR_PROFILE"};
+        UserRefreshQueueEntity userRefreshQueueEntity = UserRefreshQueueEntity.builder()
+            .userId("Uid1")
+            .accessTypesMinVersion(99) // NB: too large
+            .organisationStatus("ACTIVE")
+            .organisationId("AA123BB")
+            .organisationProfileIds(orgProfileIds)
+            .accessTypes(getUserAccessTypes())
+            .build();
+
+        // WHEN
+        ServiceException exception = assertThrows(ServiceException.class,
+            () -> professionalRefreshOrchestrationHelper.refreshSingleUser(userRefreshQueueEntity, accessTypesEntity)
+        );
+
+        // THEN
+        assertEquals(
+            String.format(
+                ACCESS_TYPES_VERSION_INVALID,
+                userRefreshQueueEntity.getUserId(),
+                userRefreshQueueEntity.getAccessTypesMinVersion(),
+                accessTypesEntity.getVersion().intValue()
+            ),
+            exception.getMessage()
+        );
+
+    }
+
+
+    @Test
     void shouldRefreshSingleUser() {
-        refreshSingleUserTest(getGroupAccessTypes(true), 1);
+        refreshSingleUserTest(getGroupAccessTypes(true), false, ACTIVE, 1, GROUP_ROLE_NAME);
     }
 
     @Test
     void shouldRefreshSingleUser_NoAccessTypes() {
-        refreshSingleUserTest("[]", 0);
+        // NB: no roles if no access types: i.e. expectedRoleCount=0
+        refreshSingleUserTest("[]", false, ACTIVE, 0, null);
     }
 
-    private void refreshSingleUserTest(String accessTypes, int expectedRolesCount) {
+    @Test
+    void shouldRefreshSingleUser_Deleted() {
+        // NB: no roles if user deleted: i.e. expectedRoleCount=0
+        refreshSingleUserTest(getGroupAccessTypes(true), true, ACTIVE, 0, null);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = OrganisationStatus.class, names = { "ACTIVE" }, mode = EnumSource.Mode.EXCLUDE)
+    void shouldRefreshSingleUser_OrganisationStatus_notActive(OrganisationStatus organisationStatus) {
+        // NB: no roles if user's organisation in not active: i.e. expectedRoleCount=0
+        refreshSingleUserTest(getGroupAccessTypes(true), false, organisationStatus, 0, null);
+    }
+
+    @Test
+    void shouldRefreshSingleUser_GroupAccessRole_success() {
+        // i.e. expectedRoleCount=1
+        refreshSingleUserTest(getGroupAccessTypes(true, true, true), false, ACTIVE, 1, GROUP_ROLE_NAME);
+    }
+
+    @Test
+    void shouldRefreshSingleUser_GroupAccessRole_noRoleName() {
+        // NB: will skip if RoleName not set: i.e. expectedRoleCount=0
+        refreshSingleUserTest(getGroupAccessTypes(true, false, true), false, ACTIVE, 0, null);
+    }
+
+    @Test
+    void shouldRefreshSingleUser_GroupAccessRole_noTemplate() {
+        // NB: will skip if Template not set: i.e. expectedRoleCount=0
+        refreshSingleUserTest(getGroupAccessTypes(true, true, false), false, ACTIVE, 0, null);
+    }
+
+    @Test
+    void shouldRefreshSingleUser_OrgAccessRole_success() {
+        // i.e. expectedRoleCount=1
+        refreshSingleUserTest(getOrganisationalAccessTypes(true, true), false, ACTIVE, 1, ORG_ROLE_NAME);
+    }
+
+    @Test
+    void shouldRefreshSingleUser_OrgAccessRole_noRoleName() {
+        // NB: will skip if RoleName not set: i.e. expectedRoleCount=0
+        refreshSingleUserTest(getOrganisationalAccessTypes(false, true), false, ACTIVE, 0, null);
+    }
+
+    @Test
+    void shouldRefreshSingleUser_OrgAccessRole_notValidForUser() {
+        // NB: will skip if access type is not valid for user: i.e. expectedRoleCount=0
+        refreshSingleUserTest(getOrganisationalAccessTypes(true, false), false, ACTIVE, 0, null);
+    }
+
+    private void refreshSingleUserTest(String accessTypes,
+                                       boolean isDeleted,
+                                       OrganisationStatus organisationStatus,
+                                       int expectedRolesCount,
+                                       String expectedRoleName) {
+
+        // GIVEN
         AccessTypesEntity accessTypesEntity = AccessTypesEntity.builder()
                 .version(1L)
                 .accessTypes(accessTypes)
@@ -569,10 +817,11 @@ class ProfessionalRefreshOrchestrationHelperTest {
         UserRefreshQueueEntity userRefreshQueueEntity = UserRefreshQueueEntity.builder()
                 .userId("Uid1")
                 .accessTypesMinVersion(1)
-                .organisationStatus("ACTIVE")
+                .organisationStatus(organisationStatus.getValue())
                 .organisationId("AA123BB")
                 .organisationProfileIds(orgProfileIds)
                 .accessTypes(getUserAccessTypes())
+                .deleted(isDeleted ? LocalDateTime.now() : null)
                 .build();
         Optional<UserRefreshQueueEntity> userRefreshQueueEntityOpt = Optional.of(userRefreshQueueEntity);
 
@@ -582,8 +831,10 @@ class ProfessionalRefreshOrchestrationHelperTest {
         doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
                 .when(roleAssignmentService).createRoleAssignment(any());
 
+        // WHEN
         professionalRefreshOrchestrationHelper.refreshSingleUser(userRefreshQueueEntity, accessTypesEntity);
 
+        // THEN
         verify(roleAssignmentService).createRoleAssignment(assignmentRequestArgumentCaptor.capture());
 
         ArrayList<RoleAssignment> requestedRoles = new ArrayList<>(
@@ -595,7 +846,7 @@ class ProfessionalRefreshOrchestrationHelperTest {
             RoleAssignment roleAssignment = requestedRoles.get(0);
             assertEquals("Uid1", roleAssignment.getActorId());
             assertEquals("ORGANISATION", roleAssignment.getRoleType().name());
-            assertEquals("CIVIL_Group_Role1", roleAssignment.getRoleName());
+            assertEquals(expectedRoleName, roleAssignment.getRoleName());
             assertEquals("RESTRICTED", roleAssignment.getClassification().name());
             assertEquals("STANDARD", roleAssignment.getGrantType().name());
             assertEquals("PROFESSIONAL", roleAssignment.getRoleCategory().name());
@@ -626,11 +877,11 @@ class ProfessionalRefreshOrchestrationHelperTest {
         return "{\"organisationProfiles\": [{\"jurisdictions\": [{\"accessTypes\": [{\"roles\": "
                 + "["
                 + "{\"caseTypeId\": \"CIVIL_Case_TYPE\","
-                + "\"groupRoleName\": \"CIVIL_Group_Role1\", "
+                + "\"groupRoleName\": \"" + GROUP_ROLE_NAME + "\", "
                 + "\"groupAccessEnabled\": " + groupAccessEnabled + ", "
                 + "\"caseGroupIdTemplate\": "
                 + "\"CIVIL_CaseType:[GrpRoleName1]:$ORGID$\","
-                + "\"organisationalRoleName\": \"CIVIL_Org_Role1\"}"
+                + "\"organisationalRoleName\": \"" + ORG_ROLE_NAME + "\"}"
                 + "], "
                 + "\"accessTypeId\": \"CIVIL_ACCESS_TYPE_ID\", "
                 + "\"accessDefault\": true, "
@@ -640,12 +891,21 @@ class ProfessionalRefreshOrchestrationHelperTest {
     }
 
     private String getGroupAccessTypes(boolean groupAccessEnabled) {
+        return getGroupAccessTypes(groupAccessEnabled, true, true);
+    }
+
+    private String getGroupAccessTypes(boolean groupAccessEnabled,
+                                       boolean groupRoleNameIsSet,
+                                       boolean caseGroupIdTemplateIsSet) {
+        String groupRoleName = groupRoleNameIsSet ? "\"" + GROUP_ROLE_NAME + "\"" : "null";
+        String caseGroupIdTemplate = caseGroupIdTemplateIsSet ? "\"CIVIL_CaseType:[GrpRoleName1]:$ORGID$\"" : "null";
+
         return "{\"organisationProfiles\": [{\"jurisdictions\": [{\"accessTypes\": [{\"roles\": "
                 + "["
                 + "{\"caseTypeId\": \"CIVIL_Case_TYPE\","
-                + "\"groupRoleName\": \"CIVIL_Group_Role1\", "
                 + "\"groupAccessEnabled\": " + groupAccessEnabled + ", "
-                + "\"caseGroupIdTemplate\": \"CIVIL_CaseType:[GrpRoleName1]:$ORGID$\""
+                + "\"groupRoleName\": " + groupRoleName + ", "
+                + "\"caseGroupIdTemplate\": " + caseGroupIdTemplate
                 + "}], "
                 + "\"accessTypeId\": \"CIVIL_ACCESS_TYPE_ID\", "
                 + "\"accessDefault\": true, "
@@ -655,14 +915,29 @@ class ProfessionalRefreshOrchestrationHelperTest {
     }
 
     private String getOrganisationalAccessTypes() {
+        return getOrganisationalAccessTypes(true, true);
+    }
+
+    private String getOrganisationalAccessTypes(boolean organisationalRoleNameIsSet,
+                                                boolean validForUser) {
+        String organisationalRoleName = organisationalRoleNameIsSet ? "\"" + ORG_ROLE_NAME + "\"" : "null";
+
+        // AccessType is invalid for user if:
+        // * not mandatory
+        // * not defaulted
+        // * does not have a matching user access type that is enabled
+        String accessDefault = validForUser ? "true" : "false";
+        String accessMandatory = validForUser ? "true" : "false";
+        String accessTypeId = validForUser ? "\"CIVIL_ACCESS_TYPE_ID\"" : "\"UNMATCHED_ACCESS_TYPE_ID\"";
+
         return "{\"organisationProfiles\": [{\"jurisdictions\": [{\"accessTypes\": [{\"roles\": "
                 + "["
                 + "{\"caseTypeId\": \"CIVIL_Case_TYPE\","
-                + "\"organisationalRoleName\": \"CIVIL_Org_Role1\"}"
+                + "\"organisationalRoleName\": " + organisationalRoleName + "}"
                 + "], "
-                + "\"accessTypeId\": \"CIVIL_ACCESS_TYPE_ID\", "
-                + "\"accessDefault\": true, "
-                + "\"accessMandatory\": true}],"
+                + "\"accessTypeId\": " + accessTypeId + ", "
+                + "\"accessDefault\": " + accessDefault + ", "
+                + "\"accessMandatory\": " + accessMandatory + "}],"
                 + "\"jurisdictionId\": \"CIVIL\"}], "
                 + "\"organisationProfileId\": \"SOLICITOR_PROFILE\"}]}";
     }
@@ -679,6 +954,14 @@ class ProfessionalRefreshOrchestrationHelperTest {
                 .organisationProfileId(UUID.randomUUID().toString())
                 .jurisdictionId(UUID.randomUUID().toString())
                 .enabled(isEnabled).build();
+    }
+
+    private static UserAccessType buildUserAccessType(String accessTypeId) {
+        return UserAccessType.builder()
+            .accessTypeId(accessTypeId)
+            .organisationProfileId(UUID.randomUUID().toString())
+            .jurisdictionId(UUID.randomUUID().toString())
+            .enabled(true).build();
     }
 
     private static OrganisationProfileJurisdiction buildOrganisationProfileJurisdiction(String jurisdictionId) {
