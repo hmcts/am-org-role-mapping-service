@@ -684,8 +684,8 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
     }
 
     /**
-     *  Scenario 16:
-     *  accessDefault = N, accessMandatory = N, groupAccessEnabled = N, PRDenabled = N.
+     *  Scenario 16a:
+     *  accessDefault = N, accessMandatory = N, groupAccessEnabled = N, PRDenabled = Null.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
