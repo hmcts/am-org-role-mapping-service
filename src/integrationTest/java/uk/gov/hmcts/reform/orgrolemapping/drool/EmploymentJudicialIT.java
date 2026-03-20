@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.EMPTY_ROLE_ASSIGNMENT_TEMPLATE;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.NO_BOOKABLE_ROLES_FLAG;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.BASE_LOCATION_ID;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.adjustTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.cloneTestArgumentsAndExpandOverrides;
@@ -34,8 +35,6 @@ public class EmploymentJudicialIT {
     private static final String TRIBUNAL_MEMBER_JUDGE_OUTPUT_TEMPLATE = "009_TM__010_TML";
 
     private static final String JRD_TEMPLATE_PRESIDENT_OF_TRIBUNAL_SALARIED = "001_President_of_Tribunal__Salaried";
-
-    private static final boolean NO_BOOKABLE_ROLES_FLAG = false;
 
     public static List<DroolJudicialTestArguments> getTestArguments() {
 
