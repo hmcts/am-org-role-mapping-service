@@ -262,8 +262,8 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
 
     @Override
     protected AssignmentRequest getAssignmentRequest() {
-        var assignment = verify(rasFeignClient, times(1))
-                .createRoleAssignment(assignmentRequestCaptor.capture(), any());
+        verify(rasFeignClient, times(1))
+            .createRoleAssignment(assignmentRequestCaptor.capture(), any());
         return assignmentRequestCaptor.getValue();
     }
 

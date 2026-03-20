@@ -15,7 +15,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
-import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
@@ -25,7 +24,6 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -49,8 +47,6 @@ class ProfessionalRefreshOrchestratorTest {
                  }
                 ]
                 """;
-    @Mock
-    private AccessTypesRepository accessTypesRepository;
     @Mock
     private UserRefreshQueueRepository userRefreshQueueRepository;
     @Mock
@@ -87,11 +83,10 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(ACCESSTYPE)
                 .when(objectMapper).writeValueAsString(any());
 
-        Optional<AccessTypesEntity> accessTypesEntity = Optional.of(new AccessTypesEntity());
-
-        accessTypesEntity.get().setVersion(1L);
+        AccessTypesEntity accessTypesEntity = new AccessTypesEntity();
+        accessTypesEntity.setVersion(1L);
         doReturn(accessTypesEntity)
-               .when(accessTypesRepository).findFirstByOrderByVersionDesc();
+               .when(professionalRefreshOrchestrationHelper).getLatestAccessTypes();
 
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
         userRefreshQueueEntity.setUserId(USERID);
@@ -114,11 +109,10 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(ACCESSTYPE)
                 .when(objectMapper).writeValueAsString(any());
 
-        Optional<AccessTypesEntity> accessTypesEntity = Optional.of(new AccessTypesEntity());
-
-        accessTypesEntity.get().setVersion(11L);
+        AccessTypesEntity accessTypesEntity = new AccessTypesEntity();
+        accessTypesEntity.setVersion(11L);
         doReturn(accessTypesEntity)
-                .when(accessTypesRepository).findFirstByOrderByVersionDesc();
+            .when(professionalRefreshOrchestrationHelper).getLatestAccessTypes();
 
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
         userRefreshQueueEntity.setUserId(USERID);
@@ -142,11 +136,10 @@ class ProfessionalRefreshOrchestratorTest {
         doReturn(ACCESSTYPE)
                 .when(objectMapper).writeValueAsString(any());
 
-        Optional<AccessTypesEntity> accessTypesEntity = Optional.of(new AccessTypesEntity());
-
-        accessTypesEntity.get().setVersion(11L);
+        AccessTypesEntity accessTypesEntity = new AccessTypesEntity();
+        accessTypesEntity.setVersion(11L);
         doReturn(accessTypesEntity)
-                .when(accessTypesRepository).findFirstByOrderByVersionDesc();
+            .when(professionalRefreshOrchestrationHelper).getLatestAccessTypes();
 
         UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
         userRefreshQueueEntity.setUserId(USERID);
@@ -171,10 +164,9 @@ class ProfessionalRefreshOrchestratorTest {
                 .when(objectMapper).writeValueAsString(any());
 
 
-        Optional<AccessTypesEntity> accessTypesEntity = Optional.of(TestDataBuilder.buildAccessTypesEntity());
-
+        AccessTypesEntity accessTypesEntity = TestDataBuilder.buildAccessTypesEntity();
         doReturn(accessTypesEntity)
-                .when(accessTypesRepository).findFirstByOrderByVersionDesc();
+            .when(professionalRefreshOrchestrationHelper).getLatestAccessTypes();
 
         doReturn(TestDataBuilder.buildUserRefreshQueueEntity(USERID))
                 .when(userRefreshQueueRepository).findByUserId(any());
