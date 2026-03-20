@@ -19,6 +19,13 @@ VALUES (50, '{
                                 },
                                 {
                                     "caseTypeId": "CaseAccessGroups_Casetype",
+                                    "groupRoleName": "GroupRole1",
+                                    "groupAccessEnabled": false,
+                                    "caseGroupIdTemplate": "",
+                                    "organisationalRoleName": null
+                                },
+                                {
+                                    "caseTypeId": "CaseAccessGroups_Casetype",
                                     "groupAccessEnabled": false,
                                     "organisationalRoleName": ""
                                 }
@@ -40,6 +47,13 @@ VALUES (50, '{
                                     "groupAccessEnabled": false,
                                     "caseGroupIdTemplate": "BEFTA_MASTER:$ORGID$",
                                     "organisationalRoleName": ""
+                                },
+                                {
+                                    "caseTypeId": "FT_CaseAccessGroups",
+                                    "groupRoleName": "GroupRole1",
+                                    "groupAccessEnabled": false,
+                                    "caseGroupIdTemplate": "",
+                                    "organisationalRoleName": null
                                 },
                                 {
                                     "caseTypeId": "FT_CaseAccessGroups",
