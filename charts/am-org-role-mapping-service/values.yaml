@@ -1,5 +1,5 @@
 java:
-  image: 'hmctspublic.azurecr.io/am/org-role-mapping-service:latest'
+  image: 'hmctssbox.azurecr.io/am/org-role-mapping-service:latest'
   ingressHost: am-org-role-mapping-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   applicationPort: 4098
   aadIdentityName: am

@@ -102,7 +102,7 @@ env.REFRESH_FTA_ENABLED = "false"
 
 // Vars for Azure Container Registries DTSAM-370
 env.TESTCONTAINERS_HOST_OVERRIDE="localhost"
-env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX="hmctspublic.azurecr.io/imported/"
+env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX="hmctssbox.azurecr.io/imported/"
 
   overrideVaultEnvironments(vaultOverrides)
   loadVaultSecrets(secrets)
