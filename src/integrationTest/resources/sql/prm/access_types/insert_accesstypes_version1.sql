@@ -29,7 +29,12 @@ VALUES (1, '{
                         }
                     ],
                     "jurisdictionId": "BEFTA_JURISDICTION_1"
-                },
+                }
+            ],
+            "organisationProfileId": "ORGPROFILE1"
+        },
+        {
+            "jurisdictions": [
                 {
                     "accessTypes": [
                         {
@@ -55,7 +60,7 @@ VALUES (1, '{
                     "jurisdictionId": "BEFTA_JURISDICTION_2"
                 }
             ],
-            "organisationProfileId": "ORGPROFILE1"
+            "organisationProfileId": "ORGPROFILE2"
         }
     ]
 }');

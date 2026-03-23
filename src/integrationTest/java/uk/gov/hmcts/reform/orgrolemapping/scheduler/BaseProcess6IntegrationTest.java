@@ -818,6 +818,9 @@ abstract class BaseProcess6IntegrationTest extends BaseSchedulerTestIntegration 
     }
 
     private void assertRoleAssignment(RoleAssignment roleAssignment, boolean isGroupRole) {
+        // NB: test user defined in: `insert_userrefresh_{deleted|disabled|enabled|missing|version1}.sql` is in
+        // an Organisation using `ORGPROFILE2` so accessType config defined for `ORGPROFILE1` will be skipped.
+
         String prefix = isGroupRole ? "Group" : "Operational";
         assertEquals(ActorIdType.IDAM, roleAssignment.getActorIdType(),
                 prefix + " actor type mismatch");
