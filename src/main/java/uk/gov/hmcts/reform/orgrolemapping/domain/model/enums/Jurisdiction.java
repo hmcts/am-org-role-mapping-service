@@ -5,7 +5,9 @@ import java.util.List;
 public enum Jurisdiction {
 
     CIVIL("CIVIL", List.of("AAA6", "AAA7")),
-    EMPLOYMENT("EMPLOYMENT", List.of("BHA1"));
+    EMPLOYMENT("EMPLOYMENT", List.of("BHA1")),
+    HRS("HRS", List.of("HRS")),
+    IAC("IA", List.of("BFA1"));
 
     private final String name;
     private final List<String> serviceCodes;
