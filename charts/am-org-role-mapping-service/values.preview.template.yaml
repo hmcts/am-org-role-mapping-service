@@ -119,7 +119,7 @@ am-judicial-booking-service:
   java:
     # Temporary override to test hmcts/am-judicial-booking-service#1419
     #image: 'hmctspublic.azurecr.io/am/judicial-booking-service:latest'
-    image: 'hmctssbox.azurecr.io/am/judicial-booking-service:pr-1419'
+    image: 'hmctspublic.azurecr.io/am/judicial-booking-service:pr-1419'
     imagePullPolicy: Always
     ingressHost: jbs-${SERVICE_FQDN}
     releaseNameOverride: "{{ .Release.Name }}-am-judicial-booking-service"
