@@ -53,6 +53,8 @@ class DroolPossessionsJudicialOfficeHolderMappingTest extends DroolBase {
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
     static {
+        expectedRoleNameWorkTypesMap.put("judge", "hearing_work,routine_work,decision_making_work,"
+                + "applications");
         expectedRoleNameWorkTypesMap.put("hmcts-Judiciary", null);
         expectedRoleNameWorkTypesMap.put("Fee Paid-judge", null);
         expectedRoleNameWorkTypesMap.put("Judge", "hearing_work,routine_work,decision_making_work,"
@@ -68,11 +70,41 @@ class DroolPossessionsJudicialOfficeHolderMappingTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
             "Adjudicator,'','hmcts-judiciary,fee-paid-judge'",
-            "Deputy Costs Judge,'','hmcts-judiciary,fee-paid-judge'"
+            "Deputy Costs Judge,'','hmcts-judiciary,fee-paid-judge'",
+            "Deputy District Judge,'','hmcts-judiciary,fee-paid-judge'",
+            "Deputy District Judge - PRFD,'','hmcts-judiciary,fee-paid-judge'",
+            "Deputy District Judge- Sitting in Retirement,'','hmcts-judiciary,fee-paid-judge'",
+            "Deputy Insolvency and Companies Court Judge,'','hmcts-judiciary,fee-paid-judge'",
+            "Deputy Master,'','hmcts-judiciary,fee-paid-judge'",
+            "District Judge,'','hmcts-judiciary,fee-paid-judge'",
+            "District Judge (sitting in retirement),'','hmcts-judiciary,fee-paid-judge'",
+            "Employment Judge,'','hmcts-judiciary,fee-paid-judge'",
+            "High Court Judge (sitting in retirement),'','hmcts-judiciary,fee-paid-judge'",
+            "Insolvency and Companies Court Judge (sitting in retirement),'','hmcts-judiciary,fee-paid-judge'",
+            "Recorder,'','hmcts-judiciary,fee-paid-judge'"
     })
-
     void verifyFeePaidRolesWithoutBooking(String appointment, String assignedRoles, String expectedRoleNames) {
         shouldReturnFeePaidRolesFromJudicialAccessProfile(appointment, false, assignedRoles, expectedRoleNames);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "Adjudicator,'','judge,hmcts-judiciary,fee-paid-judge'",
+            "Deputy Costs Judge,'','judge,hmcts-judiciary,fee-paid-judge'",
+            "Deputy District Judge,'','judge,hmcts-judiciary,fee-paid-judge'",
+            "Deputy District Judge - PRFD,'','judge,hmcts-judiciary,fee-paid-judge'",
+            "Deputy District Judge- Sitting in Retirement,'','judge,hmcts-judiciary,fee-paid-judge'",
+            "Deputy Insolvency and Companies Court Judge,'','judge,hmcts-judiciary,fee-paid-judge'",
+            "Deputy Master,'','judge,hmcts-judiciary,fee-paid-judge'",
+            "District Judge,'','judge,hmcts-judiciary,fee-paid-judge'",
+            "District Judge (sitting in retirement),'','judge,hmcts-judiciary,fee-paid-judge'",
+            "Employment Judge,'','judge,hmcts-judiciary,fee-paid-judge'",
+            "High Court Judge (sitting in retirement),'','judge,hmcts-judiciary,fee-paid-judge'",
+            "Insolvency and Companies Court Judge (sitting in retirement),'','judge,hmcts-judiciary,fee-paid-judge'",
+            "Recorder,'','judge,hmcts-judiciary,fee-paid-judge'"
+    })
+    void verifyFeePaidRolesWithBooking(String appointment, String assignedRoles, String expectedRoleNames) {
+        shouldReturnFeePaidRolesFromJudicialAccessProfile(appointment, true, assignedRoles, expectedRoleNames);
     }
 
     void shouldReturnFeePaidRolesFromJudicialAccessProfile(
@@ -183,19 +215,20 @@ class DroolPossessionsJudicialOfficeHolderMappingTest extends DroolBase {
             assertEquals("PCS", r.getAttributes().get("jurisdiction").asText());
             assertFalse(r.isReadOnly());
 
-            if (r.getRoleName().equals("Fee Paid-judge") && appointmentType.equals("Fee Paid")) {
+            if (r.getRoleName().equals("judge") && appointmentType.equals("Fee Paid")) {
+                assertEquals(BOOKING_BEGIN_TIME, r.getBeginTime());
+                assertEquals(BOOKING_END_TIME, r.getEndTime());
+                assertEquals(BOOKING_REGION_ID, r.getAttributes().get("region").asText());
+                assertEquals(BOOKING_LOCATION_ID, primaryLocation);
+            } else if (r.getRoleName().equals("fee-paid-judge")) {
                 assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
                 assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());
                 assertEquals(ACCESS_PROFILE_PRIMARY_LOCATION_ID, primaryLocation);
                 assertNull(r.getAttributes().get("region"));
-            }  else {
+            } else {
                 assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
                 assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());
                 assertEquals(ACCESS_PROFILE_PRIMARY_LOCATION_ID, primaryLocation);
-                if (!r.getRoleName().equals("hearing-viewer")
-                        && !r.getRoleName().equals("hearing-manager") && roleNameToRegionsMap == null) {
-                    assertEquals(ACCESS_PROFILE_REGION_ID, r.getAttributes().get("region").asText());
-                }
             }
 
         }
