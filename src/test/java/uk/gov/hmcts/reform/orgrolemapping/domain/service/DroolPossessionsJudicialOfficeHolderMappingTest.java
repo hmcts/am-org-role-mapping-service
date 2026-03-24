@@ -67,8 +67,8 @@ class DroolPossessionsJudicialOfficeHolderMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-            "Fee Paid,'','hmcts-judiciary,fee-paid-judge'",
-            "Circuit Judge,'','hmcts-judiciary,fee-paid-judge'"
+            "Adjudicator,'','hmcts-judiciary,fee-paid-judge'",
+            "Deputy Costs Judge,'','hmcts-judiciary,fee-paid-judge'"
     })
 
     void verifyFeePaidRolesWithoutBooking(String appointment, String assignedRoles, String expectedRoleNames) {
@@ -80,7 +80,7 @@ class DroolPossessionsJudicialOfficeHolderMappingTest extends DroolBase {
 
         clearAndPrepareProfilesForDroolSession(
                 appointment,
-                "Fee-paid",
+                "Fee Paid",
                 Arrays.stream(assignedRoles.split(",")).toList(),
                 ACCESS_PROFILE_REGION_ID,
                 addBooking
@@ -202,7 +202,7 @@ class DroolPossessionsJudicialOfficeHolderMappingTest extends DroolBase {
     }
 
     private List<FeatureFlag> setFeatureFlags() {
-        List<FeatureFlag> featureFlags = new ArrayList<>(getAllFeatureFlagsToggleByJurisdiction("PCS", true));
+        List<FeatureFlag> featureFlags = new ArrayList<>(getAllFeatureFlagsToggleByJurisdiction("POSSESSIONS", true));
 
         for (FeatureFlag flag : featureFlags) {
             if (flag.getFlagName().contains("hearing")) {
