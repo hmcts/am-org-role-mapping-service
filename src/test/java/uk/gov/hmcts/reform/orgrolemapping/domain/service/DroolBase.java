@@ -18,6 +18,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRoleEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentEnum;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
@@ -169,6 +171,61 @@ public abstract class DroolBase {
     @SneakyThrows
     public static String writeValueAsPrettyJson(Object input) {
         return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(input);
+    }
+
+    /**
+     * Additional test Roles not in list of AdditionalRoles
+     * <see cref="uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRole"/>.
+     */
+    protected enum LegacyAdditionalRole implements AdditionalRoleEnum {
+
+        ANY_OTHER_ROLE("Any Other Role", List.of("any-code"));
+
+        private final String name;
+        private final List<String> codes;
+
+        LegacyAdditionalRole(String name, List<String> codes) {
+            this.name = name;
+            this.codes = codes;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public List<String> getCodes() {
+            return codes;
+        }
+    }
+
+    /**
+     * Additional test Appointments not in list of Appointments
+     * <see cref="uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.Appointment"/>.
+     */
+    protected enum LegacyAppointment implements AppointmentEnum {
+
+        ANY_OTHER_APPOINTMENT("Any Other Appointment", List.of("any-code")),
+        EMPLOYMENT_JUDGE("Employment Judge", List.of("48")),
+        EMPLOYMENT_JUDGE_SITTING_IN_RETIREMENT("Employment Judge (sitting in retirement)", List.of("128", "215")),
+        RECORDER("Recorder", List.of("67")),
+        REGIONAL_TRIBUNAL_JUDGE("Regional Tribunal Judge", List.of("74")),
+        TRIBUNAL_JUDGE("Tribunal Judge", List.of("84"));
+
+        private final String name;
+        private final List<String> codes;
+
+        LegacyAppointment(String name, List<String> codes) {
+            this.name = name;
+            this.codes = codes;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public List<String> getCodes() {
+            return codes;
+        }
     }
 
 }

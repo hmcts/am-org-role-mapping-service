@@ -253,7 +253,7 @@ then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
-    attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.FEE_PAID));
+    attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("appeals"));
 
@@ -332,7 +332,7 @@ then
            .actorId($joh.getUserId())
            .roleCategory(RoleCategory.JUDICIAL)
            .roleType(RoleType.ORGANISATION)
-           .roleName(RoleName.TASK_SUPERVISOR)
+           .roleName(RoleName.CASE_ALLOCATOR)
            .grantType(GrantType.STANDARD)
            .classification(Classification.PUBLIC)
            .readOnly(false)
@@ -342,7 +342,7 @@ then
            .authorisations($joh.getTicketCodes())
            .build()
    );
-      logMsg("Rule : v1_0_possessions_task_supervisor_leadership_judge_salaried_org_role");
+      logMsg("Rule : v1_0_possessions_case-allocator_leadership_judge_salaried_org_role");
 end;
 
 /*
@@ -367,7 +367,7 @@ then
            .actorId($joh.getUserId())
            .roleCategory(RoleCategory.JUDICIAL)
            .roleType(RoleType.ORGANISATION)
-           .roleName(RoleName.TASK_SUPERVISOR)
+           .roleName(RoleName.SPECIFIC_ACCESS_APPROVER_JUDICIARY)
            .grantType(GrantType.STANDARD)
            .classification(Classification.PUBLIC)
            .readOnly(false)
@@ -402,7 +402,7 @@ then
            .actorId($joh.getUserId())
            .roleCategory(RoleCategory.JUDICIAL)
            .roleType(RoleType.ORGANISATION)
-           .roleName(RoleName.TASK_SUPERVISOR)
+           .roleName(RoleName.SPECIFIC_ACCESS_APPROVER_LEGAL_OPS)
            .grantType(GrantType.STANDARD)
            .classification(Classification.PUBLIC)
            .readOnly(false)
