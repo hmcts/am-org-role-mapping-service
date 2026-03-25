@@ -1,0 +1,7 @@
+{
+  "_guid_": "WorkArea_HRS",
+  "_extends_": "WorkArea__Base",
+
+  "service_code": "HRS",
+  "area_of_work": "HRS"
+}

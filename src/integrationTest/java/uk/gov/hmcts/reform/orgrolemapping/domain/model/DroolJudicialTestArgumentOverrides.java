@@ -21,6 +21,7 @@ public class DroolJudicialTestArgumentOverrides {
     private String overrideRasRequestFileNameWithoutBooking;
     private String overrideRasRequestFileNameWithBooking;
     private String overrideAdditionalRoleExpiredFallbackFileName;
+    private String overrideAuthorisationExpiredFallbackFileName;
 
     @Builder.Default
     private List<FeatureFlagEnum> overrideTurnOffFlags = List.of(); // default is all flags on
