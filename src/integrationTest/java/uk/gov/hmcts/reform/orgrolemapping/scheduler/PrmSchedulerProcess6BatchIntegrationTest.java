@@ -23,7 +23,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql"
     })
     void testNoUserRoles() {
-        runTest(0, false, false, EndStatus.SUCCESS);
+        runTest(0, false, false, false, EndStatus.SUCCESS);
     }
 
     /**
@@ -36,7 +36,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
     })
     void testCreateRole_accessVersion() {
-        runTest(1, false, false, EndStatus.FAILED);
+        runTest(1, false, false, false, EndStatus.FAILED);
     }
 
     /**
@@ -76,7 +76,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_version1.sql"
     })
     void testCreateRole_partialSuccess() {
-        runTest(2, true, true, EndStatus.PARTIAL_SUCCESS);
+        runTest(2, true, true, false, EndStatus.PARTIAL_SUCCESS);
     }
 
     /**
@@ -89,7 +89,7 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_retry.sql"
     })
     void testCreateRole_retry() {
-        runTest(1, false, false, EndStatus.FAILED);
+        runTest(1, false, false, false, EndStatus.FAILED);
         assertRetry(1);
     }
 
@@ -100,15 +100,19 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         "classpath:sql/prm/user_refresh_queue/insert_userrefresh_retryLimit.sql"
     })
     void testCreateRole_retryLimit() {
-        runTest(1, false, false, EndStatus.FAILED);
+        runTest(1, false, false, false, EndStatus.FAILED);
         assertRetry(1);
     }
 
     protected void testCreateRoleAssignment(boolean orgRole, boolean groupRole) {
-        runTest(1, orgRole, groupRole, EndStatus.SUCCESS);
+        runTest(1, orgRole, groupRole, false, EndStatus.SUCCESS);
     }
 
-    private void runTest(int expectedNumberOfRecords, boolean organisation, boolean group,
+    protected void testCreateRoleAssignmentAllScenarios() {
+        runTest(1, false, false, true, EndStatus.SUCCESS);
+    }
+
+    private void runTest(int expectedNumberOfRecords, boolean organisation, boolean group, boolean allScenarios,
                          EndStatus endStatus) {
 
         // GIVEN
@@ -121,7 +125,10 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         // THEN
         if (expectedNumberOfRecords != 0 && !EndStatus.FAILED.equals(endStatus)) {
             verifyNoOfCallsToRas(1);
+        } else {
+            verifyNoOfCallsToRas(0);
         }
+        verifyNoOfCallsToPrd(0);
         logAfterStatus(processMonitorDto);
 
         // verify that the process monitor reports the correct status
@@ -132,7 +139,8 @@ class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTe
         assertTotalUserRefreshQueueEntitiesInDb(expectedNumberOfRecords, endStatus);
 
         if (expectedNumberOfRecords != 0 && !EndStatus.FAILED.equals(endStatus)) {
-            assertAssignmentRequest(organisation, group);
+            assertAssignmentRequest(organisation, group, allScenarios);
         }
     }
+
 }
