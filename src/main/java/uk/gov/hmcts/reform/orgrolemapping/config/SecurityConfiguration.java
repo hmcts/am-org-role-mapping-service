@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.config;
 
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +30,7 @@ import java.util.List;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
-
+@Slf4j
 @Configuration
 @ConfigurationProperties(prefix = "security")
 @EnableWebSecurity
@@ -37,12 +38,6 @@ public class SecurityConfiguration {
 
     @Value("${spring.security.oauth2.client.provider.oidc.issuer-uri}")
     private String issuerUri;
-
-    @Value("${oidc.issuerValidation}")
-    private Boolean issuerValidationEnabled;
-
-    @Value("${oidc.issuer}")
-    private String issuerOverride;
 
     @Order(1)
     private final ServiceAuthFilter serviceAuthFilter;
@@ -101,16 +96,23 @@ public class SecurityConfiguration {
     @Bean
     JwtDecoder jwtDecoder() {
         NimbusJwtDecoder jwtDecoder = JwtDecoders.fromOidcIssuerLocation(issuerUri);
+        jwtDecoder.setJwtValidator(getIssuerValidator());
+        return jwtDecoder;
+    }
+
+    private OAuth2TokenValidator<Jwt> getIssuerValidator() {
         OAuth2TokenValidator<Jwt> withTimestamp = new JwtTimestampValidator();
         OAuth2TokenValidator<Jwt> validator;
-        if (issuerValidationEnabled) {
+        if (Boolean.parseBoolean(System.getProperty("oidc.issuerValidation"))) {
+            log.debug("Validating issuers");
+            String issuerOverride = System.getProperty("oidc.issuer");
             List<String> validIssuers = Arrays.asList(issuerUri, issuerOverride);
             OAuth2TokenValidator<Jwt> withIssuer = new MultiIssuerValidator(validIssuers);
             validator = new DelegatingOAuth2TokenValidator<>(withTimestamp, withIssuer);
         } else {
+            log.debug("Validating timestamp");
             validator = new DelegatingOAuth2TokenValidator<>(withTimestamp);
         }
-        jwtDecoder.setJwtValidator(validator);
-        return jwtDecoder;
+        return validator;
     }
 }
