@@ -21,6 +21,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RestructuredAccessTypes;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.Attributes;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
@@ -369,10 +370,10 @@ public class ProfessionalRefreshOrchestrationHelper {
 
         Map<String, String> attributes = new HashMap<>();
 
-        attributes.put("jurisdiction", jurisdictionId);
-        attributes.put("caseType", caseTypeId);
+        attributes.put(Attributes.Name.JURISDICTION, jurisdictionId);
+        attributes.put(Attributes.Name.CASE_TYPE, caseTypeId);
         if (null != caseAccessGroupId) {
-            attributes.put("caseAccessGroupId", caseAccessGroupId);
+            attributes.put(Attributes.Name.CASE_ACCESS_GROUP_ID, caseAccessGroupId);
         }
 
         return RoleAssignment.builder()
