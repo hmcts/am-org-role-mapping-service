@@ -103,7 +103,6 @@ class DroolPossessionsJudicialOfficeHolderMappingTest extends DroolBase {
                 // Additional Roles
                 Arguments.of(LegacyAppointment.ANY_OTHER_APPOINTMENT,
                         AdditionalRole.PRESIDING_JUDGE)
-
         );
     }
 
@@ -128,7 +127,30 @@ class DroolPossessionsJudicialOfficeHolderMappingTest extends DroolBase {
                         AdditionalRole.DESIGNATED_CIVIL_JUDGE),
                 Arguments.of(LegacyAppointment.ANY_OTHER_APPOINTMENT,
                         AdditionalRole.ACTING_DESIGNATED_CIVIL_JUDGE)
+        );
+    }
 
+    static Stream<Arguments> salaried() {
+        // Parameters AppointmentEnum appointment, AdditionalRoleEnum assignedRoles
+        return Stream.of(
+                // Appointments
+                Arguments.of(Appointment.CHIEF_INSOLVENCY_AND_COMPANIES_COURT_JUDGE,
+                        LegacyAdditionalRole.ANY_OTHER_ROLE),
+                Arguments.of(Appointment.CHIEF_MASTER,
+                        LegacyAdditionalRole.ANY_OTHER_ROLE),
+                Arguments.of(Appointment.DEPUTY_CHAMBER_PRESIDENT,
+                        LegacyAdditionalRole.ANY_OTHER_ROLE),
+                Arguments.of(Appointment.MASTER_OF_THE_ROLLS,
+                        LegacyAdditionalRole.ANY_OTHER_ROLE),
+                Arguments.of(Appointment.REGIONAL_EMPLOYMENT_JUDGE,
+                        LegacyAdditionalRole.ANY_OTHER_ROLE),
+                Arguments.of(Appointment.SENIOR_MASTER,
+                        LegacyAdditionalRole.ANY_OTHER_ROLE),
+                // Additional Roles
+                Arguments.of(LegacyAppointment.ANY_OTHER_APPOINTMENT,
+                        AdditionalRole.DESIGNATED_CIVIL_JUDGE),
+                Arguments.of(LegacyAppointment.ANY_OTHER_APPOINTMENT,
+                        AdditionalRole.ACTING_DESIGNATED_CIVIL_JUDGE)
         );
     }
 
@@ -159,6 +181,53 @@ class DroolPossessionsJudicialOfficeHolderMappingTest extends DroolBase {
         runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, expectedRoleNames, "1", true);
         runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, expectedRoleNames, "5", true);
         runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, expectedRoleNames, "2", false);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Appointment.class, names = {"VICE_PRESIDENT"})
+    @EnumSource(value = LegacyAppointment.class, names = {
+        "ADJUDICATOR",
+        "DEPUTY_COSTS_JUDGE",
+        "DEPUTY_DISTRICT_JUDGE",
+        "DEPUTY_DISTRICT_JUDGE_PRFD",
+        "DEPUTY_DISTRICT_JUDGE_SITTING_IN_RETIREMENT",
+        "DEPUTY_MASTER",
+        "DISTRICT_JUDGE",
+        "DEPUTY_INSOLVENCY_AND_COMPANIES_COURT_JUDGE",
+        "DISTRICT_JUDGE_SITTING_IN_RETIREMENT",
+        "EMPLOYMENT_JUDGE",
+        "HIGH_COURT_JUDGE_SITTING_IN_RETIREMENT",
+        "INSOLVENCY_AND_COMPANIES_COURT_JUDGE_SITTING_IN_RETIREMENT",
+        "RECORDER",
+        "TRIBUNAL_JUDGE"
+    })
+    void verifyGenericFeePaidRoles(AppointmentEnum appointment) {
+        String expectedRoleNamesWithBooking = "hmcts-judiciary,fee-paid-judge,judge";
+        String expectedRoleNamesWithOutBooking = "hmcts-judiciary,fee-paid-judge";
+        shouldReturnFeePaidRolesFromJudicialAccessProfile(appointment, true, expectedRoleNamesWithBooking);
+        shouldReturnFeePaidRolesFromJudicialAccessProfile(appointment, false, expectedRoleNamesWithOutBooking);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Appointment.class, names = {"VICE_PRESIDENT"})
+    @EnumSource(value = LegacyAppointment.class, names = {
+        "COSTS_JUDGE",
+        "DISTRICT_JUDGE_MC",
+        "EMPLOYMENT_JUDGE",
+        "INSOLVENCY_AND_COMPANIES_COURT_JUDGE",
+        "JUDGE_OF_THE_FIRST_TIER_TRIBUNAL",
+        "REGISTRAR_OF_CRIMINAL_APPEALS",
+        "SENIOR_COSTS_JUDGE",
+        "TRIBUNAL_JUDGE"
+    })
+    void verifyGenericSalariedAndSptwRoles(AppointmentEnum appointment) {
+        String expectedRoleNames = "hmcts-judiciary,judge";
+        runSalariedTestsForSalariedAndSptw(
+                appointment, LegacyAdditionalRole.ANY_OTHER_ROLE, expectedRoleNames, "1", true);
+        runSalariedTestsForSalariedAndSptw(
+                appointment, LegacyAdditionalRole.ANY_OTHER_ROLE, expectedRoleNames, "5", true);
+        runSalariedTestsForSalariedAndSptw(
+                appointment, LegacyAdditionalRole.ANY_OTHER_ROLE, expectedRoleNames, "2", false);
     }
 
     void shouldReturnSalariedRolesFromJudicialAccessProfile(
