@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
-import feign.FeignException;
 import jakarta.inject.Inject;
 import java.util.List;
 
@@ -13,7 +12,6 @@ import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,20 +28,13 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNo
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_ROLE_REFRESH;
@@ -54,12 +45,6 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
 
     private static final String REFRESH_URL = "/am/role-mapping/professional/refresh";
     private MockMvc mockMvc;
-
-    @MockBean
-    private PRDFeignClient prdFeignClient;
-
-    @MockBean
-    private RASFeignClient rasFeignClient;
 
     @Inject
     private RefreshController refreshController;
@@ -103,12 +88,12 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
         String errorMessage = String.format(Constants.RESOURCE_NOT_FOUND + " %s",
                 userNotFoundErrorMessage);
         runTest(List.of("/SchedulerTests/PrdRetrieveUsers/userx_scenario_01.json"),
-                1, false, false, EndStatus.FAILED, invalidUserId,
+                false, false, false, EndStatus.FAILED, invalidUserId,
                 HttpStatus.NOT_FOUND, errorMessage);
     }
 
     /**
-     *  No Update - UserRefreshQueue.accessTypeVersion >  PRM Access Version.
+     *  No Update - too many users from PRD.
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
@@ -120,7 +105,7 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
                 ProfessionalRefreshOrchestrator.EXPECTED_SINGLE_PRD_USER, USERID, 2);
         runTest(List.of("/SchedulerTests/PrdRetrieveUsers/userx_scenario_01.json",
                         "/SchedulerTests/PrdRetrieveUsers/userx_scenario_01.json"),
-                1, false, false, EndStatus.FAILED, USERID,
+                false, false, false, EndStatus.FAILED, USERID,
                 HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
     }
 
@@ -138,7 +123,7 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
                 "User %s has access types version %d which is higher than the latest version %d",
                 USERID, 2, 1);
         runTest(List.of("/SchedulerTests/PrdRetrieveUsers/userx_scenario_01.json"),
-                1, false, false, EndStatus.FAILED, USERID,
+                false, false, false, EndStatus.FAILED, USERID,
                 HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
     }
 
@@ -153,7 +138,7 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
     })
     void testCreateRole_orgstatus_pending() {
         runTest(List.of("/SchedulerTests/PrdRetrieveUsers/userx_scenario_04.json"),
-                1, false, false, EndStatus.SUCCESS, USERID, HttpStatus.OK, null);
+                false, false, false, EndStatus.SUCCESS, USERID, HttpStatus.OK, null);
     }
 
     /**
@@ -167,7 +152,7 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
     })
     void testDeleteRole() {
         runTest(List.of("/SchedulerTests/PrdRetrieveUsers/userx_scenario_03.json"),
-                1, false, false, EndStatus.SUCCESS, USERID, HttpStatus.OK, null);
+                false, false, false, EndStatus.SUCCESS, USERID, HttpStatus.OK, null);
     }
 
     /**
@@ -184,27 +169,39 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
         String errorMessage = String.format(Constants.FORBIDDEN + ": %s",
                 "PROFESSIONAL_REFRESH_API_ENABLED is false");
         runTest(List.of("/SchedulerTests/PrdRetrieveUsers/userx_scenario_04.json"),
-            1, false, false, EndStatus.SUCCESS, USERID, HttpStatus.FORBIDDEN,
+            false, false, false, EndStatus.SUCCESS, USERID, HttpStatus.FORBIDDEN,
             errorMessage);
         // Reset the flag back to true for other tests
         ReflectionTestUtils.setField(refreshController,"refreshApiEnabled", true);
     }
 
     protected void testCreateRoleAssignment(boolean organisation, boolean group) {
-        runTest(organisation ? List.of("/SchedulerTests/PrdRetrieveUsers/userx_scenario_01.json")
-                : List.of("/SchedulerTests/PrdRetrieveUsers/userx_scenario_02.json"),
-                1, organisation, group, EndStatus.SUCCESS, USERID, HttpStatus.OK, null);
+        runTest(group ? List.of("NEW_USER") : List.of("EXISTING_USER"),
+                organisation, group, false, EndStatus.SUCCESS, USERID, HttpStatus.OK, null);
+    }
+
+    protected void testCreateRoleAssignmentAllScenarios() {
+        runTest(List.of("NEW_USER"), false, false, true, EndStatus.SUCCESS, USERID, HttpStatus.OK, null);
     }
 
     @SneakyThrows
-    private void runTest(List<String> refreshUserfileNames, int expectedNumberOfRecords,
-                         boolean organisation, boolean group, EndStatus endStatus,
+    private void runTest(List<String> refreshUserFileNames,
+                         boolean organisation, boolean group, boolean allScenarios, EndStatus endStatus,
                          String userId, HttpStatus expectedStatus, String errorMessage) {
 
         // GIVEN
-        logBeforeStatus();
-        stubPrdRefreshUser(refreshUserfileNames, userId, "false", "false");
+
+        if (refreshUserFileNames.contains("NEW_USER")) {
+            stubPrdRefreshUserFromDb(true);
+        } else if (refreshUserFileNames.contains("EXISTING_USER")) {
+            stubPrdRefreshUserFromDb(false);
+        } else {
+            stubPrdRefreshUser(refreshUserFileNames, userId, "false", "false");
+        }
         stubRasCreateRoleAssignment(endStatus);
+
+        // NB: log before status after possible transfer of record to PRD Stub
+        logBeforeStatus();
 
         // WHEN
         MvcResult result = mockMvc.perform(post(REFRESH_URL + "?userId=" + userId)
@@ -217,14 +214,15 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
         if (HttpStatus.OK.equals(expectedStatus)) {
             String response = result.getResponse().getContentAsString();
 
+            verifyNoOfCallsToPrd(1);
+            verifyNoOfCallsToRas(1);
             logAfterStatus(response);
 
             // verify the response
             assertEquals(String.format("{\"Message\":\"%s\"}", SUCCESS_ROLE_REFRESH), response);
 
-            if (expectedNumberOfRecords != 0) {
-                assertAssignmentRequest(organisation, group);
-            }
+            assertAssignmentRequest(organisation, group, allScenarios);
+
         } else {
             // verify the exception
             assertNotNull(result);
@@ -244,27 +242,11 @@ class PrmSchedulerProcess6SingleUserIntegrationTest extends BaseProcess6Integrat
     @SneakyThrows
     protected void stubPrdRefreshUser(String body, String userId) {
         if (USERID.equals(userId)) {
-            doReturn(ResponseEntity.ok(mapper.readValue(body, GetRefreshUserResponse.class)))
-                    .when(prdFeignClient).getRefreshUsers(any(), any(), any(), any());
+            super.stubPrdRefreshUser(body, userId);
         } else {
             // Throw user not found exception
-            doThrow(FeignException.NotFound.class)
-                    .when(prdFeignClient).getRefreshUsers(any(), any(), any(), any());
+            stubPrdRefreshUserNotFound(userId);
         }
-    }
-
-    @Override
-    @SneakyThrows
-    protected void stubRasCreateRoleAssignment(EndStatus endStatus) {
-        doReturn(ResponseEntity.ok("{}"))
-            .when(rasFeignClient).createRoleAssignment(any(), any());
-    }
-
-    @Override
-    protected AssignmentRequest getAssignmentRequest() {
-        var assignment = verify(rasFeignClient, times(1))
-                .createRoleAssignment(assignmentRequestCaptor.capture(), any());
-        return assignmentRequestCaptor.getValue();
     }
 
     private void assertException(Class exceptionClass, Exception exception, String errorMessage) {

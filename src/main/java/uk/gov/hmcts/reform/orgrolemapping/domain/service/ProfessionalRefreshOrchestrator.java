@@ -8,11 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
-import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
+
 import java.util.Map;
 import java.util.Objects;
 
@@ -25,19 +25,16 @@ public class ProfessionalRefreshOrchestrator {
     public static final String NO_ACCESS_TYPES_FOUND = "No access types found in database";
     public static final String PRD_USER_NOT_FOUND = "User with ID %s not found in PRD";
     public static final String EXPECTED_SINGLE_PRD_USER = "Expected single user for ID %s, found %s";
-    private final AccessTypesRepository accessTypesRepository;
     private final UserRefreshQueueRepository userRefreshQueueRepository;
     private final PrdService prdService;
     private final ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
     private final ProcessEventTracker processEventTracker;
 
-    public ProfessionalRefreshOrchestrator(AccessTypesRepository accessTypesRepository,
-                                           UserRefreshQueueRepository userRefreshQueueRepository,
+    public ProfessionalRefreshOrchestrator(UserRefreshQueueRepository userRefreshQueueRepository,
                                            PrdService prdService,
                                            ProfessionalRefreshOrchestrationHelper
                                                    professionalRefreshOrchestrationHelper,
                                            ProcessEventTracker processEventTracker) {
-        this.accessTypesRepository = accessTypesRepository;
         this.userRefreshQueueRepository = userRefreshQueueRepository;
         this.prdService = prdService;
         this.professionalRefreshOrchestrationHelper = professionalRefreshOrchestrationHelper;
@@ -81,9 +78,7 @@ public class ProfessionalRefreshOrchestrator {
     }
 
     private AccessTypesEntity getLatestAccessTypes() {
-        return accessTypesRepository.findFirstByOrderByVersionDesc().orElseThrow(
-            () -> new ServiceException(NO_ACCESS_TYPES_FOUND)
-        );
+        return professionalRefreshOrchestrationHelper.getLatestAccessTypes();
     }
 
 }
