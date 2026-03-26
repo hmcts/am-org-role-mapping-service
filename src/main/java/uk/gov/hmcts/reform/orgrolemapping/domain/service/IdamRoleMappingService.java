@@ -149,7 +149,7 @@ public class IdamRoleMappingService {
         }));
 
         if (!isSuccess) {
-            // Failed, so ncrease the retry count.
+            // Failed, so increase the retry count.
             idamRoleManagementQueueRepository.updateRetry(
                     idamRoleManagementQueueEntity.getUserId(),
                     retryOneIntervalMin, retryTwoIntervalMin, retryThreeIntervalMin);
