@@ -107,6 +107,8 @@ am-role-assignment-service:
       ROLE_ASSIGNMENT_DB_PASSWORD: "{{ .Values.postgresql.auth.password}}"
       IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
       IDAM_USER_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
+      JWT_ISSUER_VALIDATION_ENABLED: true
+      OIDC_ISSUER_URL: https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/hmcts
       OPEN_ID_API_BASE_URI: "https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net/o"
       ROLE_ASSIGNMENT_IDAM_ADMIN_USERID: "ras-validation-system@hmcts.net"
       APPLICATION_LOGGING_LEVEL: INFO
@@ -117,7 +119,7 @@ am-role-assignment-service:
 
 am-judicial-booking-service:
   java:
-    image: 'hmctspublic.azurecr.io/am/judicial-booking-service:latest'
+    image: 'hmctsprod.azurecr.io/am/judicial-booking-service:latest'
     imagePullPolicy: Always
     ingressHost: jbs-${SERVICE_FQDN}
     releaseNameOverride: "{{ .Release.Name }}-am-judicial-booking-service"
