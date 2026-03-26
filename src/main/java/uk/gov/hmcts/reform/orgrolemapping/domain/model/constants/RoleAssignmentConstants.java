@@ -49,6 +49,7 @@ public final class RoleAssignmentConstants {
         public static final String LISTED_HEARING_VIEWER = "listed-hearing-viewer";
 
         // JUDICIAL
+        public static final String CIRCUIT_JUDGE = "circuit-judge";
         public static final String FEE_PAID_JUDGE = "fee-paid-judge";
         public static final String JUDGE = "judge";
         public static final String LEADERSHIP_JUDGE = "leadership-judge";
