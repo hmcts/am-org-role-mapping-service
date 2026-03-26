@@ -20,7 +20,7 @@ end;
 
 
 /*
- * Query which returns all IDAM Rp;es currently in working memory.
+ * Query which returns all IDAM Roles currently in working memory.
  */
 query getIdamRoles ()
     $idamRole: IdamRole()
