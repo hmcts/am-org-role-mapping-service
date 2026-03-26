@@ -19,14 +19,14 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": "d85eb06c-6e1f-4485-923c-313063a32a70",
-          "roleName": ["hmcts-judiciary"],
+          "actorId": [ "d85eb06c-6e1f-4485-923c-313063a32a70" ],
+          "roleName": [ "hmcts-judiciary" ],
           "attributes": {
             "contractType": [ "Salaried" ]
           }
         },
         {
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][1][actorId]",
           "attributes": {
             "jurisdiction": [ "PCS" ]
           }
