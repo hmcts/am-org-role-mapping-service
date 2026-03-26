@@ -43,7 +43,6 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
     private static final String DISPLAY_NAME = "#{index} - {0}";
 
-
     static Stream<Arguments> getTestArguments() {
         List<DroolJudicialTestArguments> arguments = new ArrayList<>();
 
@@ -166,9 +165,10 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
         // WHEN
         triggerCreateOrmMappingApi(UserType.JUDICIAL, testScenarios);
+        Map<String, Boolean> featureFlags = triggerFeatureFlagApi();
 
         // THEN
-        assertWireMockAssignmentRequests(expectedAssignmentRequests, testScenarios);
+        assertWireMockAssignmentRequests(expectedAssignmentRequests, testScenarios, featureFlags);
     }
 
     private List<AssignmentRequest> getAssignmentRequestsFromFile(String fileName,
