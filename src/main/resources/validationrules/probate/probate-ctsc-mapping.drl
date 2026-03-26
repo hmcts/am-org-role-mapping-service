@@ -16,19 +16,48 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
-* Probate CTSC roles.
-* TODO: Update/Add rules based on signed off service configuration page
-*/
+ * PROBATE ctsc "ctsc-team-leader" Org role mapping.
+ */
 
-rule "probate_ctsc_caseworker_v1"
+rule "probate_ctsc_team_leader_v1"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0_1_1.getValue())
-  $up: CaseWorkerAccessProfile(roleId in ("9","10"), serviceCode == "BFA1", !suspended)
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER), 
+                               hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, upper_tribunal, routine_work"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("ctsc-team-leader")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($up.getSkillCodes())
+      .build());
+      logMsg("Rule : probate_ctsc_team_leader_v1");
+end;
+
+/*
+ * PROBATE ctsc "ctsc" Org role mapping.
+ */
+
+rule "probate_ctsc_v1"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC), 
+                               hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("appications, review_case, stopped_applications, decision_making_work"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -42,5 +71,178 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : probate_ctsc_caseworker_v1");
+      logMsg("Rule : probate_ctsc_v1");
+end;
+
+/*
+ * PROBATE ctsc "hmcts-ctsc" Org role mapping.
+ */
+
+rule "probate_hmcts_ctsc_v1"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC), 
+                               hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("hmcts-ctsc")
+      .grantType(GrantType.BASIC)
+      .classification(Classification.PRIVATE)
+      .readOnly(true)
+      .attributes(attribute)
+      .authorisations($up.getSkillCodes())
+      .build());
+      logMsg("Rule : probate_ctsc_v1");
+end;
+
+/*
+ * PROBATE ctsc "task-supervisor" role mapping.
+ */
+
+rule "probate_task_supervisor_v1"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER), 
+                               hasValidServiceCode(Jurisdiction.PROBATE), !suspended, isTaskSupervisor())
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("task-supervisor")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($up.getSkillCodes())
+      .build());
+      logMsg("Rule : probate_task_supervisor_v1");
+end;
+
+/*
+ * PROBATE ctsc "case-allocator" role mapping.
+ */
+
+rule "probate_case_allocator_v1"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER), 
+                               hasValidServiceCode(Jurisdiction.PROBATE), !suspended, isCaseAllocator())
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("case-allocator")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($up.getSkillCodes())
+      .build());
+      logMsg("Rule : probate_case_allocator_v1");
+end;
+
+/*
+ * PROBATE ctsc "specific-access-approver-judiciary" Org role mapping.
+ */
+
+rule "probate_specific_access_approver_judiciary_v1"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER), 
+                               hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("specific-access-approver-judiciary")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($up.getSkillCodes())
+      .build());
+      logMsg("Rule : probate_specific_access_approver_judiciary_v1");
+end;
+
+/*
+ * PROBATE ctsc "specific-access-approver-ctsc" Org role mapping.
+ */
+
+rule "probate_specific_access_approver_ctsc_v1"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER), 
+                               hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("specific-access-approver-ctsc")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($up.getSkillCodes())
+      .build());
+      logMsg("Rule : probate_specific_access_approver_ctsc_v1");
+end;
+
+/*
+ * PROBATE ctsc "specific-access-approver-admin" Org role mapping.
+ */
+
+rule "probate_specific_access_approver_admin_v1"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER), 
+                               hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("specific-access-approver-admin")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($up.getSkillCodes())
+      .build());
+      logMsg("Rule : probate_specific_access_approver_admin_v1");
 end;
