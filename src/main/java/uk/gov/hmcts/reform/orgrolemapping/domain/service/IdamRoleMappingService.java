@@ -29,6 +29,7 @@ public class IdamRoleMappingService {
 
     protected static final String NO_ENTITIES = "No entities to process";
     protected static final String QUEUE_NAME = "IRM Process %s Queue";
+    protected static final String UPDATEUSER_NAME = "IRM Update %s User";
 
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
     private final TransactionTemplate transactionTemplate;
@@ -172,5 +173,26 @@ public class IdamRoleMappingService {
         if (hasSuccessfulStep && !hasFailedAStep) {
             processMonitorDto.markAsSuccess();
         }
+    }
+
+    @Transactional
+    public ProcessMonitorDto updateJudicialUser(String userId) {
+        return updateUser(UserType.JUDICIAL, userId);
+    }
+
+    @Transactional
+    public ProcessMonitorDto updateCaseWorkerUser(String userId) {
+        return updateUser(UserType.CASEWORKER, userId);
+    }
+
+    private ProcessMonitorDto updateUser(UserType userType, String userId) {
+        String processName = String.format(UPDATEUSER_NAME, userType.name());
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
+        processEventTracker.trackEventStarted(processMonitorDto);
+
+        // TODO -
+
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
     }
 }
