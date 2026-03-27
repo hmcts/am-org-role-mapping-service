@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-018.02",
+  "_guid_": "S-018.05",
   "title": "must successfully create judicial role mapping for any Generic Leadership Judge appointment in Possessions",
   "_extends_": "F-018_Test_Data_Base",
 
@@ -40,7 +40,7 @@
       "roleAssignmentResponse": [
         {
           "__ordering__": "UNORDERED",
-          "__elementId__": "roleName,attributes.jurisdiction,attributes.region"
+          "__elementId__": "roleName,attributes.jurisdiction"
         },
         {
           "id" : "[[ANYTHING_PRESENT]]",

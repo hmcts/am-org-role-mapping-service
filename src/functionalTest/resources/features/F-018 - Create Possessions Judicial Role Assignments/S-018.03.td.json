@@ -40,7 +40,7 @@
       "roleAssignmentResponse": [
         {
           "__ordering__": "UNORDERED",
-          "__elementId__": "roleName,attributes.jurisdiction,attributes.region"
+          "__elementId__": "roleName,attributes.jurisdiction"
         },
         {
           "id": "[[ANYTHING_PRESENT]]",

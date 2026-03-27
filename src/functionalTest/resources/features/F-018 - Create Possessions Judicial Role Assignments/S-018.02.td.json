@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-018.05",
+  "_guid_": "S-018.02",
   "title": "must successfully create judicial role mapping for any Generic Salaried appointment in Possessions",
   "_extends_": "F-018_Test_Data_Base",
 
@@ -19,7 +19,7 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": [ "d85eb06c-6e1f-4485-923c-313063a32a70" ],
+          "actorId": [ "7faf83c9-8924-4c26-bff3-0a51fb6c9c8f" ],
           "roleName": [ "hmcts-judiciary" ],
           "attributes": {
             "contractType": [ "Salaried" ]
@@ -40,7 +40,7 @@
       "roleAssignmentResponse": [
         {
           "__ordering__": "UNORDERED",
-          "__elementId__": "roleName,attributes.jurisdiction,attributes.region"
+          "__elementId__": "roleName,attributes.jurisdiction"
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
