@@ -1,0 +1,43 @@
+{
+  "_guid_": "S-017.03b",
+  "title": "must successfully create org role mapping for CTSC Team Leader + Case Allocator (Probate)",
+  "_extends_": "S-017.03",
+  "specs": [
+    "contains the actorId of the user just published who has CTSC Team Leader role + Case Allocator (Probate)"
+  ],
+ "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "request": {
+    "pathVariables": {
+      "actorId": "- - - - -  INSERT ACTOR ID HERE  - - - - -"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "case-allocator",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "LEGAL_OPERATIONS",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "Y",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "PROBATE"
+          }
+        }
+      ]
+    }
+  }
+}

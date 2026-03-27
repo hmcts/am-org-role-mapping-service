@@ -1,15 +1,15 @@
 {
-  "_guid_": "S-015.22",
-  "title": "must successfully create org role mapping for HRS Team Leader",
-  "_extends_": "F-015_Test_Data_Base",
+  "_guid_": "S-017.04",
+  "title": "must successfully create org role mapping for CTSC Admin (Probate)",
+  "_extends_": "F-017_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has HRS Team Leader role"
+    "contains the actorId of the user just published who has CTSC Admin (Probate) role"
   ],
  "method": "GET",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
   "request": {
     "pathVariables": {
-      "actorId": "3f9c7e42-8b1d-4a6f-9e53-7c2d1a8b5f90"
+      "actorId": "- - - - -  INSERT ACTOR ID HERE  - - - - -"
     }
   },
   "expectedResponse": {
@@ -25,16 +25,16 @@
           "actorIdType" : "IDAM",
           "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType" : "ORGANISATION",
-          "roleName" : "hrs-team-leader",
+          "roleName" : "ctsc",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
-          "roleCategory" : "ADMIN",
+          "roleCategory" : "CTSC",
           "readOnly" : false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
             "substantive" : "Y",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "HRS"
+            "jurisdiction" : "PROBATE"
           }
         },
         {
@@ -42,33 +42,16 @@
           "actorIdType" : "IDAM",
           "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType" : "ORGANISATION",
-          "roleName" : "hrs-sharer",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "ADMIN",
-          "readOnly" : false,
+          "roleName" : "hmcts-ctsc",
+          "classification" : "PRIVATE",
+          "grantType" : "BASIC",
+          "roleCategory" : "CTSC",
+          "readOnly" : true,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
             "substantive" : "Y",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "HRS"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
-          "roleType" : "ORGANISATION",
-          "roleName" : "hrs-listener",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "ADMIN",
-          "readOnly" : false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "Y",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "HRS"
+            "jurisdiction" : "PROBATE"
           }
         }
       ]

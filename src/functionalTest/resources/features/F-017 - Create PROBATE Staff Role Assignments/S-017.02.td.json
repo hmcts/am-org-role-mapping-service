@@ -1,0 +1,60 @@
+{
+  "_guid_": "S-017.02",
+  "title": "must successfully create org role mapping for Legal Caseworker (Probate)",
+  "_extends_": "F-017_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published who has Legal Caseworker (Probate) role"
+  ],
+ "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "request": {
+    "pathVariables": {
+      "actorId": "- - - - -  INSERT ACTOR ID HERE  - - - - -"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "tribunal-caseworker",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "LEGAL_OPERATIONS",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "Y",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "PROBATE"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "hmcts-legal-operations",
+          "classification" : "PUBLIC",
+          "grantType" : "BASIC",
+          "roleCategory" : "LEGAL_OPERATIONS",
+          "readOnly" : true,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "Y",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "PROBATE"
+          }
+        }
+      ]
+    }
+  }
+}
