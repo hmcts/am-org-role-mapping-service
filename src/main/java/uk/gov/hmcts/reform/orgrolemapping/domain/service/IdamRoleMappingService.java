@@ -158,23 +158,6 @@ public class IdamRoleMappingService {
         return errorMessageBuilder.toString();
     }
 
-    private void markProcessStatus(ProcessMonitorDto processMonitorDto, int successfulJobCount,
-                                     int failedJobCount, String errorMessage) {
-        boolean hasSuccessfulStep = successfulJobCount > 0 || (successfulJobCount == 0 && failedJobCount == 0);
-        boolean hasFailedAStep = failedJobCount > 0;
-        if (!hasSuccessfulStep && hasFailedAStep) {
-            processMonitorDto.markAsFailed(errorMessage);
-        }
-
-        if (hasSuccessfulStep && hasFailedAStep) {
-            processMonitorDto.markAsPartialSuccess(errorMessage);
-        }
-
-        if (hasSuccessfulStep && !hasFailedAStep) {
-            processMonitorDto.markAsSuccess();
-        }
-    }
-
     @Transactional
     public ProcessMonitorDto updateJudicialUser(String userId) {
         return updateUser(UserType.JUDICIAL, userId);
@@ -189,10 +172,46 @@ public class IdamRoleMappingService {
         String processName = String.format(UPDATEUSER_NAME, userType.name());
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(processName);
         processEventTracker.trackEventStarted(processMonitorDto);
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        boolean isSuccess = false;
 
-        // TODO -
+        // TODO - Replace return value with actual object
+        Object user = getIdamUser(userId);
+        if  (user != null) {
+            isSuccess = patchIdamUser(user);
+        }
 
+        markProcessStatus(processMonitorDto,
+                isSuccess ? 1 : 0, isSuccess ? 0 : 1,
+                errorMessageBuilder.toString());
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
+    }
+
+    protected Object getIdamUser(String userId) {
+        // TODO
+        return null;
+    }
+
+    protected boolean patchIdamUser(Object user) {
+        // TODO
+        return false;
+    }
+
+    private void markProcessStatus(ProcessMonitorDto processMonitorDto, int successfulJobCount,
+                                   int failedJobCount, String errorMessage) {
+        boolean hasSuccessfulStep = successfulJobCount > 0 || (successfulJobCount == 0 && failedJobCount == 0);
+        boolean hasFailedAStep = failedJobCount > 0;
+        if (!hasSuccessfulStep && hasFailedAStep) {
+            processMonitorDto.markAsFailed(errorMessage);
+        }
+
+        if (hasSuccessfulStep && hasFailedAStep) {
+            processMonitorDto.markAsPartialSuccess(errorMessage);
+        }
+
+        if (hasSuccessfulStep && !hasFailedAStep) {
+            processMonitorDto.markAsSuccess();
+        }
     }
 }

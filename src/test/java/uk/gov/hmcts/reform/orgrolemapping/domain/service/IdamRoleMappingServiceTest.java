@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -191,6 +192,29 @@ class IdamRoleMappingServiceTest {
         } else {
             Assertions.assertThrows(ServiceException.class, sut::processJudicialQueue);
         }
+    }
+
+    @Test
+    void getUserTest() {
+        String userId = "user1";
+
+        // TODO - Replace return value with actual object
+        Object result = sut.getIdamUser(userId);
+
+        // TODO - Uncomment
+        // assertNotNull(result);
+        // assertEquals(userId, userId.getUserId());
+    }
+
+    @Test
+    void patchUserTest() {
+        // TODO - Replace return value with actual object
+        Object user = "replaceme";
+
+        boolean result = sut.patchIdamUser(user);
+
+        // TODO - Uncomment
+        // assertTrue(result);
     }
 
     private void assertProcessMonitor(ProcessMonitorDto processMonitorDto, EndStatus expectedStatus,
