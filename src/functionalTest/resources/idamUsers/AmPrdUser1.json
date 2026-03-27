@@ -1,0 +1,25 @@
+{
+  "password": "[[$TEST_AM_PRD_USER1_BEFTA_PASSWORD]]",
+  "user": {
+    "email": "[[$TEST_AM_PRD_USER1_BEFTA]]",
+    "forename": "AM-ORM-PRD",
+    "surname": "FTA",
+    "displayName": "AM-ORM PRD FTA",
+    "roleNames": [
+      "prd-admin",
+      "prd-aac-system",
+      "pui-finance-manager",
+      "caseworker",
+      "cwd-admin",
+      "cwd-system-user",
+      "jrd-system-user",
+      "org-role-cwd-system-user",
+      "judiciary"
+    ],
+    "accountStatus": "ACTIVE",
+    "recordType": "LIVE"
+  }
+}
+
+
+

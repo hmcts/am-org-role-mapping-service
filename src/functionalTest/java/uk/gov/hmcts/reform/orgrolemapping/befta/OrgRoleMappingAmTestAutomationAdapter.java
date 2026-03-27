@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.befta;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.befta.BeftaTestDataLoader;
@@ -29,6 +30,8 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
     public Object calculateCustomValue(BackEndFunctionalTestScenarioContext scenarioContext, Object key) {
         //the docAMUrl is is referring the self link in PR
         switch (key.toString()) {
+            case ("generateAlphaNumericSize7"):
+                return RandomStringUtils.randomAlphanumeric(7);
             case ("generateUUID"):
                 return UUID.randomUUID();
             case ("generateEmailId"):
