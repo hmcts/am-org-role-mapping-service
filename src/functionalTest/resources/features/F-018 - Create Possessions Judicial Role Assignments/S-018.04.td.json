@@ -1,10 +1,10 @@
 {
   "_guid_": "S-018.04",
-  "title": "must successfully create judicial role mapping for any Possession Circuit Judge Fee Paid appointment in Possessions",
+  "title": "must successfully create judicial role mapping for any Generic Circuit Judge Fee Paid appointment in Possessions (without booking)",
   "_extends_": "F-018_Test_Data_Base",
 
   "specs": [
-    "contains the actorIds of the user just published who has any Possession Circuit Judge Fee Paid appointment in Possessions"
+    "contains the actorId of the user just published who has any Generic Circuit Judge Fee Paid appointment in Possessions"
   ],
 
   "method": "POST",

@@ -4,7 +4,7 @@
   "_extends_": "F-018_Test_Data_Base",
 
   "specs": [
-    "contains the actorIds of the user just published who has any Generic Fee Paid appointment in Possessions"
+    "contains the actorId of the user just published who has any Generic Fee Paid appointment in Possessions"
   ],
 
   "method": "POST",

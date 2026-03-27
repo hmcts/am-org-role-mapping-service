@@ -1,10 +1,10 @@
 {
-  "_guid_": "S-018.05",
-  "title": "must successfully create judicial role mapping for any Possession Salaried appointment in Possessions",
+  "_guid_": "S-018.02",
+  "title": "must successfully create judicial role mapping for any Generic Leadership Judge appointment in Possessions",
   "_extends_": "F-018_Test_Data_Base",
 
   "specs": [
-    "contains the actorIds of the user just published who has any Possession Salaried appointment in Possessions"
+    "contains the actorId of the user just published who has any Generic Leadership Judge appointment in Possessions"
   ],
 
   "method": "POST",
@@ -19,7 +19,7 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": [ "d85eb06c-6e1f-4485-923c-313063a32a70" ],
+          "actorId": [ "d85eb06c-6e1f-4485-923c-313063a32a50" ],
           "roleName": [ "hmcts-judiciary" ],
           "attributes": {
             "contractType": [ "Salaried" ]
@@ -41,6 +41,27 @@
         {
           "__ordering__": "UNORDERED",
           "__elementId__": "roleName,attributes.jurisdiction,attributes.region"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "contractType": "Salaried",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
@@ -80,6 +101,96 @@
             "region": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PCS",
             "workTypes": "hearing_work,routine_work,decision_making_work,applications"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "leadership-judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "contractType": "Salaried",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "region": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS"
+          },
+          "authorisations": "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "specific-access-approver-judiciary",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "contractType": "Salaried",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "region": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS",
+            "workTypes": "access_requests"
+          },
+          "authorisations": "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "specific-access-approver-legal-ops",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "contractType": "Salaried",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "region": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS",
+            "workTypes": "access_requests"
+          },
+          "authorisations": "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "contractType": "Salaried",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "region": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }

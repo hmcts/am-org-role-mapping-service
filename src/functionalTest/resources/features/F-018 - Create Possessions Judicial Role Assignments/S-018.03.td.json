@@ -1,10 +1,10 @@
 {
   "_guid_": "S-018.03",
-  "title": "must successfully create judicial role mapping for any Possession Circuit Judge Salaried appointment in Possessions",
+  "title": "must successfully create judicial role mapping for any Generic Circuit Judge Salaried appointment in Possessions",
   "_extends_": "F-018_Test_Data_Base",
 
   "specs": [
-    "contains the actorIds of the user just published who has any Possession Circuit Judge Salaried appointment in Possessions"
+    "contains the actorId of the user just published who has any Generic Circuit Judge Salaried appointment in Possessions"
   ],
 
   "method": "POST",
