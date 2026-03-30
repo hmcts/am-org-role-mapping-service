@@ -6,8 +6,8 @@ Feature: F-017 : Create Probate Role Assignments
 
 
   @S-017.01
-  @FeatureToggle(DB:probate_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for Senior Legal Caseworker
+  @FeatureToggle(DB:probate_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Senior Legal Caseworker (Probate)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Senior Legal Caseworker (Probate)] as in [S-017.01__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
@@ -20,8 +20,8 @@ Feature: F-017 : Create Probate Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
 @S-017.01a
-  @FeatureToggle(DB:probate_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for Senior Legal Caseworker + Task Supervisor
+  @FeatureToggle(DB:probate_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Senior Legal Caseworker + Task Supervisor (Probate)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Senior Legal Caseworker + Task Supervisor (Probate)] as in [S-017.01a__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
@@ -34,8 +34,8 @@ Feature: F-017 : Create Probate Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
 @S-017.01b
-  @FeatureToggle(DB:probate_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for Senior Legal Caseworker + Case Allocator
+  @FeatureToggle(DB:probate_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Senior Legal Caseworker + Case Allocator (Probate)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Senior Legal Caseworker + Case Allocator (Probate)] as in [S-017.01b__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
@@ -48,8 +48,8 @@ Feature: F-017 : Create Probate Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
 @S-017.02
-  @FeatureToggle(DB:probate_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for Legal Caseworker
+  @FeatureToggle(DB:probate_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Legal Caseworker (Probate)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Legal Caseworker (Probate)] as in [S-017.02__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
@@ -62,8 +62,8 @@ Feature: F-017 : Create Probate Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
 @S-017.02a
-  @FeatureToggle(DB:probate_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for Legal Caseworker + Task Supervisor
+  @FeatureToggle(DB:probate_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Legal Caseworker + Task Supervisor (Probate)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Legal Caseworker + Task Supervisor (Probate)] as in [S-017.02a__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
@@ -76,8 +76,8 @@ Feature: F-017 : Create Probate Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
 @S-017.02b
-  @FeatureToggle(DB:probate_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for Legal Caseworker + Case Allocator
+  @FeatureToggle(DB:probate_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for Legal Caseworker + Case Allocator (Probate)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Legal Caseworker + Case Allocator (Probate)] as in [S-017.02b__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
@@ -90,8 +90,8 @@ Feature: F-017 : Create Probate Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
 @S-017.03
-  @FeatureToggle(DB:probate_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for CTSC Team Leader
+  @FeatureToggle(DB:probate_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for CTSC Team Leader (Probate)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Team Leader (Probate)] as in [S-017.03__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
@@ -104,8 +104,8 @@ Feature: F-017 : Create Probate Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
 @S-017.03a
-  @FeatureToggle(DB:probate_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for CTSC Team Leader + Task Supervisor
+  @FeatureToggle(DB:probate_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for CTSC Team Leader + Task Supervisor (Probate)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Team Leader + Task Supervisor (Probate)] as in [S-017.03a__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
@@ -118,8 +118,8 @@ Feature: F-017 : Create Probate Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
 @S-017.03b
-  @FeatureToggle(DB:probate_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for CTSC Team Leader + Case Allocator
+  @FeatureToggle(DB:probate_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for CTSC Team Leader + Case Allocator (Probate)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Team Leader + Case Allocator (Probate)] as in [S-017.03b__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
@@ -132,8 +132,8 @@ Feature: F-017 : Create Probate Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
 @S-017.04
-  @FeatureToggle(DB:probate_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
-  Scenario: must successfully create org role mapping for CTSC Admin
+  @FeatureToggle(DB:probate_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  Scenario: must successfully create org role mapping for CTSC Admin (Probate)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Admin (Probate)] as in [S-017.04__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
