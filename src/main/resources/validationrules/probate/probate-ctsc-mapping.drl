@@ -6,13 +6,19 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.crd.JobTitle;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.Attributes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.RoleName;
+
 import java.util.ArrayList;
-import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import java.util.HashMap
 import java.util.Map
 import com.fasterxml.jackson.databind.JsonNode;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
@@ -51,13 +57,13 @@ end;
 rule "probate_ctsc_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
-  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC), 
+   $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN), 
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("appications, review_case, stopped_applications, decision_making_work"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("applications, review_case, stopped_applications, decision_making_work"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -81,11 +87,11 @@ end;
 rule "probate_hmcts_ctsc_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
-  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC), 
+   $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN), 
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -109,7 +115,7 @@ end;
 rule "probate_task_supervisor_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
-  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER), 
+   $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER), 
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended, isTaskSupervisor())
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -138,7 +144,7 @@ end;
 rule "probate_case_allocator_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
-  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER), 
+   $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER), 
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended, isCaseAllocator())
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -172,6 +178,7 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
   insert(
       RoleAssignment.builder()
@@ -201,6 +208,7 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
   insert(
       RoleAssignment.builder()
@@ -230,6 +238,7 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
   insert(
       RoleAssignment.builder()

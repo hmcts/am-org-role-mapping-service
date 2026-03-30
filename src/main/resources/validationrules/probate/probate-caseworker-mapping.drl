@@ -6,6 +6,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.crd.JobTitle;
 import java.util.ArrayList;
 import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import java.util.HashMap
@@ -22,7 +24,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "probate_senior_tribunal_caseworker_v1"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
-  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.SENIOR_TRIBUNAL_CASEWORKER), 
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.SENIOR_LEGAL_CASEWORKER), 
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -51,7 +53,7 @@ end;
 rule "probate_tribunal_caseworker_v1"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
-  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.SENIOR_TRIBUNAL_CASEWORKER, JobTitle.TRIBUNAL_CASEWORKER), 
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.SENIOR_LEGAL_CASEWORKER, JobTitle.LEGAL_CASEWORKER), 
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -81,11 +83,10 @@ end;
 rule "probate_hmcts_legal_operations_v1"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
-  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.SENIOR_TRIBUNAL_CASEWORKER, JobTitle.TRIBUNAL_CASEWORKER), 
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.SENIOR_LEGAL_CASEWORKER, JobTitle.LEGAL_CASEWORKER), 
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
   insert(
       RoleAssignment.builder()
@@ -93,7 +94,7 @@ then
       .actorId($up.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("tribunal-caseworker")
+      .roleName("hmcts-legal-operations")
       .grantType(GrantType.BASIC)
       .classification(Classification.PUBLIC)
       .readOnly(true)
@@ -110,7 +111,7 @@ end;
 rule "probate_task_supervisor_org_v1"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
-  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.SENIOR_TRIBUNAL_CASEWORKER, JobTitle.TRIBUNAL_CASEWORKER), 
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.SENIOR_LEGAL_CASEWORKER, JobTitle.LEGAL_CASEWORKER), 
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended, isTaskSupervisor())
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -139,7 +140,7 @@ end;
 rule "probate_case_allocator_org_v1"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
-  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.SENIOR_TRIBUNAL_CASEWORKER, JobTitle.TRIBUNAL_CASEWORKER), 
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.SENIOR_LEGAL_CASEWORKER, JobTitle.LEGAL_CASEWORKER), 
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended, isCaseAllocator())
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -151,7 +152,7 @@ then
       .actorId($up.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("case-allocator)
+      .roleName("case-allocator")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -168,7 +169,7 @@ end;
 rule "probate_specific_access_approver_legal_ops_v1"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PROBATE_WA_1_0.getValue())
-  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.SENIOR_TRIBUNAL_CASEWORKER), 
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.SENIOR_LEGAL_CASEWORKER), 
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -181,7 +182,7 @@ then
       .actorId($up.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("senior-tribunal-caseworker")
+      .roleName("specific-access-approver-legal-ops")
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -189,4 +190,5 @@ then
       .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : probate_specific_access_approver_legal_ops_v1");
-end;
+    end;
+

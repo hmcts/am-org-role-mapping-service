@@ -56,11 +56,11 @@ class DroolProbateStaffOrgRoleMappingTest extends DroolBase {
                 + "specific-access-approver-admin,task-supervisor,case-allocator',Y,Y",
 
         "10,ABA6,'ctsc,hmcts-ctsc',N,N",
-        "10,ABA6,'ctsc,hmcts-ctsc,task-supervisor',Y,N",
-        "10,ABA6,'ctsc,hmcts-ctsc,case-allocator',N,Y",
-        "10,ABA6,'ctsc,hmcts-ctsc,task-supervisor,case-allocator',Y,Y"
+        "10,ABA6,'ctsc,hmcts-ctsc',Y,N",
+        "10,ABA6,'ctsc,hmcts-ctsc',N,Y",
+        "10,ABA6,'ctsc,hmcts-ctsc',Y,Y"
     })
-    void shouldReturnIacCtscMappings(String roleId, String serviceCode, String expectedRoles,
+    void shouldReturnProbateCtscMappings(String roleId, String serviceCode, String expectedRoles,
                                       String taskSupervisorFlag, String caseAllocatorFlag) {
         allProfiles.clear();
 
@@ -113,17 +113,21 @@ class DroolProbateStaffOrgRoleMappingTest extends DroolBase {
 
     @ParameterizedTest
     @CsvSource({
-        "1,ABA6,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations',N,N",
-        "1,ABA6,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor',Y,N",
-        "1,ABA6,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,case-allocator',N,Y",
-        "1,ABA6,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator',Y,Y",
+        "1,ABA6,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+            + "specific-access-approver-legal-ops',N,N",
+        "1,ABA6,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+            + "specific-access-approver-legal-ops,task-supervisor',Y,N",
+        "1,ABA6,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+            + "specific-access-approver-legal-ops,case-allocator',N,Y",
+        "1,ABA6,'senior-tribunal-caseworker,tribunal-caseworker,hmcts-legal-operations,"
+            + "specific-access-approver-legal-ops,task-supervisor,case-allocator',Y,Y",
 
         "2,ABA6,'tribunal-caseworker,hmcts-legal-operations',N,N",
         "2,ABA6,'tribunal-caseworker,hmcts-legal-operations,task-supervisor',Y,N",
         "2,ABA6,'tribunal-caseworker,hmcts-legal-operations,case-allocator',N,Y",
         "2,ABA6,'tribunal-caseworker,hmcts-legal-operations,task-supervisor,case-allocator',Y,Y"
     })
-    void shouldReturnIacLegalOpsMappings(String roleId, String serviceCode, String expectedRoles,
+    void shouldReturnProbateLegalOpsMappings(String roleId, String serviceCode, String expectedRoles,
                                      String taskSupervisorFlag, String caseAllocatorFlag) {
         allProfiles.clear();
 
@@ -153,7 +157,7 @@ class DroolProbateStaffOrgRoleMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             if (r.getRoleName().equals("hmcts-legal-operations")) {
                 assertNull(r.getAttributes().get("jurisdiction"));
-                assertEquals(Classification.PRIVATE, r.getClassification());
+                assertEquals(Classification.PUBLIC, r.getClassification());
                 assertEquals(GrantType.BASIC, r.getGrantType());
             } else {
                 assertEquals("PROBATE", r.getAttributes().get("jurisdiction").asText());
