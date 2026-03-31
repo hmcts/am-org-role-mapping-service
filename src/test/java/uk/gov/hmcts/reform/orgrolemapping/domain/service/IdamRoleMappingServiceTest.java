@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.PlatformTransactionManager;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
@@ -15,6 +16,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueReposi
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleDataRole;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.IdamFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
@@ -41,6 +43,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.JUD
 @ExtendWith(MockitoExtension.class)
 class IdamRoleMappingServiceTest {
 
+    private final IdamFeignClient idamFeignClient = mock(IdamFeignClient.class);
+
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository
             = mock(IdamRoleManagementQueueRepository.class);
 
@@ -54,7 +58,7 @@ class IdamRoleMappingServiceTest {
             new IdamRoleDataJsonBConverter();
 
     private final IdamRoleMappingService sut =
-            new IdamRoleMappingService(idamRoleManagementQueueRepository, transactionManager,
+            new IdamRoleMappingService(idamFeignClient, idamRoleManagementQueueRepository, transactionManager,
                     processEventTracker, "1", "2", "3");
 
     private static final String[] EMAILS = {"email1@test.com", "email2@test.com"};
@@ -196,11 +200,17 @@ class IdamRoleMappingServiceTest {
 
     @Test
     void getUserTest() {
+        // GIVEN
         String userId = "user1";
+        ResponseEntity<Object> expectedResult = ResponseEntity.ok("replaceme");
+
+        //WHEN
+        when(idamFeignClient.getUserById(userId)).thenReturn(expectedResult);
 
         // TODO - Replace return value with actual object
         Object result = sut.getIdamUser(userId);
 
+        // THEN
         // TODO - Uncomment
         // assertNotNull(result);
         // assertEquals(userId, userId.getUserId());
@@ -208,11 +218,18 @@ class IdamRoleMappingServiceTest {
 
     @Test
     void patchUserTest() {
+        // GIVEN
+        String userId = "user1";
+        ResponseEntity<Object> expectedResult = ResponseEntity.ok("replaceme");
         // TODO - Replace return value with actual object
         Object user = "replaceme";
 
-        boolean result = sut.patchIdamUser(user);
+        //WHEN
+        when(idamFeignClient.updateUser(userId, user)).thenReturn(expectedResult);
 
+        boolean result = sut.patchIdamUser(userId, user);
+
+        // THEN
         // TODO - Uncomment
         // assertTrue(result);
     }

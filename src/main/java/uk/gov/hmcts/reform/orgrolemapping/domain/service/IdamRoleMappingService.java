@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -15,6 +16,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueReposi
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.IdamRecordType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.IdamFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
@@ -31,6 +33,7 @@ public class IdamRoleMappingService {
     protected static final String QUEUE_NAME = "IRM Process %s Queue";
     protected static final String UPDATEUSER_NAME = "IRM Update %s User";
 
+    private final IdamFeignClient idamClient;
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
     private final TransactionTemplate transactionTemplate;
     private final IdamRoleDataJsonBConverter idamRoleDataJsonBConverter;
@@ -41,6 +44,7 @@ public class IdamRoleMappingService {
 
     @Autowired
     public IdamRoleMappingService(
+            IdamFeignClient idamClient,
             IdamRoleManagementQueueRepository idamRoleManagementQueueRepository,
             PlatformTransactionManager transactionManager,
             ProcessEventTracker processEventTracker,
@@ -50,6 +54,7 @@ public class IdamRoleMappingService {
             String retryTwoIntervalMin,
             @Value("${idam.role.management.scheduling.retryOneIntervalMin}")
             String retryThreeIntervalMin) {
+        this.idamClient = idamClient;
         this.idamRoleManagementQueueRepository = idamRoleManagementQueueRepository;
         this.idamRoleDataJsonBConverter = new IdamRoleDataJsonBConverter();
         this.transactionTemplate = new TransactionTemplate(transactionManager);
@@ -178,7 +183,7 @@ public class IdamRoleMappingService {
         // TODO - Replace return value with actual object
         Object user = getIdamUser(userId);
         if  (user != null) {
-            isSuccess = patchIdamUser(user);
+            isSuccess = patchIdamUser(userId, user);
         }
 
         markProcessStatus(processMonitorDto,
@@ -190,11 +195,13 @@ public class IdamRoleMappingService {
 
     protected Object getIdamUser(String userId) {
         // TODO
+        ResponseEntity<Object> response = idamClient.getUserById(userId);
         return null;
     }
 
-    protected boolean patchIdamUser(Object user) {
+    protected boolean patchIdamUser(String userId, Object user) {
         // TODO
+        ResponseEntity<Object> response = idamClient.updateUser(userId, user);
         return false;
     }
 
