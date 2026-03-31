@@ -34,7 +34,8 @@
           "attributes" : {
             "substantive" : "Y",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "PROBATE"
+            "jurisdiction" : "PROBATE",
+            "workTypes" : "decision_making_work"
           }
         },
         {
@@ -42,16 +43,17 @@
           "actorIdType" : "IDAM",
           "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType" : "ORGANISATION",
-          "roleName" : "hmcts-legal-operations",
-          "classification" : "PRIVATE",
-          "grantType" : "BASIC",
+          "roleName" : "specific-access-approver-legal-ops",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
           "roleCategory" : "LEGAL_OPERATIONS",
-          "readOnly" : true,
+          "readOnly" : false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
             "substantive" : "Y",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "PROBATE"
+            "jurisdiction" : "PROBATE",
+            "workTypes" : "access_requests"
           }
         }
       ]

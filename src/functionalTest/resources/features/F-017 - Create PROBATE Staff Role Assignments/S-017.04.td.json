@@ -34,7 +34,8 @@
           "attributes" : {
             "substantive" : "Y",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "PROBATE"
+            "jurisdiction" : "PROBATE",
+            "workTypes" : "applications, review_case, stopped_applications, decision_making_work"
           }
         },
         {
@@ -49,9 +50,7 @@
           "readOnly" : true,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
-            "substantive" : "Y",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "PROBATE"
+            "substantive" : "N"
           }
         }
       ]

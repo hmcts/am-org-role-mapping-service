@@ -51,7 +51,8 @@
           "attributes" : {
             "substantive" : "Y",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "PROBATE"
+            "jurisdiction" : "PROBATE",
+            "workTypes" : "decision_making_work"
           }
         },
         {
@@ -66,9 +67,7 @@
           "readOnly" : true,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
-            "substantive" : "Y",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "PROBATE"
+            "substantive" : "Y"
           }
         },
         {
@@ -83,9 +82,10 @@
           "readOnly" : false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
-            "substantive" : "Y",
+            "substantive" : "N",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "PROBATE"
+            "jurisdiction" : "PROBATE",
+            "workTypes" : "access_requests"
           }
         }
       ]
