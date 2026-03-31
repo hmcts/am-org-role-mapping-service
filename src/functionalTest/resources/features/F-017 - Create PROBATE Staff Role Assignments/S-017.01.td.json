@@ -67,7 +67,7 @@
           "readOnly" : true,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
-            "substantive" : "Y"
+            "substantive" : "N"
           }
         },
         {

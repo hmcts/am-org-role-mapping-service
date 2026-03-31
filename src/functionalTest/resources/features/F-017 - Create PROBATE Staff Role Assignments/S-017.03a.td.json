@@ -28,7 +28,7 @@
           "roleName" : "task-supervisor",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
-          "roleCategory" : "LEGAL_OPERATIONS",
+          "roleCategory" : "CTSC",
           "readOnly" : false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
