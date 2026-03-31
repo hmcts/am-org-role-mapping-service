@@ -43,17 +43,14 @@
           "actorIdType" : "IDAM",
           "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType" : "ORGANISATION",
-          "roleName" : "specific-access-approver-legal-ops",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
+          "roleName" : "hmcts-legal-operations",
+          "classification" : "PRIVATE",
+          "grantType" : "BASIC",
           "roleCategory" : "LEGAL_OPERATIONS",
-          "readOnly" : false,
+          "readOnly" : true,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
-            "substantive" : "N",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "PROBATE",
-            "workTypes" : "access_requests"
+            "substantive" : "N"
           }
         }
       ]

@@ -17,10 +17,6 @@
     "body": {
       "roleAssignmentResponse": [
         {
-          "__ordering__": "UNORDERED",
-          "__elementId__": "roleName"
-        },
-        {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType" : "IDAM",
           "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
