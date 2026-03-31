@@ -427,7 +427,7 @@ class DroolPossessionRoleMappingTest extends DroolBase {
         allProfiles.add(cap);
 
         List<RoleAssignment> roleAssignments =
-            buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction(Jurisdiction.POSSESSIONS.getName(), true));
+            buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("POSSESSIONS", true));
 
         log.info("Returned possession roles: {}",
                 roleAssignments.stream().map(RoleAssignment::getRoleName).toList());
