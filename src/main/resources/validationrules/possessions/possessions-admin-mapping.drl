@@ -105,7 +105,13 @@ when
 then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSION.getName()));
-    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+    if($cap.hasValidJobTitle(JobTitle.WLU_ADMIN)) {
+                    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+                }
+    if($cap.hasValidJobTitle(JobTitle.BAILIFF_ADMIN)) {
+                    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+                    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+                }
 
     insert(
         RoleAssignment.builder()
@@ -127,7 +133,7 @@ end;
 /*
  * 4: Possessions admin "task-supervisor" role mapping.
  */
-rule "task_supervisor_role"
+rule "possessions_admin_task_supervisor_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
@@ -142,7 +148,11 @@ then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSION.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+    if($cap.hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
+                             JobTitle.HEARING_CENTRE_ADMIN,
+                             JobTitle.BAILIFF_ADMIN)) {
+                attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+                }
 
     insert(
         RoleAssignment.builder()
@@ -158,13 +168,13 @@ then
             .build()
     );
 
-    logMsg("Rule : task_supervisor_role");
+    logMsg("Rule : possessions_admin_task_supervisor_role");
 end;
 
 /*
  * 5: Possessions admin "case-allocator" role mapping.
  */
-rule "case_allocator_role"
+rule "possessions_admin_case_allocator_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
@@ -179,7 +189,11 @@ then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSION.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+    if($cap.hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
+                             JobTitle.HEARING_CENTRE_ADMIN,
+                             JobTitle.BAILIFF_ADMIN)) {
+            attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+                }
 
     insert(
         RoleAssignment.builder()
@@ -195,7 +209,7 @@ then
             .build()
     );
 
-    logMsg("Rule : case_allocator_role");
+    logMsg("Rule : possessions_admin_case_allocator_role");
 end;
 
 /*
@@ -308,8 +322,10 @@ then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSION.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("access_requests"));
+    if($cap.hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER)) {
+                        attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+                }
 
     insert(
         RoleAssignment.builder()
