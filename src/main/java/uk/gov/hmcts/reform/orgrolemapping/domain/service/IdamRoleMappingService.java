@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -16,6 +17,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueReposi
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.IdamRecordType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.IdamFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
@@ -180,8 +182,7 @@ public class IdamRoleMappingService {
         StringBuilder errorMessageBuilder = new StringBuilder();
         boolean isSuccess = false;
 
-        // TODO - Replace return value with actual object
-        Object user = getIdamUser(userId);
+        IdamUser user = getIdamUser(userId);
         if  (user != null) {
             isSuccess = patchIdamUser(userId, user);
         }
@@ -193,16 +194,16 @@ public class IdamRoleMappingService {
         return processMonitorDto;
     }
 
-    protected Object getIdamUser(String userId) {
+    protected IdamUser getIdamUser(String userId) {
         // TODO
-        ResponseEntity<Object> response = idamClient.getUserById(userId);
-        return null;
+        ResponseEntity<IdamUser> response = idamClient.getUserById(userId);
+        return response.getBody();
     }
 
-    protected boolean patchIdamUser(String userId, Object user) {
+    protected boolean patchIdamUser(String userId, IdamUser user) {
         // TODO
-        ResponseEntity<Object> response = idamClient.updateUser(userId, user);
-        return false;
+        ResponseEntity<IdamUser> response = idamClient.updateUser(userId, user);
+        return HttpStatus.OK.equals(response.getStatusCode());
     }
 
     private void markProcessStatus(ProcessMonitorDto processMonitorDto, int successfulJobCount,

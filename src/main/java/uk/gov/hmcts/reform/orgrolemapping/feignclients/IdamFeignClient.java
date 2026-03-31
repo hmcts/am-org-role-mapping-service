@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.RdFeignClientInterceptor;
@@ -19,8 +20,8 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.RdFeignClie
 public interface IdamFeignClient {
 
     @GetMapping("/api/v2/users/{userId}")
-    ResponseEntity<Object> getUserById(@PathVariable String userId);
+    ResponseEntity<IdamUser> getUserById(@PathVariable String userId);
 
     @PutMapping("/api/v2/users/{userId}")
-    ResponseEntity<Object> updateUser(@PathVariable String userId, @Valid @RequestBody Object user);
+    ResponseEntity<IdamUser> updateUser(@PathVariable String userId, @Valid @RequestBody IdamUser user);
 }

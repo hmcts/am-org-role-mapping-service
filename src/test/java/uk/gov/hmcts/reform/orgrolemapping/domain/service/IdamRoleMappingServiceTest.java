@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueReposi
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleDataRole;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.IdamFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
@@ -202,36 +203,31 @@ class IdamRoleMappingServiceTest {
     void getUserTest() {
         // GIVEN
         String userId = "user1";
-        ResponseEntity<Object> expectedResult = ResponseEntity.ok("replaceme");
-
-        //WHEN
+        IdamUser user = IdamUser.builder().id(userId).build();
+        ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
         when(idamFeignClient.getUserById(userId)).thenReturn(expectedResult);
 
-        // TODO - Replace return value with actual object
-        Object result = sut.getIdamUser(userId);
+        //WHEN
+        IdamUser result = sut.getIdamUser(userId);
 
         // THEN
-        // TODO - Uncomment
-        // assertNotNull(result);
-        // assertEquals(userId, userId.getUserId());
+        assertNotNull(result);
+        assertEquals(userId, result.getId());
     }
 
     @Test
     void patchUserTest() {
         // GIVEN
         String userId = "user1";
-        ResponseEntity<Object> expectedResult = ResponseEntity.ok("replaceme");
-        // TODO - Replace return value with actual object
-        Object user = "replaceme";
-
-        //WHEN
+        IdamUser user = IdamUser.builder().id(userId).build();
+        ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
         when(idamFeignClient.updateUser(userId, user)).thenReturn(expectedResult);
 
+        //WHEN
         boolean result = sut.patchIdamUser(userId, user);
 
         // THEN
-        // TODO - Uncomment
-        // assertTrue(result);
+        assertTrue(result);
     }
 
     private void assertProcessMonitor(ProcessMonitorDto processMonitorDto, EndStatus expectedStatus,
