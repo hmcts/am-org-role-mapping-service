@@ -91,7 +91,6 @@ when
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -103,7 +102,6 @@ then
       .classification(Classification.PRIVATE)
       .readOnly(true)
       .attributes(attribute)
-      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : probate_ctsc_v1");
 end;
