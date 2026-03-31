@@ -29,11 +29,11 @@ rule "hearing_centre_team_leader_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER),
-                                  hasValidServiceCode(Jurisdiction.POSSESSION),
+                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSION.getName()));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("routine_work,applications,decision_making_work,error_management,appeals"));
@@ -63,11 +63,11 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
                                                    JobTitle.HEARING_CENTRE_ADMIN),
-                                  hasValidServiceCode(Jurisdiction.POSSESSION),
+                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSION.getName()));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("routine_work,applications,decision_making_work,error_management,appeals"));
@@ -100,11 +100,11 @@ when
                                                    JobTitle.WLU_ADMIN,
                                                    JobTitle.WLU_TEAM_LEADER,
                                                    JobTitle.BAILIFF_ADMIN),
-                                  hasValidServiceCode(Jurisdiction.POSSESSION),
+                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSION.getName()));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
     if($cap.hasValidJobTitle(JobTitle.WLU_ADMIN)) {
                     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
                 }
@@ -141,12 +141,12 @@ when
                                                    JobTitle.WLU_ADMIN,
                                                    JobTitle.WLU_TEAM_LEADER,
                                                    JobTitle.BAILIFF_ADMIN),
-                                  hasValidServiceCode(Jurisdiction.POSSESSION),
+                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
                                   isTaskSupervisor(),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSION.getName()));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     if($cap.hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
                              JobTitle.HEARING_CENTRE_ADMIN,
@@ -182,12 +182,12 @@ when
                                                    JobTitle.WLU_ADMIN,
                                                    JobTitle.WLU_TEAM_LEADER,
                                                    JobTitle.BAILIFF_ADMIN),
-                                  hasValidServiceCode(Jurisdiction.POSSESSION),
+                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
                                   isCaseAllocator(),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSION.getName()));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     if($cap.hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
                              JobTitle.HEARING_CENTRE_ADMIN,
@@ -220,11 +220,11 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.WLU_ADMIN,
                                                    JobTitle.WLU_TEAM_LEADER),
-                                  hasValidServiceCode(Jurisdiction.POSSESSION),
+                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSION.getName()));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("routine_work,applications,decision_making_work,error_management"));
 
@@ -251,11 +251,11 @@ rule "wlu_team_leader_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.WLU_TEAM_LEADER),
-                                  hasValidServiceCode(Jurisdiction.POSSESSION),
+                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSION.getName()));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("routine_work,applications,decision_making_work,error_management"));
 
@@ -283,11 +283,11 @@ rule "bailiff_admin_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.BAILIFF_ADMIN),
-                                  hasValidServiceCode(Jurisdiction.POSSESSION),
+                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSION.getName()));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("enforcement_support,error_management"));
 
@@ -316,11 +316,11 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
                                                    JobTitle.WLU_TEAM_LEADER),
-                                  hasValidServiceCode(Jurisdiction.POSSESSION),
+                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSION.getName()));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("access_requests"));
     if($cap.hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER)) {

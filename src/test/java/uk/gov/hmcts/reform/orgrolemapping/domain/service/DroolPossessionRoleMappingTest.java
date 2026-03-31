@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -9,8 +10,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.Attributes;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.RoleName;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.*;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.crd.JobTitle;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder;
 
 import java.util.ArrayList;
@@ -20,8 +25,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 class DroolPossessionRoleMappingTest extends DroolBase {
 
@@ -66,7 +76,8 @@ class DroolPossessionRoleMappingTest extends DroolBase {
     private static final String WORK_TYPES_BAILIFF = "enforcement_support,error_management";
     private static final String WORK_TYPES_ACCESS_REQUESTS = "access_requests";
     private static final String WORK_TYPES_CTSC = "routine_work,applications,decision_making_work,error_management";
-    private static final String WORK_TYPES_CTSC_TEAM_LEADER = "routine_work,applications,decision_making_work,access_requests,error_management";
+    private static final String WORK_TYPES_CTSC_TEAM_LEADER = "routine_work,applications,decision_making_work,"
+            + "access_requests,error_management";
     private static final String NO_WORK_TYPES = null;
 
     // Captures role-specific output expectations so each scenario stays readable.
@@ -87,7 +98,8 @@ class DroolPossessionRoleMappingTest extends DroolBase {
                                              String region,
                                              String primaryLocation,
                                              String workTypes) {
-        return new ExpectedRole(roleName, roleCategory, classification, grantType, readOnly, region, primaryLocation, workTypes);
+        return new ExpectedRole(roleName, roleCategory, classification, grantType, readOnly, region,
+                primaryLocation, workTypes);
     }
 
     // define the expected attributes for roles which have variations depending on jobrole
@@ -404,7 +416,7 @@ class DroolPossessionRoleMappingTest extends DroolBase {
         judicialOfficeHolders.clear();
 
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId5();
-        cap.setServiceCode(Jurisdiction.POSSESSION.getServiceCodes().getFirst());
+        cap.setServiceCode(Jurisdiction.POSSESSIONS.getServiceCodes().getFirst());
         cap.setSuspended(false);
         cap.setRoleId(jobTitle.getRoleId());
         cap.setRoleName(jobTitle.getRoleName());
@@ -415,18 +427,20 @@ class DroolPossessionRoleMappingTest extends DroolBase {
         allProfiles.add(cap);
 
         List<RoleAssignment> roleAssignments =
-            buildExecuteKieSession(getFeatureFlags(FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue(), true));
+            buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction(Jurisdiction.POSSESSIONS.getName(), true));
 
-        System.out.println("Returned possession roles: "
-            + roleAssignments.stream().map(RoleAssignment::getRoleName).toList());
+        log.info("Returned possession roles: {}",
+                roleAssignments.stream().map(RoleAssignment::getRoleName).toList());
 
         assertFalse(roleAssignments.isEmpty());
 
         Map<String, RoleAssignment> roleAssignmentByName = roleAssignments.stream()
             .collect(Collectors.toMap(RoleAssignment::getRoleName, Function.identity()));
 
-        assertRolePresence(roleAssignmentByName, RoleName.TASK_SUPERVISOR, taskSupervisorFlag == TaskSupervisorFlag.YES);
-        assertRolePresence(roleAssignmentByName, RoleName.CASE_ALLOCATOR, caseAllocatorFlag == CaseAllocatorFlag.YES);
+        assertRolePresence(roleAssignmentByName, RoleName.TASK_SUPERVISOR,
+                taskSupervisorFlag == TaskSupervisorFlag.YES);
+        assertRolePresence(roleAssignmentByName, RoleName.CASE_ALLOCATOR,
+                caseAllocatorFlag == CaseAllocatorFlag.YES);
 
         List<ExpectedRole> expectedRoles = new ArrayList<>(expectedBaseRoles);
         if (taskSupervisorFlag == TaskSupervisorFlag.NO) {
@@ -449,14 +463,15 @@ class DroolPossessionRoleMappingTest extends DroolBase {
             assertEquals(expected.readOnly(), actual.isReadOnly());
 
             assertNotNull(actual.getAttributes().get(Attributes.Name.JURISDICTION));
-            assertEquals(Jurisdiction.POSSESSION.getName(),
+            assertEquals(Jurisdiction.POSSESSIONS.getName(),
                 actual.getAttributes().get(Attributes.Name.JURISDICTION).asText());
 
             if (expected.primaryLocation() == null) {
                 assertNull(actual.getAttributes().get(Attributes.Name.PRIMARY_LOCATION));
             } else {
                 assertNotNull(actual.getAttributes().get(Attributes.Name.PRIMARY_LOCATION));
-                assertEquals(expected.primaryLocation(), actual.getAttributes().get(Attributes.Name.PRIMARY_LOCATION).asText());
+                assertEquals(expected.primaryLocation(),
+                        actual.getAttributes().get(Attributes.Name.PRIMARY_LOCATION).asText());
             }
 
             if (expected.region() == null) {
