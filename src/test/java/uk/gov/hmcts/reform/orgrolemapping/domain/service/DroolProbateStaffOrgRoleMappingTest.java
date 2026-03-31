@@ -157,7 +157,7 @@ class DroolProbateStaffOrgRoleMappingTest extends DroolBase {
         roleAssignments.forEach(r -> {
             if (r.getRoleName().equals("hmcts-legal-operations")) {
                 assertNull(r.getAttributes().get("jurisdiction"));
-                assertEquals(Classification.PUBLIC, r.getClassification());
+                assertEquals(Classification.PRIVATE, r.getClassification());
                 assertEquals(GrantType.BASIC, r.getGrantType());
             } else {
                 assertEquals("PROBATE", r.getAttributes().get("jurisdiction").asText());

@@ -96,7 +96,7 @@ then
       .roleType(RoleType.ORGANISATION)
       .roleName("hmcts-legal-operations")
       .grantType(GrantType.BASIC)
-      .classification(Classification.PUBLIC)
+      .classification(Classification.PRIVATE)
       .readOnly(true)
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
