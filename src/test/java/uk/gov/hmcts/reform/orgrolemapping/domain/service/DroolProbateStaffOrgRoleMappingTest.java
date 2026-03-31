@@ -96,8 +96,8 @@ class DroolProbateStaffOrgRoleMappingTest extends DroolBase {
                 assertEquals("PROBATE", r.getAttributes().get("jurisdiction").asText());
                 assertEquals(Classification.PUBLIC, r.getClassification());
                 assertEquals(GrantType.STANDARD, r.getGrantType());
+                assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
             }
-            assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
             if (expectedRoleNameWorkTypesMap.containsKey(r.getRoleName())) {
                 String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
                 String actualWorkTypes = null;
@@ -163,8 +163,8 @@ class DroolProbateStaffOrgRoleMappingTest extends DroolBase {
                 assertEquals("PROBATE", r.getAttributes().get("jurisdiction").asText());
                 assertEquals(Classification.PUBLIC, r.getClassification());
                 assertEquals(GrantType.STANDARD, r.getGrantType());
+                assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
             }
-            assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get("primaryLocation").asText());
             if (expectedRoleNameWorkTypesMap.containsKey(r.getRoleName())) {
                 String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
                 String actualWorkTypes = null;
