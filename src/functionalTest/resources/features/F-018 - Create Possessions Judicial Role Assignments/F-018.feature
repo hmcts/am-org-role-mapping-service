@@ -1,4 +1,4 @@
-@F-003 @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
+@F-018 @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
 Feature: F-018 : Create Role Assignments for Judicial Users
 
   Background:
