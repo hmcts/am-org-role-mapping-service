@@ -1,20 +1,25 @@
 package validationrules.probate;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.crd.JobTitle;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
-import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import java.util.HashMap
 import java.util.Map
-import com.fasterxml.jackson.databind.JsonNode;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.Attributes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.RoleName;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.crd.JobTitle;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.WorkType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
@@ -28,15 +33,15 @@ when
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PROBATE.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
       .actorId($up.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("senior-tribunal-caseworker")
+      .roleName(RoleName.SENIOR_TRIBUNAL_CASEWORKER)
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -57,16 +62,16 @@ when
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work"));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PROBATE.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.DECISION_MAKING_WORK.getValue()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
       .actorId($up.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("tribunal-caseworker")
+      .roleName(RoleName.TRIBUNAL_CASEWORKER)
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -93,7 +98,7 @@ then
       .actorId($up.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("hmcts-legal-operations")
+      .roleName(RoleName.HMCTS_LEGAL_OPERATIONS)
       .grantType(GrantType.BASIC)
       .classification(Classification.PRIVATE)
       .readOnly(true)
@@ -113,15 +118,15 @@ when
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended, isTaskSupervisor())
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PROBATE.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
       .actorId($up.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("task-supervisor")
+      .roleName(RoleName.TASK_SUPERVISOR)
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -142,15 +147,15 @@ when
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended, isCaseAllocator())
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PROBATE.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
       .actorId($up.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("case-allocator")
+      .roleName(RoleName.CASE_ALLOCATOR)
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -171,16 +176,16 @@ when
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PROBATE.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.ACCESS_REQUESTS.getValue()));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
       .actorId($up.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("specific-access-approver-legal-ops")
+      .roleName(RoleName.SPECIFIC_ACCESS_APPROVER_LEGAL_OPS)
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -189,4 +194,3 @@ then
       .build());
       logMsg("Rule : probate_specific_access_approver_legal_ops_v1");
     end;
-
