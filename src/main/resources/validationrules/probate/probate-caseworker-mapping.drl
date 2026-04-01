@@ -28,7 +28,7 @@ when
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PROBATE.getName()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
   insert(
       RoleAssignment.builder()
@@ -36,7 +36,7 @@ then
       .actorId($up.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("senior-tribunal-caseworker")
+      .roleName(RoleName.SENIOR_TRIBUNAL_CASEWORKER)
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -57,7 +57,7 @@ when
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PROBATE.getName()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work"));
   insert(
@@ -66,7 +66,7 @@ then
       .actorId($up.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("tribunal-caseworker")
+      .roleName(RoleName.TRIBUNAL_CASEWORKER)
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -93,7 +93,7 @@ then
       .actorId($up.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("hmcts-legal-operations")
+      .roleName(RoleName.HMCTS_LEGAL_OPERATIONS)
       .grantType(GrantType.BASIC)
       .classification(Classification.PRIVATE)
       .readOnly(true)
@@ -113,7 +113,7 @@ when
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended, isTaskSupervisor())
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PROBATE.getName()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
   insert(
       RoleAssignment.builder()
@@ -121,7 +121,7 @@ then
       .actorId($up.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("task-supervisor")
+      .roleName(RoleName.TASK_SUPERVISOR)
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -142,7 +142,7 @@ when
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended, isCaseAllocator())
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PROBATE.getName()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
   insert(
       RoleAssignment.builder()
@@ -150,7 +150,7 @@ then
       .actorId($up.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("case-allocator")
+      .roleName(RoleName.CASE_ALLOCATOR)
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
@@ -171,7 +171,7 @@ when
                                hasValidServiceCode(Jurisdiction.PROBATE), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("PROBATE"));
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.PROBATE.getName()));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("access_requests"));
   insert(
@@ -180,7 +180,7 @@ then
       .actorId($up.getId())
       .roleCategory(RoleCategory.LEGAL_OPERATIONS)
       .roleType(RoleType.ORGANISATION)
-      .roleName("specific-access-approver-legal-ops")
+      .roleName(RoleName.SPECIFIC_ACCESS_APPROVER_LEGAL_OPS)
       .grantType(GrantType.STANDARD)
       .classification(Classification.PUBLIC)
       .readOnly(false)
