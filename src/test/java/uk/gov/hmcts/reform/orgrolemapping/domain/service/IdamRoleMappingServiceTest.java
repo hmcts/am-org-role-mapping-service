@@ -8,8 +8,10 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
@@ -202,32 +204,79 @@ class IdamRoleMappingServiceTest {
     @Test
     void getUserTest() {
         // GIVEN
-        String userId = "user1";
-        IdamUser user = IdamUser.builder().id(userId).build();
+        IdamUser user = buildIdamUser("user1",List.of("role1", "role2"));
         ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
-        when(idamFeignClient.getUserById(userId)).thenReturn(expectedResult);
+        when(idamFeignClient.getUserById(any())).thenReturn(expectedResult);
 
         //WHEN
-        IdamUser result = sut.getIdamUser(userId);
+        IdamUser result = sut.getIdamUser(user.getId());
 
         // THEN
         assertNotNull(result);
-        assertEquals(userId, result.getId());
+        assertEquals(user.getId(), result.getId());
+        verify(idamFeignClient,times(1)).getUserById(user.getId());
     }
 
     @Test
     void patchUserTest() {
         // GIVEN
-        String userId = "user1";
-        IdamUser user = IdamUser.builder().id(userId).build();
+        IdamUser user = buildIdamUser("user1",List.of("role1", "role2"));
         ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
-        when(idamFeignClient.updateUser(userId, user)).thenReturn(expectedResult);
+        when(idamFeignClient.updateUser(any(), any())).thenReturn(expectedResult);
 
         //WHEN
-        boolean result = sut.patchIdamUser(userId, user);
+        boolean result = sut.patchIdamUser(user);
 
         // THEN
         assertTrue(result);
+        verify(idamFeignClient,times(1)).updateUser(user.getId(), user);
+    }
+
+    @ParameterizedTest
+    @EnumSource(UserType.class)
+    void updateUserTest_Success(UserType userType) {
+        IdamUser user = buildIdamUser("user1",List.of("role1", "role2"));
+        updateUserTest(userType, user, EndStatus.SUCCESS);
+    }
+
+    @ParameterizedTest
+    @EnumSource(UserType.class)
+    void updateUserTest_Exception(UserType userType) {
+        IdamUser user = buildIdamUser("user1",List.of("role1", "role2"));
+        updateUserTest(userType, user, EndStatus.FAILED);
+    }
+
+    @ParameterizedTest
+    @EnumSource(UserType.class)
+    void updateUserTest_Nonexistant(UserType userType) {
+        updateUserTest(userType, null, EndStatus.FAILED);
+    }
+
+    private void updateUserTest(UserType userType, IdamUser user, EndStatus endStatus) {
+        // GIVEN
+        String userId = user != null ? user.getId() : null;
+        ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
+        if (EndStatus.SUCCESS.equals(endStatus)) {
+            when(idamFeignClient.getUserById(userId)).thenReturn(expectedResult);
+            when(idamFeignClient.updateUser(any(), any())).thenReturn(expectedResult);
+        } else if (EndStatus.FAILED.equals(endStatus)) {
+            when(idamFeignClient.getUserById(userId)).thenReturn(expectedResult);
+            when(idamFeignClient.updateUser(any(), any()))
+                    .thenThrow(new HttpClientErrorException(HttpStatus.FORBIDDEN, "Error"));
+        }
+
+        // WHEN
+        ProcessMonitorDto result;
+        if (JUDICIAL.equals(userType)) {
+            result = sut.updateJudicialUser(userId);
+        } else {
+            result = sut.updateCaseWorkerUser(userId);
+        }
+
+        // THEN
+        assertNotNull(result);
+        assertEquals(endStatus, result.getEndStatus());
+        verify(idamFeignClient,times(user != null ? 1 : 0)).updateUser(userId, user);
     }
 
     private void assertProcessMonitor(ProcessMonitorDto processMonitorDto, EndStatus expectedStatus,
@@ -292,5 +341,9 @@ class IdamRoleMappingServiceTest {
         return IdamRoleDataRole.builder()
                 .roleName(role)
                 .build();
+    }
+
+    private IdamUser buildIdamUser(String userId, List<String> roleNames) {
+        return IdamUser.builder().id(userId).roleNames(roleNames).build();
     }
 }

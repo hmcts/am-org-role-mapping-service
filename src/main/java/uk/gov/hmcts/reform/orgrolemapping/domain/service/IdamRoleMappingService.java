@@ -183,8 +183,22 @@ public class IdamRoleMappingService {
         boolean isSuccess = false;
 
         IdamUser user = getIdamUser(userId);
-        if  (user != null) {
-            isSuccess = patchIdamUser(userId, user);
+        if  (user == null) {
+            log.debug("No user found for userId {}", userId);
+        } else {
+            try {
+                isSuccess = patchIdamUser(user);
+                if (!isSuccess) {
+                    String message = String.format("Failed to update user with userId %s", userId);
+                    errorMessageBuilder.append(message);
+                    log.error(message);
+                }
+            } catch (Exception ex) {
+                String message = String.format("Error occurred while updating user with userId %s: %s",
+                        userId, ex.getMessage());
+                errorMessageBuilder.append(message);
+                log.error(message, ex);
+            }
         }
 
         markProcessStatus(processMonitorDto,
@@ -195,14 +209,12 @@ public class IdamRoleMappingService {
     }
 
     protected IdamUser getIdamUser(String userId) {
-        // TODO
         ResponseEntity<IdamUser> response = idamClient.getUserById(userId);
-        return response.getBody();
+        return response != null ? response.getBody() : null;
     }
 
-    protected boolean patchIdamUser(String userId, IdamUser user) {
-        // TODO
-        ResponseEntity<IdamUser> response = idamClient.updateUser(userId, user);
+    protected boolean patchIdamUser(IdamUser user) {
+        ResponseEntity<IdamUser> response = idamClient.updateUser(user.getId(), user);
         return HttpStatus.OK.equals(response.getStatusCode());
     }
 
