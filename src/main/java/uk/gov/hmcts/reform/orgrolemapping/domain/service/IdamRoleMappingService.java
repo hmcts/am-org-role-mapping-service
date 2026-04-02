@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.IdamRecordType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.AccountStatus;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.IdamFeignClient;
@@ -25,6 +26,8 @@ import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @AllArgsConstructor
@@ -187,11 +190,20 @@ public class IdamRoleMappingService {
             log.debug("No user found for userId {}", userId);
         } else {
             try {
-                isSuccess = patchIdamUser(user);
-                if (!isSuccess) {
-                    String message = String.format("Failed to update user with userId %s", userId);
+                // Get the idam role data
+                IdamRoleData idamRoleData = getIdamRoleData(user.getId());
+                if (idamRoleData == null) {
+                    String message = String.format("No idam role data found for userId %s", userId);
                     errorMessageBuilder.append(message);
                     log.error(message);
+                } else {
+                    // Patch the user with the idam role data
+                    isSuccess = patchIdamUser(user, idamRoleData);
+                    if (!isSuccess) {
+                        String message = String.format("Failed to update user with userId %s", userId);
+                        errorMessageBuilder.append(message);
+                        log.error(message);
+                    }
                 }
             } catch (Exception ex) {
                 String message = String.format("Error occurred while updating user with userId %s: %s",
@@ -208,14 +220,59 @@ public class IdamRoleMappingService {
         return processMonitorDto;
     }
 
+    private IdamRoleData getIdamRoleData(String userId) {
+        Optional<IdamRoleManagementQueueEntity> irmQueueEntity =
+                idamRoleManagementQueueRepository.findById(userId);
+        return irmQueueEntity.isPresent() ? irmQueueEntity.get().getData() : null;
+    }
+
     protected IdamUser getIdamUser(String userId) {
         ResponseEntity<IdamUser> response = idamClient.getUserById(userId);
         return response != null ? response.getBody() : null;
     }
 
-    protected boolean patchIdamUser(IdamUser user) {
-        ResponseEntity<IdamUser> response = idamClient.updateUser(user.getId(), user);
-        return HttpStatus.OK.equals(response.getStatusCode());
+    protected boolean patchIdamUser(IdamUser user, IdamRoleData idamRoleData) {
+        AtomicBoolean isPatched = new AtomicBoolean(false);
+        // Update the user roles
+        if ("Y".equalsIgnoreCase(idamRoleData.getDeletedFlag())) {
+            // Delete user role
+            idamRoleData.getRoles().forEach(roleData -> {
+                if (user.getRoleNames().contains(roleData.getRoleName())) {
+                    user.getRoleNames().remove(roleData.getRoleName());
+                    isPatched.set(true);
+                }
+            });
+        } else {
+            // Add user role
+            idamRoleData.getRoles().forEach(roleData -> {
+                if (!user.getRoleNames().contains(roleData.getRoleName())) {
+                    user.getRoleNames().add(roleData.getRoleName());
+                    isPatched.set(true);
+                }
+            });
+        }
+
+        // Update status
+        AccountStatus newAccountStatus = getIdamUserAccountStatus(idamRoleData.getActiveFlag());
+        if (!newAccountStatus.equals(user.getAccountStatus())) {
+            user.setAccountStatus(newAccountStatus);
+            isPatched.set(true);
+        }
+
+        if  (!isPatched.get()) {
+            // No data to patch, so return success without calling idam.
+            log.debug("Idam role data unchanged for userId {}", user.getId());
+            return true;
+        } else {
+            // Update the idam user
+            log.debug("Idam role data patched for userId {}", user.getId());
+            ResponseEntity<IdamUser> response = idamClient.updateUser(user.getId(), user);
+            return HttpStatus.OK.equals(response.getStatusCode());
+        }
+    }
+
+    private static AccountStatus getIdamUserAccountStatus(String activeFlag) {
+        return "N".equalsIgnoreCase(activeFlag) ? AccountStatus.SUSPENDED : AccountStatus.ACTIVE;
     }
 
     private void markProcessStatus(ProcessMonitorDto processMonitorDto, int successfulJobCount,

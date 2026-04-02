@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -42,6 +43,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.CASEWORKER;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.JUDICIAL;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.IdamRoleMappingService.UPDATEUSER_NAME;
 
 @ExtendWith(MockitoExtension.class)
 class IdamRoleMappingServiceTest {
@@ -204,7 +206,7 @@ class IdamRoleMappingServiceTest {
     @Test
     void getUserTest() {
         // GIVEN
-        IdamUser user = buildIdamUser("user1",List.of("role1", "role2"));
+        IdamUser user = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
         ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
         when(idamFeignClient.getUserById(any())).thenReturn(expectedResult);
 
@@ -220,12 +222,13 @@ class IdamRoleMappingServiceTest {
     @Test
     void patchUserTest() {
         // GIVEN
-        IdamUser user = buildIdamUser("user1",List.of("role1", "role2"));
+        IdamUser user = buildIdamUser(USERS[0], new ArrayList<>());
+        IdamRoleData idamRoleData = buildIdamRoleData(ROLES);
         ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
         when(idamFeignClient.updateUser(any(), any())).thenReturn(expectedResult);
 
         //WHEN
-        boolean result = sut.patchIdamUser(user);
+        boolean result = sut.patchIdamUser(user, idamRoleData);
 
         // THEN
         assertTrue(result);
@@ -235,32 +238,41 @@ class IdamRoleMappingServiceTest {
     @ParameterizedTest
     @EnumSource(UserType.class)
     void updateUserTest_Success(UserType userType) {
-        IdamUser user = buildIdamUser("user1",List.of("role1", "role2"));
-        updateUserTest(userType, user, EndStatus.SUCCESS);
+        IdamUser user = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
+        IdamRoleData idamRoleData = buildIdamRoleData(ROLES);
+        updateUserTest(userType, user, idamRoleData, EndStatus.SUCCESS);
     }
 
     @ParameterizedTest
     @EnumSource(UserType.class)
     void updateUserTest_Exception(UserType userType) {
-        IdamUser user = buildIdamUser("user1",List.of("role1", "role2"));
-        updateUserTest(userType, user, EndStatus.FAILED);
+        IdamUser user = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
+        IdamRoleData idamRoleData = buildIdamRoleData(ROLES);
+        updateUserTest(userType, user, idamRoleData, EndStatus.FAILED);
     }
 
     @ParameterizedTest
     @EnumSource(UserType.class)
     void updateUserTest_Nonexistant(UserType userType) {
-        updateUserTest(userType, null, EndStatus.FAILED);
+        updateUserTest(userType, null, null, EndStatus.FAILED);
     }
 
-    private void updateUserTest(UserType userType, IdamUser user, EndStatus endStatus) {
+    private void updateUserTest(UserType userType, IdamUser user, IdamRoleData idamRoleData, EndStatus endStatus) {
         // GIVEN
         String userId = user != null ? user.getId() : null;
         ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
+        Optional<IdamRoleManagementQueueEntity> idamRoleManagementQueueEntity =
+                Optional.of(IdamRoleManagementQueueEntity.builder()
+                .userId(userId)
+                .data(idamRoleData)
+                .build());
         if (EndStatus.SUCCESS.equals(endStatus)) {
             when(idamFeignClient.getUserById(userId)).thenReturn(expectedResult);
+            when(idamRoleManagementQueueRepository.findById(userId)).thenReturn(idamRoleManagementQueueEntity);
             when(idamFeignClient.updateUser(any(), any())).thenReturn(expectedResult);
         } else if (EndStatus.FAILED.equals(endStatus)) {
             when(idamFeignClient.getUserById(userId)).thenReturn(expectedResult);
+            when(idamRoleManagementQueueRepository.findById(userId)).thenReturn(idamRoleManagementQueueEntity);
             when(idamFeignClient.updateUser(any(), any()))
                     .thenThrow(new HttpClientErrorException(HttpStatus.FORBIDDEN, "Error"));
         }
@@ -276,7 +288,8 @@ class IdamRoleMappingServiceTest {
         // THEN
         assertNotNull(result);
         assertEquals(endStatus, result.getEndStatus());
-        verify(idamFeignClient,times(user != null ? 1 : 0)).updateUser(userId, user);
+        assertEquals(String.format(UPDATEUSER_NAME, userType.name()), result.getProcessType());
+        verify(idamFeignClient,times(user != null ? 1 : 0)).updateUser(any(), any());
     }
 
     private void assertProcessMonitor(ProcessMonitorDto processMonitorDto, EndStatus expectedStatus,
@@ -337,6 +350,13 @@ class IdamRoleMappingServiceTest {
                 .build();
     }
 
+
+    private IdamRoleData buildIdamRoleData(String[] roles) {
+        List<IdamRoleDataRole> idamRoles = new ArrayList<>();
+        Arrays.asList(roles).forEach(role -> idamRoles.add(buildIdamRoleDataRole(role)));
+        return IdamRoleData.builder().roles(idamRoles).build();
+    }
+    
     private IdamRoleDataRole buildIdamRoleDataRole(String role) {
         return IdamRoleDataRole.builder()
                 .roleName(role)
