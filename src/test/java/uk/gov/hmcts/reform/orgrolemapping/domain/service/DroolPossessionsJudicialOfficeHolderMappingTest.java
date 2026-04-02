@@ -130,29 +130,7 @@ class DroolPossessionsJudicialOfficeHolderMappingTest extends DroolBase {
         );
     }
 
-    static Stream<Arguments> salaried() {
-        // Parameters AppointmentEnum appointment, AdditionalRoleEnum assignedRoles
-        return Stream.of(
-                // Appointments
-                Arguments.of(Appointment.CHIEF_INSOLVENCY_AND_COMPANIES_COURT_JUDGE,
-                        LegacyAdditionalRole.ANY_OTHER_ROLE),
-                Arguments.of(Appointment.CHIEF_MASTER,
-                        LegacyAdditionalRole.ANY_OTHER_ROLE),
-                Arguments.of(Appointment.DEPUTY_CHAMBER_PRESIDENT,
-                        LegacyAdditionalRole.ANY_OTHER_ROLE),
-                Arguments.of(Appointment.MASTER_OF_THE_ROLLS,
-                        LegacyAdditionalRole.ANY_OTHER_ROLE),
-                Arguments.of(Appointment.REGIONAL_EMPLOYMENT_JUDGE,
-                        LegacyAdditionalRole.ANY_OTHER_ROLE),
-                Arguments.of(Appointment.SENIOR_MASTER,
-                        LegacyAdditionalRole.ANY_OTHER_ROLE),
-                // Additional Roles
-                Arguments.of(LegacyAppointment.ANY_OTHER_APPOINTMENT,
-                        AdditionalRole.DESIGNATED_CIVIL_JUDGE),
-                Arguments.of(LegacyAppointment.ANY_OTHER_APPOINTMENT,
-                        AdditionalRole.ACTING_DESIGNATED_CIVIL_JUDGE)
-        );
-    }
+
 
     @ParameterizedTest
     @MethodSource("circuitJudgeSalaried")
