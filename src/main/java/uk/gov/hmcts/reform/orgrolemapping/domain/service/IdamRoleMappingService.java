@@ -44,6 +44,9 @@ public class IdamRoleMappingService {
     protected static final String QUEUE_NAME = "IRM Process %s Queue";
     protected static final String UPDATEUSER_NAME = "IRM Update User";
 
+    private static final String EMPTY_STRING = "";
+    private static final String SERVICE_NAME = "am_org_role_mapping_service";
+
     private final IdamFeignClient idamClient;
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
     private final TransactionTemplate transactionTemplate;
@@ -324,15 +327,25 @@ public class IdamRoleMappingService {
     }
 
     private boolean createInvitation(IdamUser user) {
-        IdamInvitation invitation = IdamInvitation.builder()
+        final IdamInvitation invitation = buildInvitationFromUser(user);
+        ResponseEntity<IdamInvitation> response = idamClient.inviteUser(invitation);
+        log.debug("Created invitation with id {}", invitation.getId());
+        return HttpStatus.OK.equals(response.getStatusCode());
+    }
+
+    protected IdamInvitation buildInvitationFromUser(IdamUser user) {
+        return IdamInvitation.builder()
+                .userId(user.getId())
                 .email(user.getEmail())
                 .forename(user.getForename())
                 .surname(user.getSurname())
-                .invitationType(InvitationType.INVITE)
+                .activationRoleNames(user.getRoleNames())
+                .invitationType(InvitationType.APPOINT)
                 .invitationStatus(InvitationStatus.PENDING)
+                .clientId(SERVICE_NAME)
+                .successRedirect(EMPTY_STRING)
+                .invitedBy(EMPTY_STRING)
                 .build();
-        ResponseEntity<IdamInvitation> response = idamClient.inviteUser(invitation);
-        return HttpStatus.OK.equals(response.getStatusCode());
     }
 
     private void markProcessStatus(ProcessMonitorDto processMonitorDto, int successfulJobCount,
