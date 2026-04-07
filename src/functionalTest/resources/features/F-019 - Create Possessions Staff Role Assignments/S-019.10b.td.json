@@ -1,0 +1,40 @@
+{
+  "_guid_": "S-019.10a",
+  "title": "must successfully create org role mapping for CTSC Administrator + Case allocator",
+  "_extends_": "S-019.10",
+
+  "specs": [
+    "contains the actorId of the user just published who has CTSC Administrator role + Case allocator"
+  ],
+
+  "request": {
+    "pathVariables": {
+      "actorId": "7a1c9e3d-5f84-4b2a-8c6e-0d3f7a1b2c32"
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS"
+          }
+        }
+      ]
+    }
+  }
+
+}

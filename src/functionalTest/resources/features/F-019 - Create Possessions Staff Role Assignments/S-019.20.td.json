@@ -1,0 +1,46 @@
+{
+  "_guid_": "S-019.20",
+  "title": "must successfully create org role mapping for WLU Administrator",
+  "_extends_": "F-019_Test_Data_Base",
+
+  "specs": [
+    "contains the actorId of the user just published who has WLU Administrator role"
+  ],
+
+  "request": {
+    "pathVariables": {
+      "actorId": "9e3a7c1d-8b64-4f2a-9c5e-2d0f1a7b3c43"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "wlu-admin",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS",
+            "workTypes": "routine_work,applications,decision_making_work,error_management"
+          }
+        }
+      ]
+    }
+  }
+
+}

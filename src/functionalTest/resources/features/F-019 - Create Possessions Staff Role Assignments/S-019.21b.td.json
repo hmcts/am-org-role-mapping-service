@@ -1,0 +1,40 @@
+{
+  "_guid_": "S-019.21b",
+  "title": "must successfully create org role mapping for WLU Team Leader + Case allocator",
+  "_extends_": "S-019.21",
+
+  "specs": [
+    "contains the actorId of the user just published who has WLU Team Leader role + Case allocator"
+  ],
+
+  "request": {
+    "pathVariables": {
+      "actorId": "f3a1c7e9-8b64-4d2a-9c5e-7a0f1b3d2c98"
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS"
+          }
+        }
+      ]
+    }
+  }
+
+}

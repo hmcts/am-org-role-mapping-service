@@ -1,0 +1,41 @@
+{
+  "_guid_": "S-019.03b",
+  "title": "must successfully create org role mapping for Hearing Centre Team Leader + Case allocator",
+  "_extends_": "S-019.03",
+
+  "specs": [
+    "contains the actorId of the user just published who has Hearing Centre Team Leader role + Case allocator"
+  ],
+
+  "request": {
+    "pathVariables": {
+      "actorId": "3c9a7e21-5d84-4f6b-a2c1-7e0d9b3a8f33"
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS",
+            "region": "[[ANYTHING_PRESENT]]"
+          }
+        }
+      ]
+    }
+  }
+
+}
