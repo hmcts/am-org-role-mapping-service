@@ -76,7 +76,7 @@ public class IrmController {
     public ResponseEntity<Object> updateUser(
             @Parameter(description = "UserId")
             @RequestParam String userId) {
-        ProcessMonitorDto processMonitorDto = idamRoleMappingService.updateJudicialUser(userId);
+        ProcessMonitorDto processMonitorDto = idamRoleMappingService.updateUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
 }

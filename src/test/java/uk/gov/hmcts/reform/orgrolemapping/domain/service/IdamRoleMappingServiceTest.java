@@ -235,29 +235,26 @@ class IdamRoleMappingServiceTest {
         verify(idamFeignClient,times(1)).updateUser(user.getId(), user);
     }
 
-    @ParameterizedTest
-    @EnumSource(UserType.class)
-    void updateUserTest_Success(UserType userType) {
+    @Test
+    void updateUserTest_Success() {
         IdamUser user = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
         IdamRoleData idamRoleData = buildIdamRoleData(ROLES);
-        updateUserTest(userType, user, idamRoleData, EndStatus.SUCCESS);
+        updateUserTest(user, idamRoleData, EndStatus.SUCCESS);
     }
 
-    @ParameterizedTest
-    @EnumSource(UserType.class)
-    void updateUserTest_Exception(UserType userType) {
+    @Test
+    void updateUserTest_Exception() {
         IdamUser user = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
         IdamRoleData idamRoleData = buildIdamRoleData(ROLES);
-        updateUserTest(userType, user, idamRoleData, EndStatus.FAILED);
+        updateUserTest(user, idamRoleData, EndStatus.FAILED);
     }
 
-    @ParameterizedTest
-    @EnumSource(UserType.class)
-    void updateUserTest_Nonexistant(UserType userType) {
-        updateUserTest(userType, null, null, EndStatus.FAILED);
+    @Test
+    void updateUserTest_Nonexistant() {
+        updateUserTest(null, null, EndStatus.FAILED);
     }
 
-    private void updateUserTest(UserType userType, IdamUser user, IdamRoleData idamRoleData, EndStatus endStatus) {
+    private void updateUserTest(IdamUser user, IdamRoleData idamRoleData, EndStatus endStatus) {
         // GIVEN
         String userId = user != null ? user.getId() : null;
         ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
@@ -278,17 +275,12 @@ class IdamRoleMappingServiceTest {
         }
 
         // WHEN
-        ProcessMonitorDto result;
-        if (JUDICIAL.equals(userType)) {
-            result = sut.updateJudicialUser(userId);
-        } else {
-            result = sut.updateCaseWorkerUser(userId);
-        }
+        ProcessMonitorDto result = sut.updateUser(userId);
 
         // THEN
         assertNotNull(result);
         assertEquals(endStatus, result.getEndStatus());
-        assertEquals(String.format(UPDATEUSER_NAME, userType.name()), result.getProcessType());
+        assertEquals(UPDATEUSER_NAME, result.getProcessType());
         verify(idamFeignClient,times(user != null ? 1 : 0)).updateUser(any(), any());
     }
 
