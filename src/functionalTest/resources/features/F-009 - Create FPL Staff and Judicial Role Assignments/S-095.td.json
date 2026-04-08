@@ -1,6 +1,6 @@
 {
   "_guid_": "S-095",
-  "title": "must successfully create judicial role mapping for Designated Family Judge - Salaried appointment",
+  "title": "must successfully create judicial role mapping for Circuit Judge - Salaried appointment",
   "_extends_": "F-009_Test_Data_Base",
   "specs": [
     "contains the actorIds of the user just published"
