@@ -43,6 +43,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.CASEWORKER;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.JUDICIAL;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.IdamRoleMappingService.INVITEUSER_NAME;
@@ -298,21 +301,36 @@ class IdamRoleMappingServiceTest {
                 sut.buildInvitationFromUser(oldUser1));
 
         // WHEN
-        inviteUserTest(newUser0, oldInvitations, EndStatus.SUCCESS);
+        inviteUserTest(newUser0, oldInvitations, CREATED, EndStatus.SUCCESS);
+    }
+
+    @Test
+    void inviteUserTest_Failure() {
+        // GIVEN
+        IdamUser newUser0 = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
+        IdamUser oldUser0 = buildIdamUser(USERS[0], Collections.emptyList());
+        IdamUser oldUser1 = buildIdamUser(USERS[1], Arrays.stream(ROLES).toList());
+        List<IdamInvitation> oldInvitations = List.of(
+                sut.buildInvitationFromUser(oldUser0),
+                sut.buildInvitationFromUser(oldUser1));
+
+        // WHEN
+        inviteUserTest(newUser0, oldInvitations, INTERNAL_SERVER_ERROR, EndStatus.FAILED);
     }
 
     @Test
     void inviteUserTest_Exception() {
         IdamUser user = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
-        inviteUserTest(user, Collections.emptyList(), EndStatus.FAILED);
+        inviteUserTest(user, Collections.emptyList(), BAD_REQUEST, EndStatus.FAILED);
     }
 
     @Test
     void inviteUserTest_Nonexistant() {
-        inviteUserTest(null, Collections.emptyList(), EndStatus.FAILED);
+        inviteUserTest(null, Collections.emptyList(), null, EndStatus.FAILED);
     }
 
-    private void inviteUserTest(IdamUser user, List<IdamInvitation> oldInvitations, EndStatus endStatus) {
+    private void inviteUserTest(IdamUser user, List<IdamInvitation> oldInvitations,
+                                HttpStatus httpStatus, EndStatus endStatus) {
         // GIVEN
         String userId = user != null ? user.getId() : null;
         String email = user != null ? user.getEmail() : null;
@@ -320,13 +338,14 @@ class IdamRoleMappingServiceTest {
         ResponseEntity<List<IdamInvitation>> expectedOldInvitationResults = ResponseEntity.ok(oldInvitations);
         when(idamFeignClient.getUserById(userId)).thenReturn(expectedUserResult);
         when(idamFeignClient.getInvitations(email)).thenReturn(expectedOldInvitationResults);
-        if (EndStatus.SUCCESS.equals(endStatus)) {
-            ResponseEntity<IdamInvitation> expectedNewInvitationResult =
-                    new ResponseEntity<>(sut.buildInvitationFromUser(user), HttpStatus.CREATED);
-            when(idamFeignClient.inviteUser(any())).thenReturn(expectedNewInvitationResult);
-        } else if (EndStatus.FAILED.equals(endStatus)) {
+        // BAD_REQUEST emulates throwing an exception on invitation creation
+        if (BAD_REQUEST.equals(httpStatus)) {
             when(idamFeignClient.inviteUser(any()))
-                    .thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Error"));
+                    .thenThrow(new HttpClientErrorException(BAD_REQUEST, "Error"));
+        } else if (user != null) {
+            ResponseEntity<IdamInvitation> expectedNewInvitationResult =
+                    new ResponseEntity<>(sut.buildInvitationFromUser(user), httpStatus);
+            when(idamFeignClient.inviteUser(any())).thenReturn(expectedNewInvitationResult);
         }
 
         // WHEN
