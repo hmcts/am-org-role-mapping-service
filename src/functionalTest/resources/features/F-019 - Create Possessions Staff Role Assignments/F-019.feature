@@ -23,7 +23,7 @@ Feature: F-019 : Create Possessions Staff Role Assignments
   @FeatureToggle(DB:possessions_wa_1_0=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Task Supervisor
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (AAA3 PC)] as in [S-019.03a__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (AAA3 PCS)] as in [S-019.03a__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-019__PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role + Task Supervisor],
@@ -37,7 +37,7 @@ Feature: F-019 : Create Possessions Staff Role Assignments
   @FeatureToggle(DB:possessions_wa_1_0=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Case allocator
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to verify caseworker details for Hearing Centre Team Leader + Case allocator (AAA3 PC)] as in [S-019.03b__VerifyCaseworkerDetails],
+    And a successful call [to verify caseworker details for Hearing Centre Team Leader + Case allocator (AAA3 PCS)] as in [S-019.03b__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-019__PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Hearing Centre Team Leader role + Case allocator],
@@ -241,7 +241,7 @@ Feature: F-019 : Create Possessions Staff Role Assignments
     And a successful call [to verify caseworker details for WLU Team Leader + Task Supervisor (AAA3 PCS)] as in [S-019.21a__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-019__PushMessageToCRDService],
-    And the request [contains the actorId of the user just published who has WLU Team Leader + Task Supervisor role],
+    And the request [contains the actorId of the user just published who has WLU Team Leader role + Task Supervisor],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
@@ -256,7 +256,7 @@ Feature: F-019 : Create Possessions Staff Role Assignments
     And a successful call [to verify caseworker details for WLU Team Leader + Case allocator (AAA3 PCS)] as in [S-019.21b__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-019__PushMessageToCRDService],
-    And the request [contains the actorId of the user just published who has WLU Team Leader + Case allocator role],
+    And the request [contains the actorId of the user just published who has WLU Team Leader role + Case allocator],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
