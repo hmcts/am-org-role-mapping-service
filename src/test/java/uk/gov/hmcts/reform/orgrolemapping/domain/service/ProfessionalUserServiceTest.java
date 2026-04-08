@@ -1,9 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import org.junit.Assert;
 import feign.FeignException;
 import feign.Request;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -49,6 +47,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -133,7 +132,7 @@ class ProfessionalUserServiceTest {
         doThrow(ServiceException.class).when(userRefreshQueueRepository)
                 .deleteInactiveUserRefreshQueueEntitiesLastUpdatedBeforeNumberOfDays(
                         professionalUserServiceConfig.getActiveUserRefreshDays());
-        Assert.assertThrows(ServiceException.class, () ->
+        assertThrows(ServiceException.class, () ->
                 professionalUserService.deleteInactiveUserRefreshRecords()
         );
 
@@ -653,7 +652,7 @@ class ProfessionalUserServiceTest {
             doThrow(new ServiceException("Retrieve users exception")).when(prdService)
                 .retrieveUsers(any(), any(), eq(null));
 
-            Assertions.assertThrows(ServiceException.class, () ->
+            assertThrows(ServiceException.class, () ->
                 professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
             );
 
@@ -688,7 +687,7 @@ class ProfessionalUserServiceTest {
                 .when(batchLastRunTimestampRepository)
                 .save(any());
 
-            Assertions.assertThrows(ServiceException.class, () ->
+            assertThrows(ServiceException.class, () ->
                 professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
             );
 
@@ -719,7 +718,7 @@ class ProfessionalUserServiceTest {
             doThrow(new ServiceException("Insert exception")).when(userRefreshQueueRepository)
                 .upsertToUserRefreshQueueForLastUpdated(any(), any(), any());
 
-            Assertions.assertThrows(ServiceException.class, () ->
+            assertThrows(ServiceException.class, () ->
                 professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
             );
 
@@ -753,7 +752,7 @@ class ProfessionalUserServiceTest {
             doNothing().doThrow(new ServiceException("Insert exception")).when(userRefreshQueueRepository)
                 .upsertToUserRefreshQueueForLastUpdated(any(), any(), any());
 
-            Assertions.assertThrows(ServiceException.class, () ->
+            assertThrows(ServiceException.class, () ->
                 professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
             );
 
@@ -793,7 +792,7 @@ class ProfessionalUserServiceTest {
             when(prdService.retrieveUsers(any(), any(), eq(null)))
                 .thenReturn(ResponseEntity.ok(response));
 
-            Assertions.assertThrows(ServiceException.class, () ->
+            assertThrows(ServiceException.class, () ->
                 professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
             );
 
@@ -811,7 +810,7 @@ class ProfessionalUserServiceTest {
             allAccessTypes.add(new AccessTypesEntity(2L, "some json"));
             when(accessTypesRepository.findAll()).thenReturn(allAccessTypes);
 
-            Assertions.assertThrows(ServiceException.class, () ->
+            assertThrows(ServiceException.class, () ->
                 professionalUserService.findUserChangesAndInsertIntoUserRefreshQueue()
             );
 

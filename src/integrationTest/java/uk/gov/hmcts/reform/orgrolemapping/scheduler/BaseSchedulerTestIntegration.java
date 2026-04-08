@@ -7,8 +7,6 @@ import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.http.LoggedResponse;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -29,11 +27,13 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.IdamRepository;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.absent;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.absent;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -269,6 +269,23 @@ abstract class BaseSchedulerTestIntegration extends BaseTestIntegration {
                         .withStatus(HttpStatus.OK.value())
                         .withHeaders(headers)
                         .withBody(body)));
+    }
+
+    protected void stubPrdRefreshUserNotFound(String userId) {
+        HttpHeaders headers = new HttpHeaders()
+            .plus(new HttpHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE));
+
+        WIRE_MOCK_SERVER.stubFor(get(urlPathMatching(
+            "/refdata/internal/v1/organisations/users"))
+            .withId(STUB_ID_PRD_REFRESH_USER)
+            .withQueryParam("userId", equalTo(userId))
+            .withQueryParam("since", absent())
+            .withQueryParam("pageSize", absent())
+            .withQueryParam("searchAfter", absent())
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.NOT_FOUND.value())
+                .withHeaders(headers)
+                .withBody("{}")));
     }
 
     protected void stubPrdRetrieveUsersByOrg(List<String> fileNames,

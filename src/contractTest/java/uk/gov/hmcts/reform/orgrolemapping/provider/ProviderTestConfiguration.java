@@ -10,7 +10,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesRepository;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CRDService;
@@ -41,8 +40,6 @@ public class ProviderTestConfiguration {
     JRDService jrdService;
     @MockBean
     PrdService prdService;
-    @MockBean
-    AccessTypesRepository accessTypesRepository;
     @MockBean
     UserRefreshQueueRepository userRefreshQueueRepository;
     @MockBean
@@ -118,8 +115,12 @@ public class ProviderTestConfiguration {
     @Bean
     @Primary
     public ProfessionalRefreshOrchestrator professionalRefreshOrchestrator() {
-        return new ProfessionalRefreshOrchestrator(accessTypesRepository, userRefreshQueueRepository,
-            prdService, professionalRefreshOrchestrationHelper, processEventTracker);
+        return new ProfessionalRefreshOrchestrator(
+            userRefreshQueueRepository,
+            prdService,
+            professionalRefreshOrchestrationHelper,
+            processEventTracker
+        );
     }
 
     @Bean
