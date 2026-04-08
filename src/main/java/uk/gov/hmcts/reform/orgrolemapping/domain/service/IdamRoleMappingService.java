@@ -285,12 +285,19 @@ public class IdamRoleMappingService {
         if (user == null) {
             log.debug("No user found for userId {}", userId);
         } else {
-            // Invite the user on idam
-            isSuccess = inviteIdamUser(user);
-            if (!isSuccess) {
-                String message = String.format("Failed to invite userId %s", userId);
+            try {
+                // Invite the user on idam
+                isSuccess = inviteIdamUser(user);
+                if (!isSuccess) {
+                    String message = String.format("Failed to invite userId %s", userId);
+                    errorMessageBuilder.append(message);
+                    log.error(message);
+                }
+            } catch (Exception ex) {
+                String message = String.format("Error occurred during invite for userId %s: %s",
+                        userId, ex.getMessage());
                 errorMessageBuilder.append(message);
-                log.error(message);
+                log.error(message, ex);
             }
         }
         markProcessStatus(processMonitorDto,
@@ -330,7 +337,7 @@ public class IdamRoleMappingService {
         final IdamInvitation invitation = buildInvitationFromUser(user);
         ResponseEntity<IdamInvitation> response = idamClient.inviteUser(invitation);
         log.debug("Created invitation with id {}", invitation.getId());
-        return HttpStatus.OK.equals(response.getStatusCode());
+        return HttpStatus.CREATED.equals(response.getStatusCode());
     }
 
     protected IdamInvitation buildInvitationFromUser(IdamUser user) {
