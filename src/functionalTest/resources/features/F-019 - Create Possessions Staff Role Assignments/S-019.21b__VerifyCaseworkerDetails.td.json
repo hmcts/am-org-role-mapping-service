@@ -3,7 +3,7 @@
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify caseworker details for WLU Team Leader + Task Supervisor (AAA3 PCS)"
+    "to verify caseworker details for WLU Team Leader + Case allocator (AAA3 PCS)"
   ],
 
   "request": {

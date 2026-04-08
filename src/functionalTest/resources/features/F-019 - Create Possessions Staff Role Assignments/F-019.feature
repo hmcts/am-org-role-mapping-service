@@ -248,7 +248,6 @@ Feature: F-019 : Create Possessions Staff Role Assignments
     And the response has all other details as expected
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
-
   @S-019.21b
   @FeatureToggle(DB:possessions_wa_1_0=on)
   Scenario: must successfully create org role mapping for WLU Team Leader+ Case allocator
