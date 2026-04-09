@@ -1,0 +1,59 @@
+{
+  "_guid_": "S-017.04",
+  "title": "must successfully create org role mapping for CTSC Admin (Probate)",
+  "_extends_": "F-017_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published who has CTSC Admin (Probate) role"
+  ],
+ "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "request": {
+    "pathVariables": {
+      "actorId": "39133c2c-40d1-4ea0-957b-c4a366387c03"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "ctsc",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "CTSC",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "Y",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "PROBATE",
+            "workTypes" : "applications, review_case, stopped_applications, decision_making_work"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "hmcts-ctsc",
+          "classification" : "PRIVATE",
+          "grantType" : "BASIC",
+          "roleCategory" : "CTSC",
+          "readOnly" : true,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "N"
+          }
+        }
+      ]
+    }
+  }
+}
