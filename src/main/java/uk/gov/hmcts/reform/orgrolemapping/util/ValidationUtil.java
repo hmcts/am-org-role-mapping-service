@@ -21,6 +21,7 @@ import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRole;
 
 @Named
 @Singleton
@@ -130,6 +131,11 @@ public class ValidationUtil {
                         RoleAssignment::getRoleType,
                         RoleAssignment::getEndTime,
                         RoleAssignment::getAttributes)).toList();
+    }
+
+    public static List<IdamRole> distinctIdamRoles(List<IdamRole> idamRoles) {
+        return idamRoles.stream().filter(ValidationUtil.distinctByKeys(IdamRole::getUserId,
+                IdamRole::getRoleName)).toList();
     }
 
     @SafeVarargs
