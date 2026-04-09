@@ -16,7 +16,10 @@ import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.IdamRecordType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.InvitationStatus;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.InvitationType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.AccountStatus;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamInvitation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.IdamFeignClient;
@@ -25,6 +28,8 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker
 import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,9 +39,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class IdamRoleMappingService {
 
+    protected static final String INVITEUSER_NAME = "IRM Invite User";
     protected static final String NO_ENTITIES = "No entities to process";
     protected static final String QUEUE_NAME = "IRM Process %s Queue";
     protected static final String UPDATEUSER_NAME = "IRM Update User";
+
+    private static final String EMPTY_STRING = "";
+    private static final String SERVICE_NAME = "am_org_role_mapping_service";
 
     private final IdamFeignClient idamClient;
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
@@ -262,6 +271,87 @@ public class IdamRoleMappingService {
 
     private static AccountStatus getIdamUserAccountStatus(String activeFlag) {
         return "N".equalsIgnoreCase(activeFlag) ? AccountStatus.SUSPENDED : AccountStatus.ACTIVE;
+    }
+
+    @Transactional
+    public ProcessMonitorDto inviteUser(String userId) {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(INVITEUSER_NAME);
+        processEventTracker.trackEventStarted(processMonitorDto);
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        boolean isSuccess = false;
+
+        IdamUser user = getIdamUser(userId);
+        if (user == null) {
+            log.debug("No user found for userId {}", userId);
+        } else {
+            try {
+                // Invite the user on idam
+                isSuccess = inviteIdamUser(user);
+                if (!isSuccess) {
+                    String message = String.format("Failed to invite userId %s", userId);
+                    errorMessageBuilder.append(message);
+                    log.error(message);
+                }
+            } catch (Exception ex) {
+                String message = String.format("Error occurred during invite for userId %s: %s",
+                        userId, ex.getMessage());
+                errorMessageBuilder.append(message);
+                log.error(message, ex);
+            }
+        }
+        markProcessStatus(processMonitorDto,
+                isSuccess ? 1 : 0, isSuccess ? 0 : 1,
+                errorMessageBuilder.toString());
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
+    }
+
+    protected boolean inviteIdamUser(IdamUser user) {
+        // Check for any existing invitations
+        List<IdamInvitation> invitations = getIdamUserInvitations(user);
+
+        // Remove any existing invitations
+        deleteIdamUserInvitations(invitations);
+
+        // Create a new invitation
+        return createInvitation(user);
+    }
+
+    private List<IdamInvitation> getIdamUserInvitations(IdamUser user) {
+        ResponseEntity<List<IdamInvitation>> response = idamClient.getInvitations(user.getEmail());
+        List<IdamInvitation> invitations = HttpStatus.OK.equals(response.getStatusCode())
+                ? response.getBody() : Collections.emptyList();
+        log.debug("{} Invitations found for userId {}", invitations.size(), user.getId());
+        return invitations;
+    }
+
+    private void deleteIdamUserInvitations(List<IdamInvitation> invitations) {
+        invitations.forEach(invitation -> {
+            log.debug("Removing invitation with id {}", invitation.getId());
+            idamClient.deleteInvitation(invitation.getId());
+        });
+    }
+
+    private boolean createInvitation(IdamUser user) {
+        final IdamInvitation invitation = buildInvitationFromUser(user);
+        ResponseEntity<IdamInvitation> response = idamClient.inviteUser(invitation);
+        log.debug("Created invitation with id {}", invitation.getId());
+        return HttpStatus.CREATED.equals(response.getStatusCode());
+    }
+
+    protected IdamInvitation buildInvitationFromUser(IdamUser user) {
+        return IdamInvitation.builder()
+                .userId(user.getId())
+                .email(user.getEmail())
+                .forename(user.getForename())
+                .surname(user.getSurname())
+                .activationRoleNames(user.getRoleNames())
+                .invitationType(InvitationType.APPOINT)
+                .invitationStatus(InvitationStatus.PENDING)
+                .clientId(SERVICE_NAME)
+                .successRedirect(EMPTY_STRING)
+                .invitedBy(EMPTY_STRING)
+                .build();
     }
 
     private void markProcessStatus(ProcessMonitorDto processMonitorDto, int successfulJobCount,

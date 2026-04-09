@@ -79,4 +79,26 @@ public class IrmController {
         ProcessMonitorDto processMonitorDto = idamRoleMappingService.updateUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
+
+    @GetMapping(
+        path = "/am/testing-support/irm/user/invite"
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(summary = "IRM Invite User",
+        security =
+        {
+            @SecurityRequirement(name = AUTHORIZATION),
+            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+        })
+    @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    public ResponseEntity<Object> inviteUser(
+            @Parameter(description = "UserId")
+            @RequestParam String userId) {
+        ProcessMonitorDto processMonitorDto = idamRoleMappingService.inviteUser(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+    }
 }
