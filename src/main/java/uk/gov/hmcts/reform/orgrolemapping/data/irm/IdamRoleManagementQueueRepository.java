@@ -4,8 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.annotation.Propagation;
 
 import java.time.LocalDateTime;
 
@@ -38,7 +36,7 @@ public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRol
               when last_published > now() then last_published 
               else now() 
               end
-        where user_id = :userId and active
+        where user_id = :userId and active = true
         """, nativeQuery = true)
     int setAsPublished(String userId, String publishedAs);
 
@@ -53,7 +51,6 @@ public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRol
         """, nativeQuery = true)
     IdamRoleManagementQueueEntity findAndLockSingleActiveRecord(String userType);
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Modifying
     @Query(value = """
         update idam_role_management_queue 
