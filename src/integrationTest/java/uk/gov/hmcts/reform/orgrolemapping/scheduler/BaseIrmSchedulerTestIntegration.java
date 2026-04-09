@@ -21,8 +21,8 @@ abstract class BaseIrmSchedulerTestIntegration extends BaseSchedulerTestIntegrat
 
     protected void stubGetIdamUser(List<String> fileNames, String userId, EndStatus endStatus) {
         stubGetIdamUser(
-                "{ \"users\": " + jsonHelper.readJsonArrayFromFiles(fileNames)
-                        + " }", userId, endStatus
+            "{ \"users\": " + jsonHelper.readJsonArrayFromFiles(fileNames)
+                    + " }", userId, endStatus
         );
     }
 
@@ -34,11 +34,11 @@ abstract class BaseIrmSchedulerTestIntegration extends BaseSchedulerTestIntegrat
                 ? HttpStatus.UNAUTHORIZED.value() : HttpStatus.OK.value();
 
         WIRE_MOCK_SERVER.stubFor(get(urlPathMatching(
-                "/api/v2/users/" + userId))
-                .withId(STUB_ID_GET_USER_ID)
-                .willReturn(aResponse()
-                        .withStatus(httpStatus)
-                        .withHeaders(headers)
-                        .withBody(body)));
+            "/api/v2/users/" + userId))
+            .withId(STUB_ID_GET_USER_ID)
+            .willReturn(aResponse()
+                    .withStatus(httpStatus)
+                    .withHeaders(headers)
+                    .withBody(body)));
     }
 }

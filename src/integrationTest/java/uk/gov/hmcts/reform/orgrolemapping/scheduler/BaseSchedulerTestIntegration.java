@@ -19,15 +19,15 @@ import static uk.gov.hmcts.reform.orgrolemapping.scheduler.BaseSchedulerTestInte
 
 @Slf4j
 @TestPropertySource(properties = {
-        // turn off service bus
-        "amqp.crd.enabled=false",
-        "amqp.jrd.enabled=false",
-        // set environment for pagesize
-        "professional.refdata.pageSize=" + TEST_PAGE_SIZE,
-        // set environment ready for flag checks
-        "orm.environment=" + TEST_ENVIRONMENT,
-        "professional.role.mapping.refreshApi.enabled=true",
-        "testing.support.enabled=true"
+    // turn off service bus
+    "amqp.crd.enabled=false",
+    "amqp.jrd.enabled=false",
+    // set environment for pagesize
+    "professional.refdata.pageSize=" + TEST_PAGE_SIZE,
+    // set environment ready for flag checks
+    "orm.environment=" + TEST_ENVIRONMENT,
+    "professional.role.mapping.refreshApi.enabled=true",
+    "testing.support.enabled=true"
 })
 abstract class BaseSchedulerTestIntegration extends BaseTestIntegration {
 

@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -28,8 +29,8 @@ public class IrmSchedulerProcessIntegrationTest extends BaseIrmSchedulerTestInte
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue.sql"
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue.sql"
     })
     void testProcessJudicialQueue_Success() {
         // GIVEN
@@ -47,8 +48,11 @@ public class IrmSchedulerProcessIntegrationTest extends BaseIrmSchedulerTestInte
         List<IdamRoleManagementQueueEntity> records = idamRoleManagementQueueRepository.findAll();
         assertEquals(expectedNoOfRecords, records.size());
         records.forEach(record -> {
+            assertFalse(record.getActive());
+            assertEquals(0, record.getRetry());
             assertLastUpdatedNow(record.getLastUpdated());
             assertLastUpdatedNow(record.getLastPublished());
+            assertLastUpdatedNow(record.getRetryAfter());
             assertEquals(idamRecordType, record.getPublishedAs());
         });
     }
