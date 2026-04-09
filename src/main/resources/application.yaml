@@ -120,6 +120,15 @@ idam:
       userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:}
       secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:}
       scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
+  role:
+    management:
+      scheduling:
+        enabled: ${IRM_SCHEDULING_ENABLED:false}
+        retryOneIntervalMin: ${IRM_RETRY_ONE_INTERVAL_MIN:2}
+        retryTwoIntervalMin: ${IRM_RETRY_TWO_INTERVAL_MIN:15}
+        retryThreeIntervalMin: ${IRM_RETRY_THREE_INTERVAL_MIN:60}
+        judicial:
+          cron: ${CRON_IRM_JUDICIAL:*/5 * * * * *}
 
 feign:
   client:
@@ -191,3 +200,9 @@ springdoc:
     enabled: true
     operationsSorter: method
   writer-with-order-by-keys: true
+
+professional:
+  role:
+    mapping:
+      scheduling:
+        enabled: ${PROFESSIONAL_SCHEDULING_ENABLED:false}

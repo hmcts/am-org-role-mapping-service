@@ -54,6 +54,10 @@ java:
     REFRESH_JOB_INCLUDE_BOOKINGS: false
     REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS: false
     TESTING_SUPPORT_ENABLED: true
+    # PROFESSIONAL_SCHEDULING_ENABLED should remain false in PREVIEW to prevent scheduling running in all PRs.
+    PROFESSIONAL_SCHEDULING_ENABLED: false
+    # IRM_SCHEDULING_ENABLED should remain false in PREVIEW to prevent scheduling running in all PRs.
+    IRM_SCHEDULING_ENABLED: false
   postgresql:
     enabled: true
     primary:
