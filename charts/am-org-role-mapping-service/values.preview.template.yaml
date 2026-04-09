@@ -140,6 +140,7 @@ am-judicial-booking-service:
       IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
       IDAM_USER_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
       JBS_ENV: pr
+      TESTING_SUPPORT_ENABLED: true
 
 servicebus:
   releaseNameOverride: ${SERVICE_NAME}-asb
