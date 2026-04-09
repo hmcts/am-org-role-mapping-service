@@ -1,19 +1,25 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleDataRole;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.IdamFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
@@ -25,6 +31,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -36,9 +43,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.CASEWORKER;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.JUDICIAL;
+import static uk.gov.hmcts.reform.orgrolemapping.domain.service.IdamRoleMappingService.UPDATEUSER_NAME;
 
 @ExtendWith(MockitoExtension.class)
 class IdamRoleMappingServiceTest {
+
+    private final IdamFeignClient idamFeignClient = mock(IdamFeignClient.class);
 
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository
             = mock(IdamRoleManagementQueueRepository.class);
@@ -53,7 +63,7 @@ class IdamRoleMappingServiceTest {
             new IdamRoleDataJsonBConverter();
 
     private final IdamRoleMappingService sut =
-            new IdamRoleMappingService(idamRoleManagementQueueRepository, transactionManager,
+            new IdamRoleMappingService(idamFeignClient, idamRoleManagementQueueRepository, transactionManager,
                     processEventTracker, "1", "2", "3");
 
     private static final String[] EMAILS = {"email1@test.com", "email2@test.com"};
@@ -193,6 +203,87 @@ class IdamRoleMappingServiceTest {
         }
     }
 
+    @Test
+    void getUserTest() {
+        // GIVEN
+        IdamUser user = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
+        ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
+        when(idamFeignClient.getUserById(any())).thenReturn(expectedResult);
+
+        //WHEN
+        IdamUser result = sut.getIdamUser(user.getId());
+
+        // THEN
+        assertNotNull(result);
+        assertEquals(user.getId(), result.getId());
+        verify(idamFeignClient,times(1)).getUserById(user.getId());
+    }
+
+    @Test
+    void patchUserTest() {
+        // GIVEN
+        IdamUser user = buildIdamUser(USERS[0], new ArrayList<>());
+        IdamRoleData idamRoleData = buildIdamRoleData(ROLES);
+        ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
+        when(idamFeignClient.updateUser(any(), any())).thenReturn(expectedResult);
+
+        //WHEN
+        boolean result = sut.patchIdamUser(user, idamRoleData);
+
+        // THEN
+        assertTrue(result);
+        verify(idamFeignClient,times(1)).updateUser(user.getId(), user);
+    }
+
+    @Test
+    void updateUserTest_Success() {
+        IdamUser user = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
+        IdamRoleData idamRoleData = buildIdamRoleData(ROLES);
+        updateUserTest(user, idamRoleData, EndStatus.SUCCESS);
+    }
+
+    @Test
+    void updateUserTest_Exception() {
+        IdamUser user = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
+        IdamRoleData idamRoleData = buildIdamRoleData(ROLES);
+        updateUserTest(user, idamRoleData, EndStatus.FAILED);
+    }
+
+    @Test
+    void updateUserTest_Nonexistant() {
+        updateUserTest(null, null, EndStatus.FAILED);
+    }
+
+    private void updateUserTest(IdamUser user, IdamRoleData idamRoleData, EndStatus endStatus) {
+        // GIVEN
+        String userId = user != null ? user.getId() : null;
+        ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
+        Optional<IdamRoleManagementQueueEntity> idamRoleManagementQueueEntity =
+                Optional.of(IdamRoleManagementQueueEntity.builder()
+                .userId(userId)
+                .data(idamRoleData)
+                .build());
+        if (EndStatus.SUCCESS.equals(endStatus)) {
+            when(idamFeignClient.getUserById(userId)).thenReturn(expectedResult);
+            when(idamRoleManagementQueueRepository.findById(userId)).thenReturn(idamRoleManagementQueueEntity);
+            when(idamFeignClient.updateUser(any(), any())).thenReturn(expectedResult);
+        } else if (EndStatus.FAILED.equals(endStatus)) {
+            when(idamFeignClient.getUserById(userId)).thenReturn(expectedResult);
+            when(idamRoleManagementQueueRepository.findById(userId)).thenReturn(idamRoleManagementQueueEntity);
+            when(idamFeignClient.updateUser(any(), any()))
+                    .thenThrow(new HttpClientErrorException(HttpStatus.FORBIDDEN, "Error"));
+        }
+
+        // WHEN
+        ProcessMonitorDto result = sut.updateUser(userId);
+
+        // THEN
+        assertNotNull(result);
+        assertEquals(endStatus, result.getEndStatus());
+        assertEquals(UPDATEUSER_NAME, result.getProcessType());
+        verify(idamFeignClient,times(user != null ? 1 : 0)).updateUser(any(), any());
+    }
+
     private void assertProcessMonitor(ProcessMonitorDto processMonitorDto, EndStatus expectedStatus,
                               UserType userType, Exception exception) {
         assertNotNull(processMonitorDto);
@@ -251,9 +342,20 @@ class IdamRoleMappingServiceTest {
                 .build();
     }
 
+
+    private IdamRoleData buildIdamRoleData(String[] roles) {
+        List<IdamRoleDataRole> idamRoles = new ArrayList<>();
+        Arrays.asList(roles).forEach(role -> idamRoles.add(buildIdamRoleDataRole(role)));
+        return IdamRoleData.builder().roles(idamRoles).build();
+    }
+    
     private IdamRoleDataRole buildIdamRoleDataRole(String role) {
         return IdamRoleDataRole.builder()
                 .roleName(role)
                 .build();
+    }
+
+    private IdamUser buildIdamUser(String userId, List<String> roleNames) {
+        return IdamUser.builder().id(userId).roleNames(roleNames).build();
     }
 }
