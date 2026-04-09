@@ -80,12 +80,10 @@ public class IdamRoleMappingService {
         });
     }
 
-    @Transactional
     public ProcessMonitorDto processJudicialQueue() {
         return processQueue(UserType.JUDICIAL);
     }
 
-    @Transactional
     public ProcessMonitorDto processCaseWorkerQueue() {
         return processQueue(UserType.CASEWORKER);
     }
@@ -137,6 +135,7 @@ public class IdamRoleMappingService {
         return processMonitorDto;
     }
 
+    @Transactional
     private String processQueueEntry(IdamRoleManagementQueueEntity idamRoleManagementQueueEntity,
                                      IdamRecordType idamRecordType) {
         StringBuilder errorMessageBuilder = new StringBuilder();
