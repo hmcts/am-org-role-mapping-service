@@ -1,9 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
@@ -21,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.JUDICIAL;
 
-    public class IrmSchedulerProcessIntegrationTest extends BaseIrmSchedulerTestIntegration {
+public class IrmSchedulerProcessIntegrationTest extends BaseIrmSchedulerTestIntegration {
 
     @Autowired
     private IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
@@ -47,9 +44,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.JUD
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry1.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue_caseworker.sql"
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry1.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_caseworker.sql"
     })
     void testProcessJudicialQueue_Retry1() {
         testProcessJudicialQueue(2, true, 0);
@@ -60,9 +57,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.JUD
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry2.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue_caseworker.sql"
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry2.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_caseworker.sql"
     })
     void testProcessJudicialQueue_Retry2() {
         testProcessJudicialQueue(2, true, 0);
@@ -73,9 +70,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.JUD
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry3.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue_caseworker.sql"
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry3.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_caseworker.sql"
     })
     void testProcessJudicialQueue_Retry3() {
         testProcessJudicialQueue(2, true, 0);
@@ -86,9 +83,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.JUD
      */
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry4.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue_caseworker.sql"
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry4.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_caseworker.sql"
     })
     void testProcessJudicialQueue_Retry4() {
         testProcessJudicialQueue(2, false, 4);
