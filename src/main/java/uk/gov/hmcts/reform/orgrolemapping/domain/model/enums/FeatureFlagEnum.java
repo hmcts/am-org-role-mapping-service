@@ -74,7 +74,6 @@ public enum FeatureFlagEnum {
     POSSESSIONS_WA_1_0("possessions_wa_1_0");
 
 
-
     private final String value;
 
     FeatureFlagEnum(String value) {
