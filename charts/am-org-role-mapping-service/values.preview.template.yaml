@@ -78,7 +78,7 @@ orm:
 am-role-assignment-service:
   java:
     # To be reverted https://github.com/hmcts/am-role-assignment-service/pull/2687
-    # image: 'hmctspublic.azurecr.io/am/role-assignment-service:latest'
+    # image: 'hmctsprod.azurecr.io/am/role-assignment-service:latest'
     image: 'hmctsprod.azurecr.io/am/role-assignment-service:pr-2687'
     imagePullPolicy: Always
     ingressHost: ras-${SERVICE_FQDN}
