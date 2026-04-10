@@ -25,7 +25,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 /*
  * Possessions ctsc "ctsc" role mapping.
  */
-rule "ctsc_role"
+rule "possessions_ctsc_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_ADMIN,
@@ -49,16 +49,17 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
             .build()
     );
 
-    logMsg("Rule : ctsc_role");
+    logMsg("Rule : possessions_ctsc_role");
 end;
 
 /*
  * Possessions ctsc "hmcts-ctsc" role mapping.
  */
-rule "hmcts_ctsc_role"
+rule "possessions_hmcts_ctsc_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_ADMIN,
@@ -67,7 +68,6 @@ when
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
 
     insert(
         RoleAssignment.builder()
@@ -83,13 +83,13 @@ then
             .build()
     );
 
-    logMsg("Rule : hmcts_ctsc_role");
+    logMsg("Rule : possessions_hmcts_ctsc_role");
 end;
 
 /*
  * Possessions ctsc "ctsc-team-leader" role mapping.
  */
-rule "ctsc_team_leader_role"
+rule "possessions_ctsc_team_leader_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER),
@@ -112,10 +112,11 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
             .build()
     );
 
-    logMsg("Rule : ctsc_team_leader_role");
+    logMsg("Rule : possessions_ctsc_team_leader_role");
 end;
 
 /*
@@ -145,6 +146,7 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
             .build()
     );
 
@@ -178,6 +180,7 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
             .build()
     );
 
@@ -187,7 +190,7 @@ end;
 /*
  * Possessions ctsc "specific-access-approver-ctsc" role mapping.
  */
-rule "specific_access_approver_ctsc_role"
+rule "possessions_specific_access_approver_ctsc_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER),
@@ -210,8 +213,9 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
             .build()
     );
 
-    logMsg("Rule : specific_access_approver_ctsc_role");
+    logMsg("Rule : possessions_specific_access_approver_ctsc_role");
 end;

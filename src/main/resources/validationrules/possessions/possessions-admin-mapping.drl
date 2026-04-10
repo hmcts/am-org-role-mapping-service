@@ -25,7 +25,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 /*
  * 1: Possessions admin "hearing-centre-team-leader" role mapping.
  */
-rule "hearing_centre_team_leader_role"
+rule "possessions_hearing_centre_team_leader_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER),
@@ -49,16 +49,17 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
             .build()
     );
 
-    logMsg("Rule : hearing_centre_team_leader_role");
+    logMsg("Rule : possessions_hearing_centre_team_leader_role");
 end;
 
 /*
  * 2: Possessions admin "hearing-centre-admin" role mapping.
  */
-rule "hearing_centre_admin_role"
+rule "possessions_hearing_centre_admin_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
@@ -83,16 +84,17 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
             .build()
     );
 
-    logMsg("Rule : hearing_centre_admin_role");
+    logMsg("Rule : possessions_hearing_centre_admin_role");
 end;
 
 /*
  * 3: Possessions admin "hmcts-admin" role mapping.
  */
-rule "hmcts_admin_role"
+rule "possessions_hmcts_admin_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
@@ -104,15 +106,6 @@ when
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
-    if($cap.hasValidJobTitle(JobTitle.WLU_ADMIN)) {
-                    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-                }
-    if($cap.hasValidJobTitle(JobTitle.BAILIFF_ADMIN)) {
-                    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-                    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-                }
-
     insert(
         RoleAssignment.builder()
             .actorIdType(ActorIdType.IDAM)
@@ -127,7 +120,7 @@ then
             .build()
     );
 
-    logMsg("Rule : hmcts_admin_role");
+    logMsg("Rule : possessions_hmcts_admin_role");
 end;
 
 /*
@@ -165,10 +158,11 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
             .build()
     );
 
-    logMsg("Rule : possessions_admin_task_supervisor_role");
+    logMsg("Rule : possessions_possessions_admin_task_supervisor_role");
 end;
 
 /*
@@ -206,6 +200,7 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
             .build()
     );
 
@@ -215,7 +210,7 @@ end;
 /*
  * 6: Possessions admin "wlu-admin" role mapping.
  */
-rule "wlu_admin_role"
+rule "possessions_wlu_admin_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.WLU_ADMIN,
@@ -239,15 +234,16 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
             .build()
     );
 
-    logMsg("Rule : wlu_admin_role");
+    logMsg("Rule : possessions_wlu_admin_role");
 end;
 /*
  * 7: Possessions admin "wlu-team-leader" role mapping.
  */
-rule "wlu_team_leader_role"
+rule "possessions_wlu_team_leader_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.WLU_TEAM_LEADER),
@@ -270,16 +266,17 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
             .build()
     );
 
-    logMsg("Rule : wlu_team_leader_role");
+    logMsg("Rule : possessions_wlu_team_leader_role");
 end;
 
 /*
  * 8: Possessions admin "bailiff-admin" role mapping.
  */
-rule "bailiff_admin_role"
+rule "possessions_bailiff_admin_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.BAILIFF_ADMIN),
@@ -302,16 +299,17 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
             .build()
     );
 
-    logMsg("Rule : bailiff_admin_role");
+    logMsg("Rule : possessions_bailiff_admin_role");
 end;
 
 /*
  * 8: Possessions admin "specific-access-approver-admin" role mapping.
  */
-rule "specific_access_approver_admin_role"
+rule "possessions_specific_access_approver_admin_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
@@ -338,9 +336,10 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
             .build()
     );
 
-    logMsg("Rule : specific_access_approver_admin_role");
+    logMsg("Rule : possessions_specific_access_approver_admin_role");
 end;
 
