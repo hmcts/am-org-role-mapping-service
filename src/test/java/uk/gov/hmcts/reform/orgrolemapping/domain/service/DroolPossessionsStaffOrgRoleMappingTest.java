@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
-class DroolPossessionRoleMappingTest extends DroolBase {
+class DroolPossessionsStaffOrgRoleMappingTest extends DroolBase {
 
     private enum TaskSupervisorFlag {
         YES("Y"),
@@ -282,7 +282,6 @@ class DroolPossessionRoleMappingTest extends DroolBase {
         ROLE_HEARING_CENTRE_TEAM_LEADER,
         ROLE_HEARING_CENTRE_ADMIN,
         ROLE_HMCTS_ADMIN,
-//        hmctsAdmin(NO_REGION, NO_PRIMARY_LOCATION_ID),
         specificAccessApproverAdmin(REGION_LDN),
         taskSupervisor(RoleCategory.ADMIN, REGION_LDN),
         caseAllocator(RoleCategory.ADMIN, REGION_LDN)
@@ -291,21 +290,18 @@ class DroolPossessionRoleMappingTest extends DroolBase {
     private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_ADMIN = List.of(
         ROLE_HEARING_CENTRE_ADMIN,
         ROLE_HMCTS_ADMIN,
-//        hmctsAdmin(NO_REGION, NO_PRIMARY_LOCATION_ID),
         taskSupervisor(RoleCategory.ADMIN,  REGION_LDN),
         caseAllocator(RoleCategory.ADMIN, REGION_LDN)
     );
 
     private static final List<ExpectedRole> EXPECTED_ROLES_WLU_ADMIN = List.of(
         ROLE_HMCTS_ADMIN,
-//        hmctsAdmin(NO_REGION, PRIMARY_LOCATION_ID),
         ROLE_WLU_ADMIN,
         taskSupervisor(RoleCategory.ADMIN, NO_REGION),
         caseAllocator(RoleCategory.ADMIN, NO_REGION)
     );
 
     private static final List<ExpectedRole> EXPECTED_ROLES_WLU_TEAM_LEADER = List.of(
-//        hmctsAdmin(NO_REGION, NO_PRIMARY_LOCATION_ID),
         ROLE_HMCTS_ADMIN,
         ROLE_WLU_ADMIN,
         ROLE_WLU_TEAM_LEADER,
@@ -316,7 +312,6 @@ class DroolPossessionRoleMappingTest extends DroolBase {
 
     private static final List<ExpectedRole> EXPECTED_ROLES_BAILIFF_ADMIN = List.of(
         ROLE_HMCTS_ADMIN,
-//        hmctsAdmin(REGION_LDN, PRIMARY_LOCATION_ID),
         ROLE_BAILIFF_ADMIN,
         taskSupervisor(RoleCategory.ADMIN, REGION_LDN),
         caseAllocator(RoleCategory.ADMIN, REGION_LDN)
