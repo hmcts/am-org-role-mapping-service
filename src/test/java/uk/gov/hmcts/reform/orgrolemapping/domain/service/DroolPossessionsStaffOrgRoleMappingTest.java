@@ -69,6 +69,8 @@ class DroolPossessionRoleMappingTest extends DroolBase {
     private static final String NO_PRIMARY_LOCATION_ID = null;
     private static final String REGION_LDN = "LDN";
     private static final String NO_REGION = null;
+    private static final String JURISDICTION = "PCS";
+    private static final String NO_JURISDICTION = null;
     private static final String WORK_TYPES_HEARING_CENTRE =
         "routine_work,applications,decision_making_work,error_management,appeals";
     private static final String WORK_TYPES_WLU =
@@ -82,7 +84,9 @@ class DroolPossessionRoleMappingTest extends DroolBase {
 
     // Captures role-specific output expectations so each scenario stays readable.
     private record ExpectedRole(String roleName,
-                                RoleCategory roleCategory, Classification classification,
+                                RoleCategory roleCategory,
+                                String jurisdiction,
+                                Classification classification,
                                 GrantType grantType,
                                 boolean readOnly,
                                 String region,
@@ -92,35 +96,24 @@ class DroolPossessionRoleMappingTest extends DroolBase {
 
     private static ExpectedRole expectedRole(String roleName,
                                              RoleCategory roleCategory,
+                                             String jurisdiction,
                                              Classification classification,
                                              GrantType grantType,
                                              boolean readOnly,
                                              String region,
                                              String primaryLocation,
                                              String workTypes) {
-        return new ExpectedRole(roleName, roleCategory, classification, grantType, readOnly, region,
-                primaryLocation, workTypes);
+        return new ExpectedRole(roleName, roleCategory, jurisdiction, classification, grantType,
+                readOnly, region, primaryLocation, workTypes);
     }
 
     // define the expected attributes for roles which have variations depending on jobrole
-
-    private static ExpectedRole hmctsAdmin(String region, String primaryLocation) {
-        return expectedRole(
-                RoleName.HMCTS_ADMIN,
-                RoleCategory.ADMIN,
-                Classification.PRIVATE,
-                GrantType.BASIC,
-                true,
-                region,
-                primaryLocation,
-                NO_WORK_TYPES
-        );
-    }
 
     private static ExpectedRole taskSupervisor(RoleCategory roleCategory, String region) {
         return expectedRole(
                 RoleName.TASK_SUPERVISOR,
                 roleCategory,
+                JURISDICTION,
                 Classification.PUBLIC,
                 GrantType.STANDARD,
                 false,
@@ -134,6 +127,7 @@ class DroolPossessionRoleMappingTest extends DroolBase {
         return expectedRole(
                 RoleName.CASE_ALLOCATOR,
                 roleCategory,
+                JURISDICTION,
                 Classification.PUBLIC,
                 GrantType.STANDARD,
                 false,
@@ -147,6 +141,7 @@ class DroolPossessionRoleMappingTest extends DroolBase {
         return expectedRole(
                 RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN,
                 RoleCategory.ADMIN,
+                JURISDICTION,
                 Classification.PUBLIC,
                 GrantType.STANDARD,
                 false,
@@ -158,9 +153,23 @@ class DroolPossessionRoleMappingTest extends DroolBase {
 
     // define the expected attributes for roles which do not alter
 
+    private static final ExpectedRole ROLE_HMCTS_ADMIN = expectedRole(
+                RoleName.HMCTS_ADMIN,
+                RoleCategory.ADMIN,
+                NO_JURISDICTION,
+                Classification.PRIVATE,
+                GrantType.BASIC,
+                true,
+                NO_REGION,
+                NO_PRIMARY_LOCATION_ID,
+                NO_WORK_TYPES
+        );
+
+
     private static final ExpectedRole ROLE_HEARING_CENTRE_TEAM_LEADER = expectedRole(
             RoleName.HEARING_CENTRE_TEAM_LEADER,
             RoleCategory.ADMIN,
+            JURISDICTION,
             Classification.PUBLIC,
             GrantType.STANDARD,
             false,
@@ -172,6 +181,7 @@ class DroolPossessionRoleMappingTest extends DroolBase {
     private static final ExpectedRole ROLE_HEARING_CENTRE_ADMIN = expectedRole(
             RoleName.HEARING_CENTRE_ADMIN,
             RoleCategory.ADMIN,
+            JURISDICTION,
             Classification.PUBLIC,
             GrantType.STANDARD,
             false,
@@ -183,6 +193,7 @@ class DroolPossessionRoleMappingTest extends DroolBase {
     private static final ExpectedRole ROLE_WLU_ADMIN = expectedRole(
         RoleName.WLU_ADMIN,
         RoleCategory.ADMIN,
+        JURISDICTION,
         Classification.PUBLIC,
         GrantType.STANDARD,
         false,
@@ -194,6 +205,7 @@ class DroolPossessionRoleMappingTest extends DroolBase {
     private static final ExpectedRole ROLE_WLU_TEAM_LEADER = expectedRole(
         RoleName.WLU_TEAM_LEADER,
         RoleCategory.ADMIN,
+        JURISDICTION,
         Classification.PUBLIC,
         GrantType.STANDARD,
         false,
@@ -205,6 +217,7 @@ class DroolPossessionRoleMappingTest extends DroolBase {
     private static final ExpectedRole ROLE_BAILIFF_ADMIN = expectedRole(
         RoleName.BAILIFF_ADMIN,
         RoleCategory.ADMIN,
+        JURISDICTION,
         Classification.PUBLIC,
         GrantType.STANDARD,
         false,
@@ -216,6 +229,7 @@ class DroolPossessionRoleMappingTest extends DroolBase {
     private static final ExpectedRole ROLE_CTSC = expectedRole(
         RoleName.CTSC,
         RoleCategory.CTSC,
+        JURISDICTION,
         Classification.PUBLIC,
         GrantType.STANDARD,
         false,
@@ -227,6 +241,7 @@ class DroolPossessionRoleMappingTest extends DroolBase {
     private static final ExpectedRole ROLE_HMCTS_CTSC = expectedRole(
         RoleName.HMCTS_CTSC,
         RoleCategory.CTSC,
+        NO_JURISDICTION,
         Classification.PRIVATE,
         GrantType.BASIC,
         true,
@@ -238,6 +253,7 @@ class DroolPossessionRoleMappingTest extends DroolBase {
     private static final ExpectedRole ROLE_CTSC_TEAM_LEADER = expectedRole(
         RoleName.CTSC_TEAM_LEADER,
         RoleCategory.CTSC,
+        JURISDICTION,
         Classification.PUBLIC,
         GrantType.STANDARD,
         false,
@@ -249,6 +265,7 @@ class DroolPossessionRoleMappingTest extends DroolBase {
     private static final ExpectedRole ROLE_SPECIFIC_ACCESS_APPROVER_CTSC = expectedRole(
         RoleName.SPECIFIC_ACCESS_APPROVER_CTSC,
         RoleCategory.CTSC,
+        JURISDICTION,
         Classification.PUBLIC,
         GrantType.STANDARD,
         false,
@@ -264,7 +281,8 @@ class DroolPossessionRoleMappingTest extends DroolBase {
     private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER = List.of(
         ROLE_HEARING_CENTRE_TEAM_LEADER,
         ROLE_HEARING_CENTRE_ADMIN,
-        hmctsAdmin(NO_REGION, NO_PRIMARY_LOCATION_ID),
+        ROLE_HMCTS_ADMIN,
+//        hmctsAdmin(NO_REGION, NO_PRIMARY_LOCATION_ID),
         specificAccessApproverAdmin(REGION_LDN),
         taskSupervisor(RoleCategory.ADMIN, REGION_LDN),
         caseAllocator(RoleCategory.ADMIN, REGION_LDN)
@@ -272,20 +290,23 @@ class DroolPossessionRoleMappingTest extends DroolBase {
 
     private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_ADMIN = List.of(
         ROLE_HEARING_CENTRE_ADMIN,
-        hmctsAdmin(NO_REGION, NO_PRIMARY_LOCATION_ID),
+        ROLE_HMCTS_ADMIN,
+//        hmctsAdmin(NO_REGION, NO_PRIMARY_LOCATION_ID),
         taskSupervisor(RoleCategory.ADMIN,  REGION_LDN),
         caseAllocator(RoleCategory.ADMIN, REGION_LDN)
     );
 
     private static final List<ExpectedRole> EXPECTED_ROLES_WLU_ADMIN = List.of(
-        hmctsAdmin(NO_REGION, PRIMARY_LOCATION_ID),
+        ROLE_HMCTS_ADMIN,
+//        hmctsAdmin(NO_REGION, PRIMARY_LOCATION_ID),
         ROLE_WLU_ADMIN,
         taskSupervisor(RoleCategory.ADMIN, NO_REGION),
         caseAllocator(RoleCategory.ADMIN, NO_REGION)
     );
 
     private static final List<ExpectedRole> EXPECTED_ROLES_WLU_TEAM_LEADER = List.of(
-        hmctsAdmin(NO_REGION, NO_PRIMARY_LOCATION_ID),
+//        hmctsAdmin(NO_REGION, NO_PRIMARY_LOCATION_ID),
+        ROLE_HMCTS_ADMIN,
         ROLE_WLU_ADMIN,
         ROLE_WLU_TEAM_LEADER,
         specificAccessApproverAdmin(NO_REGION),
@@ -294,7 +315,8 @@ class DroolPossessionRoleMappingTest extends DroolBase {
     );
 
     private static final List<ExpectedRole> EXPECTED_ROLES_BAILIFF_ADMIN = List.of(
-        hmctsAdmin(REGION_LDN, PRIMARY_LOCATION_ID),
+        ROLE_HMCTS_ADMIN,
+//        hmctsAdmin(REGION_LDN, PRIMARY_LOCATION_ID),
         ROLE_BAILIFF_ADMIN,
         taskSupervisor(RoleCategory.ADMIN, REGION_LDN),
         caseAllocator(RoleCategory.ADMIN, REGION_LDN)
@@ -461,10 +483,13 @@ class DroolPossessionRoleMappingTest extends DroolBase {
             assertEquals(expected.classification(), actual.getClassification());
             assertEquals(expected.grantType(), actual.getGrantType());
             assertEquals(expected.readOnly(), actual.isReadOnly());
-
-            assertNotNull(actual.getAttributes().get(Attributes.Name.JURISDICTION));
-            assertEquals(Jurisdiction.POSSESSIONS.getName(),
-                actual.getAttributes().get(Attributes.Name.JURISDICTION).asText());
+            if (expected.jurisdiction() == null) {
+                assertNull(actual.getAttributes().get(Attributes.Name.JURISDICTION));
+            } else {
+                assertNotNull(actual.getAttributes().get(Attributes.Name.JURISDICTION));
+                assertEquals(Jurisdiction.POSSESSIONS.getName(),
+                        actual.getAttributes().get(Attributes.Name.JURISDICTION).asText());
+            }
 
             if (expected.primaryLocation() == null) {
                 assertNull(actual.getAttributes().get(Attributes.Name.PRIMARY_LOCATION));
