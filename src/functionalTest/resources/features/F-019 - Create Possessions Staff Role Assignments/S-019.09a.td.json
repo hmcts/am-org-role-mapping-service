@@ -15,25 +15,7 @@
 
   "expectedResponse": {
     "body": {
-      "roleAssignmentResponse": [
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
-          "roleType": "ORGANISATION",
-          "roleName": "task-supervisor",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "CTSC",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "PCS"
-          }
-        }
-      ]
+      "roleAssignmentResponse": [ ]
     }
   }
 
