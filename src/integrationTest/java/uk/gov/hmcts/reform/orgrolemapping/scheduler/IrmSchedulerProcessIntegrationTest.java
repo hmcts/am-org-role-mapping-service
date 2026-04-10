@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.JUDICIAL;
 
-public class IrmSchedulerProcessIntegrationTest extends BaseIrmSchedulerTestIntegration {
+public class IrmSchedulerProcessIntegrationTest extends BaseSchedulerTestIntegration {
 
     @Autowired
     private IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
