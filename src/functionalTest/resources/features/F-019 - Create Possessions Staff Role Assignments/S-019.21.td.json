@@ -87,7 +87,6 @@
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PCS",
-            "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "access_requests"
           }
         }
