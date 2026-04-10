@@ -162,7 +162,7 @@ then
             .build()
     );
 
-    logMsg("Rule : possessions_possessions_admin_task_supervisor_role");
+    logMsg("Rule : possessions_admin_task_supervisor_role");
 end;
 
 /*
