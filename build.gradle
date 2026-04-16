@@ -36,7 +36,7 @@ def versions = [
         testcontainers : '1.21.4',
         drools         : '9.44.0.Final',
         log4JVersion   : '2.24.3',
-        netty_version  : '4.2.10.Final',
+        netty_version  : '4.2.12.Final',
         bouncycastle   : '1.83',
         poi            : '5.5.1'
 ]
