@@ -221,7 +221,7 @@ class DroolPossessionsStaffOrgRoleMappingTest extends DroolBase {
         Classification.PUBLIC,
         GrantType.STANDARD,
         false,
-        NO_REGION,
+        REGION_LDN,
         PRIMARY_LOCATION_ID,
         WORK_TYPES_BAILIFF
     );
