@@ -30,7 +30,8 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "PCS"
+            "jurisdiction": "PCS",
+            "region": "[[ANYTHING_PRESENT]]"
           }
         }
       ]

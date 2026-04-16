@@ -51,8 +51,8 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PCS",
-            "workTypes": "enforcement_support,error_management",
-            "region": "1"
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "enforcement_support,error_management"
           }
         }
       ]
