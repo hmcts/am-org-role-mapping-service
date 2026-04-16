@@ -49,4 +49,14 @@ public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile 
             .anyMatch(testServiceCode -> testServiceCode.equals(serviceCode));
     }
 
+    @JsonIgnore
+    public boolean isCaseAllocator() {
+        return this.caseAllocatorFlag != null && this.caseAllocatorFlag.equals("Y");
+    }
+
+    @JsonIgnore
+    public boolean isTaskSupervisor() {
+        return this.taskSupervisorFlag != null && this.taskSupervisorFlag.equals("Y");
+    }
+
 }
