@@ -8,7 +8,8 @@ public enum Jurisdiction {
     EMPLOYMENT("EMPLOYMENT", List.of("BHA1")),
     HRS("HRS", List.of("HRS")),
     IAC("IA", List.of("BFA1")),
-    PROBATE("PROBATE", List.of("ABA6"));
+    PROBATE("PROBATE", List.of("ABA6")),
+    POSSESSIONS("PCS", List.of("AAA3"));
 
     private final String name;
     private final List<String> serviceCodes;
