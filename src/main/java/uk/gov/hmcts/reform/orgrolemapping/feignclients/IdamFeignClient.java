@@ -30,7 +30,7 @@ public interface IdamFeignClient {
     @PutMapping("/api/v2/users/{userId}")
     ResponseEntity<IdamUser> updateUser(@PathVariable String userId, @Valid @RequestBody IdamUser user);
 
-    @GetMapping(value = "/api/v2/invitations-by-user-email/{email}")
+    @GetMapping("/api/v2/invitations-by-user-email/{email}")
     ResponseEntity<List<IdamInvitation>> getInvitations(@PathVariable String email);
 
     @PostMapping("/api/v2/invitations")
