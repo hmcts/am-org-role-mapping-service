@@ -264,7 +264,7 @@ Feature: F-019 : Create Possessions Staff Role Assignments
 
 
   @S-019.23
-  @FeatureToggle(DB:possessions_wa_1_0=on)
+  @FeatureToggle(DB:possessions_wa_1_0=off)
   Scenario: must successfully create org role mapping for Bailiff Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Bailiff Administrator (AAA3 PCS)] as in [S-019.23__VerifyCaseworkerDetails],
@@ -278,7 +278,7 @@ Feature: F-019 : Create Possessions Staff Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-019.23a
-  @FeatureToggle(DB:possessions_wa_1_0=on)
+  @FeatureToggle(DB:possessions_wa_1_0=off)
   Scenario: must successfully create org role mapping for Bailiff Administrator + Task Supervisor
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Bailiff Administrator + Task Supervisor (AAA3 PCS)] as in [S-019.23a__VerifyCaseworkerDetails],
@@ -292,7 +292,7 @@ Feature: F-019 : Create Possessions Staff Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-019.23b
-  @FeatureToggle(DB:possessions_wa_1_0=on)
+  @FeatureToggle(DB:possessions_wa_1_0=off)
   Scenario: must successfully create org role mapping for Bailiff Administrator + Case allocator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Bailiff Administrator + Case allocator (AAA3 PCS)] as in [S-019.23b__VerifyCaseworkerDetails],
