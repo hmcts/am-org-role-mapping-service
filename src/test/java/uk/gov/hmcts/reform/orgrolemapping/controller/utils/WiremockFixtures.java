@@ -90,6 +90,15 @@ public class WiremockFixtures {
                 ));
     }
 
+    public void stubLease() {
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching("/lease"))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("token")
+                ));
+    }
+
     private UUID getUuidForServiceName(String serviceName) {
         switch (serviceName) {
             case SERVICE_NAME_EXUI:
@@ -130,8 +139,6 @@ public class WiremockFixtures {
                         .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                         .withBody(OBJECT_MAPPER.writeValueAsString(getTokenResponse()))
                 ));
-
-
     }
 
     private Map<String, Object> getOpenIdResponse() {

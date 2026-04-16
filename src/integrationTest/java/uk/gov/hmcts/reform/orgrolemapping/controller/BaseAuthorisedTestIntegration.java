@@ -18,7 +18,7 @@ public abstract class BaseAuthorisedTestIntegration extends BaseTestIntegration 
     protected static final String BASEURL = "http://localhost";
     private static final long WAIT_TIME_MS = 1000;
 
-    private WiremockFixtures wiremockFixtures;
+    protected WiremockFixtures wiremockFixtures;
 
     @LocalServerPort
     private int serverPort;
@@ -44,8 +44,10 @@ public abstract class BaseAuthorisedTestIntegration extends BaseTestIntegration 
         WIRE_MOCK_SERVER.resetAll();
         // Recreate the stubs
         wiremockFixtures = new WiremockFixtures();
+        wiremockFixtures.stubIdamSystemUser();
         wiremockFixtures.stubIdamConfig();
         wiremockFixtures.stubAuthorisationDetails(serviceName);
+        wiremockFixtures.stubLease();
         wiremockFixtures.stubAuthorisationUserInfo(actorId);
         // Allow some time for Wiremock to reset
         Thread.sleep(WAIT_TIME_MS);
