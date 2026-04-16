@@ -5,7 +5,7 @@ ARG APP_INSIGHTS_AGENT_VERSION=3.7.8
 
 # Application image
 
-FROM hmctspublic.azurecr.io/base/java:21-distroless
+FROM hmctsprod.azurecr.io/base/java:21-distroless
 USER hmcts
 LABEL maintainer="https://github.com/hmcts/org-role-mapping-service"
 
