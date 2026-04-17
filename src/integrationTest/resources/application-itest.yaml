@@ -10,6 +10,7 @@ spring:
 
 idam:
   s2s-auth:
+    microservice: am_org_role_mapping_service
     url: http://localhost:${wiremock.server.port:4502}
   api.url: http://localhost:${wiremock.server.port:5000}
 
