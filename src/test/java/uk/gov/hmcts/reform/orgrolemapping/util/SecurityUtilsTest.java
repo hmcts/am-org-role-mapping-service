@@ -29,6 +29,7 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -123,6 +124,19 @@ class SecurityUtilsTest {
         String result = securityUtils.getServiceAuthorizationHeader();
         assertNotNull(result);
         assertTrue(result.contains(serviceAuthorization));
+    }
+
+    @Test
+    void getServiceAuthorizationHeader_WhenS2sSecretMissing_ShouldWrapWithConfigurationMessage() {
+        when(authTokenGenerator.generate()).thenThrow(new IllegalArgumentException("Empty key"));
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> securityUtils.getServiceAuthorizationHeader());
+
+        assertTrue(exception.getMessage().contains("idam.s2s-auth.totp_secret"));
+        assertTrue(exception.getMessage().contains("AM_ORG_ROLE_MAPPING_SERVICE_SECRET"));
+        assertTrue(exception.getCause() instanceof IllegalArgumentException);
+        assertEquals("Empty key", exception.getCause().getMessage());
     }
 
     @Test

@@ -44,7 +44,7 @@ public class SecurityUtils {
 
     public HttpHeaders authorizationHeaders() {
         final HttpHeaders headers = new HttpHeaders();
-        headers.add(SERVICE_AUTHORIZATION, authTokenGenerator.generate());
+        headers.add(SERVICE_AUTHORIZATION, getServiceAuthorizationHeader());
         headers.add("user-id", getUserId());
         headers.add("user-roles", getUserRolesHeader());
 
@@ -116,6 +116,14 @@ public class SecurityUtils {
     }
 
     public String getServiceAuthorizationHeader() {
-        return authTokenGenerator.generate();
+        try {
+            return authTokenGenerator.generate();
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalStateException(
+                    "Failed to generate Service Authorization token. "
+                            + "Check 'idam.s2s-auth.totp_secret' / 'AM_ORG_ROLE_MAPPING_SERVICE_SECRET' is set",
+                    ex);
+        }
     }
 }
+
