@@ -18,7 +18,7 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.IdamFeignCl
 import java.util.List;
 
 
-@FeignClient(value = "idamclient", url = "${idam.api.url}",
+@FeignClient(value = "idamclient", url = "${feign.client.config.idamClient.url}",
         configuration = {FeignClientConfiguration.class, FeignClientInterceptor.class},
         fallback = IdamFeignClientFallback.class)
 
