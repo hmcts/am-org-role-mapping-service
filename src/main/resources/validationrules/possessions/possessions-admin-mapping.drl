@@ -141,11 +141,11 @@ then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-    if($cap.hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
-                             JobTitle.HEARING_CENTRE_ADMIN,
-                             JobTitle.BAILIFF_ADMIN)) {
-                attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-                }
+    if ($cap.hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
+                              JobTitle.HEARING_CENTRE_ADMIN,
+                              JobTitle.BAILIFF_ADMIN)) {
+        attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+    }
 
     insert(
         RoleAssignment.builder()
@@ -183,11 +183,11 @@ then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
-    if($cap.hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
-                             JobTitle.HEARING_CENTRE_ADMIN,
-                             JobTitle.BAILIFF_ADMIN)) {
-            attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-                }
+    if ($cap.hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
+                              JobTitle.HEARING_CENTRE_ADMIN,
+                              JobTitle.BAILIFF_ADMIN)) {
+        attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+    }
 
     insert(
         RoleAssignment.builder()
@@ -286,6 +286,7 @@ then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("enforcement_support,error_management"));
 
     insert(
@@ -321,9 +322,9 @@ then
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("access_requests"));
-    if($cap.hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER)) {
-                        attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
-                }
+    if ($cap.hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER)) {
+        attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+    }
 
     insert(
         RoleAssignment.builder()
