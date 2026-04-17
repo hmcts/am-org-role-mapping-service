@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamInvitation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.CRDFeignClientFallback;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
-import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.IdamFeignClientInterceptor;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientInterceptor;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.IdamFeignClientFallback;
 
 import java.util.List;
 
 
 @FeignClient(value = "idamclient", url = "${idam.api.url}",
-        configuration = {FeignClientConfiguration.class, IdamFeignClientInterceptor.class},
-        fallback = CRDFeignClientFallback.class)
+        configuration = {FeignClientConfiguration.class, FeignClientInterceptor.class},
+        fallback = IdamFeignClientFallback.class)
 
 public interface IdamFeignClient {
 
