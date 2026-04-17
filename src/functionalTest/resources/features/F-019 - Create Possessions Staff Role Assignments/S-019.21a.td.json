@@ -1,0 +1,40 @@
+{
+  "_guid_": "S-019.21a",
+  "title": "must successfully create org role mapping for WLU Team Leader + Task Supervisor",
+  "_extends_": "S-019.21",
+
+  "specs": [
+    "contains the actorId of the user just published who has WLU Team Leader role + Task Supervisor"
+  ],
+
+  "request": {
+    "pathVariables": {
+      "actorId": "2d7a9c1e-5b84-4f3a-8c6e-1f0d7a3b2c87"
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS"
+          }
+        }
+      ]
+    }
+  }
+
+}
