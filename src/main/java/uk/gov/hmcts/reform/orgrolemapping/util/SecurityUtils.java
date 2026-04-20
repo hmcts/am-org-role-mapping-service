@@ -116,14 +116,7 @@ public class SecurityUtils {
     }
 
     public String getServiceAuthorizationHeader() {
-        try {
-            return authTokenGenerator.generate();
-        } catch (IllegalArgumentException ex) {
-            throw new IllegalStateException(
-                    "Failed to generate Service Authorization token. "
-                            + "Check 'idam.s2s-auth.totp_secret' / 'AM_ORG_ROLE_MAPPING_SERVICE_SECRET' is set",
-                    ex);
-        }
+        return authTokenGenerator.generate();
     }
 }
 
