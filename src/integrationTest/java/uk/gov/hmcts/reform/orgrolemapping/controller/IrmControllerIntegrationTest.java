@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.admin.model.ServeEventQuery;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import io.restassured.specification.RequestSpecification;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.OBJECT_MAPPER;
 
+@Slf4j
 @TestPropertySource(properties = {
     "idam.role.management.scheduling.enabled=false",
     "testing.support.enabled=true" // NB: needed for access to test support URLs
@@ -112,6 +114,8 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     })        
     void inviteUserTest() throws Exception {
         // GIVEN
+        log.info("AM_ORG_ROLE_MAPPING_SERVICE_SECRET = " + System.getenv("AM_ORG_ROLE_MAPPING_SERVICE_SECRET"));
+        log.info("totp_secret = " + System.getProperty("idam.s2s-auth.totp_secret"));
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
         RequestSpecification requestSpecification = getRequestSpecification();
