@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -135,7 +134,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
     })
     void inviteUserTest_InvalidUser() throws Exception {
         String userId = "non-existant-user-id";
