@@ -44,7 +44,7 @@ public class SecurityUtils {
 
     public HttpHeaders authorizationHeaders() {
         final HttpHeaders headers = new HttpHeaders();
-        headers.add(SERVICE_AUTHORIZATION, getServiceAuthorizationHeader());
+        headers.add(SERVICE_AUTHORIZATION, authTokenGenerator.generate());
         headers.add("user-id", getUserId());
         headers.add("user-roles", getUserRolesHeader());
 
@@ -119,4 +119,3 @@ public class SecurityUtils {
         return authTokenGenerator.generate();
     }
 }
-
