@@ -20,11 +20,14 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.AccountStatus;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.IdamFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -104,7 +107,7 @@ public class IdamRoleMappingService {
                 IdamRoleManagementQueueEntity idamRoleManagementQueueEntity
                         = idamRoleManagementQueueRepository.findAndLockSingleActiveRecord(userType.name());
                 if (idamRoleManagementQueueEntity != null) {
-                    errorMessage = processQueueEntry(idamRoleManagementQueueEntity, IdamRecordType.USER);
+                    errorMessage = processQueueEntry(idamRoleManagementQueueEntity);
                     if (errorMessage.isEmpty()) {
                         successfulJobCount++;
                     } else {
@@ -136,16 +139,21 @@ public class IdamRoleMappingService {
     }
 
     @Transactional
-    private String processQueueEntry(IdamRoleManagementQueueEntity idamRoleManagementQueueEntity,
-                                     IdamRecordType idamRecordType) {
+    private String processQueueEntry(IdamRoleManagementQueueEntity idamRoleManagementQueueEntity) {
         StringBuilder errorMessageBuilder = new StringBuilder();
         boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
             try {
-                // Set the record as published.
-                idamRoleManagementQueueRepository.setAsPublished(
-                        idamRoleManagementQueueEntity.getUserId(),
-                        idamRecordType.name());
-                return true;
+                // Update the user
+                ProcessMonitorDto updateProcessMonitorDto =
+                        updateUser(idamRoleManagementQueueEntity.getUserId());
+                if (EndStatus.SUCCESS.equals(updateProcessMonitorDto.getEndStatus())) {
+                    return true;
+                } else {
+                    String message = updateProcessMonitorDto.getEndDetail();
+                    errorMessageBuilder.append(message);
+                    log.error(message);
+                    return false;
+                }
             } catch (Exception ex) {
                 String message = String.format("Error occurred while processing queue entry: %s. "
                                 + "Retry attempt %d. Rolling back.",
@@ -172,11 +180,13 @@ public class IdamRoleMappingService {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(UPDATEUSER_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
         StringBuilder errorMessageBuilder = new StringBuilder();
+        IdamRecordType idamRecordType = IdamRecordType.USER;
         boolean isSuccess = false;
 
         IdamUser user = getIdamUser(userId);
         if  (user == null) {
             log.debug("No user found for userId {}", userId);
+            idamRecordType = IdamRecordType.INVITE;
         } else {
             try {
                 // Get the idam role data
@@ -202,6 +212,13 @@ public class IdamRoleMappingService {
             }
         }
 
+        if (isSuccess) {
+            // Set the record as published.
+            idamRoleManagementQueueRepository.setAsPublished(
+                    userId,
+                    idamRecordType.name());
+        }
+
         markProcessStatus(processMonitorDto,
                 isSuccess ? 1 : 0, isSuccess ? 0 : 1,
                 errorMessageBuilder.toString());
@@ -222,20 +239,23 @@ public class IdamRoleMappingService {
 
     protected boolean patchIdamUser(IdamUser user, IdamRoleData idamRoleData) {
         AtomicBoolean isPatched = new AtomicBoolean(false);
+        List<String> newRoles = new ArrayList<>();
+        newRoles.addAll(user.getRoleNames());
+
         // Update the user roles
         if ("Y".equalsIgnoreCase(idamRoleData.getDeletedFlag())) {
             // Delete user role
             idamRoleData.getRoles().forEach(roleData -> {
-                if (user.getRoleNames().contains(roleData.getRoleName())) {
-                    user.getRoleNames().remove(roleData.getRoleName());
+                if (newRoles.contains(roleData.getRoleName())) {
+                    newRoles.remove(roleData.getRoleName());
                     isPatched.set(true);
                 }
             });
         } else {
             // Add user role
             idamRoleData.getRoles().forEach(roleData -> {
-                if (!user.getRoleNames().contains(roleData.getRoleName())) {
-                    user.getRoleNames().add(roleData.getRoleName());
+                if (!newRoles.contains(roleData.getRoleName())) {
+                    newRoles.add(roleData.getRoleName());
                     isPatched.set(true);
                 }
             });
@@ -254,6 +274,7 @@ public class IdamRoleMappingService {
             return true;
         } else {
             // Update the idam user
+            user.setRoleNames(newRoles);
             log.debug("Idam role data patched for userId {}", user.getId());
             ResponseEntity<IdamUser> response = idamClient.updateUser(user.getId(), user);
             return HttpStatus.OK.equals(response.getStatusCode());
