@@ -66,8 +66,12 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
         "classpath:sql/irm/queue/insert_idam_role_management_queue.sql"
     })
     void processJudicialQueueTest() throws Exception {
+        String userId = "some-user-id";
+        RequestSpecification requestSpecification = getRequestSpecification();
+        // stub the calls after the getRequestSpecification (as it resets the wiremockserver).
+        stubUpdateUser(userId, getIdamUser(userId, "email"));
         // WHEN
-        String response = getRequestSpecification()
+        String response = requestSpecification
                 .when().get(PROCESSJUDICIALQUEUE_URL)
                 .then().assertThat()
                 .statusCode(HttpStatus.OK.value())
