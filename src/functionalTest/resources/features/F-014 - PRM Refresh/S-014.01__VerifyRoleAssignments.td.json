@@ -16,7 +16,11 @@
           ],
           "roleCategory": [
             "PROFESSIONAL"
-          ]
+          ],
+          "attributes" : {
+            "jurisdiction": [ "BEFTA_MASTER" ],
+            "caseType" : [ "FT_CaseAccessGroups" ]
+          }
         }
       ]
     }
@@ -25,7 +29,8 @@
       "body": {
         "roleAssignmentResponse": [
           {
-            "__elementId__": "roleName,attributes.caseAccessGroupId"
+            "__ordering__": "unordered",
+            "__elementId__": "roleName,attributes.jurisdiction,attributes.caseType,attributes.caseAccessGroupId"
           },
           {
             "id": "[[ANYTHING_PRESENT]]",

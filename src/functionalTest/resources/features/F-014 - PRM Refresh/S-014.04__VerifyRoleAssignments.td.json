@@ -16,7 +16,11 @@
           ],
           "roleCategory": [
             "PROFESSIONAL"
-          ]
+          ],
+          "attributes" : {
+            "jurisdiction": [ "BEFTA_MASTER" ],
+            "caseType" : [ "FT_CaseAccessGroups" ]
+          }
         }
       ]
     }

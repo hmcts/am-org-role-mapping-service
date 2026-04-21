@@ -3,7 +3,7 @@
   "_extends_": "FetchProfessionalUsersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify professional user has userAccessTypes disabled"
+    "to verify professional user has no userAccessTypes"
   ],
 
   "request": {
