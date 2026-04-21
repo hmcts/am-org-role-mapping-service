@@ -73,6 +73,7 @@ class IdamRoleMappingServiceTest {
                     processEventTracker, "1", "2", "3");
 
     private static final String[] EMAILS = {"email1@test.com", "email2@test.com"};
+    private static final String[] OLDROLES = {"OldRole1", "Role1"};
     private static final String[] ROLES = {"Role1", "Role2", "Role3"};
     private static final String[] USERS = {"user1", "user2"};
 
@@ -91,9 +92,9 @@ class IdamRoleMappingServiceTest {
         // GIVEN
         Map<String, IdamRoleData> idamRoleList = new HashMap<>();
         idamRoleList.put(USERS[0], buildIdamRoleData(EMAILS[0],
-                List.of(buildIdamRoleDataRole(ROLES[0]), buildIdamRoleDataRole(ROLES[1]))));
+                new String[] {ROLES[0], ROLES[1]}));
         idamRoleList.put(USERS[1], buildIdamRoleData(EMAILS[1],
-                List.of(buildIdamRoleDataRole(ROLES[2]))));
+                new String[] {ROLES[2]}));
         LocalDateTime startTime = LocalDateTime.now();
 
         // WHEN
@@ -154,15 +155,35 @@ class IdamRoleMappingServiceTest {
         ServiceException exception =
                 new ServiceException("Error occurred while processing idam role mapping");
         if (EndStatus.PARTIAL_SUCCESS.equals(endStatus)) {
-            when(idamRoleManagementQueueRepository.setAsPublished(any(), any()))
-                    .thenReturn(1)
+            when(idamFeignClient.getUserById(any()))
+                    .thenReturn(ResponseEntity.ok(IdamUser.builder()
+                            .id(irmQueue.getFirst().getUserId())
+                            .roleNames(Arrays.stream(OLDROLES).toList())
+                            .build()))
                     .thenThrow(exception);
+            when(idamRoleManagementQueueRepository.findById(any()))
+                    .thenReturn(Optional.of(irmQueue.get(0)));
+            when(idamFeignClient.updateUser(any(), any()))
+                    .thenReturn(ResponseEntity.ok(IdamUser.builder()
+                            .roleNames(Arrays.stream(ROLES).toList())
+                            .build()));
         } else if (EndStatus.FAILED.equals(endStatus))  {
-            when(idamRoleManagementQueueRepository.setAsPublished(any(), any()))
+            when(idamFeignClient.getUserById(any()))
                     .thenThrow(exception);
         } else {
-            when(idamRoleManagementQueueRepository.setAsPublished(any(), any()))
-                    .thenReturn(1);
+            irmQueue.forEach(entity -> {
+                when(idamFeignClient.getUserById(entity.getUserId()))
+                        .thenReturn(ResponseEntity.ok(IdamUser.builder()
+                                .id(entity.getUserId())
+                                .roleNames(Arrays.stream(OLDROLES).toList())
+                                .build()));
+                when(idamRoleManagementQueueRepository.findById(entity.getUserId()))
+                        .thenReturn(Optional.of(entity));
+            });
+            when(idamFeignClient.updateUser(any(), any()))
+                    .thenReturn(ResponseEntity.ok(IdamUser.builder()
+                            .roleNames(Arrays.stream(ROLES).toList())
+                            .build()));
         }
 
         //WHEN
@@ -176,12 +197,14 @@ class IdamRoleMappingServiceTest {
         // THEN
         assertProcessMonitor(processMonitorDto, endStatus, userType, exception);
         // Verify the event is tracked as started
-        verify(processEventTracker, times(1)).trackEventStarted(any());
+        verify(processEventTracker, times(irmQueue.isEmpty() ? 1 : 3)).trackEventStarted(any());
         // Verify the queue is polled until no records are left
         verify(idamRoleManagementQueueRepository, times(irmQueue.size() + 1))
                 .findAndLockSingleActiveRecord(userType.name());
         // Verify the records are marked as published
-        verify(idamRoleManagementQueueRepository, times(irmQueue.size()))
+        verify(idamRoleManagementQueueRepository,
+                times(EndStatus.FAILED.equals(endStatus) ? 0 :
+                        EndStatus.PARTIAL_SUCCESS.equals(endStatus) ? 1 : irmQueue.size()))
                 .setAsPublished(any(), any());
         // Verify the retries
         Integer retries = EndStatus.FAILED.equals(endStatus) ? irmQueue.size()
@@ -229,7 +252,7 @@ class IdamRoleMappingServiceTest {
     void patchUserTest() {
         // GIVEN
         IdamUser user = buildIdamUser(USERS[0], new ArrayList<>());
-        IdamRoleData idamRoleData = buildIdamRoleData(ROLES);
+        IdamRoleData idamRoleData = buildIdamRoleData(EMAILS[0], ROLES);
         ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
         when(idamFeignClient.updateUser(any(), any())).thenReturn(expectedResult);
 
@@ -244,14 +267,14 @@ class IdamRoleMappingServiceTest {
     @Test
     void updateUserTest_Success() {
         IdamUser user = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
-        IdamRoleData idamRoleData = buildIdamRoleData(ROLES);
+        IdamRoleData idamRoleData = buildIdamRoleData(EMAILS[0], ROLES);
         updateUserTest(user, idamRoleData, EndStatus.SUCCESS);
     }
 
     @Test
     void updateUserTest_Exception() {
         IdamUser user = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
-        IdamRoleData idamRoleData = buildIdamRoleData(ROLES);
+        IdamRoleData idamRoleData = buildIdamRoleData(EMAILS[0], ROLES);
         updateUserTest(user, idamRoleData, EndStatus.FAILED);
     }
 
@@ -403,27 +426,25 @@ class IdamRoleMappingServiceTest {
     }
 
     private List<IdamRoleManagementQueueEntity> getIrmQueue() {
-        String[] users = new String[] {"user1", "user2"};
         List<IdamRoleManagementQueueEntity> irmQueue = new ArrayList<>();
-        Arrays.stream(users).forEach(user -> irmQueue.add(
-                IdamRoleManagementQueueEntity.builder().userId(user).build()));
+        for (int i = 0; i < USERS.length; i++) {
+            irmQueue.add(IdamRoleManagementQueueEntity.builder()
+                            .userId(USERS[i])
+                            .data(buildIdamRoleData(EMAILS[0], ROLES))
+                            .build());
+        }
+
         return irmQueue;
     }
 
-    private IdamRoleData buildIdamRoleData(String email, List<IdamRoleDataRole> roles) {
+    private IdamRoleData buildIdamRoleData(String email, String[] roles) {
+        List<IdamRoleDataRole> idamRoles = new ArrayList<>();
+        Arrays.asList(roles).forEach(role -> idamRoles.add(buildIdamRoleDataRole(role)));
         return IdamRoleData.builder()
                 .emailId(email)
                 .activeFlag("Y")
                 .deletedFlag("N")
-                .roles(roles)
-                .build();
-    }
-
-
-    private IdamRoleData buildIdamRoleData(String[] roles) {
-        List<IdamRoleDataRole> idamRoles = new ArrayList<>();
-        Arrays.asList(roles).forEach(role -> idamRoles.add(buildIdamRoleDataRole(role)));
-        return IdamRoleData.builder().roles(idamRoles).build();
+                .roles(idamRoles).build();
     }
     
     private IdamRoleDataRole buildIdamRoleDataRole(String role) {
