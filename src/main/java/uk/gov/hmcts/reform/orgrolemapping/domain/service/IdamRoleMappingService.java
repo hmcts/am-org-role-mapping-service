@@ -75,6 +75,7 @@ public class IdamRoleMappingService {
         this.idamRoleDataJsonBConverter = new IdamRoleDataJsonBConverter();
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        transactionTemplate.setReadOnly(false);
         this.processEventTracker = processEventTracker;
         this.retryOneIntervalMin = retryOneIntervalMin;
         this.retryTwoIntervalMin = retryTwoIntervalMin;
