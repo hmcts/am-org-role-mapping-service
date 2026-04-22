@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -24,6 +26,7 @@ public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRol
         """, nativeQuery = true)
     void upsert(String userId, String userType, String data, LocalDateTime lastUpdated);
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Modifying
     @Query(value = """
         update idam_role_management_queue
@@ -51,6 +54,7 @@ public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRol
         """, nativeQuery = true)
     IdamRoleManagementQueueEntity findAndLockSingleActiveRecord(String userType);
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Modifying
     @Query(value = """
         update idam_role_management_queue 
