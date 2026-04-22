@@ -27,6 +27,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.scheduler.BaseSchedulerTestInte
     // set environment ready for flag checks
     "orm.environment=" + TEST_ENVIRONMENT,
     "professional.role.mapping.refreshApi.enabled=true",
+    "idam.role.management.scheduling.enabled=false",
     "testing.support.enabled=true"
 })
 abstract class BaseSchedulerTestIntegration extends BaseTestIntegration {

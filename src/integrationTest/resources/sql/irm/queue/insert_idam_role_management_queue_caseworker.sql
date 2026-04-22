@@ -1,2 +1,2 @@
 INSERT INTO idam_role_management_queue (user_id, user_type, data, retry, retry_after, active, last_updated)
-VALUES ('some-other-user-id', 'CASEWORKER',  '{"email_id": "someoneelse@somewhere.com", "roles": [{"role_name": "Role4"}, {"role_name": "Role5"}]}', 0, null,'true', NOW());
+VALUES ('some-other-user-id', 'CASEWORKER',  '{"email_id": "someoneelse@somewhere.com", "roles": [{"role_name": "Role4"}, {"role_name": "Role5"}]}', 0, null,true, NOW());
