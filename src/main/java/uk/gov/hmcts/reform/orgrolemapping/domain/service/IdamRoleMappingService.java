@@ -308,7 +308,7 @@ public class IdamRoleMappingService {
     }
 
     @Transactional
-    public ProcessMonitorDto inviteUser(String userId) {
+    public ProcessMonitorDto inviteUser(String userId, List<String> roleNames) {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(INVITEUSER_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
         StringBuilder errorMessageBuilder = new StringBuilder();
@@ -320,7 +320,7 @@ public class IdamRoleMappingService {
         } else {
             try {
                 // Invite the user on idam
-                isSuccess = inviteIdamUser(user);
+                isSuccess = inviteIdamUser(user, roleNames);
                 if (!isSuccess) {
                     String message = String.format("Failed to invite userId %s", userId);
                     errorMessageBuilder.append(message);
@@ -340,7 +340,7 @@ public class IdamRoleMappingService {
         return processMonitorDto;
     }
 
-    protected boolean inviteIdamUser(IdamUser user) {
+    protected boolean inviteIdamUser(IdamUser user, List<String> roleNames) {
         // Check for any existing invitations
         List<IdamInvitation> invitations = getIdamUserInvitations(user);
 
@@ -348,7 +348,7 @@ public class IdamRoleMappingService {
         deleteIdamUserInvitations(invitations);
 
         // Create a new invitation
-        return createInvitation(user);
+        return createInvitation(user, roleNames);
     }
 
     private List<IdamInvitation> getIdamUserInvitations(IdamUser user) {
@@ -366,20 +366,20 @@ public class IdamRoleMappingService {
         });
     }
 
-    private boolean createInvitation(IdamUser user) {
-        final IdamInvitation invitation = buildInvitationFromUser(user);
+    private boolean createInvitation(IdamUser user, List<String> roleNames) {
+        final IdamInvitation invitation = buildInvitationFromUser(user, roleNames);
         ResponseEntity<IdamInvitation> response = idamClient.inviteUser(invitation);
         log.debug("Created invitation with id {}", invitation.getId());
         return HttpStatus.CREATED.equals(response.getStatusCode());
     }
 
-    protected IdamInvitation buildInvitationFromUser(IdamUser user) {
+    protected IdamInvitation buildInvitationFromUser(IdamUser user, List<String> roleNames) {
         return IdamInvitation.builder()
                 .userId(user.getId())
                 .email(user.getEmail())
                 .forename(user.getForename())
                 .surname(user.getSurname())
-                .activationRoleNames(user.getRoleNames())
+                .activationRoleNames(roleNames)
                 .invitationType(InvitationType.APPOINT)
                 .invitationStatus(InvitationStatus.PENDING)
                 .clientId(SERVICE_NAME)
