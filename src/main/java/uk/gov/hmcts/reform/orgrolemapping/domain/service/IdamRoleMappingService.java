@@ -213,11 +213,16 @@ public class IdamRoleMappingService {
         IdamRecordType idamRecordType = IdamRecordType.USER;
         try {
             IdamUser user = getIdamUser(userId);
-            if  (user == null) {
-                log.debug("No user found for userId {}", userId);
-                idamRecordType = IdamRecordType.INVITE;
 
-                // TODO - invite user
+            // No valid IDAM user found, so create a user object for invite.
+            if  (user == null) {
+                String email = idamRoleData.getEmailId();
+                log.debug("No user found for userId {} ({})", userId, email);
+                idamRecordType = IdamRecordType.INVITE;
+                List<String> roleNames = idamRoleData.getRoles().stream()
+                        .map(role -> role.getRoleName()).toList();
+                // Invite the user with the roleNames.
+                inviteIdamUser(buildIdamUserFromEmail(email), roleNames);
             } else {
                 // Patch the user with the idam role data
                 isSuccess = patchIdamUser(user, idamRoleData);
@@ -308,31 +313,29 @@ public class IdamRoleMappingService {
     }
 
     @Transactional
-    public ProcessMonitorDto inviteUser(String userId, List<String> roleNames) {
+    public ProcessMonitorDto inviteUser(String email, List<String> roleNames) {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(INVITEUSER_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
         StringBuilder errorMessageBuilder = new StringBuilder();
         boolean isSuccess = false;
 
-        IdamUser user = getIdamUser(userId);
+        // Check for a valid IDAM user with this email.
+        IdamUser user = getIdamUserByEmail(email);
+
+        // No valid IDAM user found, so create a user object for invite.
         if (user == null) {
-            log.debug("No user found for userId {}", userId);
-        } else {
-            try {
-                // Invite the user on idam
-                isSuccess = inviteIdamUser(user, roleNames);
-                if (!isSuccess) {
-                    String message = String.format("Failed to invite userId %s", userId);
-                    errorMessageBuilder.append(message);
-                    log.error(message);
-                }
-            } catch (Exception ex) {
-                String message = String.format("Error occurred during invite for userId %s: %s",
-                        userId, ex.getMessage());
-                errorMessageBuilder.append(message);
-                log.error(message, ex);
-            }
+            log.debug("No user found for email {}", email);
+            user = buildIdamUserFromEmail(email);
         }
+
+        // Invite the user on IDAM.
+        String errorMessage = inviteIdamUser(user, roleNames);
+        if (errorMessage.isEmpty()) {
+            isSuccess = true;
+        } else {
+            errorMessageBuilder.append(errorMessage);
+        }
+
         markProcessStatus(processMonitorDto,
                 isSuccess ? 1 : 0, isSuccess ? 0 : 1,
                 errorMessageBuilder.toString());
@@ -340,15 +343,31 @@ public class IdamRoleMappingService {
         return processMonitorDto;
     }
 
-    protected boolean inviteIdamUser(IdamUser user, List<String> roleNames) {
-        // Check for any existing invitations
-        List<IdamInvitation> invitations = getIdamUserInvitations(user);
+    protected String inviteIdamUser(IdamUser user, List<String> roleNames) {
+        StringBuilder errorMessageBuilder = new StringBuilder();
 
-        // Remove any existing invitations
-        deleteIdamUserInvitations(invitations);
+        try {
+            // Check for any existing invitations
+            List<IdamInvitation> invitations = getIdamUserInvitations(user);
 
-        // Create a new invitation
-        return createInvitation(user, roleNames);
+            // Remove any existing invitations
+            deleteIdamUserInvitations(invitations);
+
+            // Create a new invitation
+            boolean isSuccess = createInvitation(user, roleNames);
+            if (!isSuccess) {
+                String message = String.format("Failed to invite userId %s", user.getId());
+                errorMessageBuilder.append(message);
+                log.error(message);
+            }
+        } catch (Exception ex) {
+            String message = String.format("Error occurred during invite for userId %s: %s",
+                    user.getId(), ex.getMessage());
+            errorMessageBuilder.append(message);
+            log.error(message, ex);
+        }
+
+        return errorMessageBuilder.toString();
     }
 
     private List<IdamInvitation> getIdamUserInvitations(IdamUser user) {
@@ -371,6 +390,13 @@ public class IdamRoleMappingService {
         ResponseEntity<IdamInvitation> response = idamClient.inviteUser(invitation);
         log.debug("Created invitation with id {}", invitation.getId());
         return HttpStatus.CREATED.equals(response.getStatusCode());
+    }
+
+    protected IdamUser buildIdamUserFromEmail(String email) {
+        return IdamUser.builder()
+                .email(email)
+                .build();
+
     }
 
     protected IdamInvitation buildInvitationFromUser(IdamUser user, List<String> roleNames) {
