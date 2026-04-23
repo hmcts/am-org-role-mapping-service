@@ -111,7 +111,7 @@ class RefreshControllerProfessionalRefreshIntegrationTest extends BaseTestIntegr
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-        scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
+        scripts = {"classpath:sql/prm/insert_user_refresh_queue_138.sql"})
     public void shouldProcessProfessionalRefreshRequest() throws Exception {
 
         // GIVEN
@@ -138,7 +138,7 @@ class RefreshControllerProfessionalRefreshIntegrationTest extends BaseTestIntegr
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-        scripts = {"classpath:sql/delete_user_refresh_queue.sql"})
+        scripts = {"classpath:sql/prm/delete_user_refresh_queue.sql"})
     public void shouldErrorProfessionalRefreshRequest_whenNoAccessTypesInDB() throws Exception {
 
         // GIVEN

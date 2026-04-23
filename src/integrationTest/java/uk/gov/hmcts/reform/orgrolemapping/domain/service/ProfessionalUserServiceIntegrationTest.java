@@ -125,7 +125,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
+            scripts = {"classpath:sql/prm/insert_user_refresh_queue_138.sql"})
     void shouldRefreshUsers() {
         professionalUserService.refreshUsers(processMonitorDto);
 
@@ -156,7 +156,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_organisation_profiles.sql"})
+            scripts = {"classpath:sql/prm/insert_organisation_profiles.sql"})
     void shouldInsertOneUserIntoUserRefreshQueue_AndClearOrganisationRefreshQueue() {
         ProfessionalUser professionalUser = buildProfessionalUser(1);
         UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
@@ -194,7 +194,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_multiple_organisations_profiles.sql"})
+            scripts = {"classpath:sql/prm/insert_multiple_organisations_profiles.sql"})
     void shouldInsertMultipleUserIntoUserRefreshQueue_AndClearOrganisationRefreshQueue_MultipleOrgEntity() {
         ProfessionalUser professionalUser = buildProfessionalUser(1);
         UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
@@ -250,7 +250,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_organisation_profiles.sql"})
+            scripts = {"classpath:sql/prm/insert_organisation_profiles.sql"})
     void shouldInsertOneUserIntoUserRefreshQueue_ById() {
         ProfessionalUser professionalUser = buildProfessionalUser(1);
         UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
@@ -285,7 +285,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
+            scripts = {"classpath:sql/prm/insert_user_refresh_queue_138.sql"})
     void shouldRollback_AndUpdateRetryToOneOnException() {
         doThrow(ServiceException.class).when(professionalRefreshOrchestrationHelper).refreshSingleUser(any(), any());
 
@@ -300,7 +300,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_organisation_profiles.sql"})
+            scripts = {"classpath:sql/prm/insert_organisation_profiles.sql"})
     void shouldRollback_AndUpdateRetryToOneOnException2() {
         ProfessionalUser professionalUser = buildProfessionalUser(1);
         UsersOrganisationInfo usersOrganisationInfo = buildUsersOrganisationInfo(123, professionalUser);
@@ -329,7 +329,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_user_refresh_queue_138_retry_3.sql"})
+            scripts = {"classpath:sql/prm/insert_user_refresh_queue_138_retry_3.sql"})
     void shouldRollback_AndUpdateRetryToFourAndRetryAfterToNullOnException() {
         doThrow(ServiceException.class).when(mockUserRefreshQueueRepository)
                 .clearUserRefreshRecord(any(), any(), any());
@@ -373,7 +373,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_user_refresh_queue_138_retry_3.sql"})
+            scripts = {"classpath:sql/prm/insert_user_refresh_queue_138_retry_3.sql"})
     void shouldClearRefreshFailedRecord_whenRefreshIsSuccessfulOnRetryAttempt() {
         professionalUserService.refreshUsers(processMonitorDto);
 
@@ -405,9 +405,9 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_access_types.sql",
-                       "classpath:sql/insert_batch_last_run.sql",
-                       "classpath:sql/insert_user_refresh_queue.sql"})
+            scripts = {"classpath:sql/prm/insert_access_types.sql",
+                       "classpath:sql/prm/insert_batch_last_run.sql",
+                       "classpath:sql/prm/insert_user_refresh_queue.sql"})
     void shouldFindUserChangesAndInsertIntoRefreshQueue_WithoutPagination() {
         userRefreshQueueRepository.deleteAll();
         RefreshUser refreshUser = refreshUser(1);
@@ -429,7 +429,7 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
+            scripts = {"classpath:sql/prm/insert_user_refresh_queue_138.sql"})
     void shouldThrowException_whenNoAccessTypeEntityFound() {
         // arrange
         accessTypesRepository.deleteAll();
@@ -444,9 +444,9 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_access_types.sql",
-                       "classpath:sql/insert_batch_last_run.sql",
-                       "classpath:sql/insert_user_refresh_queue.sql"})
+            scripts = {"classpath:sql/prm/insert_access_types.sql",
+                       "classpath:sql/prm/insert_batch_last_run.sql",
+                       "classpath:sql/prm/insert_user_refresh_queue.sql"})
     void shouldFindUserChangesAndInsertIntoRefreshQueue_WithPagination() {
         userRefreshQueueRepository.deleteAll();
         final LocalDateTime preTestLastBatchRunTime = getLastUserRunDatetime();

@@ -49,7 +49,7 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/insert_organisation_profiles.sql"
+        "classpath:sql/prm/insert_organisation_profiles.sql"
     })
     public void shouldHandleInsertConflictIntoOrganisationRefreshQueue() {
         List<OrganisationInfo> organisationInfoList = List.of(buildOrganisationInfo(123));
@@ -92,7 +92,7 @@ class OrganisationRefreshQueueRepositoryIntegrationTest extends BaseTestIntegrat
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/insert_organisation_profiles.sql"
+        "classpath:sql/prm/insert_organisation_profiles.sql"
     })
     void shouldUpdateRetry_whenRetry0() {
         // GIVEN

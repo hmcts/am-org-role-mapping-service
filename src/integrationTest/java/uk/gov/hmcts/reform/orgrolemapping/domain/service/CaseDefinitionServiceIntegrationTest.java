@@ -48,7 +48,7 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
     private CCDService ccdService;
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql"})
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/prm/insert_access_types.sql"})
     void shouldUpdateLocalDefinitionsForSSCS() {
 
         ResponseEntity<AccessTypesResponse> ccdDefinitions = TestData.setupTestData(SSCS_JURISDICTION);
@@ -79,7 +79,7 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql"})
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/prm/insert_access_types.sql"})
     void shouldUpdateLocalDefinitionsForCivil() {
 
         ResponseEntity<AccessTypesResponse> ccdDefinitions = TestData.setupTestData(CIVIL_JURISDICTION);
@@ -111,8 +111,8 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_civil_mismatch_existing_access_types.sql",
-                       "classpath:sql/insert_existing_profiles_refresh_queue.sql"})
+            scripts = {"classpath:sql/prm/insert_civil_mismatch_existing_access_types.sql",
+                       "classpath:sql/prm/insert_existing_profiles_refresh_queue.sql"})
     void shouldUpdateLocalDefinitionsForCivilMismatch() {
 
         ResponseEntity<AccessTypesResponse> ccdDefinitions = TestData.setupTestData(CIVIL_JURISDICTION);
@@ -143,8 +143,8 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_civil_existing_access_types.sql",
-                       "classpath:sql/insert_existing_profiles_refresh_queue.sql"})
+            scripts = {"classpath:sql/prm/insert_civil_existing_access_types.sql",
+                       "classpath:sql/prm/insert_existing_profiles_refresh_queue.sql"})
     void shouldNotUpdateLocalDefinitionsForCivil() {
 
         ResponseEntity<AccessTypesResponse> ccdDefinitions = TestData.setupTestData(CIVIL_JURISDICTION);

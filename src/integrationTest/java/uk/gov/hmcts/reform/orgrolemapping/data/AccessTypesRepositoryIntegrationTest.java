@@ -17,7 +17,7 @@ class AccessTypesRepositoryIntegrationTest extends BaseTestIntegration {
     private AccessTypesRepository accessTypesRepository;
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql"})
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/prm/insert_access_types.sql"})
     public void shouldGetAccessTypesEntity() {
         AccessTypesEntity accessTypes = accessTypesRepository.getAccessTypesEntity();
 
@@ -27,7 +27,7 @@ class AccessTypesRepositoryIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql"})
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/prm/insert_access_types.sql"})
     public void shouldUpdateAccessTypesEntity() {
         String accessTypeJson = "{\"accessTypes\": [\"type1\", \"type2\"]}";
         AccessTypesEntity accessTypes = accessTypesRepository.updateAccessTypesEntity(accessTypeJson);
@@ -39,7 +39,7 @@ class AccessTypesRepositoryIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql"})
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/prm/insert_access_types.sql"})
     public void shouldNotAllowNewAccessTypesEntity() {
         AccessTypesEntity accessTypeEntity = AccessTypesEntity.builder()
             .accessTypes("{\"accessTypes\": [\"type1\", \"type2\"]}")
