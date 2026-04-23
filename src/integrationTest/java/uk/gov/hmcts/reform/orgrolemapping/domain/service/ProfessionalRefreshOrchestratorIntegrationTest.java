@@ -88,7 +88,7 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
 
         @Test
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
+            scripts = {"classpath:sql/prm/insert_user_refresh_queue_138.sql"})
         void shouldRefreshProfessionalUser() {
 
             professionalRefreshOrchestrator.refreshProfessionalUser(USER_ID);
@@ -120,7 +120,7 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
 
         @Test
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-                scripts = {"classpath:sql/delete_user_refresh_queue.sql"})
+                scripts = {"classpath:sql/prm/delete_user_refresh_queue.sql"})
         void shouldThrowExceptionWhenNoAccessTypesAvailable() {
             Exception exception = assertThrows(ServiceException.class, () ->
                 professionalRefreshOrchestrator.refreshProfessionalUser(USER_ID));
@@ -132,7 +132,7 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
     class RefreshProfessionalUsers {
         @Test
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
+            scripts = {"classpath:sql/prm/insert_user_refresh_queue_138.sql"})
         void refreshProfessionalUserBatch() {
             assertTrue(userRefreshQueueRepository.findByUserId("1").getActive());
             professionalRefreshOrchestrator.refreshProfessionalUsers();
@@ -142,7 +142,7 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
 
         @Test
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-                scripts = {"classpath:sql/delete_user_refresh_queue.sql"})
+                scripts = {"classpath:sql/prm/delete_user_refresh_queue.sql"})
         void shouldThrowExceptionWhenNoAccessTypesAvailable() {
             Exception exception = assertThrows(ServiceException.class, () ->
                 professionalRefreshOrchestrator.refreshProfessionalUsers());
@@ -151,7 +151,7 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
 
         @Test
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-                scripts = {"classpath:sql/insert_user_refresh_queue_138.sql"})
+                scripts = {"classpath:sql/prm/insert_user_refresh_queue_138.sql"})
         void refreshProfessionalUser_GA138() {
             assertTrue(userRefreshQueueRepository.findByUserId("1").getActive());
             professionalRefreshOrchestrator.refreshProfessionalUsers();

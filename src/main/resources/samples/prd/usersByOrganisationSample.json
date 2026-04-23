@@ -1,17 +1,17 @@
 {
   "organisationInfo": [
     {
-      "organisationIdentifier": "B04IXE4",
+      "organisationIdentifier": "org1",
       "status": "ACTIVE",
       "organisationProfileIds": [
         "SOLICITOR_PROFILE"
       ],
       "users": [
         {
-          "userIdentifier": "38f6b38f-98e6-452e-af38-1cdf79856310",
-          "firstName": "Bulkuser",
+          "userIdentifier": "user1",
+          "firstName": "User1",
           "lastName": "admin",
-          "email": "bulkuser.admin@hmcts.net",
+          "email": "user1.admin@hmcts.net",
           "lastUpdated": "2023-09-19T15:36:33.653",
           "userAccessTypes": [
             {
@@ -25,7 +25,7 @@
       ]
     }
   ],
-  "lastOrgInPage": "82g7b38f-98e6-452e-af38-1cdf79856355",
-  "lastUserInPage": "38f6b38f-98e6-452e-af38-1cdf79856310",
+  "lastOrgInPage": "org1",
+  "lastUserInPage": "user1",
   "moreAvailable": false
 }

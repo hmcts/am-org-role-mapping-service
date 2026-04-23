@@ -71,7 +71,7 @@ class PrmSchedulerProcess3IntegrationTest extends BaseSchedulerTestIntegration {
             "/SchedulerTests/PrdOrganisationInfo/organisation1_scenario_01.json"
         ));
 
-        // verify that the OrganisationRefreshQueue contains 3 records
+        // verify that the OrganisationRefreshQueue contains 1 record
         assertTotalOrganisationRefreshQueueEntitiesInDb(1);
 
         // verify that the OranisationRefreshQueue contains the expected OrganisationProfileId and set to active

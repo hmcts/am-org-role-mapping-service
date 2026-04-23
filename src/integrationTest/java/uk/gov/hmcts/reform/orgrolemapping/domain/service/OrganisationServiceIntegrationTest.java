@@ -49,7 +49,7 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_profile_refresh_queue.sql"})
+            scripts = {"classpath:sql/prm/insert_profile_refresh_queue.sql"})
     void shouldInsertOneOrganisationIntoOrganisationRefreshQueue_AndClearProfileRefreshQueue() {
         OrganisationInfo organisationInfo = buildOrganisationInfo(1);
         OrganisationByProfileIdsResponse response
@@ -66,7 +66,7 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = {"classpath:sql/insert_profile_refresh_queue.sql"})
+            scripts = {"classpath:sql/prm/insert_profile_refresh_queue.sql"})
     void shouldInsertTwoOrganisationIntoOrganisationRefreshQueue_AndClearProfileRefreshQueue_WithPagination() {
         OrganisationInfo organisationInfo = buildOrganisationInfo(1);
         OrganisationByProfileIdsResponse page1
@@ -98,7 +98,9 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql"})
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/insert_access_types.sql"
+    })
     void shouldFindOrganisationChangesAndInsertIntoOrganisationRefreshQueue() {
         OrganisationInfo organisationInfo = OrganisationInfo.builder()
                 .organisationIdentifier("123")
@@ -119,7 +121,9 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/insert_access_types.sql"})
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/insert_access_types.sql"
+    })
     void shouldFindOrganisationChangesAndInsertIntoOrganisationRefreshQueue_WithPagination() {
         final LocalDateTime preTestLastBatchRunTime = getOrgLastBatchRunTime();
 
