@@ -8,9 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
@@ -51,7 +49,6 @@ public class IdamRoleMappingService {
 
     private final IdamFeignClient idamClient;
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
-    private final TransactionTemplate transactionTemplate;
     private final IdamRoleDataJsonBConverter idamRoleDataJsonBConverter;
     private final ProcessEventTracker processEventTracker;
     private final String retryOneIntervalMin;
@@ -73,8 +70,6 @@ public class IdamRoleMappingService {
         this.idamClient = idamClient;
         this.idamRoleManagementQueueRepository = idamRoleManagementQueueRepository;
         this.idamRoleDataJsonBConverter = new IdamRoleDataJsonBConverter();
-        this.transactionTemplate = new TransactionTemplate(transactionManager);
-        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
         this.processEventTracker = processEventTracker;
         this.retryOneIntervalMin = retryOneIntervalMin;
         this.retryTwoIntervalMin = retryTwoIntervalMin;
@@ -149,32 +144,15 @@ public class IdamRoleMappingService {
     @Transactional
     private String processQueueEntry(IdamRoleManagementQueueEntity idamRoleManagementQueueEntity) {
         StringBuilder errorMessageBuilder = new StringBuilder();
-        boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
-            try {
-                // Update the user
-                ProcessMonitorDto updateProcessMonitorDto =
-                        updateUser(idamRoleManagementQueueEntity.getUserId());
-                if (EndStatus.SUCCESS.equals(updateProcessMonitorDto.getEndStatus())) {
-                    return true;
-                } else {
-                    String message = updateProcessMonitorDto.getEndDetail();
-                    errorMessageBuilder.append(message);
-                    log.error(message);
-                    return false;
-                }
-            } catch (Exception ex) {
-                String message = String.format("Error occurred while processing queue entry: %s. "
-                                + "Retry attempt %d. Rolling back.",
-                        idamRoleManagementQueueEntity.getUserId(),
-                        idamRoleManagementQueueEntity.getRetry());
-                errorMessageBuilder.append(ex.getMessage());
-                log.error(message, ex);
-                status.setRollbackOnly();
-                return false;
-            }
-        }));
 
-        if (!isSuccess) {
+        // Update the user
+        ProcessMonitorDto updateProcessMonitorDto =
+                updateUser(idamRoleManagementQueueEntity.getUserId());
+        if (!EndStatus.SUCCESS.equals(updateProcessMonitorDto.getEndStatus())) {
+            String message = updateProcessMonitorDto.getEndDetail();
+            errorMessageBuilder.append(message);
+            log.error(message);
+
             // Failed, so increase the retry count.
             idamRoleManagementQueueRepository.updateRetry(
                     idamRoleManagementQueueEntity.getUserId(),
@@ -191,12 +169,12 @@ public class IdamRoleMappingService {
         IdamRecordType idamRecordType = IdamRecordType.USER;
         boolean isSuccess = false;
 
-        IdamUser user = getIdamUser(userId);
-        if  (user == null) {
-            log.debug("No user found for userId {}", userId);
-            idamRecordType = IdamRecordType.INVITE;
-        } else {
-            try {
+        try {
+            IdamUser user = getIdamUser(userId);
+            if  (user == null) {
+                log.debug("No user found for userId {}", userId);
+                idamRecordType = IdamRecordType.INVITE;
+            } else {
                 // Get the idam role data
                 IdamRoleData idamRoleData = getIdamRoleData(user.getId());
                 if (idamRoleData == null) {
@@ -212,12 +190,12 @@ public class IdamRoleMappingService {
                         log.error(message);
                     }
                 }
-            } catch (Exception ex) {
-                String message = String.format("Error occurred while updating user with userId %s: %s",
-                        userId, ex.getMessage());
-                errorMessageBuilder.append(message);
-                log.error(message, ex);
             }
+        } catch (Exception ex) {
+            String message = String.format("Error occurred while updating user with userId %s: %s",
+                    userId, ex.getMessage());
+            errorMessageBuilder.append(message);
+            log.error(message, ex);
         }
 
         if (isSuccess) {
