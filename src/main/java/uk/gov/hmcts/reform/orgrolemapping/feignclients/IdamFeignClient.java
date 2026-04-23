@@ -22,6 +22,9 @@ public interface IdamFeignClient {
     @GetMapping("/api/v2/users/{userId}")
     ResponseEntity<IdamUser> getUserById(@PathVariable String userId);
 
+    @GetMapping("/api/v2/users-by-email/{email}")
+    ResponseEntity<IdamUser> getUserByEmail(@PathVariable String email);
+
     @PutMapping("/api/v2/users/{userId}")
     ResponseEntity<IdamUser> updateUser(@PathVariable String userId, @Valid @RequestBody IdamUser user);
 }

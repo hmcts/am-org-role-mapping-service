@@ -15,6 +15,11 @@ public class IdamFeignClientFallback implements IdamFeignClient {
     }
 
     @Override
+    public ResponseEntity<IdamUser> getUserByEmail(String email) {
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @Override
     public ResponseEntity<IdamUser> updateUser(String userId, IdamUser user) {
         return ResponseEntity.ok().body(user);
     }

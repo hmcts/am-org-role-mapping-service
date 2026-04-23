@@ -229,7 +229,7 @@ class IdamRoleMappingServiceTest {
     @Test
     void getUserTest() {
         // GIVEN
-        IdamUser user = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
+        IdamUser user = buildIdamUser(USERS[0], EMAILS[0], Arrays.stream(ROLES).toList());
         ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
         when(idamFeignClient.getUserById(any())).thenReturn(expectedResult);
 
@@ -243,9 +243,25 @@ class IdamRoleMappingServiceTest {
     }
 
     @Test
+    void getUserByEmailTest() {
+        // GIVEN
+        IdamUser user = buildIdamUser(USERS[0], EMAILS[0], Arrays.stream(ROLES).toList());
+        ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
+        when(idamFeignClient.getUserByEmail(any())).thenReturn(expectedResult);
+
+        //WHEN
+        IdamUser result = sut.getIdamUserByEmail(user.getEmail());
+
+        // THEN
+        assertNotNull(result);
+        assertEquals(user.getEmail(), result.getEmail());
+        verify(idamFeignClient,times(1)).getUserByEmail(user.getEmail());
+    }
+
+    @Test
     void patchUserTest() {
         // GIVEN
-        IdamUser user = buildIdamUser(USERS[0], new ArrayList<>());
+        IdamUser user = buildIdamUser(USERS[0], EMAILS[0], new ArrayList<>());
         IdamRoleData idamRoleData = buildIdamRoleData(EMAILS[0], ROLES);
         ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
         when(idamFeignClient.updateUser(any(), any())).thenReturn(expectedResult);
@@ -260,14 +276,14 @@ class IdamRoleMappingServiceTest {
 
     @Test
     void updateUserTest_Success() {
-        IdamUser user = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
+        IdamUser user = buildIdamUser(USERS[0], EMAILS[0], Arrays.stream(ROLES).toList());
         IdamRoleData idamRoleData = buildIdamRoleData(EMAILS[0], ROLES);
         updateUserTest(user, idamRoleData, EndStatus.SUCCESS);
     }
 
     @Test
     void updateUserTest_Exception() {
-        IdamUser user = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
+        IdamUser user = buildIdamUser(USERS[0], EMAILS[0], Arrays.stream(ROLES).toList());
         IdamRoleData idamRoleData = buildIdamRoleData(EMAILS[0], ROLES);
         updateUserTest(user, idamRoleData, EndStatus.FAILED);
     }
@@ -376,7 +392,7 @@ class IdamRoleMappingServiceTest {
                 .build();
     }
 
-    private IdamUser buildIdamUser(String userId, List<String> roleNames) {
-        return IdamUser.builder().id(userId).roleNames(roleNames).build();
+    private IdamUser buildIdamUser(String userId, String email, List<String> roleNames) {
+        return IdamUser.builder().id(userId).email(email).roleNames(roleNames).build();
     }
 }
