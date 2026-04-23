@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.IdamRecordType;
@@ -173,16 +172,13 @@ class IrmSchedulerProcessIntegrationTest extends BaseSchedulerTestIntegration {
      */
     private void stubGetIdamUser(List<String> idamUserfilenames)
             throws JsonProcessingException {
-        idamUserfilenames.forEach(filename -> {
-            try {
-                String json = jsonHelper.readJsonFromFile(filename);
-                IdamUser user = WiremockFixtures.OBJECT_MAPPER.readValue(json, IdamUser.class);
-                stubGetIdamUser(user);
-                stubUpdateIdamUser(user);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        IdamUser user;
+        for (int i = 0; i < idamUserfilenames.size(); i++) {
+            String json = jsonHelper.readJsonFromFile(idamUserfilenames.get(i));
+            user = OBJECT_MAPPER.readValue(json, IdamUser.class);
+            stubGetIdamUser(user);
+            stubUpdateIdamUser(user);
+        }
     }
 
     private void stubGetIdamUser(IdamUser user)
