@@ -230,7 +230,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/access_types/insert_multipleprofile_access_type.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql",
-        "classpath:sql/prm/profile_refresh_queue/insert_SOLICITOR_Profile.sql",
+        "classpath:sql/prm/profile_refresh_queue/insert_Solicitor_Profile.sql",
         "classpath:sql/prm/profile_refresh_queue/insert_OGD_Profile.sql"
     })
     void testMultipleOrg_ExistingProfile() {
@@ -280,7 +280,7 @@ class PrmSchedulerProcess1IntegrationTest extends BaseSchedulerTestIntegration {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/access_types/insert_multipleprofile_access_type.sql",
         "classpath:sql/prm/profile_refresh_queue/init_profile_refresh_queue.sql",
-        "classpath:sql/prm/profile_refresh_queue/insert_SOLICITOR_Profile.sql",
+        "classpath:sql/prm/profile_refresh_queue/insert_Solicitor_Profile.sql",
         "classpath:sql/prm/profile_refresh_queue/insert_OGD_Profile.sql"
     })
     void testDeleteOrgProfile_existingJurisdictionCcdResponse() {

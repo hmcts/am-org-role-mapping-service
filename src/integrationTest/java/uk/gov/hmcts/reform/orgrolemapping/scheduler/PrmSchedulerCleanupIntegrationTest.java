@@ -119,7 +119,7 @@ class PrmSchedulerCleanupIntegrationTest extends BaseTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
-        "classpath:sql/prm/cleanup/insert_new_organisation_profiles.sql"})
+        "classpath:sql/prm/cleanup/insert_new_organisation_refresh_queue.sql"})
     void newInactiveOrganisationTest() {
         assertOrganisationCleanup(scheduler.deleteInactiveOrganisationRefreshRecords(),
                 1, 0, EndStatus.SUCCESS);
@@ -131,7 +131,7 @@ class PrmSchedulerCleanupIntegrationTest extends BaseTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
-        "classpath:sql/prm/cleanup/insert_old_active_organisation_profiles.sql"})
+        "classpath:sql/prm/cleanup/insert_old_active_organisation_refresh_queue.sql"})
     void oldActiveOrganisationTest() {
         assertOrganisationCleanup(scheduler.deleteInactiveOrganisationRefreshRecords(),
                 1, 0, EndStatus.SUCCESS);
@@ -143,7 +143,7 @@ class PrmSchedulerCleanupIntegrationTest extends BaseTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
-        "classpath:sql/prm/cleanup/insert_new_active_organisation_profiles.sql"})
+        "classpath:sql/prm/cleanup/insert_new_active_organisation_refresh_queue.sql"})
     void newActiveOrganisationTest() {
         assertOrganisationCleanup(scheduler.deleteInactiveOrganisationRefreshRecords(),
                 1, 0, EndStatus.SUCCESS);
@@ -155,7 +155,7 @@ class PrmSchedulerCleanupIntegrationTest extends BaseTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
-        "classpath:sql/prm/cleanup/insert_old_organisation_profiles.sql"})
+        "classpath:sql/prm/cleanup/insert_old_organisation_refresh_queue.sql"})
     void oldInactiveOrganisationTest() {
         assertOrganisationCleanup(scheduler.deleteInactiveOrganisationRefreshRecords(),
                 0, 1, EndStatus.SUCCESS);
@@ -167,8 +167,8 @@ class PrmSchedulerCleanupIntegrationTest extends BaseTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/prm/organisation_refresh_queue/init_organisation_refresh_queue.sql",
-        "classpath:sql/prm/cleanup/insert_old_organisation_profiles.sql",
-        "classpath:sql/prm/cleanup/insert_new_active_organisation_profiles.sql"})
+        "classpath:sql/prm/cleanup/insert_old_organisation_refresh_queue.sql",
+        "classpath:sql/prm/cleanup/insert_new_active_organisation_refresh_queue.sql"})
     void multipleRecordsOrganisationTest() {
         assertOrganisationCleanup(scheduler.deleteInactiveOrganisationRefreshRecords(),
                 1, 1, EndStatus.SUCCESS);
