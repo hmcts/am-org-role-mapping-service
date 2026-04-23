@@ -20,6 +20,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.IdamRoleMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.scheduler.IrmScheduler;
 
+import java.util.Arrays;
+
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
 
@@ -97,8 +99,11 @@ public class IrmController {
     )
     public ResponseEntity<Object> inviteUser(
             @Parameter(description = "UserId")
-            @RequestParam String userId) {
-        ProcessMonitorDto processMonitorDto = idamRoleMappingService.inviteUser(userId);
+            @RequestParam String userId,
+            @Parameter(description = "RoleNames")
+            @RequestParam String[] roleNames) {
+        ProcessMonitorDto processMonitorDto = idamRoleMappingService.inviteUser(userId,
+                Arrays.stream(roleNames).toList());
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
 }

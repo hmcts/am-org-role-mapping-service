@@ -332,12 +332,12 @@ class IdamRoleMappingServiceTest {
     @Test
     void inviteUserTest_Success() {
         // GIVEN
-        IdamUser newUser0 = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
-        IdamUser oldUser0 = buildIdamUser(USERS[0], Collections.emptyList());
-        IdamUser oldUser1 = buildIdamUser(USERS[1], Arrays.stream(ROLES).toList());
+        IdamUser newUser0 = buildIdamUser(USERS[0], EMAILS[0], Arrays.stream(ROLES).toList());
+        IdamUser oldUser0 = buildIdamUser(USERS[0], EMAILS[0], Collections.emptyList());
+        IdamUser oldUser1 = buildIdamUser(USERS[1], EMAILS[0], Arrays.stream(ROLES).toList());
         List<IdamInvitation> oldInvitations = List.of(
-                sut.buildInvitationFromUser(oldUser0),
-                sut.buildInvitationFromUser(oldUser1));
+                sut.buildInvitationFromUser(oldUser0, Arrays.stream(OLDROLES).toList()),
+                sut.buildInvitationFromUser(oldUser1, Arrays.stream(OLDROLES).toList()));
 
         // WHEN
         inviteUserTest(newUser0, oldInvitations, CREATED, EndStatus.SUCCESS);
@@ -346,12 +346,12 @@ class IdamRoleMappingServiceTest {
     @Test
     void inviteUserTest_Failure() {
         // GIVEN
-        IdamUser newUser0 = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
-        IdamUser oldUser0 = buildIdamUser(USERS[0], Collections.emptyList());
-        IdamUser oldUser1 = buildIdamUser(USERS[1], Arrays.stream(ROLES).toList());
+        IdamUser newUser0 = buildIdamUser(USERS[0], EMAILS[0], Arrays.stream(ROLES).toList());
+        IdamUser oldUser0 = buildIdamUser(USERS[0], EMAILS[0], Collections.emptyList());
+        IdamUser oldUser1 = buildIdamUser(USERS[1], EMAILS[0], Arrays.stream(OLDROLES).toList());
         List<IdamInvitation> oldInvitations = List.of(
-                sut.buildInvitationFromUser(oldUser0),
-                sut.buildInvitationFromUser(oldUser1));
+                sut.buildInvitationFromUser(oldUser0, Arrays.stream(OLDROLES).toList()),
+                sut.buildInvitationFromUser(oldUser1, Arrays.stream(OLDROLES).toList()));
 
         // WHEN
         inviteUserTest(newUser0, oldInvitations, INTERNAL_SERVER_ERROR, EndStatus.FAILED);
@@ -359,7 +359,7 @@ class IdamRoleMappingServiceTest {
 
     @Test
     void inviteUserTest_Exception() {
-        IdamUser user = buildIdamUser(USERS[0], Arrays.stream(ROLES).toList());
+        IdamUser user = buildIdamUser(USERS[0], EMAILS[0], Arrays.stream(ROLES).toList());
         inviteUserTest(user, Collections.emptyList(), BAD_REQUEST, EndStatus.FAILED);
     }
 
@@ -383,12 +383,12 @@ class IdamRoleMappingServiceTest {
                     .thenThrow(new HttpClientErrorException(BAD_REQUEST, "Error"));
         } else if (user != null) {
             ResponseEntity<IdamInvitation> expectedNewInvitationResult =
-                    new ResponseEntity<>(sut.buildInvitationFromUser(user), httpStatus);
+                    new ResponseEntity<>(sut.buildInvitationFromUser(user, Arrays.stream(ROLES).toList()), httpStatus);
             when(idamFeignClient.inviteUser(any())).thenReturn(expectedNewInvitationResult);
         }
 
         // WHEN
-        ProcessMonitorDto result = sut.inviteUser(userId);
+        ProcessMonitorDto result = sut.inviteUser(userId, Arrays.stream(ROLES).toList());
 
         // THEN
         assertNotNull(result);
