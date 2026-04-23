@@ -100,7 +100,7 @@ class JacksonUtilsTest {
     void convertUserAccessTypes() throws IOException {
 
         String exampleRequest = new String(
-                Files.readAllBytes(Paths.get("src/main/resources/userAccessType.json")));
+                Files.readAllBytes(Paths.get("src/test/resources/userAccessType.json")));
         List<UserAccessType> userAccessTypes = JacksonUtils.convertUserAccessTypes(exampleRequest);
         assertNotNull(userAccessTypes);
         assertEquals("CIVIL", userAccessTypes.get(0).getJurisdictionId());
