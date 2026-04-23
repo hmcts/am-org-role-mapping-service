@@ -223,6 +223,11 @@ public class IdamRoleMappingService {
         return response != null ? response.getBody() : null;
     }
 
+    protected IdamUser getIdamUserByEmail(String email) {
+        ResponseEntity<IdamUser> response = idamClient.getUserByEmail(email);
+        return response != null ? response.getBody() : null;
+    }
+
     protected boolean patchIdamUser(IdamUser user, IdamRoleData idamRoleData) {
         AtomicBoolean isPatched = new AtomicBoolean(false);
         List<String> newRoles = new ArrayList<>();
