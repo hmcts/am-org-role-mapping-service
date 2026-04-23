@@ -48,7 +48,9 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
     private CCDService ccdService;
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/prm/insert_access_types.sql"})
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/insert_access_types.sql"
+    })
     void shouldUpdateLocalDefinitionsForSSCS() {
 
         ResponseEntity<AccessTypesResponse> ccdDefinitions = TestData.setupTestData(SSCS_JURISDICTION);
@@ -79,7 +81,9 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/prm/insert_access_types.sql"})
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/insert_access_types.sql"
+    })
     void shouldUpdateLocalDefinitionsForCivil() {
 
         ResponseEntity<AccessTypesResponse> ccdDefinitions = TestData.setupTestData(CIVIL_JURISDICTION);

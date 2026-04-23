@@ -98,7 +98,9 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/prm/insert_access_types.sql"})
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/insert_access_types.sql"
+    })
     void shouldFindOrganisationChangesAndInsertIntoOrganisationRefreshQueue() {
         OrganisationInfo organisationInfo = OrganisationInfo.builder()
                 .organisationIdentifier("123")
@@ -119,7 +121,9 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
     }
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {"classpath:sql/prm/insert_access_types.sql"})
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/insert_access_types.sql"
+    })
     void shouldFindOrganisationChangesAndInsertIntoOrganisationRefreshQueue_WithPagination() {
         final LocalDateTime preTestLastBatchRunTime = getOrgLastBatchRunTime();
 
