@@ -364,40 +364,41 @@ class IdamRoleMappingServiceTest {
     }
 
     @Test
-    void inviteUserTest_Nonexistant() {
-        inviteUserTest(null, Collections.emptyList(), null, EndStatus.FAILED);
+    void inviteUserTest_NonexistantSuccess() {
+        inviteUserTest(null, Collections.emptyList(), CREATED, EndStatus.SUCCESS);
     }
 
     private void inviteUserTest(IdamUser user, List<IdamInvitation> oldInvitations,
                                 HttpStatus httpStatus, EndStatus endStatus) {
         // GIVEN
-        String userId = user != null ? user.getId() : null;
-        String email = user != null ? user.getEmail() : null;
+        String email = user != null ? user.getEmail() : EMAILS[0];
         ResponseEntity<IdamUser> expectedUserResult = ResponseEntity.ok(user);
         ResponseEntity<List<IdamInvitation>> expectedOldInvitationResults = ResponseEntity.ok(oldInvitations);
-        when(idamFeignClient.getUserById(userId)).thenReturn(expectedUserResult);
+        when(idamFeignClient.getUserByEmail(email)).thenReturn(expectedUserResult);
         when(idamFeignClient.getInvitations(email)).thenReturn(expectedOldInvitationResults);
         // BAD_REQUEST emulates throwing an exception on invitation creation
         if (BAD_REQUEST.equals(httpStatus)) {
             when(idamFeignClient.inviteUser(any()))
                     .thenThrow(new HttpClientErrorException(BAD_REQUEST, "Error"));
-        } else if (user != null) {
+        } else {
+            IdamUser invitationUser = user != null ? user : sut.buildIdamUserFromEmail(email);
             ResponseEntity<IdamInvitation> expectedNewInvitationResult =
-                    new ResponseEntity<>(sut.buildInvitationFromUser(user, Arrays.stream(ROLES).toList()), httpStatus);
+                    new ResponseEntity<>(sut.buildInvitationFromUser(invitationUser,
+                            Arrays.stream(ROLES).toList()), httpStatus);
             when(idamFeignClient.inviteUser(any())).thenReturn(expectedNewInvitationResult);
         }
 
         // WHEN
-        ProcessMonitorDto result = sut.inviteUser(userId, Arrays.stream(ROLES).toList());
+        ProcessMonitorDto result = sut.inviteUser(email, Arrays.stream(ROLES).toList());
 
         // THEN
         assertNotNull(result);
         assertEquals(endStatus, result.getEndStatus());
         assertEquals(INVITEUSER_NAME, result.getProcessType());
-        verify(idamFeignClient,times(1)).getUserById(any());
-        verify(idamFeignClient,times(user != null ? 1 : 0)).getInvitations(any());
+        verify(idamFeignClient,times(1)).getUserByEmail(any());
+        verify(idamFeignClient,times(1)).getInvitations(any());
         verify(idamFeignClient,times(oldInvitations.size())).deleteInvitation(any());
-        verify(idamFeignClient,times(user != null ? 1 : 0)).inviteUser(any());
+        verify(idamFeignClient,times(1)).inviteUser(any());
     }
 
     private void assertProcessMonitor(ProcessMonitorDto processMonitorDto, EndStatus expectedStatus,
