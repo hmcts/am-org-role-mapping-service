@@ -2,8 +2,10 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.model.irm;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.InvitationStatus;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.InvitationType;
@@ -14,6 +16,8 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class IdamInvitation {
 
     private String id;
