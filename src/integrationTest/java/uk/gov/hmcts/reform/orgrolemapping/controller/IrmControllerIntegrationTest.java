@@ -32,6 +32,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.OBJECT_MAPPER;
 
 @TestPropertySource(properties = {
@@ -70,7 +72,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     void processJudicialQueueTest() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testProcessJudicialQueue(userId, email, getIdamUser(userId, email), IdamRecordType.USER);
+        testProcessJudicialQueue(userId, email, getIdamUser(userId, email), IdamRecordType.USER, CREATED);
     }
 
     @Test
@@ -81,15 +83,26 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     void processJudicialQueueTest_InvalidUser() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testProcessJudicialQueue(userId, email, null, IdamRecordType.INVITE);
+        testProcessJudicialQueue(userId, email, null, IdamRecordType.INVITE, CREATED);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+            "classpath:sql/irm/queue/insert_idam_role_management_queue.sql"
+    })
+    void processJudicialQueueTest_Retry() throws Exception {
+        String userId = "some-user-id";
+        String email = "someone@somewhere.com";
+        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST);
     }
 
     private void testProcessJudicialQueue(String userId, String email, IdamUser user,
-                                          IdamRecordType idamRecordType)
+                                          IdamRecordType idamRecordType, HttpStatus inviteStatus)
             throws Exception {
         RequestSpecification requestSpecification = getRequestSpecification();
         // stub the calls after the getRequestSpecification (as it resets the wiremockserver).
-        stubUpdateUser(userId, email, user);
+        stubUpdateUser(userId, email, user, inviteStatus);
         // WHEN
         String response = requestSpecification
                 .when().get(PROCESSJUDICIALQUEUE_URL)
@@ -102,7 +115,8 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
         ProcessMonitorDto processMonitorDto = OBJECT_MAPPER.readValue(response, ProcessMonitorDto.class);
         assertNotNull(processMonitorDto);
         List<IdamRoleManagementQueueEntity> irmQueue = getIrmQueueEntities(1);
-        assertIrmQueueEntity("some-user-id", idamRecordType, irmQueue.getFirst());
+        int retry = CREATED.equals(inviteStatus) ? 0 : 1;
+        assertIrmQueueEntity("some-user-id", idamRecordType, retry, irmQueue.getFirst());
     }
 
     @Test
@@ -114,7 +128,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
         // GIVEN
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testUpdateUser(userId, email, getIdamUser(userId, email), 1);
+        testUpdateUser(userId, email, getIdamUser(userId, email), 1, CREATED);
     }
 
     @Test
@@ -125,13 +139,14 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
         // GIVEN
         String userId = "non-existant-user-id";
         String email = "nobody@nowhere.com";
-        testUpdateUser(userId, email, null, 0);
+        testUpdateUser(userId, email, null, 0, CREATED);
     }
 
-    private void testUpdateUser(String userId, String email, IdamUser user, int times) throws Exception {
+    private void testUpdateUser(String userId, String email, IdamUser user, int times,
+                                HttpStatus inviteStatus) throws Exception {
         RequestSpecification requestSpecification = getRequestSpecification();
         // stub the calls after the getRequestSpecification (as it resets the wiremockserver).
-        stubUpdateUser(userId, email, user);
+        stubUpdateUser(userId, email, user, inviteStatus);
 
         // WHEN
         String response = requestSpecification
@@ -148,13 +163,13 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
         verifyUpdateUserStubs(times);
     }
 
-    private void stubUpdateUser(String userId, String email, IdamUser user)
+    private void stubUpdateUser(String userId, String email, IdamUser user, HttpStatus inviteStatus)
             throws JsonProcessingException, UnsupportedEncodingException {
         stubGetIdamUser(userId, user);
         if (user != null) {
             stubUpdateIdamUser(userId, user);
         }
-        stubInviteUser(userId, email, user, Collections.emptyList());
+        stubInviteUser(userId, email, user, Collections.emptyList(), inviteStatus);
     }
 
     private void verifyUpdateUserStubs(int times) {
@@ -171,7 +186,8 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
         String email = "someone@somewhere.com";
         IdamUser user =  getIdamUser(userId, email);
         List<IdamInvitation> oldInvitations = List.of(getIdamInvitation(userId), getIdamInvitation(userId));
-        testInviteUser(userId, email, user, user.getRoleNames(), oldInvitations, 1);
+        testInviteUser(userId, email, user, user.getRoleNames(), oldInvitations,
+                1, CREATED);
     }
 
     @Test
@@ -181,15 +197,17 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     void inviteUserTest_InvalidUser() throws Exception {
         String userId = "non-existant-user-id";
         String email = "invalid@email.com";
-        testInviteUser(userId, email, null, Collections.emptyList(), Collections.emptyList(), 1);
+        testInviteUser(userId, email, null, Collections.emptyList(), Collections.emptyList(),
+                1, CREATED);
     }
 
     private void testInviteUser(String userId, String email, IdamUser user, List<String> roleNames,
-                                List<IdamInvitation> oldInvitations, int times) throws Exception {
+                                List<IdamInvitation> oldInvitations, int times,
+                                HttpStatus inviteStatus) throws Exception {
         // GIVEN
         RequestSpecification requestSpecification = getRequestSpecification();
         // stub the calls after the getRequestSpecification (as it resets the wiremockserver).
-        stubInviteUser(userId, email, user, oldInvitations);
+        stubInviteUser(userId, email, user, oldInvitations, inviteStatus);
         String roleNamesCsv = String.join(",", roleNames);
 
         // WHEN
@@ -208,12 +226,13 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
         verifyInviteUserStubs(oldInvitations.size(), times);
     }
 
-    private void stubInviteUser(String userId, String email, IdamUser user, List<IdamInvitation> oldInvitations)
+    private void stubInviteUser(String userId, String email, IdamUser user, List<IdamInvitation> oldInvitations,
+                                HttpStatus inviteStatus)
             throws JsonProcessingException, UnsupportedEncodingException {
         stubGetIdamUserByEmail(getUrlSafe(email), user);
         stubGetInvitations(getUrlSafe(email), oldInvitations);
         stubDeleteInviatations(oldInvitations);
-        stubInviteIdamUser(userId);
+        stubInviteIdamUser(userId, inviteStatus);
     }
 
     private void verifyInviteUserStubs(int getInvitationsTimes, int inviteTimes) {
@@ -269,12 +288,12 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
                 ));
     }
 
-    private void stubInviteIdamUser(String userId)
+    private void stubInviteIdamUser(String userId, HttpStatus httpStatus)
             throws JsonProcessingException {
         WIRE_MOCK_SERVER.stubFor(post(urlPathMatching(IDAM_INVITEUSER_URL))
                 .withId(STUB_ID_INVITEUSER)
                 .willReturn(aResponse()
-                        .withStatus(HttpStatus.CREATED.value())
+                        .withStatus(httpStatus.value())
                         .withHeader("Content-Type", "application/json")
                         .withBody(OBJECT_MAPPER.writeValueAsString(getIdamInvitation(userId)))
                 ));
@@ -306,11 +325,11 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
         return irmQueue;
     }
 
-    private void assertIrmQueueEntity(String userId, IdamRecordType idamRecordType,
+    private void assertIrmQueueEntity(String userId, IdamRecordType idamRecordType, int retry,
                                                 IdamRoleManagementQueueEntity irmQueueEntity) {
         assertEquals(userId, irmQueueEntity.getUserId(), "UserId mismatch");
-        assertEquals(0, irmQueueEntity.getRetry(), "Retry mismatch");
-        assertFalse(irmQueueEntity.getActive(), "Active flag mismatch");
+        assertEquals(retry, irmQueueEntity.getRetry(), "Retry mismatch");
+        assertEquals(retry != 0, irmQueueEntity.getActive(), "Active flag mismatch");
         assertEquals(idamRecordType, irmQueueEntity.getPublishedAs(), "PublishAs mismatch");
     }
 
@@ -334,7 +353,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     }
 
     private void verifyInviteIdamUserStub(int times) {
-        getWireMockEvents(STUB_ID_INVITEUSER, HttpStatus.CREATED, times, "inviteUser");
+        getWireMockEvents(STUB_ID_INVITEUSER, CREATED, times, "inviteUser");
     }
 
     private List<ServeEvent> getWireMockEvents(UUID stubId, HttpStatus httpStatus, int times, String endPoint) {
