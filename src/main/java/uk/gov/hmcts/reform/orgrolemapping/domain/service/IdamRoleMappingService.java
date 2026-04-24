@@ -222,7 +222,12 @@ public class IdamRoleMappingService {
                 List<String> roleNames = idamRoleData.getRoles().stream()
                         .map(role -> role.getRoleName()).toList();
                 // Invite the user with the roleNames.
-                inviteIdamUser(buildIdamUserFromEmail(email), roleNames);
+                String errorMessage = inviteIdamUser(buildIdamUserFromEmail(userId, email), roleNames);
+                if (errorMessage.isEmpty()) {
+                    isSuccess = true;
+                } else {
+                    errorMessageBuilder.append(errorMessage);
+                }
             } else {
                 // Patch the user with the idam role data
                 isSuccess = patchIdamUser(user, idamRoleData);
@@ -325,7 +330,7 @@ public class IdamRoleMappingService {
         // No valid IDAM user found, so create a user object for invite.
         if (user == null) {
             log.debug("No user found for email {}", email);
-            user = buildIdamUserFromEmail(email);
+            user = buildIdamUserFromEmail(null, email);
         }
 
         // Invite the user on IDAM.
@@ -392,8 +397,9 @@ public class IdamRoleMappingService {
         return HttpStatus.CREATED.equals(response.getStatusCode());
     }
 
-    protected IdamUser buildIdamUserFromEmail(String email) {
+    protected IdamUser buildIdamUserFromEmail(String userId, String email) {
         return IdamUser.builder()
+                .id(userId)
                 .email(email)
                 .build();
 

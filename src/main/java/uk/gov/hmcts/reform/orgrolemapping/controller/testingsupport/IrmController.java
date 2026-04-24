@@ -98,12 +98,11 @@ public class IrmController {
             content = @Content(schema = @Schema(implementation = Object.class))
     )
     public ResponseEntity<Object> inviteUser(
-            @Parameter(description = "UserId")
-            @RequestParam String userId,
-            @Parameter(description = "RoleNames")
-            @RequestParam String[] roleNames) {
-        ProcessMonitorDto processMonitorDto = idamRoleMappingService.inviteUser(userId,
-                Arrays.stream(roleNames).toList());
+            @Parameter(description = "Email")
+            @RequestParam("email") String email,
+            @Parameter(description = "Comma separated list of role names")
+            @RequestParam("roleNames") String[] roleNames) {
+        ProcessMonitorDto processMonitorDto = idamRoleMappingService.inviteUser(email, Arrays.asList(roleNames));
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
 }

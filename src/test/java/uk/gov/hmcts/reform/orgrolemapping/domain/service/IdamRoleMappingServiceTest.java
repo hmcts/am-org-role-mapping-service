@@ -381,7 +381,7 @@ class IdamRoleMappingServiceTest {
             when(idamFeignClient.inviteUser(any()))
                     .thenThrow(new HttpClientErrorException(BAD_REQUEST, "Error"));
         } else {
-            IdamUser invitationUser = user != null ? user : sut.buildIdamUserFromEmail(email);
+            IdamUser invitationUser = user != null ? user : sut.buildIdamUserFromEmail(null, email);
             ResponseEntity<IdamInvitation> expectedNewInvitationResult =
                     new ResponseEntity<>(sut.buildInvitationFromUser(invitationUser,
                             Arrays.stream(ROLES).toList()), httpStatus);
