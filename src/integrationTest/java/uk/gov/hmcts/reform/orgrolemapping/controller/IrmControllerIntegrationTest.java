@@ -30,7 +30,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -88,8 +87,8 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue.sql"
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue.sql"
     })
     void processJudicialQueueTest_Retry() throws Exception {
         String userId = "some-user-id";
