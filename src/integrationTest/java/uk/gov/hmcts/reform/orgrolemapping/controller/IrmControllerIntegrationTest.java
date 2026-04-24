@@ -70,21 +70,22 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     void processJudicialQueueTest() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testProcessJudicialQueue(userId, email, getIdamUser(userId, email));
+        testProcessJudicialQueue(userId, email, getIdamUser(userId, email), IdamRecordType.USER);
     }
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue.sql"
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue.sql"
     })
     void processJudicialQueueTest_InvalidUser() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testProcessJudicialQueue(userId, email, null);
+        testProcessJudicialQueue(userId, email, null, IdamRecordType.INVITE);
     }
 
-    private void testProcessJudicialQueue(String userId, String email, IdamUser user)
+    private void testProcessJudicialQueue(String userId, String email, IdamUser user,
+                                          IdamRecordType idamRecordType)
             throws Exception {
         RequestSpecification requestSpecification = getRequestSpecification();
         // stub the calls after the getRequestSpecification (as it resets the wiremockserver).
@@ -101,7 +102,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
         ProcessMonitorDto processMonitorDto = OBJECT_MAPPER.readValue(response, ProcessMonitorDto.class);
         assertNotNull(processMonitorDto);
         List<IdamRoleManagementQueueEntity> irmQueue = getIrmQueueEntities(1);
-        assertIrmQueueEntity("some-user-id", IdamRecordType.USER, irmQueue.getFirst());
+        assertIrmQueueEntity("some-user-id", idamRecordType, irmQueue.getFirst());
     }
 
     @Test

@@ -222,7 +222,12 @@ public class IdamRoleMappingService {
                 List<String> roleNames = idamRoleData.getRoles().stream()
                         .map(role -> role.getRoleName()).toList();
                 // Invite the user with the roleNames.
-                inviteIdamUser(buildIdamUserFromEmail(userId, email), roleNames);
+                String errorMessage = inviteIdamUser(buildIdamUserFromEmail(userId, email), roleNames);
+                if (errorMessage.isEmpty()) {
+                    isSuccess = true;
+                } else {
+                    errorMessageBuilder.append(errorMessage);
+                }
             } else {
                 // Patch the user with the idam role data
                 isSuccess = patchIdamUser(user, idamRoleData);
