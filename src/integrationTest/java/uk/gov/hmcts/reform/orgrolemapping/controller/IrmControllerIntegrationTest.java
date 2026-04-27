@@ -71,7 +71,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     void processJudicialQueueTest() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testProcessJudicialQueue(userId, email, getIdamUser(userId, email), IdamRecordType.USER, CREATED);
+        testProcessJudicialQueue(userId, email, getIdamUser(userId, email), IdamRecordType.USER, CREATED, 0);
     }
 
     @Test
@@ -82,7 +82,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     void processJudicialQueueTest_InvalidUser() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testProcessJudicialQueue(userId, email, null, IdamRecordType.INVITE, CREATED);
+        testProcessJudicialQueue(userId, email, null, IdamRecordType.INVITE, CREATED, 0);
     }
 
     @Test
@@ -93,11 +93,55 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     void processJudicialQueueTest_Retry() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST);
+        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST, 1);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry1.sql"
+    })
+    void processJudicialQueueTest_Retry1() throws Exception {
+        String userId = "some-user-id";
+        String email = "someone@somewhere.com";
+        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST, 2);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry2.sql"
+    })
+    void processJudicialQueueTest_Retry2() throws Exception {
+        String userId = "some-user-id";
+        String email = "someone@somewhere.com";
+        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST, 3);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry3.sql"
+    })
+    void processJudicialQueueTest_Retry3() throws Exception {
+        String userId = "some-user-id";
+        String email = "someone@somewhere.com";
+        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST, 4);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry4.sql"
+    })
+    void processJudicialQueueTest_Retry4() throws Exception {
+        String userId = "some-user-id";
+        String email = "someone@somewhere.com";
+        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST, 4);
     }
 
     private void testProcessJudicialQueue(String userId, String email, IdamUser user,
-                                          IdamRecordType idamRecordType, HttpStatus inviteStatus)
+                                          IdamRecordType idamRecordType, HttpStatus inviteStatus, int retry)
             throws Exception {
         RequestSpecification requestSpecification = getRequestSpecification();
         // stub the calls after the getRequestSpecification (as it resets the wiremockserver).
@@ -114,7 +158,6 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
         ProcessMonitorDto processMonitorDto = OBJECT_MAPPER.readValue(response, ProcessMonitorDto.class);
         assertNotNull(processMonitorDto);
         List<IdamRoleManagementQueueEntity> irmQueue = getIrmQueueEntities(1);
-        int retry = CREATED.equals(inviteStatus) ? 0 : 1;
         assertIrmQueueEntity("some-user-id", idamRecordType, retry, irmQueue.getFirst());
     }
 
