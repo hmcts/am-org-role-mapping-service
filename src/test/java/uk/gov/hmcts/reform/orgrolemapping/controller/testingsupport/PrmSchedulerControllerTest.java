@@ -47,6 +47,8 @@ class PrmSchedulerControllerTest {
 
     @Test
     void process1Test() {
+
+        // GIVEN
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process1");
 
         ResponseEntity<Object> response =
@@ -55,11 +57,18 @@ class PrmSchedulerControllerTest {
         when(scheduler.findAndUpdateCaseDefinitionChanges())
             .thenReturn(processMonitorDto);
 
+        // WHEN
         assertEquals(response, controller.findAndUpdateCaseDefinitionChanges());
+
+        // THEN
+        verify(scheduler, times(1)).findAndUpdateCaseDefinitionChanges();
+
     }
 
     @Test
     void process2Test() {
+
+        // GIVEN
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process2");
 
         ResponseEntity<Object> response =
@@ -68,7 +77,12 @@ class PrmSchedulerControllerTest {
         when(scheduler.findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcess())
             .thenReturn(processMonitorDto);
 
+        // WHEN
         assertEquals(response, controller.findOrganisationsWithStaleProfiles());
+
+        // THEN
+        verify(scheduler, times(1)).findOrganisationsWithStaleProfilesAndInsertIntoRefreshQueueProcess();
+
     }
 
     @Test
@@ -77,6 +91,8 @@ class PrmSchedulerControllerTest {
     }
 
     private void process3Test(String since) {
+
+        // GIVEN
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process3");
 
         when(organisationService.getBatchLastRunTimestampEntity()).thenReturn(batchLastRunTimestampEntity);
@@ -87,10 +103,15 @@ class PrmSchedulerControllerTest {
         ResponseEntity<Object> response =
             ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
 
+        // WHEN
         assertEquals(response, controller.findOrganisationChanges(since));
 
+        // THEN
         verify(batchLastRunTimestampRepository,
             times(since != null ? 1 : 0)).save(batchLastRunTimestampEntity);
+
+        verify(scheduler, times(1)).findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess();
+
     }
 
     @Test
@@ -100,6 +121,8 @@ class PrmSchedulerControllerTest {
 
     @Test
     void process4Test() {
+
+        // GIVEN
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process4");
 
         ResponseEntity<Object> response =
@@ -109,11 +132,18 @@ class PrmSchedulerControllerTest {
             .findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess())
             .thenReturn(processMonitorDto);
 
+        // WHEN
         assertEquals(response, controller.findUsersWithStaleOrganisations(null));
+
+        // THEN
+        verify(scheduler, times(1)).findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess();
+
     }
 
     @Test
     void process4TestById() {
+
+        // GIVEN
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process4");
         String organisationId = "1";
 
@@ -124,7 +154,13 @@ class PrmSchedulerControllerTest {
             .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(organisationId))
             .thenReturn(processMonitorDto);
 
+        // WHEN
         assertEquals(response, controller.findUsersWithStaleOrganisations(organisationId));
+
+        // THEN
+        verify(professionalUserService, times(1))
+            .findAndInsertUsersWithStaleOrganisationsIntoRefreshQueueById(organisationId);
+
     }
 
     @Test
@@ -143,14 +179,80 @@ class PrmSchedulerControllerTest {
         when(scheduler.findUserChangesAndInsertIntoUserRefreshQueue())
             .thenReturn(processMonitorDto);
 
+        // WHEN
         assertEquals(response, controller.findUserChanges(since));
 
+        // THEN
         verify(batchLastRunTimestampRepository,
             times(since != null ? 1 : 0)).save(batchLastRunTimestampEntity);
+
+        verify(scheduler, times(1)).findUserChangesAndInsertIntoUserRefreshQueue();
+
     }
 
     @Test
     void process5Test_noParam() {
         process5Test(null);
     }
+
+    @Test
+    void process6Test() {
+
+        // GIVEN
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process6");
+
+        ResponseEntity<Object> response =
+            ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+
+        when(scheduler.processUserRefreshQueue())
+            .thenReturn(processMonitorDto);
+
+        // WHEN
+        assertEquals(response, controller.processUserRefreshQueue());
+
+        // THEN
+        verify(scheduler, times(1)).processUserRefreshQueue();
+
+    }
+
+    @Test
+    void processOrgCleanUpTest() {
+
+        // GIVEN
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process6");
+
+        ResponseEntity<Object> response =
+            ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+
+        when(scheduler.deleteInactiveOrganisationRefreshRecords())
+            .thenReturn(processMonitorDto);
+
+        // WHEN
+        assertEquals(response, controller.deleteInactiveOrganisationRefreshRecords());
+
+        // THEN
+        verify(scheduler, times(1)).deleteInactiveOrganisationRefreshRecords();
+
+    }
+
+    @Test
+    void processUserCleanUpTest() {
+
+        // GIVEN
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test Process6");
+
+        ResponseEntity<Object> response =
+            ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+
+        when(scheduler.deleteInactiveUserRefreshRecords())
+            .thenReturn(processMonitorDto);
+
+        // WHEN
+        assertEquals(response, controller.deleteInactiveUserRefreshRecords());
+
+        // THEN
+        verify(scheduler, times(1)).deleteInactiveUserRefreshRecords();
+
+    }
+
 }
