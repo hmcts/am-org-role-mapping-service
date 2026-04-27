@@ -98,8 +98,8 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry1.sql"
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry1.sql"
     })
     void processJudicialQueueTest_Retry1() throws Exception {
         String userId = "some-user-id";
@@ -109,8 +109,8 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry2.sql"
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry2.sql"
     })
     void processJudicialQueueTest_Retry2() throws Exception {
         String userId = "some-user-id";
@@ -120,8 +120,8 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry3.sql"
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry3.sql"
     })
     void processJudicialQueueTest_Retry3() throws Exception {
         String userId = "some-user-id";
@@ -131,8 +131,8 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-            "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-            "classpath:sql/irm/queue/insert_idam_role_management_queue_retry4.sql"
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry4.sql"
     })
     void processJudicialQueueTest_Retry4() throws Exception {
         String userId = "some-user-id";
