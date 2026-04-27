@@ -5,7 +5,7 @@
   "operationName": "Delete Booking by userId",
 
   "method": "DELETE",
-  "uri": "{{JUDICIAL_BOOKING_URL}}/am/bookings/{userId}",
+  "uri": "{{JUDICIAL_BOOKING_URL}}/am/testing-support/bookings/{userId}",
 
   "request": {
     "headers": {
