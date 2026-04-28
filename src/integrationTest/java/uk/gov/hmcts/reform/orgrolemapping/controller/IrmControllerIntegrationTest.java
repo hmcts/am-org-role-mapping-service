@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueReposi
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.IdamRecordType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamInvitation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
 import java.io.UnsupportedEncodingException;
@@ -71,7 +72,18 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     void processJudicialQueueTest() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testProcessJudicialQueue(userId, email, getIdamUser(userId, email), IdamRecordType.USER, CREATED, 0);
+        testProcessJudicialQueue(userId, email, getIdamUser(userId, email), IdamRecordType.USER, CREATED, 0,
+                EndStatus.SUCCESS);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql"
+    })
+    void processJudicialQueueTest_Empty() throws Exception {
+        String userId = "some-user-id";
+        String email = "someone@somewhere.com";
+        testProcessJudicialQueue(null, "", null, IdamRecordType.USER, CREATED, 0, EndStatus.SUCCESS);
     }
 
     @Test
@@ -82,7 +94,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     void processJudicialQueueTest_InvalidUser() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testProcessJudicialQueue(userId, email, null, IdamRecordType.INVITE, CREATED, 0);
+        testProcessJudicialQueue(userId, email, null, IdamRecordType.INVITE, CREATED, 0, EndStatus.SUCCESS);
     }
 
     @Test
@@ -93,7 +105,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     void processJudicialQueueTest_Retry() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST, 1);
+        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST, 1, EndStatus.FAILED);
     }
 
     @Test
@@ -104,7 +116,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     void processJudicialQueueTest_Retry1() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST, 2);
+        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST, 2, EndStatus.FAILED);
     }
 
     @Test
@@ -115,7 +127,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     void processJudicialQueueTest_Retry2() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST, 3);
+        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST, 3, EndStatus.FAILED);
     }
 
     @Test
@@ -126,7 +138,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     void processJudicialQueueTest_Retry3() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST, 4);
+        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST, 4, EndStatus.FAILED);
     }
 
     @Test
@@ -137,11 +149,13 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     void processJudicialQueueTest_Retry4() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST, 4);
+        // Retyr level 4 should be treated the same as an empty queue - hence success.
+        testProcessJudicialQueue(userId, email, null, IdamRecordType.USER, BAD_REQUEST, 4, EndStatus.SUCCESS);
     }
 
     private void testProcessJudicialQueue(String userId, String email, IdamUser user,
-                                          IdamRecordType idamRecordType, HttpStatus inviteStatus, int retry)
+                                          IdamRecordType idamRecordType, HttpStatus inviteStatus, int retry,
+                                          EndStatus endStatus)
             throws Exception {
         RequestSpecification requestSpecification = getRequestSpecification();
         // stub the calls after the getRequestSpecification (as it resets the wiremockserver).
@@ -157,8 +171,13 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
         assertNotNull(response);
         ProcessMonitorDto processMonitorDto = OBJECT_MAPPER.readValue(response, ProcessMonitorDto.class);
         assertNotNull(processMonitorDto);
-        List<IdamRoleManagementQueueEntity> irmQueue = getIrmQueueEntities(1);
-        assertIrmQueueEntity("some-user-id", idamRecordType, retry, irmQueue.getFirst());
+        assertEquals(endStatus,processMonitorDto.getEndStatus(), "Unexpected process end status");
+        if (userId != null) {
+            List<IdamRoleManagementQueueEntity> irmQueue = getIrmQueueEntities(1);
+            assertIrmQueueEntity("some-user-id", idamRecordType, retry, irmQueue.getFirst());
+        } else {
+            getIrmQueueEntities(0);
+        }
     }
 
     @Test
