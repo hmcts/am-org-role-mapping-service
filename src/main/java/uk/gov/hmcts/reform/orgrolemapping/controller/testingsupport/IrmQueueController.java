@@ -96,22 +96,23 @@ public class IrmQueueController {
         content = @Content()
     )
     public ResponseEntity<IdamRoleManagementQueueEntity> makeQueueEntityActive(
-            @RequestParam() String userId
+            @RequestParam() String userId,
+            @RequestParam(required = false) Boolean active
     ) {
         var queueEntityOptional = idamRoleManagementQueueRepository
                 .findById(userId);
-        if (queueEntityOptional.isEmpty()) {
+        if (queueEntityOptional.isPresent()) {
+            var queueEntity = queueEntityOptional.get();
+
+            // if active does not match the required value then update it.
+            if (!active.equals(queueEntity.getActive())) {
+                queueEntity.setActive(active);
+                idamRoleManagementQueueRepository.save(queueEntity);
+            }
+        } else if (Boolean.TRUE.equals(active)) {
+            // if we require an active record, and it does not exist then error.
             return ResponseEntity.notFound().build();
         }
-
-        var queueEntity = queueEntityOptional.get();
-
-        // if not active then activate
-        if (Boolean.FALSE.equals(queueEntity.getActive())) {
-            queueEntity.setActive(true);
-            idamRoleManagementQueueRepository.save(queueEntity);
-        }
-
-        return ResponseEntity.ok(queueEntity);
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,11 +1,9 @@
 {
-  "_guid_": "S-018.01_MakeUserRefreshQueueValueActive",
-  "_extends_": "MakeIrmQueueActive__PositiveResponse_Base",
-
+  "_guid_": "S-018.01_MakeUserRefreshQueueValueInactive",
+  "_extends_": "MakeIrmQueueInactive__PositiveResponse_Base",
   "specs": [
     "to make the IRM queue value inactive"
   ],
-
   "request": {
     "queryParams": {
       "userId": "eccd490f-a40c-4a19-b063-7b107bc6480p"
@@ -13,9 +11,6 @@
   },
 
   "expectedResponse": {
-    "body": {
-      "active" : false
-    }
+    "_extends_": "Common_200_Response"
   }
-
 }
