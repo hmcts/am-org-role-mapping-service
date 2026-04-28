@@ -18,7 +18,7 @@ idam:
     admin:
       userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:}
       secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:}
-      scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities view-user}
+      scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
 feign:
   client:
     config:
