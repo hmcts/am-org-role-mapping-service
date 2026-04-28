@@ -1,0 +1,25 @@
+{
+  "_guid_": "MakeIrmQueueActive__PositiveResponse_Base",
+  "_extends_": "MakeIrmQueueActive__Base",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "userId": "${[scenarioContext][testData][request][queryParams][userId]}",
+      "userType": "[[ANYTHING_PRESENT]]",
+      "data": "[[ANYTHING_PRESENT]]",
+      "lastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "lastPublished": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "active": "OVERRIDE",
+      "retry": "[[ANY_INTEGER_NOT_NULLABLE]]",
+      "retryAfter": "[[ANY_TIMESTAMP_NULLABLE]]"
+    }
+  }
+
+}
