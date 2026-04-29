@@ -12,7 +12,15 @@
 
   "request": {
     "queryParams": {
-      "userId": "fb6207fa-b06f-4206-85f3-f7ff2699e560"
+      "email": "S01802@test.com",
+      "roles": [
+        "caseworker",
+        "cwd-admin",
+        "cwd-system-user",
+        "jrd-system-user",
+        "org-role-cwd-system-user",
+        "judiciary"
+      ]
     }
   },
 
