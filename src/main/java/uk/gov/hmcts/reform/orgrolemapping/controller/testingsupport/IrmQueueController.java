@@ -99,20 +99,37 @@ public class IrmQueueController {
             @RequestParam() String userId,
             @RequestParam(required = false) Boolean active
     ) {
+        if ("ALL".equalsIgnoreCase(userId)) {
+            setAllUsersActive(active);
+        } else {
+            if (!setSingleUserActive(userId, active)) {
+                return ResponseEntity.notFound().build();
+            }
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    private void setAllUsersActive(Boolean active) {
+        idamRoleManagementQueueRepository.findAll().forEach(queueEntity -> {
+            setActive(queueEntity, active);
+        });
+    }
+
+    private boolean setSingleUserActive(String userId, Boolean active) {
         var queueEntityOptional = idamRoleManagementQueueRepository
                 .findById(userId);
         if (queueEntityOptional.isPresent()) {
-            var queueEntity = queueEntityOptional.get();
-
-            // if active does not match the required value then update it.
-            if (!active.equals(queueEntity.getActive())) {
-                queueEntity.setActive(active);
-                idamRoleManagementQueueRepository.save(queueEntity);
-            }
-        } else if (Boolean.TRUE.equals(active)) {
-            // if we require an active record, and it does not exist then error.
-            return ResponseEntity.notFound().build();
+           setActive(queueEntityOptional.get(), active);
+           return true;
         }
-        return ResponseEntity.ok().build();
+        return false;
+    }
+
+    private void setActive(IdamRoleManagementQueueEntity queueEntity, Boolean active) {
+        // if active does not match the required value then update it.
+        if (!active.equals(queueEntity.getActive())) {
+            queueEntity.setActive(active);
+            idamRoleManagementQueueRepository.save(queueEntity);
+        }
     }
 }
