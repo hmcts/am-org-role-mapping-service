@@ -119,8 +119,8 @@ public class IrmQueueController {
         var queueEntityOptional = idamRoleManagementQueueRepository
                 .findById(userId);
         if (queueEntityOptional.isPresent()) {
-           setActive(queueEntityOptional.get(), active);
-           return true;
+            setActive(queueEntityOptional.get(), active);
+            return true;
         }
         return false;
     }
