@@ -1,0 +1,16 @@
+{
+  "_guid_": "S-018.02_MakeIrmQueueValueInactive",
+  "_extends_": "MakeIrmQueueInactive__PositiveResponse_Base",
+  "specs": [
+    "to make the IRM queue value inactive"
+  ],
+  "request": {
+    "queryParams": {
+      "userId": "ALL"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "_guid_": "S-018.02",
+  "title": "trigger IRM invite user",
+  "_extends_": "F-018-Base-Root",
+  "specs": [
+    "an active IDAM profile with full permissions"
+  ],
+ "method": "GET",
+  "uri": "/am/testing-support/irm/user/invite",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Invite IDAM user",
+
+  "request": {
+    "queryParams": {
+      "userId": "fb6207fa-b06f-4206-85f3-f7ff2699e560"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "processType": "IRM Invite User",
+      "id": "[[ANYTHING_PRESENT]]",
+      "startTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "endTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "endStatus": "SUCCESS",
+      "processSteps" : "[[ANYTHING_PRESENT]]"
+    }
+  }
+}
