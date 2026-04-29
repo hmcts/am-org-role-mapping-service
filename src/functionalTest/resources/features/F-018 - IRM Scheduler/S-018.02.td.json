@@ -13,9 +13,7 @@
   "request": {
     "queryParams": {
       "email": "S01802@test.com",
-      "arrayInMap": {
-          "rolenames": ["caseworker","cwd-admin","cwd-system-user","jrd-system-user","org-role-cwd-system-user","judiciary"]
-      }
+      "roleNames": ["caseworker","cwd-admin","cwd-system-user","jrd-system-user","org-role-cwd-system-user","judiciary"]
     }
   },
 
