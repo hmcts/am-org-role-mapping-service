@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-018.01_MakeUserRefreshQueueValueInactive",
+  "_guid_": "S-018.01_MakeIrmQueueValueInactive",
   "_extends_": "MakeIrmQueueInactive__PositiveResponse_Base",
   "specs": [
     "to make the IRM queue value inactive"
