@@ -6,7 +6,7 @@
   ],
   "request": {
     "queryParams": {
-      "userId": "${[scenarioContext][parentContext][testData][userId]}"
+      "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575d"
     }
   },
 

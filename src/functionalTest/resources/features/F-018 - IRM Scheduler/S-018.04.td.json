@@ -4,8 +4,6 @@
   "_extends_": "F-018-ProcessJudicialQueue",
   "operationName": "Process populated IRM Judicial Queue",
 
-  "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575d",
-
   "expectedResponse": {
     "body": {
       "endStatus": "SUCCESS"
