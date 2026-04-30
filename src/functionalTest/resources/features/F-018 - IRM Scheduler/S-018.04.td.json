@@ -4,6 +4,8 @@
   "_extends_": "F-018-ProcessJudicialQueue",
   "operationName": "Process populated IRM Judicial Queue",
 
+  "userId": "${[scenarioContext][siblingContexts][S-018.03][testData][request][queryParams][userId]}",
+
   "expectedResponse": {
     "body": {
       "endStatus": "SUCCESS"
