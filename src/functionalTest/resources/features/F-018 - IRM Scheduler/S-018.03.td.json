@@ -23,9 +23,9 @@
     "_extends_": "Common_200_Response",
     "body": {
       "userId": "[[ANYTHING_PRESENT]]",
-      "userType": "${[scenarioContext][parentContext][testData][request][queryParams][userType]}",
+      "userType": "JUDICIAL",
       "data" : {
-        "email_id" : "${[scenarioContext][parentContext][testData][request][queryParams][email]}",
+        "email_id" : "S01803@test.com",
         "active_flag" : "Y",
         "deleted_flag" : "N",
         "roles" : [ {
