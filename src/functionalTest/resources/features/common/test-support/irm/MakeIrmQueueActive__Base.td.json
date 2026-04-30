@@ -6,7 +6,7 @@
 
   "specs": [],
 
-  "method": "PUT",
+  "method": "POST",
   "uri": "/am/testing-support/prm/makeQueueEntityActive",
 
   "request": {

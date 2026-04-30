@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -53,7 +54,7 @@ public class IrmQueueController {
         this.idamRoleMappingService = idamRoleMappingService;
     }
 
-    @GetMapping(
+    @PutMapping(
         path = ADD_TO_QUEUE
     )
     @ResponseStatus(code = HttpStatus.OK)
@@ -70,6 +71,11 @@ public class IrmQueueController {
             schema = @Schema(implementation = IdamRoleManagementQueueEntity.class),
             mediaType = APPLICATION_JSON_VALUE
         )
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "User not found",
+            content = @Content()
     )
     public ResponseEntity<IdamRoleManagementQueueEntity> addQueueEntity(
         @Parameter(description = "UserType")
@@ -126,14 +132,13 @@ public class IrmQueueController {
             @RequestParam() String userId
     ) {
         return idamRoleManagementQueueRepository.findById(userId)
-                .map(entity ->
-                        ResponseEntity.ok(entity)
+                .map(ResponseEntity::ok
                 )
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 
-    @PutMapping(
+    @PostMapping(
             path = MAKE_QUEUE_ENTITY_ACTIVE
     )
     @ResponseStatus(code = HttpStatus.OK)
@@ -171,9 +176,8 @@ public class IrmQueueController {
     }
 
     private void setAllUsersActive(Boolean active) {
-        idamRoleManagementQueueRepository.findAll().forEach(queueEntity -> {
-            setActive(queueEntity, active);
-        });
+        idamRoleManagementQueueRepository.findAll().forEach(queueEntity ->
+                setActive(queueEntity, active));
     }
 
     private boolean setSingleUserActive(String userId, Boolean active) {

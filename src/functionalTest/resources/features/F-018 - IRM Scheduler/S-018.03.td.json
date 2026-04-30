@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-018.02",
+  "title": "trigger IRM add to queue",
+  "_extends_": "F-018-Base-Root",
+  "specs": [
+    "an active IDAM profile with full permissions"
+  ],
+ "method": "PUT",
+  "uri": "/am/testing-support/irm/addQueueEntity",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Invite IDAM user",
+
+  "request": {
+    "queryParams": {
+      "userType": "JUDICIAL",
+      "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575d",
+      "email": "S01802@test.com",
+      "roleNames": ["caseworker","cwd-admin","cwd-system-user","jrd-system-user","org-role-cwd-system-user","judiciary"]
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "userId": "[[ANYTHING_PRESENT]]",
+      "userType": "[[ANYTHING_PRESENT]]",
+      "data": "[[ANYTHING_PRESENT]]",
+      "lastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "lastPublished": "[[ANY_TIMESTAMP_NULLABLE]]",
+      "publishedAs": "[[ANYTHING_PRESENT]]",
+      "active": "[[ANYTHING_PRESENT]]",
+      "retry": "[[ANYTHING_PRESENT]]",
+      "retryAfter": "[[ANY_TIMESTAMP_NULLABLE]]"
+    }
+  }
+}
