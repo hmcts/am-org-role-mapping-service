@@ -23,13 +23,28 @@
     "_extends_": "Common_200_Response",
     "body": {
       "userId": "[[ANYTHING_PRESENT]]",
-      "userType": "[[ANYTHING_PRESENT]]",
-      "data": "[[ANYTHING_PRESENT]]",
+      "userType": "JUDICIAL",
+      "data" : {
+        "email_id" : "S01802@test.com",
+        "active_flag" : "Y",
+        "deleted_flag" : "N",
+        "roles" : [ {
+          "role_name" : "[\"caseworker\""
+        }, {
+          "role_name" : "\"cwd-admin\""
+        }, {
+          "role_name" : "\"cwd-system-user\""
+        }, {
+          "role_name" : "\"jrd-system-user\""
+        }, {
+          "role_name" : "\"org-role-cwd-system-user\""
+        }, {
+          "role_name" : "\"judiciary\"]"
+        } ]
+      },
       "lastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
-      "lastPublished": "[[ANY_TIMESTAMP_NULLABLE]]",
-      "publishedAs": "[[ANYTHING_PRESENT]]",
-      "active": "[[ANYTHING_PRESENT]]",
-      "retry": "[[ANYTHING_PRESENT]]",
+      "active": true,
+      "retry": 0,
       "retryAfter": "[[ANY_TIMESTAMP_NULLABLE]]"
     }
   }
