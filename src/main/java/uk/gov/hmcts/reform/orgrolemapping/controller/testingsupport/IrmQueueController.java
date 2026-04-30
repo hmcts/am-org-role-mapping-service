@@ -5,6 +5,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATI
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,23 +21,83 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleDataRole;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.IdamRoleMappingService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @ConditionalOnProperty(name = "testing.support.enabled", havingValue = "true")
 public class IrmQueueController {
 
+    protected static final String ADD_TO_QUEUE
+            = "/am/testing-support/irm/addQueueEntity";
     protected static final String FIND_QUEUE_ENTITY
             = "/am/testing-support/irm/findQueueEntity";
     protected static final String MAKE_QUEUE_ENTITY_ACTIVE
             = "/am/testing-support/prm/makeQueueEntityActive";
 
+    private final IdamRoleMappingService idamRoleMappingService;
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
 
     @Autowired
-    public IrmQueueController(IdamRoleManagementQueueRepository idamRoleManagementQueueRepository) {
+    public IrmQueueController(IdamRoleManagementQueueRepository idamRoleManagementQueueRepository,
+                              IdamRoleMappingService idamRoleMappingService) {
         this.idamRoleManagementQueueRepository = idamRoleManagementQueueRepository;
+        this.idamRoleMappingService = idamRoleMappingService;
     }
 
+    @GetMapping(
+        path = ADD_TO_QUEUE
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(
+        summary = "IRM addToQueue",
+        security = {
+            @SecurityRequirement(name = AUTHORIZATION),
+            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+        })
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(
+            schema = @Schema(implementation = IdamRoleManagementQueueEntity.class),
+            mediaType = APPLICATION_JSON_VALUE
+        )
+    )
+    public ResponseEntity<IdamRoleManagementQueueEntity> addQueueEntity(
+        @Parameter(description = "UserType")
+        @RequestParam() UserType userType,
+        @Parameter(description = "UserId")
+        @RequestParam() String userId,
+        @Parameter(description = "Email")
+        @RequestParam() String email,
+        @Parameter(description = "Comma separated list of role names")
+        @RequestParam("roleNames") String[] roleNames
+    ) {
+        List<IdamRoleDataRole> idamRoleDataRoles = new ArrayList<>();
+        Arrays.asList(roleNames).forEach(roleName -> {
+            if (roleName.isBlank()) {
+                throw new IllegalArgumentException("Role names cannot be blank");
+            }
+            idamRoleDataRoles.add(IdamRoleDataRole.builder().roleName(roleName).build());
+        });
+        Map<String, IdamRoleData> idamRoleList = new HashMap<>();
+        idamRoleList.put(userId, IdamRoleData.builder()
+                        .emailId(email)
+                        .activeFlag("Y")
+                        .deletedFlag("N")
+                        .roles(idamRoleDataRoles)
+                        .build());
+        idamRoleMappingService.addToQueue(userType, idamRoleList);
+        return findQueueEntity(userId);
+    }
 
     @GetMapping(
         path = FIND_QUEUE_ENTITY
