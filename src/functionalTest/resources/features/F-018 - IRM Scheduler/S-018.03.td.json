@@ -8,13 +8,13 @@
  "method": "PUT",
   "uri": "/am/testing-support/irm/addQueueEntity",
   "productName": "Organisation Role Mapping",
-  "operationName": "Invite IDAM user",
+  "operationName": "Add IDAM user to queue",
 
   "request": {
     "queryParams": {
       "userType": "JUDICIAL",
       "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575d",
-      "email": "S01802@test.com",
+      "email": "S01803@test.com",
       "roleNames": ["caseworker","cwd-admin","cwd-system-user","jrd-system-user","org-role-cwd-system-user","judiciary"]
     }
   },
@@ -23,9 +23,9 @@
     "_extends_": "Common_200_Response",
     "body": {
       "userId": "[[ANYTHING_PRESENT]]",
-      "userType": "JUDICIAL",
+      "userType": "${[scenarioContext][parentContext][testData][request][queryParams][userType]}",
       "data" : {
-        "email_id" : "S01802@test.com",
+        "email_id" : "${[scenarioContext][parentContext][testData][request][queryParams][email]}",
         "active_flag" : "Y",
         "deleted_flag" : "N",
         "roles" : [ {

@@ -1,0 +1,22 @@
+{
+  "_guid_": "F-018-ProcessJudicialQueue",
+  "_extends_": "F-018-Base-Root",
+  "specs": [
+    "an active IDAM profile with full permissions"
+  ],
+  "method": "GET",
+  "uri": "/am/testing-support/irm/processJudicialQueue",
+  "productName": "Organisation Role Mapping",
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "processType": "IRM Process JUDICIAL Queue",
+      "id": "[[ANYTHING_PRESENT]]",
+      "startTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "endTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "endStatus": "OVERRIDE",
+      "processSteps" : "[[ANYTHING_PRESENT]]"
+    }
+  }
+}
