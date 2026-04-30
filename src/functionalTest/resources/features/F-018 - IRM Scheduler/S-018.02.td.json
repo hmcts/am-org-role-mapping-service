@@ -7,7 +7,7 @@
   ],
  "method": "GET",
   "uri": "/am/testing-support/irm/user/invite",
-  "productName": "Organisation Role Mapping",
+  "productName": "Idam Role Management",
   "operationName": "Invite IDAM user",
 
   "request": {

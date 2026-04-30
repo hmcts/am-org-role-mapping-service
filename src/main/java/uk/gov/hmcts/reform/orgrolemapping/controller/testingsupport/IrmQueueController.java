@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -39,6 +40,8 @@ public class IrmQueueController {
 
     protected static final String ADD_TO_QUEUE
             = "/am/testing-support/irm/addQueueEntity";
+    protected static final String DELETE_FROM_QUEUE
+            = "/am/testing-support/irm/deleteQueueEntity";
     protected static final String FIND_QUEUE_ENTITY
             = "/am/testing-support/irm/findQueueEntity";
     protected static final String MAKE_QUEUE_ENTITY_ACTIVE
@@ -103,6 +106,45 @@ public class IrmQueueController {
                         .build());
         idamRoleMappingService.addToQueue(userType, idamRoleList);
         return findQueueEntity(userId);
+    }
+
+    @DeleteMapping(
+        path = DELETE_FROM_QUEUE
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(
+        summary = "IRM deleteFromQueue",
+        security = {
+            @SecurityRequirement(name = AUTHORIZATION),
+            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+        })
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(
+            schema = @Schema(implementation = String.class),
+            mediaType = APPLICATION_JSON_VALUE
+        )
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Queue Entity not found",
+            content = @Content()
+    )
+    public ResponseEntity<String> deleteFromEntity(
+            @Parameter(description = "UserId")
+            @RequestParam() String userId
+    ) {
+        if (idamRoleMappingService.deleteFromQueue(userId)) {
+            ResponseEntity<IdamRoleManagementQueueEntity> response = findQueueEntity(userId);
+            if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+                return ResponseEntity.ok("Deleted queue entity for userId: " + userId);
+            } else {
+                return ResponseEntity.internalServerError().body(
+                        "Failed to delete queue entity for userId: " + userId);
+            }
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping(
