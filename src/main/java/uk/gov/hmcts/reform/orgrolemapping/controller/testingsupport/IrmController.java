@@ -20,6 +20,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.service.IdamRoleMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.scheduler.IrmScheduler;
 
+import java.util.Arrays;
+
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
 
@@ -77,6 +79,30 @@ public class IrmController {
             @Parameter(description = "UserId")
             @RequestParam String userId) {
         ProcessMonitorDto processMonitorDto = idamRoleMappingService.updateUser(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+    }
+
+    @GetMapping(
+        path = "/am/testing-support/irm/user/invite"
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(summary = "IRM Invite User",
+        security =
+        {
+            @SecurityRequirement(name = AUTHORIZATION),
+            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+        })
+    @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    public ResponseEntity<Object> inviteUser(
+            @Parameter(description = "Email")
+            @RequestParam("email") String email,
+            @Parameter(description = "Comma separated list of role names")
+            @RequestParam("roleNames") String[] roleNames) {
+        ProcessMonitorDto processMonitorDto = idamRoleMappingService.inviteUser(email, Arrays.asList(roleNames));
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
 }
