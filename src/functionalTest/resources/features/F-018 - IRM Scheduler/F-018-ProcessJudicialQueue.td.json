@@ -6,7 +6,7 @@
   ],
   "method": "GET",
   "uri": "/am/testing-support/irm/processJudicialQueue",
-  "productName": "Idam Role Management",
+  "productName": "Organisation Role Mapping",
 
   "expectedResponse": {
     "_extends_": "Common_200_Response",

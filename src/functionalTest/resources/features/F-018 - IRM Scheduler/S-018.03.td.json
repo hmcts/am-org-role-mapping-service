@@ -7,7 +7,7 @@
   ],
  "method": "PUT",
   "uri": "/am/testing-support/irm/addQueueEntity",
-  "productName": "Idam Role Management",
+  "productName": "Organisation Role Mapping",
   "operationName": "Add IDAM user to queue",
 
   "request": {
