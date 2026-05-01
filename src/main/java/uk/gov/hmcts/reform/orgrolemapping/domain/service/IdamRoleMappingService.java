@@ -272,13 +272,28 @@ public class IdamRoleMappingService {
     }
 
     protected IdamUser getIdamUser(String userId) {
-        ResponseEntity<IdamUser> response = idamClient.getUserById(userId);
+        ResponseEntity<IdamUser> response = idamClient.getUserById(getIdamToken(), userId);
         return response != null ? response.getBody() : null;
     }
 
     protected IdamUser getIdamUserByEmail(String email) {
-        ResponseEntity<IdamUser> response = idamClient.getUserByEmail(email);
+        ResponseEntity<IdamUser> response = idamClient.getUserByEmail(getIdamToken(), email);
         return response != null ? response.getBody() : null;
+    }
+
+    private String getIdamToken() {
+        try {
+            return idamClient.getToken(
+                    SERVICE_NAME,
+                    System.getenv("ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET"),
+                    System.getenv("OAUTH2_REDIRECT_URI"),
+                    "client_credentials",
+                    "openid profile roles view-user").accessToken;
+        } catch (Exception ex) {
+            String message = String.format("Error occurred while retrieving Idam token: %s", ex.getMessage());
+            log.error(message, ex);
+            throw new ServiceException(message, ex);
+        }
     }
 
     protected boolean patchIdamUser(IdamUser user, IdamRoleData idamRoleData) {
@@ -320,7 +335,8 @@ public class IdamRoleMappingService {
             // Update the idam user
             user.setRoleNames(newRoles);
             log.debug("Idam role data patched for userId {}", user.getId());
-            ResponseEntity<IdamUser> response = idamClient.updateUser(user.getId(), user);
+            ResponseEntity<IdamUser> response = idamClient.updateUser(
+                    getIdamToken(), user.getId(), user);
             return HttpStatus.OK.equals(response.getStatusCode());
         }
     }
@@ -388,7 +404,8 @@ public class IdamRoleMappingService {
     }
 
     private List<IdamInvitation> getIdamUserInvitations(IdamUser user) {
-        ResponseEntity<List<IdamInvitation>> response = idamClient.getInvitations(user.getEmail());
+        ResponseEntity<List<IdamInvitation>> response = idamClient.getInvitations(
+                getIdamToken(), user.getEmail());
         List<IdamInvitation> invitations = HttpStatus.OK.equals(response.getStatusCode())
                 ? response.getBody() : Collections.emptyList();
         log.debug("{} Invitations found for userId {}", invitations.size(), user.getId());
@@ -398,13 +415,14 @@ public class IdamRoleMappingService {
     private void deleteIdamUserInvitations(List<IdamInvitation> invitations) {
         invitations.forEach(invitation -> {
             log.debug("Removing invitation with id {}", invitation.getId());
-            idamClient.deleteInvitation(invitation.getId());
+            idamClient.deleteInvitation(getIdamToken(), invitation.getId());
         });
     }
 
     private boolean createInvitation(IdamUser user, List<String> roleNames) {
         final IdamInvitation invitation = buildInvitationFromUser(user, roleNames);
-        ResponseEntity<IdamInvitation> response = idamClient.inviteUser(invitation);
+        ResponseEntity<IdamInvitation> response = idamClient.inviteUser(
+                getIdamToken(), invitation);
         log.debug("Created invitation with id {}", invitation.getId());
         return HttpStatus.CREATED.equals(response.getStatusCode());
     }

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.client.HttpClientErrorException;
+import uk.gov.hmcts.reform.idam.client.models.TokenResponse;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
@@ -64,6 +65,9 @@ class IdamRoleMappingServiceTest {
 
     private final ProcessEventTracker processEventTracker
             = mock(ProcessEventTracker.class);
+
+    private final TokenResponse tokenResponse
+            = mock(TokenResponse.class);
 
     private final IdamRoleDataJsonBConverter idamRoleDataJsonBConverter =
             new IdamRoleDataJsonBConverter();
@@ -154,8 +158,9 @@ class IdamRoleMappingServiceTest {
                 .thenReturn(mock(org.springframework.transaction.TransactionStatus.class));
         ServiceException exception =
                 new ServiceException("Error occurred while processing idam role mapping");
+        when(idamFeignClient.getToken(any(), any(), any(), any(), any())).thenReturn(tokenResponse);
         if (EndStatus.PARTIAL_SUCCESS.equals(endStatus)) {
-            when(idamFeignClient.getUserById(any()))
+            when(idamFeignClient.getUserById(any(), any()))
                     .thenReturn(ResponseEntity.ok(IdamUser.builder()
                             .id(irmQueue.getFirst().getUserId())
                             .roleNames(Arrays.stream(OLDROLES).toList())
@@ -163,16 +168,16 @@ class IdamRoleMappingServiceTest {
                     .thenThrow(exception);
             when(idamRoleManagementQueueRepository.findById(any()))
                     .thenReturn(Optional.of(irmQueue.get(0)));
-            when(idamFeignClient.updateUser(any(), any()))
+            when(idamFeignClient.updateUser(any(), any(), any()))
                     .thenReturn(ResponseEntity.ok(IdamUser.builder()
                             .roleNames(Arrays.stream(ROLES).toList())
                             .build()));
         } else if (EndStatus.FAILED.equals(endStatus))  {
-            when(idamFeignClient.getUserById(any()))
+            when(idamFeignClient.getUserById(any(), any()))
                     .thenThrow(exception);
         } else {
             irmQueue.forEach(entity -> {
-                when(idamFeignClient.getUserById(entity.getUserId()))
+                when(idamFeignClient.getUserById(tokenResponse.accessToken, entity.getUserId()))
                         .thenReturn(ResponseEntity.ok(IdamUser.builder()
                                 .id(entity.getUserId())
                                 .roleNames(Arrays.stream(OLDROLES).toList())
@@ -180,7 +185,7 @@ class IdamRoleMappingServiceTest {
                 when(idamRoleManagementQueueRepository.findById(entity.getUserId()))
                         .thenReturn(Optional.of(entity));
             });
-            when(idamFeignClient.updateUser(any(), any()))
+            when(idamFeignClient.updateUser(any(), any(), any()))
                     .thenReturn(ResponseEntity.ok(IdamUser.builder()
                             .roleNames(Arrays.stream(ROLES).toList())
                             .build()));
@@ -236,8 +241,9 @@ class IdamRoleMappingServiceTest {
     void getUserTest() {
         // GIVEN
         IdamUser user = buildIdamUser(USERS[0], EMAILS[0], Arrays.stream(ROLES).toList());
+        when(idamFeignClient.getToken(any(), any(), any(), any(), any())).thenReturn(tokenResponse);
         ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
-        when(idamFeignClient.getUserById(any())).thenReturn(expectedResult);
+        when(idamFeignClient.getUserById(any(), any())).thenReturn(expectedResult);
 
         //WHEN
         IdamUser result = sut.getIdamUser(user.getId());
@@ -245,7 +251,7 @@ class IdamRoleMappingServiceTest {
         // THEN
         assertNotNull(result);
         assertEquals(user.getId(), result.getId());
-        verify(idamFeignClient,times(1)).getUserById(user.getId());
+        verify(idamFeignClient,times(1)).getUserById(any(), any());
     }
 
     @Test
@@ -253,7 +259,8 @@ class IdamRoleMappingServiceTest {
         // GIVEN
         IdamUser user = buildIdamUser(USERS[0], EMAILS[0], Arrays.stream(ROLES).toList());
         ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
-        when(idamFeignClient.getUserByEmail(any())).thenReturn(expectedResult);
+        when(idamFeignClient.getToken(any(), any(), any(), any(), any())).thenReturn(tokenResponse);
+        when(idamFeignClient.getUserByEmail(any(), any())).thenReturn(expectedResult);
 
         //WHEN
         IdamUser result = sut.getIdamUserByEmail(user.getEmail());
@@ -261,7 +268,7 @@ class IdamRoleMappingServiceTest {
         // THEN
         assertNotNull(result);
         assertEquals(user.getEmail(), result.getEmail());
-        verify(idamFeignClient,times(1)).getUserByEmail(user.getEmail());
+        verify(idamFeignClient,times(1)).getUserByEmail(any(), any());
     }
 
     @Test
@@ -270,14 +277,15 @@ class IdamRoleMappingServiceTest {
         IdamUser user = buildIdamUser(USERS[0], EMAILS[0], new ArrayList<>());
         IdamRoleData idamRoleData = buildIdamRoleData(EMAILS[0], ROLES);
         ResponseEntity<IdamUser> expectedResult = ResponseEntity.ok(user);
-        when(idamFeignClient.updateUser(any(), any())).thenReturn(expectedResult);
+        when(idamFeignClient.getToken(any(), any(), any(), any(), any())).thenReturn(tokenResponse);
+        when(idamFeignClient.updateUser(any(), any(), any())).thenReturn(expectedResult);
 
         //WHEN
         boolean result = sut.patchIdamUser(user, idamRoleData);
 
         // THEN
         assertTrue(result);
-        verify(idamFeignClient,times(1)).updateUser(user.getId(), user);
+        verify(idamFeignClient,times(1)).updateUser(any(), any(), any());
     }
 
     @Test
@@ -308,14 +316,15 @@ class IdamRoleMappingServiceTest {
                 .userId(userId)
                 .data(idamRoleData)
                 .build());
+        when(idamFeignClient.getToken(any(), any(), any(), any(), any())).thenReturn(tokenResponse);
         if (EndStatus.SUCCESS.equals(endStatus)) {
-            when(idamFeignClient.getUserById(userId)).thenReturn(expectedResult);
+            when(idamFeignClient.getUserById(any(), any())).thenReturn(expectedResult);
             when(idamRoleManagementQueueRepository.findById(userId)).thenReturn(idamRoleManagementQueueEntity);
-            when(idamFeignClient.updateUser(any(), any())).thenReturn(expectedResult);
+            when(idamFeignClient.updateUser(any(), any(), any())).thenReturn(expectedResult);
         } else if (EndStatus.FAILED.equals(endStatus)) {
-            when(idamFeignClient.getUserById(userId)).thenReturn(expectedResult);
+            when(idamFeignClient.getUserById(any(), any())).thenReturn(expectedResult);
             when(idamRoleManagementQueueRepository.findById(userId)).thenReturn(idamRoleManagementQueueEntity);
-            when(idamFeignClient.updateUser(any(), any()))
+            when(idamFeignClient.updateUser(any(), any(), any()))
                     .thenThrow(new HttpClientErrorException(HttpStatus.FORBIDDEN, "Error"));
         }
 
@@ -326,7 +335,7 @@ class IdamRoleMappingServiceTest {
         assertNotNull(result);
         assertEquals(endStatus, result.getEndStatus());
         assertEquals(UPDATEUSER_NAME, result.getProcessType());
-        verify(idamFeignClient,times(user != null ? 1 : 0)).updateUser(any(), any());
+        verify(idamFeignClient,times(user != null ? 1 : 0)).updateUser(any(), any(), any());
     }
 
     @Test
@@ -374,18 +383,19 @@ class IdamRoleMappingServiceTest {
         String email = user != null ? user.getEmail() : EMAILS[0];
         ResponseEntity<IdamUser> expectedUserResult = ResponseEntity.ok(user);
         ResponseEntity<List<IdamInvitation>> expectedOldInvitationResults = ResponseEntity.ok(oldInvitations);
-        when(idamFeignClient.getUserByEmail(email)).thenReturn(expectedUserResult);
-        when(idamFeignClient.getInvitations(email)).thenReturn(expectedOldInvitationResults);
+        when(idamFeignClient.getToken(any(), any(), any(), any(), any())).thenReturn(tokenResponse);
+        when(idamFeignClient.getUserByEmail(any(), any())).thenReturn(expectedUserResult);
+        when(idamFeignClient.getInvitations(any(), any())).thenReturn(expectedOldInvitationResults);
         // BAD_REQUEST emulates throwing an exception on invitation creation
         if (BAD_REQUEST.equals(httpStatus)) {
-            when(idamFeignClient.inviteUser(any()))
+            when(idamFeignClient.inviteUser(any(), any()))
                     .thenThrow(new HttpClientErrorException(BAD_REQUEST, "Error"));
         } else {
             IdamUser invitationUser = user != null ? user : sut.buildIdamUserFromEmail(null, email);
             ResponseEntity<IdamInvitation> expectedNewInvitationResult =
                     new ResponseEntity<>(sut.buildInvitationFromUser(invitationUser,
                             Arrays.stream(ROLES).toList()), httpStatus);
-            when(idamFeignClient.inviteUser(any())).thenReturn(expectedNewInvitationResult);
+            when(idamFeignClient.inviteUser(any(), any())).thenReturn(expectedNewInvitationResult);
         }
 
         // WHEN
@@ -395,10 +405,10 @@ class IdamRoleMappingServiceTest {
         assertNotNull(result);
         assertEquals(endStatus, result.getEndStatus());
         assertEquals(INVITEUSER_NAME, result.getProcessType());
-        verify(idamFeignClient,times(1)).getUserByEmail(any());
-        verify(idamFeignClient,times(1)).getInvitations(any());
-        verify(idamFeignClient,times(oldInvitations.size())).deleteInvitation(any());
-        verify(idamFeignClient,times(1)).inviteUser(any());
+        verify(idamFeignClient,times(1)).getUserByEmail(any(), any());
+        verify(idamFeignClient,times(1)).getInvitations(any(), any());
+        verify(idamFeignClient,times(oldInvitations.size())).deleteInvitation(any(), any());
+        verify(idamFeignClient,times(1)).inviteUser(any(), any());
     }
 
     private void assertProcessMonitor(ProcessMonitorDto processMonitorDto, EndStatus expectedStatus,
