@@ -1,0 +1,242 @@
+package uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
+import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleDataRole;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.IdamRoleMappingService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@ConditionalOnProperty(name = "testing.support.enabled", havingValue = "true")
+public class IrmQueueController {
+
+    protected static final String ADD_TO_QUEUE
+            = "/am/testing-support/irm/addQueueEntity";
+    protected static final String DELETE_FROM_QUEUE
+            = "/am/testing-support/irm/deleteQueueEntity";
+    protected static final String FIND_QUEUE_ENTITY
+            = "/am/testing-support/irm/findQueueEntity";
+    protected static final String MAKE_QUEUE_ENTITY_ACTIVE
+            = "/am/testing-support/prm/makeQueueEntityActive";
+
+    private final IdamRoleMappingService idamRoleMappingService;
+    private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
+
+    @Autowired
+    public IrmQueueController(IdamRoleManagementQueueRepository idamRoleManagementQueueRepository,
+                              IdamRoleMappingService idamRoleMappingService) {
+        this.idamRoleManagementQueueRepository = idamRoleManagementQueueRepository;
+        this.idamRoleMappingService = idamRoleMappingService;
+    }
+
+    @PutMapping(
+        path = ADD_TO_QUEUE
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(
+        summary = "IRM addToQueue",
+        security = {
+            @SecurityRequirement(name = AUTHORIZATION),
+            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+        })
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(
+            schema = @Schema(implementation = IdamRoleManagementQueueEntity.class),
+            mediaType = APPLICATION_JSON_VALUE
+        )
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "User not found",
+            content = @Content()
+    )
+    public ResponseEntity<IdamRoleManagementQueueEntity> addQueueEntity(
+        @Parameter(description = "UserType")
+        @RequestParam() UserType userType,
+        @Parameter(description = "UserId")
+        @RequestParam() String userId,
+        @Parameter(description = "Email")
+        @RequestParam() String email,
+        @Parameter(description = "Comma separated list of role names")
+        @RequestParam("roleNames") String[] roleNames
+    ) {
+        List<IdamRoleDataRole> idamRoleDataRoles = new ArrayList<>();
+        Arrays.asList(roleNames).forEach(roleName -> {
+            if (roleName.isBlank()) {
+                throw new IllegalArgumentException("Role names cannot be blank");
+            }
+            idamRoleDataRoles.add(IdamRoleDataRole.builder().roleName(roleName).build());
+        });
+        Map<String, IdamRoleData> idamRoleList = new HashMap<>();
+        idamRoleList.put(userId, IdamRoleData.builder()
+                        .emailId(email)
+                        .activeFlag("Y")
+                        .deletedFlag("N")
+                        .roles(idamRoleDataRoles)
+                        .build());
+        idamRoleMappingService.addToQueue(userType, idamRoleList);
+        return findQueueEntity(userId);
+    }
+
+    @DeleteMapping(
+        path = DELETE_FROM_QUEUE
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(
+        summary = "IRM deleteFromQueue",
+        security = {
+            @SecurityRequirement(name = AUTHORIZATION),
+            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+        })
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(
+            schema = @Schema(implementation = String.class),
+            mediaType = APPLICATION_JSON_VALUE
+        )
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Queue Entity not found",
+            content = @Content()
+    )
+    public ResponseEntity<String> deleteFromEntity(
+            @Parameter(description = "UserId")
+            @RequestParam() String userId
+    ) {
+        if (idamRoleMappingService.deleteFromQueue(userId)) {
+            ResponseEntity<IdamRoleManagementQueueEntity> response = findQueueEntity(userId);
+            if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+                return ResponseEntity.ok("Deleted queue entity for userId: " + userId);
+            } else {
+                return ResponseEntity.internalServerError().body(
+                        "Failed to delete queue entity for userId: " + userId);
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping(
+        path = FIND_QUEUE_ENTITY
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(
+        summary = "IRM Queue findQueue",
+        security = {
+            @SecurityRequirement(name = AUTHORIZATION),
+            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+        })
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(
+            schema = @Schema(implementation = IdamRoleManagementQueueEntity.class),
+            mediaType = APPLICATION_JSON_VALUE
+        )
+    )
+    @ApiResponse(
+        responseCode = "404",
+        description = "User not found",
+        content = @Content()
+    )
+    public ResponseEntity<IdamRoleManagementQueueEntity> findQueueEntity(
+            @RequestParam() String userId
+    ) {
+        return idamRoleManagementQueueRepository.findById(userId)
+                .map(ResponseEntity::ok
+                )
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
+    @PostMapping(
+            path = MAKE_QUEUE_ENTITY_ACTIVE
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(
+        summary = "IRM Queue makeQueueEntryActive",
+        security = {
+            @SecurityRequirement(name = AUTHORIZATION),
+            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+        })
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(
+            schema = @Schema(implementation = IdamRoleManagementQueueEntity.class),
+            mediaType = APPLICATION_JSON_VALUE
+        )
+    )
+    @ApiResponse(
+        responseCode = "404",
+        description = "User not found",
+        content = @Content()
+    )
+    public ResponseEntity<IdamRoleManagementQueueEntity> makeQueueEntityActive(
+            @RequestParam() String userId,
+            @RequestParam(required = false) Boolean active
+    ) {
+        if ("ALL".equalsIgnoreCase(userId)) {
+            setAllUsersActive(active);
+        } else {
+            if (!setSingleUserActive(userId, active)) {
+                return ResponseEntity.notFound().build();
+            }
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    private void setAllUsersActive(Boolean active) {
+        idamRoleManagementQueueRepository.findAll().forEach(queueEntity ->
+                setActive(queueEntity, active));
+    }
+
+    private boolean setSingleUserActive(String userId, Boolean active) {
+        var queueEntityOptional = idamRoleManagementQueueRepository
+                .findById(userId);
+        if (queueEntityOptional.isPresent()) {
+            setActive(queueEntityOptional.get(), active);
+            return true;
+        }
+        return false;
+    }
+
+    private void setActive(IdamRoleManagementQueueEntity queueEntity, Boolean active) {
+        // if active does not match the required value then update it.
+        if (!active.equals(queueEntity.getActive())) {
+            queueEntity.setActive(active);
+            idamRoleManagementQueueRepository.save(queueEntity);
+        }
+    }
+}

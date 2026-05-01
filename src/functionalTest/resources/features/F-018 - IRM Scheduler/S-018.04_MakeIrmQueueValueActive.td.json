@@ -1,0 +1,16 @@
+{
+  "_guid_": "S-018.04_MakeIrmQueueValueActive",
+  "_extends_": "MakeIrmQueueActive__PositiveResponse_Base",
+  "specs": [
+    "to make the IRM queue value active"
+  ],
+  "request": {
+    "queryParams": {
+      "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575d"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response"
+  }
+}

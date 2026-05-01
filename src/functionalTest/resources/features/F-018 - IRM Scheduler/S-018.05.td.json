@@ -1,0 +1,25 @@
+{
+  "_guid_": "S-018.05",
+  "title": "trigger IRM delete from queue",
+  "_extends_": "F-018-Base-Root",
+  "specs": [
+    "an active IDAM profile with full permissions"
+  ],
+ "method": "DELETE",
+  "uri": "/am/testing-support/irm/deleteQueueEntity",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Delete IDAM user from queue",
+
+  "request": {
+    "queryParams": {
+      "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575d"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "__plainTextValue__": "Deleted queue entity for userId: 5bd4f3a8-b6a3-4f6d-b5f9-00520015575d"
+    }
+  }
+}

@@ -86,6 +86,18 @@ public class IdamRoleMappingService {
         });
     }
 
+    @Transactional
+    public boolean deleteFromQueue(String userId) {
+        Optional<IdamRoleManagementQueueEntity> queueEntity = idamRoleManagementQueueRepository.findById(userId);
+        if (queueEntity.isPresent()) {
+            idamRoleManagementQueueRepository.delete(queueEntity.get());
+            return true;
+        } else {
+            log.debug("No queue entity found to delete for userId {}", userId);
+            return false;
+        }
+    }
+
     public ProcessMonitorDto processJudicialQueue() {
         return processQueue(UserType.JUDICIAL);
     }
