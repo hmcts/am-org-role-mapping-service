@@ -4,34 +4,44 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.IdamRecordType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.AccountStatus;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.IdamFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @AllArgsConstructor
 @Slf4j
 public class IdamRoleMappingService {
 
+    protected static final String INVITEUSER_NAME = "IRM Invite User";
     protected static final String NO_ENTITIES = "No entities to process";
     protected static final String QUEUE_NAME = "IRM Process %s Queue";
+    protected static final String UPDATEUSER_NAME = "IRM Update User";
 
+    private final IdamFeignClient idamClient;
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
-    private final TransactionTemplate transactionTemplate;
     private final IdamRoleDataJsonBConverter idamRoleDataJsonBConverter;
     private final ProcessEventTracker processEventTracker;
     private final String retryOneIntervalMin;
@@ -40,6 +50,7 @@ public class IdamRoleMappingService {
 
     @Autowired
     public IdamRoleMappingService(
+            IdamFeignClient idamClient,
             IdamRoleManagementQueueRepository idamRoleManagementQueueRepository,
             PlatformTransactionManager transactionManager,
             ProcessEventTracker processEventTracker,
@@ -49,10 +60,9 @@ public class IdamRoleMappingService {
             String retryTwoIntervalMin,
             @Value("${idam.role.management.scheduling.retryOneIntervalMin}")
             String retryThreeIntervalMin) {
+        this.idamClient = idamClient;
         this.idamRoleManagementQueueRepository = idamRoleManagementQueueRepository;
         this.idamRoleDataJsonBConverter = new IdamRoleDataJsonBConverter();
-        this.transactionTemplate = new TransactionTemplate(transactionManager);
-        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
         this.processEventTracker = processEventTracker;
         this.retryOneIntervalMin = retryOneIntervalMin;
         this.retryTwoIntervalMin = retryTwoIntervalMin;
@@ -93,7 +103,7 @@ public class IdamRoleMappingService {
                 IdamRoleManagementQueueEntity idamRoleManagementQueueEntity
                         = idamRoleManagementQueueRepository.findAndLockSingleActiveRecord(userType.name());
                 if (idamRoleManagementQueueEntity != null) {
-                    errorMessage = processQueueEntry(idamRoleManagementQueueEntity, IdamRecordType.USER);
+                    errorMessage = processQueueEntry(idamRoleManagementQueueEntity);
                     if (errorMessage.isEmpty()) {
                         successfulJobCount++;
                     } else {
@@ -125,29 +135,18 @@ public class IdamRoleMappingService {
     }
 
     @Transactional
-    private String processQueueEntry(IdamRoleManagementQueueEntity idamRoleManagementQueueEntity,
-                                     IdamRecordType idamRecordType) {
+    private String processQueueEntry(IdamRoleManagementQueueEntity idamRoleManagementQueueEntity) {
         StringBuilder errorMessageBuilder = new StringBuilder();
-        boolean isSuccess = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
-            try {
-                // Set the record as published.
-                idamRoleManagementQueueRepository.setAsPublished(
-                        idamRoleManagementQueueEntity.getUserId(),
-                        idamRecordType.name());
-                return true;
-            } catch (Exception ex) {
-                String message = String.format("Error occurred while processing queue entry: %s. "
-                                + "Retry attempt %d. Rolling back.",
-                        idamRoleManagementQueueEntity.getUserId(),
-                        idamRoleManagementQueueEntity.getRetry());
-                errorMessageBuilder.append(ex.getMessage());
-                log.error(message, ex);
-                status.setRollbackOnly();
-                return false;
-            }
-        }));
 
-        if (!isSuccess) {
+        // Update the user
+        ProcessMonitorDto updateProcessMonitorDto =
+                updateUser(idamRoleManagementQueueEntity.getUserId(),
+                        idamRoleManagementQueueEntity.getData());
+        if (!EndStatus.SUCCESS.equals(updateProcessMonitorDto.getEndStatus())) {
+            String message = updateProcessMonitorDto.getEndDetail();
+            errorMessageBuilder.append(message);
+            log.error(message);
+
             // Failed, so increase the retry count.
             idamRoleManagementQueueRepository.updateRetry(
                     idamRoleManagementQueueEntity.getUserId(),
@@ -156,8 +155,153 @@ public class IdamRoleMappingService {
         return errorMessageBuilder.toString();
     }
 
+    @Transactional
+    public ProcessMonitorDto updateUser(String userId) {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(UPDATEUSER_NAME);
+        processEventTracker.trackEventStarted(processMonitorDto);
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        boolean isSuccess = false;
+        // Get the idam role data
+        IdamRoleData idamRoleData = getIdamRoleData(userId);
+        if (idamRoleData == null) {
+            String message = String.format("No idam role data found for userId %s", userId);
+            errorMessageBuilder.append(message);
+            log.error(message);
+        } else {
+            // Patch or Invite the user
+            String errorMessage = patchOrInvite(userId, idamRoleData);
+            if (errorMessage.isEmpty()) {
+                isSuccess = true;
+            } else {
+                errorMessageBuilder.append(errorMessage);
+            }
+        }
+
+        markProcessStatus(processMonitorDto,
+                isSuccess ? 1 : 0, isSuccess ? 0 : 1,
+                errorMessageBuilder.toString());
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
+    }
+
+    @Transactional
+    private ProcessMonitorDto updateUser(String userId, IdamRoleData idamRoleData) {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(UPDATEUSER_NAME);
+        processEventTracker.trackEventStarted(processMonitorDto);
+
+        // Patch or Invite the user
+        String errorMessage = patchOrInvite(userId, idamRoleData);
+        boolean isSuccess = errorMessage.isEmpty();
+
+        markProcessStatus(processMonitorDto,
+                isSuccess ? 1 : 0, isSuccess ? 0 : 1,
+                errorMessage);
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
+    }
+
+    private String patchOrInvite(String userId, IdamRoleData idamRoleData) {
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        boolean isSuccess = false;
+        IdamRecordType idamRecordType = IdamRecordType.USER;
+        try {
+            IdamUser user = getIdamUser(userId);
+            if  (user == null) {
+                log.debug("No user found for userId {}", userId);
+                idamRecordType = IdamRecordType.INVITE;
+
+                // TODO - invite user
+            } else {
+                // Patch the user with the idam role data
+                isSuccess = patchIdamUser(user, idamRoleData);
+                if (!isSuccess) {
+                    String message = String.format("Failed to update user with userId %s", userId);
+                    errorMessageBuilder.append(message);
+                    log.error(message);
+                }
+            }
+        } catch (Exception ex) {
+            String message = String.format("Error occurred while updating user with userId %s: %s",
+                    userId, ex.getMessage());
+            errorMessageBuilder.append(message);
+            log.error(message, ex);
+        }
+
+        if (isSuccess) {
+            // Set the record as published.
+            idamRoleManagementQueueRepository.setAsPublished(
+                    userId,
+                    idamRecordType.name());
+        }
+        return errorMessageBuilder.toString();
+    }
+
+    private IdamRoleData getIdamRoleData(String userId) {
+        Optional<IdamRoleManagementQueueEntity> irmQueueEntity =
+                idamRoleManagementQueueRepository.findById(userId);
+        return irmQueueEntity.isPresent() ? irmQueueEntity.get().getData() : null;
+    }
+
+    protected IdamUser getIdamUser(String userId) {
+        ResponseEntity<IdamUser> response = idamClient.getUserById(userId);
+        return response != null ? response.getBody() : null;
+    }
+
+    protected IdamUser getIdamUserByEmail(String email) {
+        ResponseEntity<IdamUser> response = idamClient.getUserByEmail(email);
+        return response != null ? response.getBody() : null;
+    }
+
+    protected boolean patchIdamUser(IdamUser user, IdamRoleData idamRoleData) {
+        AtomicBoolean isPatched = new AtomicBoolean(false);
+        List<String> newRoles = new ArrayList<>();
+        newRoles.addAll(user.getRoleNames());
+
+        // Update the user roles
+        if ("Y".equalsIgnoreCase(idamRoleData.getDeletedFlag())) {
+            // Delete user role
+            idamRoleData.getRoles().forEach(roleData -> {
+                if (newRoles.contains(roleData.getRoleName())) {
+                    newRoles.remove(roleData.getRoleName());
+                    isPatched.set(true);
+                }
+            });
+        } else {
+            // Add user role
+            idamRoleData.getRoles().forEach(roleData -> {
+                if (!newRoles.contains(roleData.getRoleName())) {
+                    newRoles.add(roleData.getRoleName());
+                    isPatched.set(true);
+                }
+            });
+        }
+
+        // Update status
+        AccountStatus newAccountStatus = getIdamUserAccountStatus(idamRoleData.getActiveFlag());
+        if (!newAccountStatus.equals(user.getAccountStatus())) {
+            user.setAccountStatus(newAccountStatus);
+            isPatched.set(true);
+        }
+
+        if  (!isPatched.get()) {
+            // No data to patch, so return success without calling idam.
+            log.debug("Idam role data unchanged for userId {}", user.getId());
+            return true;
+        } else {
+            // Update the idam user
+            user.setRoleNames(newRoles);
+            log.debug("Idam role data patched for userId {}", user.getId());
+            ResponseEntity<IdamUser> response = idamClient.updateUser(user.getId(), user);
+            return HttpStatus.OK.equals(response.getStatusCode());
+        }
+    }
+
+    private static AccountStatus getIdamUserAccountStatus(String activeFlag) {
+        return "N".equalsIgnoreCase(activeFlag) ? AccountStatus.SUSPENDED : AccountStatus.ACTIVE;
+    }
+
     private void markProcessStatus(ProcessMonitorDto processMonitorDto, int successfulJobCount,
-                                     int failedJobCount, String errorMessage) {
+                                   int failedJobCount, String errorMessage) {
         boolean hasSuccessfulStep = successfulJobCount > 0 || (successfulJobCount == 0 && failedJobCount == 0);
         boolean hasFailedAStep = failedJobCount > 0;
         if (!hasSuccessfulStep && hasFailedAStep) {
