@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.feignclients;
 import jakarta.validation.Valid;
 import org.apache.http.HttpHeaders;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,10 +58,7 @@ public interface IdamFeignClient {
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader,
             @PathVariable String id);
 
-    @PostMapping(
-            value = "/o/token",
-            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
-    )
+    @PostMapping("/o/token")
     TokenResponse getToken(
             @RequestParam("client_id") String clientId,
             @RequestParam("client_secret") String clientSecret,
