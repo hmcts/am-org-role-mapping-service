@@ -69,7 +69,7 @@ public class BulkAssignmentOrchestrator {
             userAccessProfiles = retrieveDataService
                     .retrieveProfiles(userRequest, userType);
         } catch (FeignException.NotFound feignClientException) {
-            log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
+            log.error("Feign Exception :: {} ", feignClientException.getMessage());
             throw new ResourceNotFoundException("User details couldn't be found in RD :: " + userRequest.getUserIds());
         }
 

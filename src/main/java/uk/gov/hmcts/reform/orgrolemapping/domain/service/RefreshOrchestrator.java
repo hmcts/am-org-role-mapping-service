@@ -164,7 +164,7 @@ public class RefreshOrchestrator {
                 }
             } catch (FeignException.NotFound feignClientException) {
 
-                log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
+                log.error("Feign Exception :: {} ", feignClientException.getMessage());
                 responseCodeWithUserId.put(StringUtils.join(userRequest.getUserIds(), ","),
                         HttpStatus.resolve(feignClientException.status()));
 
@@ -225,7 +225,7 @@ public class RefreshOrchestrator {
                 }
             }
         } catch (FeignException.NotFound feignClientException) {
-            log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
+            log.error("Feign Exception :: {} ", feignClientException.getMessage());
             responseCodeWithUserId.put("", HttpStatus.resolve(feignClientException.status()));
         }
         log.info("fetched all records from RD  :: {} ", userType);
