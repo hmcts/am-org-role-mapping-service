@@ -36,6 +36,7 @@ public class IdamRepository {
     private IdamApi idamApi;
     private OIdcAdminConfiguration oidcAdminConfiguration;
     private OAuth2Configuration oauth2Configuration;
+    private OIdcIdamConfiguration oidcIdamConfiguration;
     private RestTemplate restTemplate;
     @Value("${idam.api.url}")
     protected String idamUrl;
@@ -49,10 +50,12 @@ public class IdamRepository {
     public IdamRepository(IdamApi idamApi,
                           OIdcAdminConfiguration oidcAdminConfiguration,
                           OAuth2Configuration oauth2Configuration,
+                          OIdcIdamConfiguration oidcIdamConfiguration,
                           RestTemplate restTemplate, CacheManager cacheManager) {
         this.idamApi = idamApi;
         this.oidcAdminConfiguration = oidcAdminConfiguration;
         this.oauth2Configuration = oauth2Configuration;
+        this.oidcIdamConfiguration = oidcIdamConfiguration;
         this.restTemplate = restTemplate;
         this.cacheManager = cacheManager;
     }
@@ -133,6 +136,30 @@ public class IdamRepository {
                 userId,
                 oidcAdminConfiguration.getSecret(),
                 oidcAdminConfiguration.getScope(),
+                "4",
+                ""
+        );
+        var tokenResponse = idamApi.generateOpenIdToken(tokenRequest);
+        return tokenResponse.accessToken;
+    }
+
+    @Cacheable(value = "idamToken")
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 3))
+    public String getIdamToken() {
+        if (cacheType != null && !cacheType.equals("none")) {
+            var caffeineCache = (CaffeineCache) cacheManager.getCache("idamToken");
+            com.github.benmanes.caffeine.cache.Cache<Object, Object> nativeCache = requireNonNull(caffeineCache)
+                    .getNativeCache();
+            log.debug("Generating system user Token, current size of cache: {}", nativeCache.estimatedSize());
+        }
+        var tokenRequest = new TokenRequest(
+                oidcIdamConfiguration.getClientId(),
+                oidcIdamConfiguration.getClientSecret(),
+                oidcIdamConfiguration.getGrantType(),
+                "",
+                oidcIdamConfiguration.getUserId(),
+                oidcIdamConfiguration.getPassword(),
+                oidcIdamConfiguration.getScope(),
                 "4",
                 ""
         );
