@@ -2,7 +2,7 @@ name: "Combine Renovate Pull Requests"
 
 on:
   schedule:
-    - cron: '00 10 * * 1' # Runs at 10 AM every Monday
+    - cron: '30 10 * * 1' # Runs at 10 AM every Monday
 
   workflow_dispatch:
 
