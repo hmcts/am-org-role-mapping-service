@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.hmcts.reform.idam.client.models.TokenResponse;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
@@ -283,12 +284,24 @@ public class IdamRoleMappingService {
 
     private String getIdamToken() {
         try {
-            return idamClient.getToken(
+            String clientSecret = System.getenv("ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET");
+            if (clientSecret == null || clientSecret.isEmpty()) {
+                throw new ServiceException("Secret is empty");
+            }
+            String redirectUri = System.getenv("OAUTH2_REDIRECT_URI");
+            if (redirectUri == null || redirectUri.isEmpty()) {
+                throw new ServiceException("Redirect is empty");
+            }
+            TokenResponse tokenResponse = idamClient.getToken(
                     SERVICE_NAME,
-                    System.getenv("ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET"),
-                    System.getenv("OAUTH2_REDIRECT_URI"),
+                    clientSecret,
+                    redirectUri,
                     "client_credentials",
-                    "openid profile roles view-user").accessToken;
+                    "openid profile roles view-user");
+            if (tokenResponse == null) {
+                throw new ServiceException("TokenResponse is empty");
+            }
+            return tokenResponse.accessToken;
         } catch (Exception ex) {
             String message = String.format("Error occurred while retrieving Idam token: %s", ex.getMessage());
             log.error(message, ex);
