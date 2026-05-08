@@ -20,8 +20,8 @@ idam:
       secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:}
       scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
     irm:
-      clientId: ${OAUTH2_CLIENT_ID:am_docker}
-      secret: ${OAUTH2_CLIENT_SECRET:}
+      clientId: am_org_role_mapping
+      secret: ${ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET:}
 feign:
   client:
     config:
