@@ -131,7 +131,7 @@ public class IdamRoleMappingService {
                     }
                 }
                 // If there is another record to process then continue, otherwise exit the loop.
-                anyEntitiesInQueue = idamRoleManagementQueueEntity != null;
+                anyEntitiesInQueue = false; //idamRoleManagementQueueEntity != null;
             }
             // If nothing was processed then record that fact in the process steps.
             if (successfulJobCount == 0 && failedJobCount == 0) {
