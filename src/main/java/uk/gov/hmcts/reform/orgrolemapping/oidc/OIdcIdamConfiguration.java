@@ -20,8 +20,8 @@ public class OIdcIdamConfiguration {
     public OIdcIdamConfiguration(
             @Value("${idam.client.admin.userId:}") String userId,
             @Value("${idam.client.admin.secret:}") String password,
-            @Value("${idam.s2s-auth.microservice:}") String clientId,
-            @Value("${idam.s2s-auth.totp_secret:}") String clientSecret
+            @Value("${idam.client.irm.clientId:}") String clientId,
+            @Value("${idam.client.irm.secret:}") String clientSecret
     ) {
         this.userId = userId;
         this.password = password;

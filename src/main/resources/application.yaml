@@ -120,6 +120,9 @@ idam:
       userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:}
       secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:}
       scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
+    irm:
+      clientId: ${OAUTH2_CLIENT_ID:am_docker}
+      secret: ${OAUTH2_CLIENT_SECRET:}
   role:
     management:
       scheduling:
