@@ -28,7 +28,7 @@ public class OIdcIdamConfiguration {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.grantType = "client_credentials";
-        this.scope = "view-user";
+        this.scope = "openid profile roles manage-user search-user create-user view-user update-user";
     }
 
 }
