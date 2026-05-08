@@ -20,15 +20,15 @@ public class OIdcIdamConfiguration {
     public OIdcIdamConfiguration(
             @Value("${idam.client.admin.userId:}") String userId,
             @Value("${idam.client.admin.secret:}") String password,
-            @Value("${idam.client.id:}") String clientId,
-            @Value("${idam.client.secret:}") String clientSecret
+            @Value("${idam.s2s-auth.microservice:}") String clientId,
+            @Value("${idam.s2s-auth.totp_secret:}") String clientSecret
     ) {
         this.userId = userId;
         this.password = password;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.grantType = "client_credentials";
-        this.scope = "roles authorize-code";
+        this.scope = "view-user";
     }
 
 }
