@@ -6,7 +6,6 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
-import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,7 +41,7 @@ import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
-@PactTestFor(providerName = "referenceData_judicialv2", port = "8991", pactVersion = PactSpecVersion.V3)
+@PactTestFor(providerName = "referenceData_judicialv2", port = "8991")
 @ContextConfiguration(classes = {RefDataCaseworkerConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
