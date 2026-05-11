@@ -172,7 +172,7 @@ public class RefDataJudicialProfileConsumerTestV2 {
                         .stringType("jurisdiction")
                         .stringType("ticket_description")
                         .date("start_date", "yyyy-MM-dd")
-                        .minArrayLike("service_codes", 0, (s) -> {
+                        .minArrayLike("service_codes", 0, 1, (s) -> {
                             s.stringType("BFA1");
                         })
                         .stringType("ticket_code")
