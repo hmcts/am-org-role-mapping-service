@@ -561,6 +561,10 @@ pactPublish {
 
 runAndPublishConsumerPactTests.finalizedBy pactPublish
 
+tasks.matching { it.name == 'canIDeploy' }.configureEach {
+    dependsOn runAndPublishConsumerPactTests
+}
+
 task runProviderPactVerification(type: Test) {
     useJUnitPlatform()
     logger.lifecycle("Runs provider pact Tests")
