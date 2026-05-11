@@ -526,7 +526,7 @@ task contract(type: Test) {
     include "uk/gov/hmcts/reform/orgrolemapping/**"
     include "uk/gov/hmcts/reform/refdata/**"
     exclude "uk/gov/hmcts/reform/orgrolemapping/provider/**"
-    systemProperty 'pact.rootDir', "${buildDir}/pacts"
+    systemProperty 'pact.rootDir', "${projectDir}/pacts"
 }
 
 task runAndPublishConsumerPactTests(type: Test, description: 'Publish pact test to broker.', group: 'Verification') {
@@ -537,9 +537,9 @@ task runAndPublishConsumerPactTests(type: Test, description: 'Publish pact test 
     include "uk/gov/hmcts/reform/refdata/**"
     include "uk/gov/hmcts/reform/orgrolemapping/**"
     exclude "uk/gov/hmcts/reform/orgrolemapping/provider/**"
-    systemProperty 'pact.rootDir', "${buildDir}/pacts"
+    systemProperty 'pact.rootDir', "${projectDir}/pacts"
     doFirst {
-        file("${buildDir}/pacts").mkdirs()
+        file("${projectDir}/pacts").mkdirs()
     }
 }
 
@@ -548,7 +548,7 @@ pact {
         pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
     }
     publish {
-        pactDirectory = "${buildDir}/pacts"
+        pactDirectory = "${projectDir}/pacts"
         version = project.pacticipantVersion
         tags = [System.getenv("PACT_BRANCH_NAME") ?: 'Dev']
         pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
