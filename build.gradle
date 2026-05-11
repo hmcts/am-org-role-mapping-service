@@ -559,6 +559,11 @@ pactPublish {
     pactPublish = project.pact.publish
 }
 
+pactPublish.doFirst {
+    println("Publishing pact files from: ${project.pact.publish.pactDirectory}")
+    file(project.pact.publish.pactDirectory).eachFile { println("PACT FILE: ${it}") }
+}
+
 runAndPublishConsumerPactTests.finalizedBy pactPublish
 
 tasks.matching { it.name == 'canIDeploy' }.configureEach {
