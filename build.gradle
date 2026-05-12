@@ -524,7 +524,6 @@ task contract(type: Test) {
     include "uk/gov/hmcts/reform/judicialbooking/**"
     include "uk/gov/hmcts/reform/orgrolemapping/**"
     include "uk/gov/hmcts/reform/refdata/**"
-    exclude "uk/gov/hmcts/reform/orgrolemapping/provider/**"
     systemProperty 'pact.rootDir', "pacts"
 }
 
@@ -535,7 +534,6 @@ task runAndPublishConsumerPactTests(type: Test, description: 'Publish pact test 
     include "uk/gov/hmcts/reform/judicialbooking/**"
     include "uk/gov/hmcts/reform/refdata/**"
     include "uk/gov/hmcts/reform/orgrolemapping/**"
-    exclude "uk/gov/hmcts/reform/orgrolemapping/provider/**"
     systemProperty 'pact.rootDir', "pacts"
 }
 

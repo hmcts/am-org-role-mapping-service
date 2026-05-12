@@ -312,7 +312,10 @@ public class RequestMappingService<T> {
                     (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
         } catch (FeignException.FeignClientException feignClientException) {
-            log.error("Handling FeignClientException UnprocessableEntity: " + feignClientException.getMessage());
+            log.error("RAS rejected role assignment update for reference {} with status {}",
+                    reference, feignClientException.status());
+            log.error("RAS error body: {}", feignClientException.contentUTF8());
+            log.error("Rejected assignment request: {}", assignmentRequest);
 
             AssignmentRequest assignmentRequest1 = new AssignmentRequest();
             try {
