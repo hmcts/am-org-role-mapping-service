@@ -308,6 +308,12 @@ public class RequestMappingService<T> {
 
         try {
             responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
+            if (responseEntity != null && responseEntity.getStatusCode() != HttpStatus.CREATED) {
+                log.error("RAS returned non-created status for reference {}: {}", reference,
+                        responseEntity.getStatusCode());
+                log.error("RAS response body: {}", responseEntity.getBody());
+                log.error("Rejected assignment request: {}", assignmentRequest);
+            }
             log.debug("Execution time of updateRoleAssignments() : {} ms",
                     (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
