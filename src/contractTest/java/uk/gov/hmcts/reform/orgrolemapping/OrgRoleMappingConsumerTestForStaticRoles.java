@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping;
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
-import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
@@ -33,12 +32,12 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
 
-import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
+import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_roleAssignment_getRoles", pactVersion = PactSpecVersion.V3)
+@PactTestFor(providerName = "am_roleAssignment_getRoles")
 @PactFolder("pacts")
 public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
 

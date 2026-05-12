@@ -6,7 +6,6 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
-import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,13 +35,13 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import java.util.Map;
 import java.util.Set;
 
-import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
+import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
-@PactTestFor(providerName = "referenceData_judicialv2", port = "8991", pactVersion = PactSpecVersion.V3)
+@PactTestFor(providerName = "referenceData_judicialv2", port = "8991")
 @ContextConfiguration(classes = {RefDataCaseworkerConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
@@ -172,7 +171,7 @@ public class RefDataJudicialProfileConsumerTestV2 {
                         .stringType("jurisdiction")
                         .stringType("ticket_description")
                         .date("start_date", "yyyy-MM-dd")
-                        .minArrayLike("service_codes", 0, 1, (s) -> {
+                        .minArrayLike("service_codes", 0, (s) -> {
                             s.stringType("BFA1");
                         })
                         .stringType("ticket_code")

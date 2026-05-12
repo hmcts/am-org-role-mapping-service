@@ -8,7 +8,6 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
-import au.com.dius.pact.core.model.PactSpecVersion;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import groovy.util.logging.Slf4j;
 import io.restassured.http.ContentType;
@@ -33,7 +32,7 @@ import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 import java.util.Map;
 
-import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
+import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -42,7 +41,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_roleAssignment_queryAssignment", pactVersion = PactSpecVersion.V3)
+@PactTestFor(providerName = "am_roleAssignment_queryAssignment")
 @PactFolder("pacts")
 public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
 

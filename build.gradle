@@ -38,7 +38,6 @@ def versions = [
         logstashEncoder: '8.0',
         log4JVersion   : '2.25.2',
         netty_version  : '4.2.12.Final',
-        pact_version   : '4.6.20',
         bouncycastle   : '1.83',
         poi            : '5.5.1'
 ]
@@ -476,7 +475,7 @@ dependencies {
     functionalTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     functionalTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
-    contractTestImplementation group: 'au.com.dius.pact', name: 'consumer', version: versions.pact_version
+    contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
     contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
     contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5', version: versions.pact_version
     contractTestImplementation group: 'au.com.dius.pact.provider', name: 'spring', version: versions.pact_version
@@ -525,8 +524,7 @@ task contract(type: Test) {
     include "uk/gov/hmcts/reform/judicialbooking/**"
     include "uk/gov/hmcts/reform/orgrolemapping/**"
     include "uk/gov/hmcts/reform/refdata/**"
-    exclude "uk/gov/hmcts/reform/orgrolemapping/provider/**"
-    systemProperty 'pact.rootDir', "${projectDir}/pacts"
+    systemProperty 'pact.rootDir', "pacts"
 }
 
 task runAndPublishConsumerPactTests(type: Test, description: 'Publish pact test to broker.', group: 'Verification') {
@@ -536,11 +534,7 @@ task runAndPublishConsumerPactTests(type: Test, description: 'Publish pact test 
     include "uk/gov/hmcts/reform/judicialbooking/**"
     include "uk/gov/hmcts/reform/refdata/**"
     include "uk/gov/hmcts/reform/orgrolemapping/**"
-    exclude "uk/gov/hmcts/reform/orgrolemapping/provider/**"
-    systemProperty 'pact.rootDir', "${projectDir}/pacts"
-    doFirst {
-        file("${projectDir}/pacts").mkdirs()
-    }
+    systemProperty 'pact.rootDir', "pacts"
 }
 
 pact {
@@ -548,7 +542,7 @@ pact {
         pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
     }
     publish {
-        pactDirectory = "${projectDir}/pacts"
+        pactDirectory = 'pacts'
         version = project.pacticipantVersion
         tags = [System.getenv("PACT_BRANCH_NAME") ?: 'Dev']
         pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
@@ -560,10 +554,6 @@ pactPublish {
 }
 
 runAndPublishConsumerPactTests.finalizedBy pactPublish
-
-tasks.matching { it.name == 'canIDeploy' }.configureEach {
-    dependsOn runAndPublishConsumerPactTests
-}
 
 task runProviderPactVerification(type: Test) {
     useJUnitPlatform()
