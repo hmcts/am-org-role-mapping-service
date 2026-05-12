@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CRDService;
@@ -30,30 +29,42 @@ import static org.mockito.Mockito.when;
 @TestConfiguration
 public class ProviderTestConfiguration {
 
-    @MockitoBean
-    CRDService crdService;
+    @Bean
+    @Primary
+    public CRDService crdService() {
+        return Mockito.mock(CRDService.class);
+    }
 
-    @MockitoBean
-    JRDService jrdService;
+    @Bean
+    @Primary
+    public JRDService jrdService() {
+        return Mockito.mock(JRDService.class);
+    }
 
     @Bean
     @Primary
     public RetrieveDataService getRetrieveDataService() {
-        return new RetrieveDataService(getParseRequestService(), crdService, jrdService, true);
+        return new RetrieveDataService(getParseRequestService(), crdService(), jrdService(), true);
     }
 
     @Bean
     @Primary
     public RequestMappingService<UserAccessProfile> getRequestMappingService() {
-        return new RequestMappingService<>(persistenceService, getEnvironmentConfiguration(), roleAssignmentService,
-                getStatelessKieSession(), securityUtils);
+        return new RequestMappingService<>(persistenceService(), getEnvironmentConfiguration(), roleAssignmentService(),
+                getStatelessKieSession(), securityUtils());
     }
 
-    @MockitoBean
-    RoleAssignmentService roleAssignmentService;
+    @Bean
+    @Primary
+    public RoleAssignmentService roleAssignmentService() {
+        return Mockito.mock(RoleAssignmentService.class);
+    }
 
-    @MockitoBean
-    PersistenceService persistenceService;
+    @Bean
+    @Primary
+    public PersistenceService persistenceService() {
+        return Mockito.mock(PersistenceService.class);
+    }
 
     @Bean
     @Primary
@@ -69,14 +80,23 @@ public class ProviderTestConfiguration {
         return environmentConfiguration;
     }
 
-    @MockitoBean
-    SecurityUtils securityUtils;
+    @Bean
+    @Primary
+    public SecurityUtils securityUtils() {
+        return Mockito.mock(SecurityUtils.class);
+    }
 
-    @MockitoBean
-    private CacheManager cacheManager;
+    @Bean
+    @Primary
+    public CacheManager cacheManager() {
+        return Mockito.mock(CacheManager.class);
+    }
 
-    @MockitoBean
-    JudicialBookingService judicialBookingService;
+    @Bean
+    @Primary
+    public JudicialBookingService judicialBookingService() {
+        return Mockito.mock(JudicialBookingService.class);
+    }
 
     @Bean
     @Primary
@@ -85,10 +105,10 @@ public class ProviderTestConfiguration {
                 getRetrieveDataService(),
                 getRequestMappingService(),
                 getParseRequestService(),
-                crdService,
-                persistenceService,
-                securityUtils,
-                judicialBookingService,
+                crdService(),
+                persistenceService(),
+                securityUtils(),
+                judicialBookingService(),
                 "1",
                 "descending",
                 "1",
@@ -101,7 +121,7 @@ public class ProviderTestConfiguration {
     @Primary
     public JudicialRefreshOrchestrator judicialRefreshOrchestrator() {
         return new JudicialRefreshOrchestrator(getRetrieveDataService(), getParseRequestService(),
-                judicialBookingService, getRequestMappingService());
+                judicialBookingService(), getRequestMappingService());
     }
 
     private KieServices kieServices = KieServices.Factory.get();
