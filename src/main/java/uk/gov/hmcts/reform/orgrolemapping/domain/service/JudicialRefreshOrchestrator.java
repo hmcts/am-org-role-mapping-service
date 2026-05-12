@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_ROLE_REFRESH;
@@ -39,7 +40,6 @@ public class JudicialRefreshOrchestrator {
         this.requestMappingService = requestMappingService;
     }
 
-    @SuppressWarnings("unchecked")
     public ResponseEntity<Object> judicialRefresh(UserRequest userRequest) {
 
         parseRequestService.validateUserRequest(userRequest);
@@ -50,12 +50,21 @@ public class JudicialRefreshOrchestrator {
         log.info("{} profile(s) got {} booking(s)", userAccessProfiles.size(), judicialBookings.size());
         ResponseEntity<Object> responseEntity = requestMappingService.createJudicialAssignments(userAccessProfiles,
                 judicialBookings);
-        var object = (List<ResponseEntity<UserAccessProfile>>) Objects.requireNonNull(
-            responseEntity.getBody());
-        if (object.stream().anyMatch(response -> httpStatusPredicate(
+        var responses = (List<ResponseEntity<?>>) Objects.requireNonNull(responseEntity.getBody());
+        if (responses.stream().anyMatch(response -> httpStatusPredicate(
                 HttpStatus.valueOf(response.getStatusCode().value())
         ).negate().test(HttpStatus.CREATED))) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(FAILED_ROLE_REFRESH);
+            var failedResponses = responses.stream()
+                    .filter(response -> response.getStatusCode() != HttpStatus.CREATED)
+                    .map(response -> Map.of(
+                            "status", response.getStatusCode().value(),
+                            "body", response.getBody()
+                    ))
+                    .collect(Collectors.toList());
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(Map.of(
+                    "message", FAILED_ROLE_REFRESH,
+                    "failedResponses", failedResponses
+            ));
         }
         return ResponseEntity.ok().body(Map.of("Message", SUCCESS_ROLE_REFRESH));
     }
