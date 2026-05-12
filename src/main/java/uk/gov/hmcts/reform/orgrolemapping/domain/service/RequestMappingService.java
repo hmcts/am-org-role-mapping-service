@@ -322,16 +322,13 @@ public class RequestMappingService<T> {
                     reference, feignClientException.status());
             log.error("RAS error body: {}", feignClientException.contentUTF8());
             log.error("Rejected assignment request: {}", assignmentRequest);
-
-            AssignmentRequest assignmentRequest1 = new AssignmentRequest();
-            try {
-                assignmentRequest1 = JacksonUtils.readValue(feignClientException.contentUTF8());
-            } catch (JsonProcessingException e) {
-                log.error(e.getMessage());
-            }
-
             responseEntity = new ResponseEntity<>(
-                    new RoleAssignmentRequestResource(assignmentRequest1), HttpStatus.UNPROCESSABLE_ENTITY);
+                    Map.of(
+                            "rasErrorBody", feignClientException.contentUTF8(),
+                            "rejectedAssignmentRequest", assignmentRequest
+                    ),
+                    HttpStatus.UNPROCESSABLE_ENTITY
+            );
 
         }
         return responseEntity;
