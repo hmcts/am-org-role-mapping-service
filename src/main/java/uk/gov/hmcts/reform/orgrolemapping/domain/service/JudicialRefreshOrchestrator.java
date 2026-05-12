@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 
 @Service
 @Slf4j
@@ -50,7 +51,14 @@ public class JudicialRefreshOrchestrator {
         log.info("{} profile(s) got {} booking(s)", userAccessProfiles.size(), judicialBookings.size());
         ResponseEntity<Object> responseEntity = requestMappingService.createJudicialAssignments(userAccessProfiles,
                 judicialBookings);
-        var responses = (List<ResponseEntity<?>>) Objects.requireNonNull(responseEntity.getBody());
+        Object responseBody = Objects.requireNonNull(responseEntity.getBody());
+        if (!(responseBody instanceof List<?> rawResponses)) {
+            throw new UnprocessableEntityException(FAILED_ROLE_REFRESH);
+        }
+        var responses = rawResponses.stream()
+                .filter(ResponseEntity.class::isInstance)
+                .map(ResponseEntity.class::cast)
+                .collect(Collectors.toList());
         if (responses.stream().anyMatch(response -> httpStatusPredicate(
                 HttpStatus.valueOf(response.getStatusCode().value())
         ).negate().test(HttpStatus.CREATED))) {
