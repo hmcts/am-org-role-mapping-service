@@ -214,7 +214,7 @@ class RequestMappingServiceTest {
         assertEquals(2, resultNode.size());
         assertEquals(content, resultNode.get(0).get("body").get("rasErrorBody").asText());
         assertEquals("staff-organisational-role-mapping",
-                resultNode.get(0).get("body").get("rejectedAssignmentRequest").get("request").get("process")
+                resultNode.get(0).get("body").get("rejectedAssignmentRequest").get("roleRequest").get("process")
                         .asText());
         assertEquals("senior-tribunal-caseworker",
                 resultNode.get(0).get("body").get("rejectedAssignmentRequest").get("requestedRoles").get(0)
@@ -354,4 +354,3 @@ class RequestMappingServiceTest {
     }
 
 }
-
