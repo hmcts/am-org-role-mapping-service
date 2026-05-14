@@ -400,6 +400,8 @@ public class IdamRoleMappingService {
     protected IdamUser buildIdamUserFromEmail(String userId, String email) {
         return IdamUser.builder()
                 .id(userId)
+                .forename(email)
+                .surname(email)
                 .email(email)
                 .build();
 
