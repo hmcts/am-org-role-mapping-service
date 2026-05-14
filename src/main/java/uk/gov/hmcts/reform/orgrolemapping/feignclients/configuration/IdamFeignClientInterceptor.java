@@ -25,7 +25,6 @@ public class IdamFeignClientInterceptor {
                         + securityUtils.getServiceAuthorizationHeader());
                 requestTemplate.header(HttpHeaders.AUTHORIZATION, "Bearer "
                         + idamRepository.getIdamToken());
-                requestTemplate.header(HttpHeaders.CONTENT_TYPE, "text/plain;charset=UTF-8");
             }
         };
     }
