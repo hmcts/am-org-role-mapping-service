@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.feignclients;
 
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +37,7 @@ public interface IdamFeignClient {
     @GetMapping("/api/v2/invitations-by-user-email/{email}")
     ResponseEntity<List<IdamInvitation>> getInvitations(@PathVariable String email);
 
-    @PostMapping("/api/v2/invitations")
+    @PostMapping(value = "/api/v2/invitations", consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<IdamInvitation> inviteUser(IdamInvitation invitation);
 
     @DeleteMapping("/api/v2/invitations/{id}")
