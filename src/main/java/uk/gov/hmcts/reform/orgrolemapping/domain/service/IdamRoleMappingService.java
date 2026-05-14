@@ -272,8 +272,13 @@ public class IdamRoleMappingService {
     }
 
     protected IdamUser getIdamUser(String userId) {
-        ResponseEntity<IdamUser> response = idamClient.getUserById(userId);
-        return response != null ? response.getBody() : null;
+        try {
+            ResponseEntity<IdamUser> response = idamClient.getUserById(userId);
+            return response != null ? response.getBody() : null;
+        } catch (Exception ex) {
+            throw new ServiceException(String.format("Error occurred while getting user from idam for userId {}: {}",
+                    userId, ex.getMessage()), ex);
+        }
     }
 
     protected IdamUser getIdamUserByEmail(String email) {
