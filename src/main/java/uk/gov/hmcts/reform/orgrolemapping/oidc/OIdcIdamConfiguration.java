@@ -28,7 +28,7 @@ public class OIdcIdamConfiguration {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.grantType = "client_credentials";
-        this.scope = "view-user";
+        this.scope = "view-user search-invitation revoke-invitation create-invitation";
     }
 
 }
