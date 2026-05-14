@@ -131,7 +131,7 @@ public class IdamRoleMappingService {
                     }
                 }
                 // If there is another record to process then continue, otherwise exit the loop.
-                anyEntitiesInQueue = false; //idamRoleManagementQueueEntity != null;
+                anyEntitiesInQueue = idamRoleManagementQueueEntity != null;
             }
             // If nothing was processed then record that fact in the process steps.
             if (successfulJobCount == 0 && failedJobCount == 0) {
@@ -224,7 +224,7 @@ public class IdamRoleMappingService {
         boolean isSuccess = false;
         IdamRecordType idamRecordType = IdamRecordType.USER;
         try {
-            IdamUser user = getIdamUser(userId);
+            IdamUser user = null; //getIdamUser(userId);
 
             // No valid IDAM user found, so create a user object for invite.
             if  (user == null) {
@@ -337,7 +337,7 @@ public class IdamRoleMappingService {
         boolean isSuccess = false;
 
         // Check for a valid IDAM user with this email.
-        IdamUser user = getIdamUserByEmail(email);
+        IdamUser user = null; // getIdamUserByEmail(email);
 
         // No valid IDAM user found, so create a user object for invite.
         if (user == null) {
@@ -389,7 +389,7 @@ public class IdamRoleMappingService {
 
     private List<IdamInvitation> getIdamUserInvitations(IdamUser user) {
         ResponseEntity<List<IdamInvitation>> response = idamClient.getInvitations(user.getEmail());
-        List<IdamInvitation> invitations = HttpStatus.OK.equals(response.getStatusCode())
+        List<IdamInvitation> invitations = HttpStatus.OK.equals(response != null ? response.getStatusCode() : "")
                 ? response.getBody() : Collections.emptyList();
         log.debug("{} Invitations found for userId {}", invitations.size(), user.getId());
         return invitations;
@@ -406,7 +406,7 @@ public class IdamRoleMappingService {
         final IdamInvitation invitation = buildInvitationFromUser(user, roleNames);
         ResponseEntity<IdamInvitation> response = idamClient.inviteUser(invitation);
         log.debug("Created invitation with id {}", invitation.getId());
-        return HttpStatus.CREATED.equals(response.getStatusCode());
+        return HttpStatus.CREATED.equals(response != null ? response.getStatusCode() : "");
     }
 
     protected IdamUser buildIdamUserFromEmail(String userId, String email) {
