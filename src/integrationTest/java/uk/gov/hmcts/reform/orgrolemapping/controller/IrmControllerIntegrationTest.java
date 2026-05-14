@@ -72,7 +72,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     void processJudicialQueueTest() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testProcessJudicialQueue(userId, email, getIdamUser(userId, email), IdamRecordType.USER, CREATED, 0,
+        testProcessJudicialQueue(userId, email, getIdamUser(userId, email), IdamRecordType.INVITE, CREATED, 0,
                 EndStatus.SUCCESS);
     }
 
@@ -189,7 +189,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
         // GIVEN
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
-        testUpdateUser(userId, email, getIdamUser(userId, email), 1, CREATED);
+        testUpdateUser(userId, email, getIdamUser(userId, email), 0, CREATED);
     }
 
     @Test
