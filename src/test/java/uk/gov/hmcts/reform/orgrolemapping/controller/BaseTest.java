@@ -9,9 +9,9 @@ import com.azure.messaging.servicebus.ServiceBusReceiverClient;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
@@ -25,22 +25,22 @@ public abstract class BaseTest {
 
     protected static final ObjectMapper mapper = new ObjectMapper();
 
-    @MockBean(name = "jrdConsumer")
+    @MockitoBean(name = "jrdConsumer")
     private ServiceBusReceiverClient jrdConsumer;
 
-    @MockBean(name = "crdConsumer")
+    @MockitoBean(name = "crdConsumer")
     private ServiceBusReceiverClient crdConsumer;
 
-    @MockBean(name = "getSubscriptionClient")
+    @MockitoBean(name = "getSubscriptionClient")
     private ServiceBusReceiverClient getSubscriptionClient;
 
-    @MockBean(name = "getSubscriptionClient1")
+    @MockitoBean(name = "getSubscriptionClient1")
     private ServiceBusReceiverClient getSubscriptionClient1;
 
-    @MockBean(name = "clientRegistrationRepository")
+    @MockitoBean(name = "clientRegistrationRepository")
     private ClientRegistrationRepository getClientRegistrationRepository;
 
-    @MockBean(name = "reactiveClientRegistrationRepository")
+    @MockitoBean(name = "reactiveClientRegistrationRepository")
     private ReactiveClientRegistrationRepository getReactiveClientRegistrationRepository;
 
     static {

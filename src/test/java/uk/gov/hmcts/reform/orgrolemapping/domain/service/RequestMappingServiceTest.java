@@ -212,10 +212,12 @@ class RequestMappingServiceTest {
         JsonNode resultNode = objectMapper.convertValue(responseEntity.getBody(),
                 JsonNode.class);
         assertEquals(2, resultNode.size());
+        assertEquals(content, resultNode.get(0).get("body").get("rasErrorBody").asText());
         assertEquals("staff-organisational-role-mapping",
-                resultNode.get(0).get("body").get("roleAssignmentResponse").get("roleRequest").get("process").asText());
+                resultNode.get(0).get("body").get("rejectedAssignmentRequest").get("roleRequest").get("process")
+                        .asText());
         assertEquals("senior-tribunal-caseworker",
-                resultNode.get(0).get("body").get("roleAssignmentResponse").get("requestedRoles").get(0)
+                resultNode.get(0).get("body").get("rejectedAssignmentRequest").get("requestedRoles").get(0)
                         .get("roleName").asText()
         );
 
@@ -352,5 +354,3 @@ class RequestMappingServiceTest {
     }
 
 }
-
-

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.FAILED_ROLE_REFRESH;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_ROLE_REFRESH;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.UnprocessableEntityException;
 
 @Service
 @Slf4j
@@ -39,7 +41,6 @@ public class JudicialRefreshOrchestrator {
         this.requestMappingService = requestMappingService;
     }
 
-    @SuppressWarnings("unchecked")
     public ResponseEntity<Object> judicialRefresh(UserRequest userRequest) {
 
         parseRequestService.validateUserRequest(userRequest);
@@ -50,12 +51,28 @@ public class JudicialRefreshOrchestrator {
         log.info("{} profile(s) got {} booking(s)", userAccessProfiles.size(), judicialBookings.size());
         ResponseEntity<Object> responseEntity = requestMappingService.createJudicialAssignments(userAccessProfiles,
                 judicialBookings);
-        var object = (List<ResponseEntity<UserAccessProfile>>) Objects.requireNonNull(
-            responseEntity.getBody());
-        if (object.stream().anyMatch(response -> httpStatusPredicate(
+        Object responseBody = Objects.requireNonNull(responseEntity.getBody());
+        if (!(responseBody instanceof List<?> rawResponses)) {
+            throw new UnprocessableEntityException(FAILED_ROLE_REFRESH);
+        }
+        var responses = rawResponses.stream()
+                .filter(ResponseEntity.class::isInstance)
+                .map(ResponseEntity.class::cast)
+                .collect(Collectors.toList());
+        if (responses.stream().anyMatch(response -> httpStatusPredicate(
                 HttpStatus.valueOf(response.getStatusCode().value())
         ).negate().test(HttpStatus.CREATED))) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(FAILED_ROLE_REFRESH);
+            var failedResponses = responses.stream()
+                    .filter(response -> response.getStatusCode() != HttpStatus.CREATED)
+                    .map(response -> Map.of(
+                            "status", response.getStatusCode().value(),
+                            "body", response.getBody()
+                    ))
+                    .collect(Collectors.toList());
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(Map.of(
+                    "message", FAILED_ROLE_REFRESH,
+                    "failedResponses", failedResponses
+            ));
         }
         return ResponseEntity.ok().body(Map.of("Message", SUCCESS_ROLE_REFRESH));
     }

@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import feign.FeignException;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +21,9 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Request;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
-import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.util.ArrayList;
@@ -308,21 +305,27 @@ public class RequestMappingService<T> {
 
         try {
             responseEntity = roleAssignmentService.createRoleAssignment(assignmentRequest);
+            if (responseEntity != null && responseEntity.getStatusCode() != HttpStatus.CREATED) {
+                log.error("RAS returned non-created status for reference {}: {}", reference,
+                        responseEntity.getStatusCode());
+                log.error("RAS response body: {}", responseEntity.getBody());
+                log.error("Rejected assignment request: {}", assignmentRequest);
+            }
             log.debug("Execution time of updateRoleAssignments() : {} ms",
                     (Math.subtractExact(System.currentTimeMillis(), startTime)));
 
         } catch (FeignException.FeignClientException feignClientException) {
-            log.error("Handling FeignClientException UnprocessableEntity: " + feignClientException.getMessage());
-
-            AssignmentRequest assignmentRequest1 = new AssignmentRequest();
-            try {
-                assignmentRequest1 = JacksonUtils.readValue(feignClientException.contentUTF8());
-            } catch (JsonProcessingException e) {
-                log.error(e.getMessage());
-            }
-
+            log.error("RAS rejected role assignment update for reference {} with status {}",
+                    reference, feignClientException.status());
+            log.error("RAS error body: {}", feignClientException.contentUTF8());
+            log.error("Rejected assignment request: {}", assignmentRequest);
             responseEntity = new ResponseEntity<>(
-                    new RoleAssignmentRequestResource(assignmentRequest1), HttpStatus.UNPROCESSABLE_ENTITY);
+                    Map.of(
+                            "rasErrorBody", feignClientException.contentUTF8(),
+                            "rejectedAssignmentRequest", assignmentRequest
+                    ),
+                    HttpStatus.UNPROCESSABLE_ENTITY
+            );
 
         }
         return responseEntity;
