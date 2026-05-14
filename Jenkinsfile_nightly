@@ -114,6 +114,13 @@ env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX="hmctsprod.azurecr.io/imported/"
 
     before('fullFunctionalTest') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
+
+        // Authenticate Docker to hmctsprod ACR so Testcontainers can pull the Ryuk reaper
+        // and base images via TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX. Reuses the managed
+        // identity already established by `az login --identity` earlier in the pipeline.
+        sh '''
+          env AZURE_CONFIG_DIR=/opt/jenkins/.azure-nonprod az acr login --name hmctsprod
+        '''
     }
 
     afterSuccess('build') {
