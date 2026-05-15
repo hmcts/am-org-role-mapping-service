@@ -1,0 +1,9 @@
+{
+  "_guid_": "S-018.02_CreateIdamRole",
+  "_extends_": "F-018-CreateIdamRole",
+  "request": {
+    "queryParams": {
+      "rolename": "s01802_1"
+    }
+  }
+}
