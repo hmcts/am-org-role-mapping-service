@@ -48,6 +48,22 @@ public final class JudicialOfficeHolder {
 
         }
 
+        @UtilityClass
+        public static final class Possessions {
+            // tribunal member (group)
+            public static final String POSSESSION_JUDGE_FEE_PAID
+                    = "Possession Fee paid";
+            public static final String POSSESSION_JUDGE_SALARIED
+                    = "Possession Salaried";
+            public static final String POSSESSION_CIRCUIT_JUDGE_SALARIED
+                    = "Possession Circuit Judge Salaried";
+            public static final String POSSESSION_CIRCUIT_JUDGE_FEE_PAID
+                    = "Possession Circuit Judge Fee paid";
+            public static final String POSSESSION_LEADERSHIP_JUDGE_SALARIED
+                    = "Possession Leadership Judge Salaried";
+
+        }
+
     }
 
 }
