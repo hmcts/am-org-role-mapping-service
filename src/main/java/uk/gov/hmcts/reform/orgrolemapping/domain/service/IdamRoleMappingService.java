@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.InvitationStatu
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.InvitationType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.AccountStatus;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamInvitation;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleCode;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.IdamFeignClient;
@@ -39,6 +40,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class IdamRoleMappingService {
 
+    protected static final String CREATEROLE = "IRM Create Role";
+    protected static final String DELETEROLE = "IRM Delete Role";
     protected static final String INVITEUSER_NAME = "IRM Invite User";
     protected static final String NO_ENTITIES = "No entities to process";
     protected static final String QUEUE_NAME = "IRM Process %s Queue";
@@ -96,6 +99,50 @@ public class IdamRoleMappingService {
             log.debug("No queue entity found to delete for userId {}", userId);
             return false;
         }
+    }
+
+    public ProcessMonitorDto createRole(String roleName) {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(CREATEROLE);
+        processEventTracker.trackEventStarted(processMonitorDto);
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        boolean isSuccess = false;
+        try {
+            ResponseEntity<IdamRoleCode> response =
+                    idamClient.createRole(IdamRoleCode.builder().code(roleName).build());
+            isSuccess = HttpStatus.CREATED.equals(response.getStatusCode());
+        } catch (Exception ex) {
+            String message = String.format("Error occurred while creating role: %s",
+                    ex.getMessage());
+            log.error(message, ex);
+            errorMessageBuilder.append(message);
+        }
+        markProcessStatus(processMonitorDto,
+                isSuccess ? 1 : 0, isSuccess ? 0 : 1,
+                errorMessageBuilder.toString());
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
+    }
+
+    @Transactional
+    public ProcessMonitorDto deleteRole(String roleName) {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(DELETEROLE);
+        processEventTracker.trackEventStarted(processMonitorDto);
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        boolean isSuccess = false;
+        try {
+            ResponseEntity<IdamRoleCode> response = idamClient.deleteRole(roleName);
+            isSuccess = HttpStatus.NO_CONTENT.equals(response.getStatusCode());
+        } catch (Exception ex) {
+            String message = String.format("Error occurred while deleting role: %s",
+                    ex.getMessage());
+            log.error(message, ex);
+            errorMessageBuilder.append(message);
+        }
+        markProcessStatus(processMonitorDto,
+                isSuccess ? 1 : 0, isSuccess ? 0 : 1,
+                errorMessageBuilder.toString());
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
     }
 
     public ProcessMonitorDto processJudicialQueue() {
