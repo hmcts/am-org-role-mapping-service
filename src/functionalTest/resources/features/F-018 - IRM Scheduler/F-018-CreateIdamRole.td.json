@@ -1,6 +1,5 @@
 {
   "_guid_": "F-018-CreateIdamRole",
-  "_extends_": "F-018-Base-Root",
   "specs": [
     "to create an IDAM role"
   ],
