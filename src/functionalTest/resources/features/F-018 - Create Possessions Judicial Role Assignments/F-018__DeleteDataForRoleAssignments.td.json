@@ -1,0 +1,11 @@
+{
+  "_guid_": "F-018__DeleteDataForRoleAssignments",
+  "_extends_": "DeleteDataForRoleAssignments",
+
+  "request": {
+    "pathVariables": {
+      "process": "judicial-organisational-role-mapping",
+      "reference": "${[scenarioContext][parentContext][testData][request][body][queryRequests][0][actorId][0]}"
+    }
+  }
+}
