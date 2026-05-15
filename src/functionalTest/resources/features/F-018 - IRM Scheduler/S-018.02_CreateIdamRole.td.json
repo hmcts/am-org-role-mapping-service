@@ -3,7 +3,7 @@
   "_extends_": "F-018-CreateIdamRole",
   "request": {
     "queryParams": {
-      "rolename": "s01802_1"
+      "roleName": "s01802_1"
     }
   }
 }

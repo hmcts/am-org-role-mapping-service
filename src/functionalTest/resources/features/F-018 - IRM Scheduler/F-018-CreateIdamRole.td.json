@@ -6,6 +6,7 @@
   "method": "POST",
   "uri": "/am/testing-support/irm/role",
   "productName": "Organisation Role Mapping",
+  "operationName": "IRM Create Role",
 
   "request": {
     "queryParams": {
