@@ -1,7 +1,7 @@
 {
-  "_guid_": "S-018.02",
+  "_guid_": "S-020.02",
   "title": "trigger IRM invite user",
-  "_extends_": "F-018-Base-Root",
+  "_extends_": "F-020-Base-Root",
   "specs": [
     "an active IDAM profile with full permissions"
   ],
@@ -13,7 +13,7 @@
   "request": {
     "queryParams": {
       "email": "S01802@test.com",
-      "roleNames": ["s01802_1"]
+      "roleNames": ["s02002_1"]
     }
   },
 

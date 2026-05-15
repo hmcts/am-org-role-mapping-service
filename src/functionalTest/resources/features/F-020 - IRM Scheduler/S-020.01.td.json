@@ -1,7 +1,7 @@
 {
-  "_guid_": "S-018.01",
+  "_guid_": "S-020.01",
   "title": "trigger IRM scheduler process empty judicial queue",
-  "_extends_": "F-018-ProcessJudicialQueue",
+  "_extends_": "F-020-ProcessJudicialQueue",
   "operationName": "Process empty IRM Judicial Queue",
 
   "expectedResponse": {
