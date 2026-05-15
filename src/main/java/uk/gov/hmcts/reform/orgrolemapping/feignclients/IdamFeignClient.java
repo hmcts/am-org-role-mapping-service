@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamInvitation;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleCode;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.FeignClientConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.configuration.IdamFeignClientFallback;
@@ -42,4 +43,10 @@ public interface IdamFeignClient {
 
     @DeleteMapping("/api/v2/invitations/{id}")
     ResponseEntity<IdamInvitation> deleteInvitation(@PathVariable String id);
+
+    @PostMapping("/api/v2/roles")
+    ResponseEntity<IdamRoleCode> createRole(IdamRoleCode role);
+
+    @DeleteMapping("/api/v2/roles/{roleName}")
+    ResponseEntity<IdamRoleCode> deleteRole(@PathVariable String rolename);
 }

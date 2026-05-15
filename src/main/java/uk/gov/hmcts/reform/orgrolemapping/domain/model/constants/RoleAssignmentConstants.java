@@ -49,6 +49,7 @@ public final class RoleAssignmentConstants {
         public static final String LISTED_HEARING_VIEWER = "listed-hearing-viewer";
 
         // JUDICIAL
+        public static final String CIRCUIT_JUDGE = "circuit-judge";
         public static final String FEE_PAID_JUDGE = "fee-paid-judge";
         public static final String JUDGE = "judge";
         public static final String LEADERSHIP_JUDGE = "leadership-judge";
@@ -71,6 +72,7 @@ public final class RoleAssignmentConstants {
         public static final String TRIBUNAL_CASEWORKER = "tribunal-caseworker";
         public static final String WLU_ADMIN = "wlu-admin";
         public static final String WLU_TEAM_LEADER = "wlu-team-leader";
+        public static final String BAILIFF_ADMIN = "bailiff-admin";
 
         // OGD
         public static final String CASEWORKER_PRL_EXTERNAL_VIEWONLY = "caseworker-privatelaw-externaluser-viewonly";
