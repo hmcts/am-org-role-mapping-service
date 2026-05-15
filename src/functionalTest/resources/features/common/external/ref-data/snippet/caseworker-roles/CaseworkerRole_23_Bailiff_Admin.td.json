@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_23_Bailiff_Admin",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "23",
+  "role": "Bailiff Administrator"
+}

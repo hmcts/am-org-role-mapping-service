@@ -10,7 +10,8 @@
                     validationrules.employment,
                     validationrules.stcic,
                     validationrules.hrs,
-                    validationrules.probate">
+                    validationrules.probate,
+                    validationrules.possessions">
         <ksession name="org-role-mapping-validation-session" type="stateless"/>
     </kbase>
 </kmodule>
