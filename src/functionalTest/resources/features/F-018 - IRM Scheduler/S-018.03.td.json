@@ -15,7 +15,7 @@
       "userType": "JUDICIAL",
       "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575d",
       "email": "S01803@test.com",
-      "roleNames": ["citizen"]
+      "roleNames": ["s01803_1","s01803_2","s01803_3"]
     }
   },
 
@@ -29,17 +29,11 @@
         "active_flag" : "Y",
         "deleted_flag" : "N",
         "roles" : [ {
-          "role_name" : "[\"caseworker\""
+          "role_name" : "[\"s01803_1\""
         }, {
-          "role_name" : "\"cwd-admin\""
+          "role_name" : "\"s01803_2\""
         }, {
-          "role_name" : "\"cwd-system-user\""
-        }, {
-          "role_name" : "\"jrd-system-user\""
-        }, {
-          "role_name" : "\"org-role-cwd-system-user\""
-        }, {
-          "role_name" : "\"judiciary\"]"
+          "role_name" : "\"s01803_3\"]"
         } ]
       },
       "lastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",

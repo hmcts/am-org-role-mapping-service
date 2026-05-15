@@ -13,7 +13,7 @@
   "request": {
     "queryParams": {
       "email": "S01802@test.com",
-      "roleNames": ["citizen"]
+      "roleNames": ["s01802_1"]
     }
   },
 
