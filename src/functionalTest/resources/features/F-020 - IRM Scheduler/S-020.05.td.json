@@ -1,7 +1,7 @@
 {
-  "_guid_": "S-018.05",
+  "_guid_": "S-020.05",
   "title": "trigger IRM delete from queue",
-  "_extends_": "F-018-Base-Root",
+  "_extends_": "F-020-Base-Root",
   "specs": [
     "an active IDAM profile with full permissions"
   ],
