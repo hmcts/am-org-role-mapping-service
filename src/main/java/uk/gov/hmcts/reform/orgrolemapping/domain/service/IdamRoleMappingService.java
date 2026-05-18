@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ResourceNotFoundException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
@@ -249,6 +250,8 @@ public class IdamRoleMappingService {
                     log.error(message);
                 }
             }
+        } catch (ServiceException ex) {
+            errorMessageBuilder.append(ex.getMessage());
         } catch (Exception ex) {
             String message = String.format("Error occurred while updating user with userId %s: %s",
                     userId, ex.getMessage());
@@ -275,6 +278,8 @@ public class IdamRoleMappingService {
         try {
             ResponseEntity<IdamUser> response = idamClient.getUserById(userId);
             return response != null ? response.getBody() : null;
+        } catch (ResourceNotFoundException ex) {
+            return null;
         } catch (Exception ex) {
             throw new ServiceException(String.format("Error occurred while getting user from idam for userId %s: %s",
                     userId, ex.getMessage()), ex);
