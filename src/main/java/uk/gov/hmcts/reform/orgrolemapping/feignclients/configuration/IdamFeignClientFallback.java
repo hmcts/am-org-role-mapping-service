@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamInvitation;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleCode;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.IdamFeignClient;
 
@@ -41,15 +40,5 @@ public class IdamFeignClientFallback implements IdamFeignClient {
     @Override
     public ResponseEntity<IdamInvitation> deleteInvitation(String id) {
         return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @Override
-    public ResponseEntity<IdamRoleCode> createRole(IdamRoleCode role) {
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @Override
-    public ResponseEntity<IdamRoleCode> deleteRole(String rolename) {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

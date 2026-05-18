@@ -13,8 +13,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -105,50 +103,6 @@ public class IrmController {
             @Parameter(description = "Comma separated list of role names")
             @RequestParam("roleNames") String[] roleNames) {
         ProcessMonitorDto processMonitorDto = idamRoleMappingService.inviteUser(email, Arrays.asList(roleNames));
-        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
-    }
-
-    @PostMapping(
-        path = "/am/testing-support/irm/role"
-    )
-    @ResponseStatus(code = HttpStatus.OK)
-    @Operation(summary = "IRM Create Role",
-        security =
-        {
-            @SecurityRequirement(name = AUTHORIZATION),
-            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
-        })
-    @ApiResponse(
-        responseCode = "200",
-        description = "OK",
-        content = @Content(schema = @Schema(implementation = Object.class))
-    )
-    public ResponseEntity<Object> createRole(
-            @Parameter(description = "roleName")
-            @RequestParam("roleName") String roleName) {
-        ProcessMonitorDto processMonitorDto = idamRoleMappingService.createRole(roleName);
-        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
-    }
-
-    @DeleteMapping(
-        path = "/am/testing-support/irm/role"
-    )
-    @ResponseStatus(code = HttpStatus.OK)
-    @Operation(summary = "IRM Delete Role",
-        security =
-        {
-            @SecurityRequirement(name = AUTHORIZATION),
-            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
-        })
-    @ApiResponse(
-        responseCode = "200",
-        description = "OK",
-        content = @Content(schema = @Schema(implementation = Object.class))
-    )
-    public ResponseEntity<Object> deleteRole(
-            @Parameter(description = "roleName")
-            @RequestParam("roleName") String roleName) {
-        ProcessMonitorDto processMonitorDto = idamRoleMappingService.deleteRole(roleName);
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
 }
