@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -278,12 +279,11 @@ public class IdamRoleMappingService {
         try {
             ResponseEntity<IdamUser> response = idamClient.getUserById(userId);
             return response != null ? response.getBody() : null;
-        } catch (ResourceNotFoundException ex) {
+        } catch (FeignException.NotFound ex) {
             return null;
         } catch (Exception ex) {
-            throw new ServiceException(String.format(
-                    "%s - Error occurred while getting user from idam for userId %s: %s",
-                    ex.getClass().getName(), userId, ex.getMessage()), ex);
+            throw new ServiceException(String.format("Error occurred while getting user from idam for userId %s: %s",
+                    userId, ex.getMessage()), ex);
         }
     }
 
