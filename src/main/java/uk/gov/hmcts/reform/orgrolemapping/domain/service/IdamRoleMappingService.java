@@ -281,8 +281,9 @@ public class IdamRoleMappingService {
         } catch (ResourceNotFoundException ex) {
             return null;
         } catch (Exception ex) {
-            throw new ServiceException(String.format("Error occurred while getting user from idam for userId %s: %s",
-                    userId, ex.getMessage()), ex);
+            throw new ServiceException(String.format(
+                    "%s - Error occurred while getting user from idam for userId %s: %s",
+                    ex.getClass().getName(), userId, ex.getMessage()), ex);
         }
     }
 
