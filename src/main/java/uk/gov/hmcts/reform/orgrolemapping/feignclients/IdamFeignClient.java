@@ -38,7 +38,7 @@ public interface IdamFeignClient {
     ResponseEntity<List<IdamInvitation>> getInvitations(@PathVariable String email);
 
     @PostMapping(value = "/api/v2/invitations", consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<IdamInvitation> inviteUser(IdamInvitation invitation);
+    ResponseEntity<IdamInvitation> inviteUser(@Valid @RequestBody IdamInvitation invitation);
 
     @DeleteMapping("/api/v2/invitations/{id}")
     ResponseEntity<IdamInvitation> deleteInvitation(@PathVariable String id);
