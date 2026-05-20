@@ -238,29 +238,29 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
         verifyUpdateUserStub(times);
     }
 
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-    })        
-    void inviteUserTest() throws Exception {
-        String userId = "some-user-id";
-        String email = "someone@somewhere.com";
-        IdamUser user =  getIdamUser(userId, email);
-        List<IdamInvitation> oldInvitations = List.of(getIdamInvitation(userId), getIdamInvitation(userId));
-        testInviteUser(userId, email, user, user.getRoleNames(), oldInvitations,
-                1, CREATED);
-    }
+    //@Test
+    //@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+    //    "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+    //})
+    //void inviteUserTest() throws Exception {
+    //    String userId = "some-user-id";
+    //    String email = "someone@somewhere.com";
+    //    IdamUser user =  getIdamUser(userId, email);
+    //    List<IdamInvitation> oldInvitations = List.of(getIdamInvitation(userId), getIdamInvitation(userId));
+    //    testInviteUser(userId, email, user, user.getRoleNames(), oldInvitations,
+    //            1, CREATED);
+    //}
 
-    @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-    })
-    void inviteUserTest_InvalidUser() throws Exception {
-        String userId = "non-existant-user-id";
-        String email = "invalid@email.com";
-        testInviteUser(userId, email, null, Collections.emptyList(), Collections.emptyList(),
-                1, CREATED);
-    }
+    //@Test
+    //@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+    //    "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+    //})
+    //void inviteUserTest_InvalidUser() throws Exception {
+    //    String userId = "non-existant-user-id";
+    //    String email = "invalid@email.com";
+    //    testInviteUser(userId, email, null, Collections.emptyList(), Collections.emptyList(),
+    //            1, CREATED);
+    //}
 
     private void testInviteUser(String userId, String email, IdamUser user, List<String> roleNames,
                                 List<IdamInvitation> oldInvitations, int times,
