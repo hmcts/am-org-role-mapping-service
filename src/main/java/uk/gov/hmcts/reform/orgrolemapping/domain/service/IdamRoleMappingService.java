@@ -443,7 +443,7 @@ public class IdamRoleMappingService {
                 .forename(user.getForename())
                 .surname(user.getSurname())
                 .activationRoleNames(roleNames)
-                .invitationType(InvitationType.INVITE)
+                .invitationType(InvitationType.APPOINT)
                 .invitationStatus(InvitationStatus.PENDING)
                 .clientId(SERVICE_NAME)
                 .successRedirect(EMPTY_STRING)
