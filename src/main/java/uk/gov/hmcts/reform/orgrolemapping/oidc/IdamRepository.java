@@ -142,7 +142,7 @@ public class IdamRepository {
         var tokenResponse = idamApi.generateOpenIdToken(tokenRequest);
         return tokenResponse.accessToken;
     }
-    
+
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 3))
     public String getIdamToken() {
         var tokenRequest = new TokenRequest(
