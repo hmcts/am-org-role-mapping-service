@@ -15,7 +15,7 @@
       "userType": "JUDICIAL",
       "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575d",
       "email": "S02003@test.com",
-      "roleNames": ["caseworker-ras-validation"]
+      "roleNames": "caseworker-ras-validation"
     }
   },
 

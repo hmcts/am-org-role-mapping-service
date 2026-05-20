@@ -103,11 +103,7 @@ public class IrmController {
             @RequestParam("email") String email,
             @Parameter(description = "Comma separated list of role names")
             @RequestParam("roleNames") List<String> roleNames) {
-        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Test IRM Invite User");
-        String errorMessage = "Size=" + roleNames.size() + ", contents=" + roleNames.toString() + ".";
-        processMonitorDto.markAsFailed(errorMessage);
-        // ProcessMonitorDto processMonitorDto = idamRoleMappingService.inviteUser(email,
-        //         Arrays.stream(roleNames).toList());
+        ProcessMonitorDto processMonitorDto = idamRoleMappingService.inviteUser(email, roleNames);
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
 }
