@@ -437,15 +437,12 @@ public class IdamRoleMappingService {
     }
 
     protected IdamInvitation buildInvitationFromUser(IdamUser user, List<String> roleNames) {
-        // TODO remove this
-        List<String> newRoleNames = new ArrayList<>();
-        newRoleNames.add("caseworker-ras-validation");
         return IdamInvitation.builder()
                 .userId(user.getId())
                 .email(user.getEmail())
                 .forename(user.getForename())
                 .surname(user.getSurname())
-                .activationRoleNames(newRoleNames)
+                .activationRoleNames(roleNames)
                 .invitationType(InvitationType.INVITE)
                 .invitationStatus(InvitationStatus.PENDING)
                 .clientId(SERVICE_NAME)
