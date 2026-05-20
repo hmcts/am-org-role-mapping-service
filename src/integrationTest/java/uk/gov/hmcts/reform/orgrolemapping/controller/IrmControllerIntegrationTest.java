@@ -17,7 +17,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -81,8 +80,6 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
         "classpath:sql/irm/queue/init_idam_role_management_queue.sql"
     })
     void processJudicialQueueTest_Empty() throws Exception {
-        String userId = "some-user-id";
-        String email = "someone@somewhere.com";
         testProcessJudicialQueue(null, "", null, IdamRecordType.USER, CREATED, 0, EndStatus.SUCCESS);
     }
 
@@ -225,7 +222,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     }
 
     private void stubUpdateUser(String userId, String email, IdamUser user, HttpStatus inviteStatus)
-            throws JsonProcessingException, UnsupportedEncodingException {
+            throws JsonProcessingException {
         stubGetIdamUser(userId, user);
         if (user != null) {
             stubUpdateIdamUser(userId, user);
@@ -241,7 +238,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
         "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
-    })        
+    })
     void inviteUserTest() throws Exception {
         String userId = "some-user-id";
         String email = "someone@somewhere.com";
@@ -289,7 +286,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
 
     private void stubInviteUser(String userId, String email, IdamUser user, List<IdamInvitation> oldInvitations,
                                 HttpStatus inviteStatus)
-            throws JsonProcessingException, UnsupportedEncodingException {
+            throws JsonProcessingException {
         stubGetIdamUserByEmail(getUrlSafe(email), user);
         stubGetInvitations(getUrlSafe(email), oldInvitations);
         stubDeleteInviatations(oldInvitations);
@@ -451,7 +448,7 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
                 .build();
     }
 
-    private String getUrlSafe(String value) throws UnsupportedEncodingException {
-        return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+    private String getUrlSafe(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
 }
