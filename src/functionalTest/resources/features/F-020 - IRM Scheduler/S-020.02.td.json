@@ -13,11 +13,7 @@
   "request": {
     "queryParams": {
       "email": "S01802@test.com",
-      "roleNames": {
-        "arrayInMap": [
-          "caseworker-ras-validation"
-        ]
-      }
+      "roleNames": "caseworker-ras-validation"
     }
   },
 
