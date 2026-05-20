@@ -29,7 +29,7 @@
         "active_flag" : "Y",
         "deleted_flag" : "N",
         "roles" : [ {
-          "role_name" : "[\"caseworker-ras-validation\"]"
+          "role_name" : "caseworker-ras-validation"
         } ]
       },
       "lastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",

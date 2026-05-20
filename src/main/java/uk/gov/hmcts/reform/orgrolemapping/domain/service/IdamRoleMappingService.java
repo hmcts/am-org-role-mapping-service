@@ -46,7 +46,7 @@ public class IdamRoleMappingService {
     protected static final String UPDATEUSER_NAME = "IRM Update User";
 
     private static final String EMPTY_STRING = "";
-    private static final String SERVICE_NAME = "am_org_role_mapping_service";
+    private static final String SERVICE_NAME = "am_org_role_mapping";
 
     private final IdamFeignClient idamClient;
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
