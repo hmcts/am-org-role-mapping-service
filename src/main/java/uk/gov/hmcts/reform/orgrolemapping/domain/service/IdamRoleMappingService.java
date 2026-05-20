@@ -437,6 +437,9 @@ public class IdamRoleMappingService {
     }
 
     protected IdamInvitation buildInvitationFromUser(IdamUser user, List<String> roleNames) {
+        // TODO remove this
+        List<String> newRoleNames = new ArrayList<>();
+        newRoleNames.add("caseworker-ras-validation");
         return IdamInvitation.builder()
                 .userId(user.getId())
                 .email(user.getEmail())
