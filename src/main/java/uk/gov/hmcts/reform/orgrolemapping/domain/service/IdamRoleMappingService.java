@@ -445,7 +445,7 @@ public class IdamRoleMappingService {
                 .email(user.getEmail())
                 .forename(user.getForename())
                 .surname(user.getSurname())
-                .activationRoleNames(roleNames)
+                .activationRoleNames(newRoleNames)
                 .invitationType(InvitationType.INVITE)
                 .invitationStatus(InvitationStatus.PENDING)
                 .clientId(SERVICE_NAME)
