@@ -10,6 +10,7 @@ import lombok.Setter;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.InvitationStatus;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.InvitationType;
 
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdamInvitation {
+public class IdamInvitation implements Serializable {
 
     private String id;
 

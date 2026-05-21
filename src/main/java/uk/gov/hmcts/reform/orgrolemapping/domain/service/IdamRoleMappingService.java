@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -240,6 +241,8 @@ public class IdamRoleMappingService {
                     log.error(message);
                 }
             }
+        } catch (ServiceException ex) {
+            errorMessageBuilder.append(ex.getMessage());
         } catch (Exception ex) {
             String message = String.format("Error occurred while updating user with userId %s: %s",
                     userId, ex.getMessage());
@@ -263,13 +266,27 @@ public class IdamRoleMappingService {
     }
 
     protected IdamUser getIdamUser(String userId) {
-        ResponseEntity<IdamUser> response = idamClient.getUserById(userId);
-        return response != null ? response.getBody() : null;
+        try {
+            ResponseEntity<IdamUser> response = idamClient.getUserById(userId);
+            return response != null ? response.getBody() : null;
+        } catch (FeignException.NotFound ex) {
+            return null;
+        } catch (Exception ex) {
+            throw new ServiceException(String.format("Error occurred while getting user from idam for userId %s: %s",
+                    userId, ex.getMessage()), ex);
+        }
     }
 
     protected IdamUser getIdamUserByEmail(String email) {
-        ResponseEntity<IdamUser> response = idamClient.getUserByEmail(email);
-        return response != null ? response.getBody() : null;
+        try {
+            ResponseEntity<IdamUser> response = idamClient.getUserByEmail(email);
+            return response != null ? response.getBody() : null;
+        } catch (FeignException.NotFound ex) {
+            return null;
+        } catch (Exception ex) {
+            throw new ServiceException(String.format("Error occurred while getting user from idam for email %s: %s",
+                    email, ex.getMessage()), ex);
+        }
     }
 
     protected boolean patchIdamUser(IdamUser user, IdamRoleData idamRoleData) {
