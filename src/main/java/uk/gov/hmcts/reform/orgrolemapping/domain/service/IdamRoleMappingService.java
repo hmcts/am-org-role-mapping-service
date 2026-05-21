@@ -238,11 +238,12 @@ public class IdamRoleMappingService {
                 List<String> roleNames = idamRoleData.getRoles().stream()
                         .map(role -> role.getRoleName()).toList();
                 // Invite the user with the roleNames.
-                String errorMessage = inviteIdamUser(buildIdamUserFromEmail(userId, email), roleNames);
-                if (errorMessage.isEmpty()) {
-                    isSuccess = true;
-                } else {
-                    errorMessageBuilder.append(errorMessage);
+                ProcessMonitorDto inviteProcessMonitorDto =
+                        inviteIdamUser(buildIdamUserFromEmail(userId, email), roleNames);
+                inviteProcessMonitorDto.getProcessSteps().forEach(step -> processMonitorDto.addProcessStep(step));
+                isSuccess = EndStatus.SUCCESS.equals(inviteProcessMonitorDto.getEndStatus());
+                if (!isSuccess) {
+                    errorMessageBuilder.append(inviteProcessMonitorDto.getEndDetail());
                 }
             } else {
                 // Patch the user with the idam role data
@@ -369,11 +370,11 @@ public class IdamRoleMappingService {
         }
 
         // Invite the user on IDAM.
-        String errorMessage = inviteIdamUser(user, roleNames);
-        if (errorMessage.isEmpty()) {
-            isSuccess = true;
-        } else {
-            errorMessageBuilder.append(errorMessage);
+        ProcessMonitorDto inviteProcessMonitorDto = inviteIdamUser(user, roleNames);
+        inviteProcessMonitorDto.getProcessSteps().forEach(step -> processMonitorDto.addProcessStep(step));
+        isSuccess = EndStatus.SUCCESS.equals(inviteProcessMonitorDto.getEndStatus());
+        if (!isSuccess) {
+            errorMessageBuilder.append(inviteProcessMonitorDto.getEndDetail());
         }
 
         markProcessStatus(processMonitorDto,
@@ -383,8 +384,10 @@ public class IdamRoleMappingService {
         return processMonitorDto;
     }
 
-    protected String inviteIdamUser(IdamUser user, List<String> roleNames) {
+    protected ProcessMonitorDto inviteIdamUser(IdamUser user, List<String> roleNames) {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Invite IDAM User");
         StringBuilder errorMessageBuilder = new StringBuilder();
+        boolean isSuccess = false;
 
         try {
             // Check for any existing invitations
@@ -394,7 +397,7 @@ public class IdamRoleMappingService {
             deleteIdamUserInvitations(invitations);
 
             // Create a new invitation
-            boolean isSuccess = createInvitation(user, roleNames);
+            isSuccess = createInvitation(user, roleNames);
             if (!isSuccess) {
                 String message = String.format("Failed to invite userId %s", user.getId());
                 errorMessageBuilder.append(message);
@@ -407,7 +410,11 @@ public class IdamRoleMappingService {
             log.error(message, ex);
         }
 
-        return errorMessageBuilder.toString();
+        markProcessStatus(processMonitorDto,
+                isSuccess ? 1 : 0, isSuccess ? 0 : 1,
+                errorMessageBuilder.toString());
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
     }
 
     private List<IdamInvitation> getIdamUserInvitations(IdamUser user) {
