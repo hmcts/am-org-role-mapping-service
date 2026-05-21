@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
@@ -60,7 +59,6 @@ public class IdamRoleMappingService {
     public IdamRoleMappingService(
             IdamFeignClient idamClient,
             IdamRoleManagementQueueRepository idamRoleManagementQueueRepository,
-            PlatformTransactionManager transactionManager,
             ProcessEventTracker processEventTracker,
             @Value("${idam.role.management.scheduling.retryOneIntervalMin}")
             String retryOneIntervalMin,
@@ -117,7 +115,6 @@ public class IdamRoleMappingService {
         StringBuilder errorMessageBuilder = new StringBuilder();
         int successfulJobCount = 0;
         int failedJobCount = 0;
-        String errorMessage;
         try {
             processMonitorDto.addProcessStep(queueName);
             boolean anyEntitiesInQueue = true;
@@ -127,6 +124,7 @@ public class IdamRoleMappingService {
                         = idamRoleManagementQueueRepository.findAndLockSingleActiveRecord(userType.name());
                 if (idamRoleManagementQueueEntity != null) {
                     ProcessMonitorDto queueProcessMonitorDto = processQueueEntry(idamRoleManagementQueueEntity);
+                    queueProcessMonitorDto.getProcessSteps().forEach(step -> processMonitorDto.addProcessStep(step));
                     boolean isSuccess = EndStatus.SUCCESS.equals(queueProcessMonitorDto.getEndStatus());
                     if (isSuccess) {
                         successfulJobCount++;
