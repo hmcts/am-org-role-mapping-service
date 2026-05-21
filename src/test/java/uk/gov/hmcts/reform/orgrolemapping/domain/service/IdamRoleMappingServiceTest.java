@@ -70,7 +70,7 @@ class IdamRoleMappingServiceTest {
 
     private final IdamRoleMappingService sut =
             new IdamRoleMappingService(idamFeignClient, idamRoleManagementQueueRepository, transactionManager,
-                    processEventTracker, "1", "2", "3");
+                    processEventTracker, "1", "2", "3", "am_org_role_mapping");
 
     private static final String[] EMAILS = {"email1@test.com", "email2@test.com"};
     private static final String[] OLDROLES = {"OldRole1", "Role1"};
