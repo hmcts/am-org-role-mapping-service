@@ -10,7 +10,6 @@ import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
@@ -59,9 +58,6 @@ class IdamRoleMappingServiceTest {
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository
             = mock(IdamRoleManagementQueueRepository.class);
 
-    private final PlatformTransactionManager transactionManager
-            = mock(PlatformTransactionManager.class);
-
     private final ProcessEventTracker processEventTracker
             = mock(ProcessEventTracker.class);
 
@@ -69,7 +65,7 @@ class IdamRoleMappingServiceTest {
             new IdamRoleDataJsonBConverter();
 
     private final IdamRoleMappingService sut =
-            new IdamRoleMappingService(idamFeignClient, idamRoleManagementQueueRepository, transactionManager,
+            new IdamRoleMappingService(idamFeignClient, idamRoleManagementQueueRepository,
                     processEventTracker, "1", "2", "3", "am_org_role_mapping");
 
     private static final String[] EMAILS = {"email1@test.com", "email2@test.com"};
@@ -150,8 +146,6 @@ class IdamRoleMappingServiceTest {
                 .thenReturn(irmQueue != null && !irmQueue.isEmpty() ? irmQueue.get(0) : null)
                 .thenReturn(irmQueue != null && !irmQueue.isEmpty() ? irmQueue.get(1) : null)
                 .thenReturn(null);
-        when(transactionManager.getTransaction(any()))
-                .thenReturn(mock(org.springframework.transaction.TransactionStatus.class));
         ServiceException exception =
                 new ServiceException("Error occurred while processing idam role mapping");
         if (EndStatus.PARTIAL_SUCCESS.equals(endStatus)) {
