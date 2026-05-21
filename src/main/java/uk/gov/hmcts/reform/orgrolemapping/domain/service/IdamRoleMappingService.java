@@ -126,12 +126,13 @@ public class IdamRoleMappingService {
                 IdamRoleManagementQueueEntity idamRoleManagementQueueEntity
                         = idamRoleManagementQueueRepository.findAndLockSingleActiveRecord(userType.name());
                 if (idamRoleManagementQueueEntity != null) {
-                    errorMessage = processQueueEntry(idamRoleManagementQueueEntity);
-                    if (errorMessage.isEmpty()) {
+                    ProcessMonitorDto queueProcessMonitorDto = processQueueEntry(idamRoleManagementQueueEntity);
+                    boolean isSuccess = EndStatus.SUCCESS.equals(queueProcessMonitorDto.getEndStatus());
+                    if (isSuccess) {
                         successfulJobCount++;
                     } else {
                         failedJobCount++;
-                        errorMessageBuilder.append(errorMessage);
+                        errorMessageBuilder.append(queueProcessMonitorDto.getEndDetail());
                     }
                 }
                 // If there is another record to process then continue, otherwise exit the loop.
@@ -158,14 +159,17 @@ public class IdamRoleMappingService {
     }
 
     @Transactional
-    private String processQueueEntry(IdamRoleManagementQueueEntity idamRoleManagementQueueEntity) {
+    private ProcessMonitorDto processQueueEntry(IdamRoleManagementQueueEntity idamRoleManagementQueueEntity) {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Process Queue Entry");
         StringBuilder errorMessageBuilder = new StringBuilder();
 
         // Update the user
         ProcessMonitorDto updateProcessMonitorDto =
                 updateUser(idamRoleManagementQueueEntity.getUserId(),
                         idamRoleManagementQueueEntity.getData());
-        if (!EndStatus.SUCCESS.equals(updateProcessMonitorDto.getEndStatus())) {
+        updateProcessMonitorDto.getProcessSteps().forEach(step -> processMonitorDto.addProcessStep(step));
+        boolean isSuccess = EndStatus.SUCCESS.equals(updateProcessMonitorDto.getEndStatus());
+        if (!isSuccess) {
             String message = updateProcessMonitorDto.getEndDetail();
             errorMessageBuilder.append(message);
             log.error(message);
@@ -175,13 +179,18 @@ public class IdamRoleMappingService {
                     idamRoleManagementQueueEntity.getUserId(),
                     retryOneIntervalMin, retryTwoIntervalMin, retryThreeIntervalMin);
         }
-        return errorMessageBuilder.toString();
+        markProcessStatus(processMonitorDto,
+                isSuccess ? 1 : 0, isSuccess ? 0 : 1,
+                errorMessageBuilder.toString());
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
     }
 
     @Transactional
     public ProcessMonitorDto updateUser(String userId) {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(UPDATEUSER_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
+        processMonitorDto.addProcessStep(UPDATEUSER_NAME);
         StringBuilder errorMessageBuilder = new StringBuilder();
         boolean isSuccess = false;
         // Get the idam role data
@@ -210,6 +219,7 @@ public class IdamRoleMappingService {
     private ProcessMonitorDto updateUser(String userId, IdamRoleData idamRoleData) {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(UPDATEUSER_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
+        processMonitorDto.addProcessStep(UPDATEUSER_NAME);
 
         // Patch or Invite the user
         ProcessMonitorDto patchProcessMonitorDto = patchOrInvite(userId, idamRoleData);
@@ -357,6 +367,7 @@ public class IdamRoleMappingService {
     public ProcessMonitorDto inviteUser(String email, List<String> roleNames) {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(INVITEUSER_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
+        processMonitorDto.addProcessStep(INVITEUSER_NAME);
         StringBuilder errorMessageBuilder = new StringBuilder();
         boolean isSuccess = false;
 
