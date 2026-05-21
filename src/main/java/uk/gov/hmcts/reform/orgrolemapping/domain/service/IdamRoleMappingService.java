@@ -45,7 +45,6 @@ public class IdamRoleMappingService {
     protected static final String UPDATEUSER_NAME = "IRM Update User";
 
     private static final String EMPTY_STRING = "";
-    private static final String SERVICE_NAME = "am_org_role_mapping_service";
 
     private final IdamFeignClient idamClient;
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
@@ -54,6 +53,7 @@ public class IdamRoleMappingService {
     private final String retryOneIntervalMin;
     private final String retryTwoIntervalMin;
     private final String retryThreeIntervalMin;
+    private final String irmServiceName;
 
     @Autowired
     public IdamRoleMappingService(
@@ -66,7 +66,9 @@ public class IdamRoleMappingService {
             @Value("${idam.role.management.scheduling.retryOneIntervalMin}")
             String retryTwoIntervalMin,
             @Value("${idam.role.management.scheduling.retryOneIntervalMin}")
-            String retryThreeIntervalMin) {
+            String retryThreeIntervalMin,
+            @Value("${idam.client.irm.clientId}")
+            String irmServiceName) {
         this.idamClient = idamClient;
         this.idamRoleManagementQueueRepository = idamRoleManagementQueueRepository;
         this.idamRoleDataJsonBConverter = new IdamRoleDataJsonBConverter();
@@ -74,6 +76,7 @@ public class IdamRoleMappingService {
         this.retryOneIntervalMin = retryOneIntervalMin;
         this.retryTwoIntervalMin = retryTwoIntervalMin;
         this.retryThreeIntervalMin = retryThreeIntervalMin;
+        this.irmServiceName = irmServiceName;
     }
 
     @Transactional
@@ -416,7 +419,7 @@ public class IdamRoleMappingService {
                 .activationRoleNames(roleNames)
                 .invitationType(InvitationType.APPOINT)
                 .invitationStatus(InvitationStatus.PENDING)
-                .clientId(SERVICE_NAME)
+                .clientId(irmServiceName)
                 .successRedirect(EMPTY_STRING)
                 .invitedBy(EMPTY_STRING)
                 .build();
