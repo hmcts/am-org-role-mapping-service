@@ -221,7 +221,7 @@ public class IdamRoleMappingService {
 
         // Patch or Invite the user
         ProcessMonitorDto patchProcessMonitorDto = patchOrInvite(userId, idamRoleData);
-        patchProcessMonitorDto.getProcessSteps().forEach(step -> processMonitorDto.addProcessStep(step));
+        patchProcessMonitorDto.getProcessSteps().forEach(step -> processMonitorDto.appendToLastProcessStep("-" + step));
         boolean isSuccess = EndStatus.SUCCESS.equals(patchProcessMonitorDto.getEndStatus());
         markProcessStatus(processMonitorDto,
                 isSuccess ? 1 : 0, isSuccess ? 0 : 1,
@@ -240,6 +240,7 @@ public class IdamRoleMappingService {
 
             // No valid IDAM user found, so create a user object for invite.
             if  (user == null) {
+                processMonitorDto.addProcessStep("Invite User");
                 String email = idamRoleData.getEmailId();
                 log.debug("No user found for userId {} ({})", userId, email);
                 idamRecordType = IdamRecordType.INVITE;
@@ -248,12 +249,12 @@ public class IdamRoleMappingService {
                 // Invite the user with the roleNames.
                 ProcessMonitorDto inviteProcessMonitorDto =
                         inviteIdamUser(buildIdamUserFromEmail(userId, email), roleNames);
-                inviteProcessMonitorDto.getProcessSteps().forEach(step -> processMonitorDto.addProcessStep(step));
                 isSuccess = EndStatus.SUCCESS.equals(inviteProcessMonitorDto.getEndStatus());
                 if (!isSuccess) {
                     errorMessageBuilder.append(inviteProcessMonitorDto.getEndDetail());
                 }
             } else {
+                processMonitorDto.addProcessStep("Patch User");
                 // Patch the user with the idam role data
                 isSuccess = patchIdamUser(user, idamRoleData);
                 if (!isSuccess) {
