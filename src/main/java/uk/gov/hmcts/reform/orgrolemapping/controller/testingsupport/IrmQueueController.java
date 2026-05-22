@@ -28,6 +28,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleDataRole;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.IdamRoleMappingService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -236,6 +237,7 @@ public class IrmQueueController {
         // if active does not match the required value then update it.
         if (!active.equals(queueEntity.getActive())) {
             queueEntity.setActive(active);
+            queueEntity.setRetryAfter(LocalDateTime.now().minusMinutes(1));
             idamRoleManagementQueueRepository.save(queueEntity);
         }
     }
