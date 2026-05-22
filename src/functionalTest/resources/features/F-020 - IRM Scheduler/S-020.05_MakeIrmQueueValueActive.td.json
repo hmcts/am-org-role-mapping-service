@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-020.04_MakeIrmQueueValueActive",
+  "_guid_": "S-020.05_MakeIrmQueueValueActive",
   "_extends_": "MakeIrmQueueActive__PositiveResponse_Base",
   "specs": [
     "to make the IRM queue value active"

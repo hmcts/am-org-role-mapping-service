@@ -35,18 +35,18 @@ Feature: F-020 : IRM Scheduler
     Then a positive response is received,
     And the response has all other details as expected
 
-  @S-020.04
+  @S-020.05
   @FeatureToggle(EV:IRM_FTA_ENABLED=on)
   Scenario: trigger IRM scheduler process populated judicial queue
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to make the IRM queue value inactive] as in [F-020-MakeAllIrmQueueValuesInactive]
-    And a successful call [to make the IRM queue value active] as in [S-020.04_MakeIrmQueueValueActive]
+    And a successful call [to make the IRM queue value active] as in [S-020.05_MakeIrmQueueValueActive]
     When a request is prepared with appropriate values,
     And it is submitted to call the [Process populated IRM Judicial Queue] operation of [Organisation Role Mapping],
     Then a positive response is received,
     And the response has all other details as expected
 
-  @S-020.05
+  @S-020.06
   @FeatureToggle(EV:IRM_FTA_ENABLED=on)
   Scenario: trigger IRM delete from queue
     Given a user with [an active IDAM profile with full permissions],
