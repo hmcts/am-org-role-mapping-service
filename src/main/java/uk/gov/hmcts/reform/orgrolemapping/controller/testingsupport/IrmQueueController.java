@@ -82,11 +82,11 @@ public class IrmQueueController {
     )
     public ResponseEntity<IdamRoleManagementQueueEntity> addQueueEntity(
         @Parameter(description = "UserType")
-        @RequestParam() UserType userType,
+        @RequestParam("userType") UserType userType,
         @Parameter(description = "UserId")
-        @RequestParam() String userId,
+        @RequestParam("userId") String userId,
         @Parameter(description = "Email")
-        @RequestParam() String email,
+        @RequestParam("email") String email,
         @Parameter(description = "Comma separated list of role names")
         @RequestParam("roleNames") String[] roleNames
     ) {

@@ -1,0 +1,25 @@
+{
+  "_guid_": "S-020.04",
+  "title": "trigger IRM delete from queue",
+  "_extends_": "F-020-Base-Root",
+  "specs": [
+    "an active IDAM profile with full permissions"
+  ],
+ "method": "PUT",
+  "uri": "/am/testing-support/irm/addQueueEntity",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Add IDAM user to queue",
+
+  "request": {
+    "queryParams": {
+      "userType": "JUDICIAL",
+      "userId": "7cccd0e9-e712-4f61-a27f-47fc90ee02f1",
+      "email": "S02004@test.com",
+      "roleNames": "caseworker-ras-validation"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response"
+  }
+}
