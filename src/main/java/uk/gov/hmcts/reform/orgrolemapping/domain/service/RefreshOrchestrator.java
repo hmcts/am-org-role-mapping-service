@@ -53,16 +53,20 @@ public class RefreshOrchestrator {
     public static final String ERROR_REFRESH_JOB_NOT_FOUND = "Provided refresh job couldn't be retrieved.";
     public static final String ERROR_REFRESH_JOB_INVALID_STATE = "Provided refresh job is in an invalid state.";
     public static final String ERROR_INVALID_JOB_ID = "Invalid JobId request";
+    public static final String ERROR_INVALID_ROLE_CATEGORY = "Invalid role category";
+    public static final String ERROR_INVALID_USER_TYPE = "Invalid user type";
 
     private final RetrieveDataService retrieveDataService;
     private final RequestMappingService<UserAccessProfile> requestMappingService;
     private final ParseRequestService parseRequestService;
     private final CRDService crdService;
+    private final JRDService jrdService;
     private final PersistenceService persistenceService;
     private final SecurityUtils securityUtils;
     private final JudicialBookingService judicialBookingService;
     private final String sortDirection;
     private final String sortColumn;
+    private final String sortColumnJrd;
     private final List<String> authorisedServices;
     private final boolean includeJudicialBookings;
     String pageSize;
@@ -71,24 +75,29 @@ public class RefreshOrchestrator {
     public RefreshOrchestrator(RetrieveDataService retrieveDataService,
                                RequestMappingService<UserAccessProfile> requestMappingService,
                                ParseRequestService parseRequestService,
-                               CRDService crdService, PersistenceService persistenceService,
+                               CRDService crdService,
+                               JRDService jrdService,
+                               PersistenceService persistenceService,
                                SecurityUtils securityUtils,
                                JudicialBookingService judicialBookingService,
                                @Value("${refresh.Job.pageSize}") String pageSize,
                                @Value("${refresh.Job.sortDirection}") String sortDirection,
                                @Value("${refresh.Job.sortColumn}") String sortColumn,
+                               @Value("${refresh.Job.sortColumnJrd}") String sortColumnJrd,
                                @Value("${refresh.Job.authorisedServices}") List<String> authorisedServices,
                                @Value("${refresh.Job.includeJudicialBookings}") Boolean  includeJudicialBookings) {
         this.retrieveDataService = retrieveDataService;
         this.requestMappingService = requestMappingService;
         this.parseRequestService = parseRequestService;
         this.crdService = crdService;
+        this.jrdService = jrdService;
         this.persistenceService = persistenceService;
         this.securityUtils = securityUtils;
         this.judicialBookingService = judicialBookingService;
         this.pageSize = pageSize;
         this.sortDirection = sortDirection;
         this.sortColumn = sortColumn;
+        this.sortColumnJrd = sortColumnJrd;
         this.authorisedServices = authorisedServices;
         this.includeJudicialBookings = BooleanUtils.isTrue(includeJudicialBookings);
     }
@@ -148,19 +157,21 @@ public class RefreshOrchestrator {
             try {
                 // Create userAccessProfiles based upon userIds
 
-                if (refreshJobEntity.getRoleCategory().equals(RoleCategory.LEGAL_OPERATIONS.name())) {
+                if (RoleCategory.LEGAL_OPERATIONS.name().equals(refreshJobEntity.getRoleCategory())) {
                     userAccessProfiles = retrieveDataService.retrieveProfiles(userRequest, UserType.CASEWORKER);
                     log.info("Total profiles received from CRD is {}", userAccessProfiles.size());
                     //prepare the response code
                     responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
                             UserType.CASEWORKER);
 
-                } else if (refreshJobEntity.getRoleCategory().equals(RoleCategory.JUDICIAL.name())) {
+                } else if (RoleCategory.JUDICIAL.name().equals(refreshJobEntity.getRoleCategory())) {
                     userAccessProfiles = retrieveDataService.retrieveProfiles(userRequest, UserType.JUDICIAL);
                     log.info("Total profiles received from JRD is {}", userAccessProfiles.size());
                     //prepare the response code
                     responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles,
                             UserType.JUDICIAL);
+                } else {
+                    throw new UnprocessableEntityException(ERROR_INVALID_ROLE_CATEGORY);
                 }
             } catch (FeignException.NotFound feignClientException) {
 
@@ -196,21 +207,16 @@ public class RefreshOrchestrator {
         ValidationUtil.compareRoleCategory(refreshJobEntity.getRoleCategory());
         log.info("fetching details from RD for :: {} ", userType);
         try {
-            if (userType.equals(UserType.CASEWORKER)) {
+            if (UserType.CASEWORKER.equals(userType)) {
+                log.info("Refresh Job For CaseWorker/Staff Service ");
                 //Call to CRD Service to retrieve the total number of records in first call
                 ResponseEntity<List<Object>> response = crdService
                         .fetchCaseworkerDetailsByServiceName(refreshJobEntity.getJurisdiction(),
                                 Integer.parseInt(pageSize), 0,
                                 sortDirection, sortColumn);
 
-                log.info("fetching details from RD for :: {} ", userType);
                 // 2 step to find out the total number of records from header
-                var totalRecords = response.getHeaders().getFirst("total_records");
-                assert totalRecords != null;
-                double pageNumber = 0;
-                if (Integer.parseInt(pageSize) > 0) {
-                    pageNumber = Double.parseDouble(totalRecords) / Double.parseDouble(pageSize);
-                }
+                double pageNumber = getPageCountFromResponse(response);
 
                 //call to CRD
                 for (var page = 0; page < pageNumber; page++) {
@@ -223,6 +229,30 @@ public class RefreshOrchestrator {
 
                     responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles, userType);
                 }
+            } else if (UserType.JUDICIAL.equals(userType)) {
+                log.info("Refresh Job For Judicial Service");
+                //Call to JRD Service to retrieve the total number of records in first call
+                ResponseEntity<List<Object>> response = jrdService
+                        .fetchJudicialDetailsByServiceName(refreshJobEntity.getJurisdiction(),
+                                Integer.parseInt(pageSize), 0,
+                                sortDirection, sortColumnJrd);
+
+                // 2 step to find out the total number of records from header
+                double pageNumber = getPageCountFromResponse(response);
+
+                //call to JRD
+                for (var page = 0; page < pageNumber; page++) {
+                    ResponseEntity<List<Object>> userProfilesResponse = jrdService
+                            .fetchJudicialDetailsByServiceName(refreshJobEntity.getJurisdiction(),
+                                    Integer.parseInt(pageSize), page,
+                                    sortDirection, sortColumnJrd);
+                    Map<String, Set<UserAccessProfile>> userAccessProfiles = retrieveDataService
+                            .retrieveProfilesByServiceName(userProfilesResponse, userType);
+
+                    responseEntity = prepareResponseCodes(responseCodeWithUserId, userAccessProfiles, userType);
+                }
+            } else {
+                throw new UnprocessableEntityException(ERROR_INVALID_USER_TYPE);
             }
         } catch (FeignException.NotFound feignClientException) {
             log.error("Feign Exception :: {} ", feignClientException.contentUTF8());
@@ -308,5 +338,15 @@ public class RefreshOrchestrator {
         }
     }
 
+    private double getPageCountFromResponse(ResponseEntity<List<Object>> response) {
+        var totalRecords = response.getHeaders().getFirst("total_records");
+        assert totalRecords != null;
+        double pageNumber = 1;  // i.e. default of 1 when no pagination
+        if (Integer.parseInt(pageSize) > 0) {
+            pageNumber = Double.parseDouble(totalRecords) / Double.parseDouble(pageSize);
+        }
+
+        return pageNumber;
+    }
 
 }

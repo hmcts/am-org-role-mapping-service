@@ -32,7 +32,6 @@ public class JacksonUtils {
     }
 
 
-
     public static final ObjectMapper MAPPER = JsonMapper.builder()
             .configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true)
             .configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
@@ -85,6 +84,15 @@ public class JacksonUtils {
         return caseWorkerProfilesResponses;
     }
 
+    public static List<JudicialProfileV2> convertListInJudicialProfileV2(List<Object> from) {
+        List<JudicialProfileV2> judicialProfiles = new ArrayList<>();
+        for (Object obj : from) {
+            judicialProfiles.add(convertInJudicialProfileV2(obj));
+        }
+
+        return judicialProfiles;
+    }
+
     public static JudicialProfileV2 convertInJudicialProfileV2(Object from) {
         return MAPPER.convertValue(from, new TypeReference<>() {
         });
@@ -94,4 +102,5 @@ public class JacksonUtils {
         return MAPPER.convertValue(from, new TypeReference<>() {
         });
     }
+
 }
