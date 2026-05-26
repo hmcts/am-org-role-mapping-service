@@ -1,0 +1,12 @@
+{
+  "_guid_": "S-020.06",
+  "title": "trigger IRM scheduler process populated judicial queue",
+  "_extends_": "F-020-ProcessJudicialQueue",
+  "operationName": "Process populated IRM Judicial Queue",
+
+  "expectedResponse": {
+    "body": {
+      "endStatus": "SUCCESS"
+    }
+  }
+}

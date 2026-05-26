@@ -1,6 +1,6 @@
 {
-  "_guid_": "S-020.04",
-  "title": "trigger IRM delete from queue",
+  "_guid_": "S-020.05",
+  "title": "trigger IRM add user2 to queue",
   "_extends_": "F-020-Base-Root",
   "specs": [
     "an active IDAM profile with full permissions"
@@ -14,7 +14,7 @@
     "queryParams": {
       "userType": "JUDICIAL",
       "userId": "7cccd0e9-e712-4f61-a27f-47fc90ee02f1",
-      "email": "S02004@test.com",
+      "email": "S02005@test.com",
       "roleNames": "caseworker-ras-validation"
     }
   },
@@ -25,7 +25,7 @@
       "userId" : "7cccd0e9-e712-4f61-a27f-47fc90ee02f1",
       "userType" : "JUDICIAL",
       "data" : {
-        "email_id" : "S02004@test.com",
+        "email_id" : "S02005@test.com",
         "active_flag" : "Y",
         "deleted_flag" : "N",
         "roles" : [ {
