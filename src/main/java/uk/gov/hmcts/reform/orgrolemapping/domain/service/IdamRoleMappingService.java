@@ -200,6 +200,7 @@ public class IdamRoleMappingService {
         } else {
             // Patch or Invite the user
             ProcessMonitorDto patchProcessMonitorDto = patchOrInvite(userId, idamRoleData);
+            patchProcessMonitorDto.getProcessSteps().forEach(step -> processMonitorDto.appendToLastProcessStep("-" + step));
             isSuccess = EndStatus.SUCCESS.equals(patchProcessMonitorDto.getEndStatus());
             if (!isSuccess) {
                 errorMessageBuilder.append(patchProcessMonitorDto.getEndDetail());
