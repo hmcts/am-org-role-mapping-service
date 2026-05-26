@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-020.04",
+  "_guid_": "S-020.03",
   "title": "trigger IRM add user1 to queue",
   "_extends_": "F-020-Base-Root",
   "specs": [
@@ -14,7 +14,7 @@
     "queryParams": {
       "userType": "JUDICIAL",
       "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575d",
-      "email": "S02004@test.com",
+      "email": "S02003@test.com",
       "roleNames": "caseworker-ras-validation"
     }
   },
@@ -25,7 +25,7 @@
       "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575d",
       "userType": "JUDICIAL",
       "data" : {
-        "email_id" : "S02004@test.com",
+        "email_id" : "S02003@test.com",
         "active_flag" : "Y",
         "deleted_flag" : "N",
         "roles" : [ {
