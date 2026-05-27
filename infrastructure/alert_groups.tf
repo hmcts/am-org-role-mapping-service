@@ -13,4 +13,5 @@ module "am-prm-action-group" {
   short_name             = "am-prm-support"
   email_receiver_name    = "AM PRM Process Support Mailing List"
   email_receiver_address = data.azurerm_key_vault_secret.am_prm_support_email.value
+  tags                   = var.common_tags
 }
