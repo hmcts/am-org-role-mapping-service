@@ -17,6 +17,8 @@ public final class RoleAssignmentConstants {
 
             public static final String BASE_LOCATION = "baseLocation";
             public static final String BOOKABLE = "bookable";
+            public static final String CASE_ACCESS_GROUP_ID = "caseAccessGroupId";
+            public static final String CASE_TYPE = "caseType";
             public static final String CONTRACT_TYPE = "contractType";
             public static final String JURISDICTION = "jurisdiction";
             public static final String PRIMARY_LOCATION = "primaryLocation";
