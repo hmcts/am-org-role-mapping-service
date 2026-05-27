@@ -31,7 +31,7 @@ public class IrmScheduler {
 
     @Scheduled(cron = "${idam.role.management.scheduling.housekeeping.cron}")
     public ProcessMonitorDto deleteInactiveQueueEntries() {
-        log.info("Starting IRM Scheduler for Delete Inactive Queue Entriies");
+        log.info("Starting IRM Scheduler for Delete Inactive Queue Entries");
         return idamRoleMappingService.deleteInactiveQueueEntries(deleteIntervalDays);
     }
 }

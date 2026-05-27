@@ -109,8 +109,8 @@ public class IdamRoleMappingService {
         int successfulJobCount = 0;
         int failedJobCount = 0;
         try {
-            if (deleteIntervalDays == null) {
-                throw new ServiceException("Delete interval days value is null");
+            if (deleteIntervalDays == null || deleteIntervalDays <= 0) {
+                throw new ServiceException("Delete interval days value is not set");
             }
             successfulJobCount = idamRoleManagementQueueRepository.deleteInactiveQueueEntries(deleteIntervalDays);
         } catch (Exception ex) {
