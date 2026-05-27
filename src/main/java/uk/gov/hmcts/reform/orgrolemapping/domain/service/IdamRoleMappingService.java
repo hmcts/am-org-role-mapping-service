@@ -102,16 +102,17 @@ public class IdamRoleMappingService {
     }
 
     @Transactional
-    public ProcessMonitorDto deleteInactiveQueueEntries(int deleteIntervalDays) {
+    public ProcessMonitorDto deleteInactiveQueueEntries(Integer deleteIntervalDays) {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(DELETEINACTIVE);
         processEventTracker.trackEventStarted(processMonitorDto);
         StringBuilder errorMessageBuilder = new StringBuilder();
-        boolean isSuccess = false;
         int successfulJobCount = 0;
         int failedJobCount = 0;
         try {
+            if (deleteIntervalDays == null) {
+                throw new ServiceException("Delete interval days value is null");
+            }
             successfulJobCount = idamRoleManagementQueueRepository.deleteInactiveQueueEntries(deleteIntervalDays);
-            isSuccess = true;
         } catch (Exception ex) {
             failedJobCount += 1;
             String message = String.format("Error occurred while deleting inactive queue records: %s",
