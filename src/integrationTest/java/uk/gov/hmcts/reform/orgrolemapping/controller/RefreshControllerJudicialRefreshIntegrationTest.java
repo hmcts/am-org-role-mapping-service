@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,7 +37,6 @@ import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

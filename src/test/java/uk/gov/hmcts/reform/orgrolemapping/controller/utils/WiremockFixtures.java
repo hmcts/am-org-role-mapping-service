@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingRequest;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.azure.core.http.ContentType.APPLICATION_JSON;
@@ -63,6 +64,28 @@ public class WiremockFixtures {
 
     }
 
+    public void stubIdamCall() throws JsonProcessingException {
+
+        WIRE_MOCK_SERVER.stubFor(get(urlPathMatching("/o/userinfo"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBody(OBJECT_MAPPER.writeValueAsString(getUserInfoResponse()))
+                        .withTransformers("external_user-token-response")));
+    }
+
+    private Map<String, Object> getUserInfoResponse() {
+        LinkedHashMap<String, Object> data1 = new LinkedHashMap<>();
+
+        data1.put("id", "%s");
+        data1.put("uid", "%s");
+        data1.put("forename", "Super");
+        data1.put("surname", "User");
+        data1.put("email", "dummy@email.com");
+        data1.put("roles", List.of("%s"));
+
+        return data1;
+    }
 
     public void stubIdamSystemUser() throws JsonProcessingException {
         WIRE_MOCK_SERVER.stubFor(post(urlPathMatching("/o/token"))
@@ -71,8 +94,6 @@ public class WiremockFixtures {
                         .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                         .withBody(OBJECT_MAPPER.writeValueAsString(getTokenResponse()))
                 ));
-
-
     }
 
     private Map<String, Object> getOpenIdResponse() {
@@ -137,5 +158,4 @@ public class WiremockFixtures {
                         .withStatus(returnHttpStatus)
                 ));
     }
-
 }

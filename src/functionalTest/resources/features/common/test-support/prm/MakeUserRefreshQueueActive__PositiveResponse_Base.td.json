@@ -1,0 +1,29 @@
+{
+  "_guid_": "MakeUserRefreshQueueActive__PositiveResponse_Base",
+  "_extends_": "MakeUserRefreshQueueActive__Base",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "userId": "${[scenarioContext][testData][request][queryParams][userId]}",
+      "userLastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "lastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "deleted": "[[ANY_TIMESTAMP_NULLABLE]]",
+      "organisationId": "[[ANYTHING_PRESENT]]",
+      "organisationStatus": "[[ANYTHING_PRESENT]]",
+      "organisationProfileIds": "[[ANYTHING_PRESENT]]",
+      "accessTypes": "[[ANYTHING_PRESENT]]",
+      "accessTypesMinVersion": "[[ANY_INTEGER_NOT_NULLABLE]]",
+      "active": "OVERRIDE",
+      "retry": "[[ANY_INTEGER_NOT_NULLABLE]]",
+      "retryAfter": "[[ANY_TIMESTAMP_NULLABLE]]"
+    }
+  }
+
+}
