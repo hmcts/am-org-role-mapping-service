@@ -14,9 +14,6 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
         "${idam.role.management.scheduling.enabled} || ${testing.support.enabled}")
 public class IrmScheduler {
 
-    @Value("${dam.role.management.scheduling.housekeeping.deleteIntervalDays}")
-    private Integer deleteIntervalDays;
-
     private final IdamRoleMappingService idamRoleMappingService;
 
     public IrmScheduler(IdamRoleMappingService idamRoleMappingService) {
@@ -32,6 +29,9 @@ public class IrmScheduler {
     @Scheduled(cron = "${idam.role.management.scheduling.housekeeping.cron}")
     public ProcessMonitorDto deleteInactiveQueueEntries() {
         log.info("Starting IRM Scheduler for Delete Inactive Queue Entries");
+        Integer deleteIntervalDays = Integer.valueOf(System.getProperty(
+                "idam.role.management.scheduling.housekeeping.deleteIntervalDays"));
+        log.debug(String.format("deleteIntervalDays=%", deleteIntervalDays));
         return idamRoleMappingService.deleteInactiveQueueEntries(deleteIntervalDays);
     }
 }
