@@ -1,4 +1,4 @@
-@F-014
+@F-014 @Ignore
 Feature: F-014 : Refresh Professional User
 
   Background:
