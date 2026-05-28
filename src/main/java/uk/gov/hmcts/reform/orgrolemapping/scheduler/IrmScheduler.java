@@ -13,7 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
         "${idam.role.management.scheduling.enabled} || ${testing.support.enabled}")
 public class IrmScheduler {
 
-    public final static String DELETEINTERVALDAYS = "idam.role.management.scheduling.housekeeping.deleteIntervalDays";
+    public static final String DELETEINTERVALDAYS = "idam.role.management.scheduling.housekeeping.deleteIntervalDays";
     private final IdamRoleMappingService idamRoleMappingService;
 
     public IrmScheduler(IdamRoleMappingService idamRoleMappingService) {
