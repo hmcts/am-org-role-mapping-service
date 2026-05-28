@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.util;
 import org.apache.poi.ss.formula.functions.T;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.BadRequestException;
 
 import java.time.LocalDateTime;
@@ -176,5 +177,19 @@ class ValidationUtilTest {
         String roleType = "invalid";
         Assertions.assertThrows(BadRequestException.class, () ->
                 ValidationUtil.compareRoleCategory(roleType));
+    }
+
+    @Test
+    void shouldValidate_DateTimeFormat() {
+        String dateTimeStr = "2023-10-01T13:04:01";
+        ValidationUtil.validateDateTimeFormat(Constants.SINCE_TIMESTAMP_FORMAT, dateTimeStr);
+        assertNotNull(dateTimeStr);
+    }
+
+    @Test
+    void shouldThrow_BadRequestException_DateTimeFormat() {
+        String dateTimeStr = "invalid";
+        Assertions.assertThrows(BadRequestException.class, () ->
+            ValidationUtil.validateDateTimeFormat(Constants.SINCE_TIMESTAMP_FORMAT, dateTimeStr));
     }
 }

@@ -55,6 +55,7 @@ public class RequestMappingService<T> {
 
     public static final String STAFF_ORGANISATIONAL_ROLE_MAPPING = "staff-organisational-role-mapping";
     public static final String JUDICIAL_ORGANISATIONAL_ROLE_MAPPING = "judicial-organisational-role-mapping";
+    public static final String PROFESSIONAL_ORGANISATIONAL_ROLE_MAPPING = "professional-organisational-role-mapping";
     public static final String AM_ORG_ROLE_MAPPING_SERVICE = "am_org_role_mapping_service";
     public static final String IDAM_ROLES_QUERY_NAME = "getIdamRoles";
     public static final String IDAM_ROLES_RESULTS_KEY = "idamRoles";
