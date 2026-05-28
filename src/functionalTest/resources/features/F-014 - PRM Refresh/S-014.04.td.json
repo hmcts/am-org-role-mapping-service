@@ -1,0 +1,21 @@
+{
+  "_guid_": "S-014.04",
+  "title": "successful refresh of professional user - single user no prd",
+  "_extends_": "RefreshProfessionalUserRoleAssignments__PositiveResponse_Base",
+
+  "specs": [
+    "an active IDAM profile with full permissions"
+  ],
+
+  "request": {
+    "queryParams": {
+      "userId": "eccd490f-a40c-4a19-b063-7b107bc6480n"
+    }
+  },
+
+  "expectedResponse": {
+    "body" : {
+      "Message" : "Role assignments have been refreshed successfully"
+    }
+  }
+}

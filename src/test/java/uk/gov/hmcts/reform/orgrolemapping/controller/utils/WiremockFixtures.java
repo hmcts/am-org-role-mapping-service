@@ -80,6 +80,29 @@ public class WiremockFixtures {
 
     }
 
+    public void stubIdamCall() throws JsonProcessingException {
+
+        WIRE_MOCK_SERVER.stubFor(get(urlPathMatching("/o/userinfo"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBody(OBJECT_MAPPER.writeValueAsString(getUserInfoResponse()))
+                        .withTransformers("external_user-token-response")));
+    }
+
+    private Map<String, Object> getUserInfoResponse() {
+        LinkedHashMap<String, Object> data1 = new LinkedHashMap<>();
+
+        data1.put("id", "%s");
+        data1.put("uid", "%s");
+        data1.put("forename", "Super");
+        data1.put("surname", "User");
+        data1.put("email", "dummy@email.com");
+        data1.put("roles", List.of("%s"));
+
+        return data1;
+    }
+
     public void stubAuthorisationDetails(String serviceName) {
         WIRE_MOCK_SERVER.stubFor(get(urlPathMatching("/details"))
                 .withId(getUuidForServiceName(serviceName))
