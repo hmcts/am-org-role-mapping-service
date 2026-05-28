@@ -10,18 +10,23 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
+import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CRDService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.IdamRoleMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JRDService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialBookingService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.PrdService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrationHelper;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.ParseRequestService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RetrieveDataService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RoleAssignmentService;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
 import java.util.List;
@@ -30,12 +35,32 @@ import static org.mockito.Mockito.when;
 
 @TestConfiguration
 public class ProviderTestConfiguration {
-
     @MockBean
     CRDService crdService;
-
     @MockBean
     JRDService jrdService;
+    @MockBean
+    PrdService prdService;
+    @MockBean
+    UserRefreshQueueRepository userRefreshQueueRepository;
+    @MockBean
+    SecurityUtils securityUtils;
+    @MockBean
+    ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
+    @MockBean
+    private CacheManager cacheManager;
+    @MockBean
+    JudicialBookingService judicialBookingService;
+    @MockBean
+    RoleAssignmentService roleAssignmentService;
+    @MockBean
+    PersistenceService persistenceService;
+    @MockBean
+    ProcessEventTracker processEventTracker;
+    @MockBean
+    IdamRoleMappingService idamRoleMappingService;
+
+    private KieServices kieServices = KieServices.Factory.get();
 
     @Bean
     @Primary
@@ -51,15 +76,6 @@ public class ProviderTestConfiguration {
                 getStatelessKieSession(), securityUtils);
     }
 
-    @MockBean
-    RoleAssignmentService roleAssignmentService;
-
-    @MockBean
-    PersistenceService persistenceService;
-
-    @MockBean
-    IdamRoleMappingService idamRoleMappingService;
-
     @Bean
     @Primary
     public ParseRequestService getParseRequestService() {
@@ -73,15 +89,6 @@ public class ProviderTestConfiguration {
         when(environmentConfiguration.getEnvironment()).thenReturn("pr");
         return environmentConfiguration;
     }
-
-    @MockBean
-    SecurityUtils securityUtils;
-
-    @MockBean
-    private CacheManager cacheManager;
-
-    @MockBean
-    JudicialBookingService judicialBookingService;
 
     @Bean
     @Primary
@@ -109,13 +116,21 @@ public class ProviderTestConfiguration {
                 judicialBookingService, getRequestMappingService());
     }
 
-    private KieServices kieServices = KieServices.Factory.get();
+    @Bean
+    @Primary
+    public ProfessionalRefreshOrchestrator professionalRefreshOrchestrator() {
+        return new ProfessionalRefreshOrchestrator(
+            userRefreshQueueRepository,
+            prdService,
+            professionalRefreshOrchestrationHelper,
+            processEventTracker
+        );
+    }
 
     @Bean
     public KieContainer kieContainer() {
         return kieServices.getKieClasspathContainer();
     }
-
 
     @Bean
     public StatelessKieSession getStatelessKieSession() {

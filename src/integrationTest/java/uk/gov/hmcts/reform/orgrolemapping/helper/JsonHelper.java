@@ -53,8 +53,8 @@ public class JsonHelper {
 
     public String readJsonArrayFromFiles(List<String> fileNames)  {
         return "[" + fileNames.stream()
-                .map(this::readJsonFromFile)
-                .collect(Collectors.joining(",")) + "]";
+            .map(this::readJsonFromFile)
+            .collect(Collectors.joining(",")) + "]";
     }
 
 }

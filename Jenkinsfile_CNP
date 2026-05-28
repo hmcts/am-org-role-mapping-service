@@ -81,6 +81,7 @@ env.DEFINITION_STORE_HOST = "http://ccd-definition-store-api-pr-575.service.core
 env.DEFINITION_STORE_URL_BASE = "http://ccd-definition-store-api-aat.service.core-compute-aat.internal"
 env.CRD_URL = "http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal"
 env.JRD_URL = "http://rd-judicial-api-aat.service.core-compute-aat.internal"
+env.PRD_URL = "http://rd-professional-api-aat.service.core-compute-aat.internal"
 // Vars for Kubernetes PACT
 env.PACT_BROKER_FULL_URL = "https://pact-broker.platform.hmcts.net"
 env.AMQP_HOST = "rd-servicebus-aat.servicebus.windows.net"
@@ -105,6 +106,9 @@ env.BOOKING_FTA_ENABLED = "true"
 // Var to turn on IRM FTAs
 env.IRM_FTA_ENABLED = "true"
 
+// Var to turn on PRM FTAs
+env.PRM_FTA_ENABLED = "true"
+
 // Var to turn FTA on for azure-messaging-servicebus DTSAM-150
 env.AZURE_SERVICE_BUS_FTA_ENABLED = "true"
 env.REFRESH_FTA_ENABLED = "true"
@@ -125,6 +129,8 @@ withPipeline(type, product, component) {
     env.REFRESH_FTA_ENABLED = "false"
     // Don't run IRM FTAs on AAT
     env.IRM_FTA_ENABLED = "false"
+    // Don't run PRM FTAs on AAT
+    env.PRM_FTA_ENABLED = "false"
   }
   else {
     env.ORM_ENV = env.BRANCH_NAME
