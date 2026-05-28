@@ -35,7 +35,7 @@ public class ProcessEventTracker {
         Map<String, String> properties = createPropertiesMap(processMonitorDto);
         String message = createMessage(processMonitorDto, "Completed");
         log.debug("trackEventCompleted - {} {}", message,
-                JacksonUtils.writeValueAsPrettyJson(processMonitorDto));
+            JacksonUtils.writeValueAsPrettyJson(processMonitorDto));
 
         telemetryClient.trackEvent(message, properties, null);
     }
@@ -51,7 +51,7 @@ public class ProcessEventTracker {
                 ? processMonitorDto.getEndTime().toString() : null);
         properties.put("EndStatus",
                 processMonitorDto.getEndStatus() != null
-                        ? processMonitorDto.getEndStatus().toString() : null);
+                ? processMonitorDto.getEndStatus().toString() : null);
         properties.put("EndDetail", processMonitorDto.getEndDetail());
 
         return properties;
