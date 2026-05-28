@@ -53,6 +53,9 @@ class IrmSchedulerProcessIntegrationTest extends BaseSchedulerTestIntegration {
         "classpath:sql/irm/queue/init_idam_role_management_queue.sql"
     })
     void testDeleteInactiveQueueEntries_noDaysSet() {
+        // GIVEN
+        System.setProperty(DELETEINTERVALDAYS, "");
+
         // WHEN
         Exception expection = assertThrows(ServiceException.class, () -> irmScheduler.deleteInactiveQueueEntries());
 
