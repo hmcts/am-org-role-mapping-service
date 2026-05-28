@@ -29,8 +29,20 @@ feign:
         url: http://localhost:${wiremock.server.port:8091}
       jbsClient:
         url: http://localhost:${wiremock.server.port:4097}
+      prdClient:
+        url: http://localhost:${wiremock.server.port:8090}
+      ccdClient:
+        url: http://localhost:${wiremock.server.port:4451}
       idamClient:
         url: http://localhost:${wiremock.server.port:5000}
+
+professional:
+  role:
+    mapping:
+      refreshApi:
+        enabled: true
+      scheduling:
+        enabled: false
 
 amqp:
   crd:
