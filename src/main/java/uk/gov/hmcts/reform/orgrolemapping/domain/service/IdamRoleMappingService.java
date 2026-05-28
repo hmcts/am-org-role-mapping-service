@@ -102,14 +102,14 @@ public class IdamRoleMappingService {
     }
 
     @Transactional
-    public ProcessMonitorDto deleteInactiveQueueEntries(Integer deleteIntervalDays) {
+    public ProcessMonitorDto deleteInactiveQueueEntries(String deleteIntervalDays) {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(DELETEINACTIVE);
         processEventTracker.trackEventStarted(processMonitorDto);
         StringBuilder errorMessageBuilder = new StringBuilder();
         int successfulJobCount = 0;
         int failedJobCount = 0;
         try {
-            if (deleteIntervalDays == null || deleteIntervalDays <= 0) {
+            if (deleteIntervalDays == null || Integer.valueOf(deleteIntervalDays) <= 0) {
                 throw new ServiceException("Delete interval days value is not set");
             }
             successfulJobCount = idamRoleManagementQueueRepository.deleteInactiveQueueEntries(deleteIntervalDays);
