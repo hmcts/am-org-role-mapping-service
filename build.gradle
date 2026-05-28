@@ -418,7 +418,7 @@ dependencies {
 
     testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
     testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-engine', version: versions.junitPlatform
-    testImplementation 'com.github.hmcts:befta-fw:9.2.4'
+    testImplementation 'com.github.hmcts:befta-fw:9.2.6'
 
     testImplementation group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber
     testImplementation group: 'io.cucumber', name: 'cucumber-junit', version: versions.cucumber
