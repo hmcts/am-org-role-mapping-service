@@ -9,8 +9,8 @@ module "am-prm-action-group" {
   env      = var.env
 
   resourcegroup_name     = local.sharedResourceGroup
-  action_group_name      = "am-prm-support"
-  short_name             = "am-prm-support"
+  action_group_name      = "am-prm-support-${var.env}"
+  short_name             = "am-prm-alert"
   email_receiver_name    = "AM PRM Process Support Mailing List"
   email_receiver_address = data.azurerm_key_vault_secret.am_prm_support_email.value
   tags                   = var.common_tags
