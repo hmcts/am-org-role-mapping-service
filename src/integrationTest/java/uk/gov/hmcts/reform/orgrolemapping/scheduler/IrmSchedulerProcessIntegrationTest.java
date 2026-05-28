@@ -77,9 +77,7 @@ class IrmSchedulerProcessIntegrationTest extends BaseSchedulerTestIntegration {
     })
     void testDeleteInactiveQueueEntries() {
         // GIVEN
-        int expectedNoOfRecords = 4;
         Integer noOfDays = 90;
-        LocalDateTime nintyDays = LocalDateTime.now().minusDays(noOfDays);
         System.setProperty(DELETEINTERVALDAYS, noOfDays.toString());
 
         // WHEN
@@ -88,7 +86,9 @@ class IrmSchedulerProcessIntegrationTest extends BaseSchedulerTestIntegration {
         // THEN
         assertNotNull(processMonitorDto);
         assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
+        int expectedNoOfRecords = 4;
         List<IdamRoleManagementQueueEntity> results = assertNoOfRecords(expectedNoOfRecords);
+        LocalDateTime nintyDays = LocalDateTime.now().minusDays(noOfDays);
         results.forEach(record -> assertTrue(record.getLastUpdated().isAfter(nintyDays)));
     }
 
