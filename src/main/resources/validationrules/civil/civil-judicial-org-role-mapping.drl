@@ -226,6 +226,7 @@ when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.CIVIL_WA_2_1.getValue())
   $joh: JudicialOfficeHolder(office in ( "CIVIL Circuit Judge-Salaried", "CIVIL Specialist Circuit Judge-Salaried",
                                          "CIVIL Senior Circuit Judge-Salaried", "CIVIL High Court Judge-Salaried"))
+
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
