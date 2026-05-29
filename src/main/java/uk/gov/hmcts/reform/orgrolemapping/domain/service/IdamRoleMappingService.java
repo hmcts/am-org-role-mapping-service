@@ -121,7 +121,7 @@ public class IdamRoleMappingService {
             processMonitorDto.addProcessStep(message);
             processMonitorDto.markAsFailed(ex.getMessage());
             processEventTracker.trackEventCompleted(processMonitorDto);
-            throw ex;
+            return processMonitorDto;
         }
         if (successfulJobCount == 0 && failedJobCount == 0) {
             processMonitorDto.addProcessStep(NO_ENTITIES);
