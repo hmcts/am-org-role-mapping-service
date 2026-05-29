@@ -1,0 +1,13 @@
+{
+  "_guid_": "S-020.01",
+  "title": "trigger IRM scheduler delete inactive queue entries",
+  "_extends_": "F-020-DeleteInactiveQueueEntries",
+  "operationName": "Delete inactive queue entries",
+
+  "expectedResponse": {
+    "body": {
+      "endStatus": "SUCCESS",
+      "processSteps" : [ "IRM Delete Inactive Queue Entries", "No entities to process" ]
+    }
+  }
+}
