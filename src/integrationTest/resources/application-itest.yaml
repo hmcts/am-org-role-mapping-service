@@ -27,7 +27,7 @@ idam:
       scheduling:
         enabled: ${IRM_SCHEDULING_ENABLED:false}
         housekeeping:
-          deleteIntervalDays: ${IRM_SCHEDULING_HOUSEKEEPING_DAYS:-1}
+          deleteIntervalDays: ${IRM_SCHEDULING_HOUSEKEEPING_DAYS:1}
 feign:
   client:
     config:
