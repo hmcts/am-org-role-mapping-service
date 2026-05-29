@@ -57,10 +57,11 @@ class IrmSchedulerProcessIntegrationTest extends BaseSchedulerTestIntegration {
         System.setProperty(DELETEINTERVALDAYS, "");
 
         // WHEN
-        Exception expection = assertThrows(ServiceException.class, () -> irmScheduler.deleteInactiveQueueEntries());
+        ProcessMonitorDto processMonitorDto = irmScheduler.deleteInactiveQueueEntries();
 
         // THEN
-        assertNotNull(expection);
+        assertNotNull(processMonitorDto);
+        assertEquals(EndStatus.FAILED, processMonitorDto.getEndStatus());
     }
 
     /**
