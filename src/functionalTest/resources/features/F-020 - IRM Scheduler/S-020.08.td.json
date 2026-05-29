@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-020.01",
+  "_guid_": "S-020.08",
   "title": "trigger IRM scheduler delete inactive queue entries",
   "_extends_": "F-020-DeleteInactiveQueueEntries",
   "operationName": "Delete inactive queue entries",
