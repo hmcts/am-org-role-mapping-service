@@ -163,9 +163,6 @@ class DroolDivorceAdminOrgRoleMappingTest extends DroolBase {
 
         assertFalse(roleAssignments.isEmpty());
 
-        Map<String, RoleAssignment> roleAssignmentByName = roleAssignments.stream()
-                .collect(Collectors.toMap(RoleAssignment::getRoleName, Function.identity()));
-
         List<ExpectedRole> expectedRoles = new ArrayList<>(expectedBaseRoles);
         if ("N".equals(taskSupervisorFlag)) {
             expectedRoles.removeIf(r -> RoleName.TASK_SUPERVISOR.equals(r.roleName()));
@@ -177,6 +174,9 @@ class DroolDivorceAdminOrgRoleMappingTest extends DroolBase {
         assertEquals(expectedRoles.size(), roleAssignments.size(),
                 "Expected " + expectedRoles.size() + " roles but got " + roleAssignments.size()
                         + ": " + roleAssignments.stream().map(RoleAssignment::getRoleName).toList());
+
+        Map<String, RoleAssignment> roleAssignmentByName = roleAssignments.stream()
+                .collect(Collectors.toMap(RoleAssignment::getRoleName, Function.identity()));
 
         expectedRoles.forEach(expected -> {
             RoleAssignment actual = roleAssignmentByName.get(expected.roleName());
