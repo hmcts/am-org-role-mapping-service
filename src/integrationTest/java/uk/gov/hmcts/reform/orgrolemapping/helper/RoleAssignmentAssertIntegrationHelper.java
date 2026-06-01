@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
 
@@ -192,7 +193,7 @@ public class RoleAssignmentAssertIntegrationHelper {
         return roleAssignmentMap;
     }
 
-    private static Map<String, AssignmentRequest> getMapOfRasRequests() throws IOException {
+    public static Map<String, AssignmentRequest> getMapOfRasRequests() throws IOException {
         Map<String, AssignmentRequest> requestMap = new HashMap<>();
 
         var allLoggedRequests = WIRE_MOCK_SERVER.findAll(postRequestedFor(urlEqualTo(RAS_CREATE_ASSIGNMENTS_URL)));
