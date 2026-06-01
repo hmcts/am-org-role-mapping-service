@@ -105,14 +105,14 @@ public class IdamRoleMappingService {
     public ProcessMonitorDto deleteInactiveQueueEntries(String deleteIntervalDays) {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(DELETEINACTIVE);
         processEventTracker.trackEventStarted(processMonitorDto);
+        processMonitorDto.addProcessStep(DELETEINACTIVE);
         StringBuilder errorMessageBuilder = new StringBuilder();
         int successfulJobCount = 0;
         int failedJobCount = 0;
         try {
-            if (deleteIntervalDays == null || "".equals(deleteIntervalDays)
-                    || Integer.valueOf(deleteIntervalDays) <= 0) {
-                String message = String.format("Delete interval days value is not set %s",  deleteIntervalDays);
-                throw new ServiceException(message);
+            if (deleteIntervalDays == null || deleteIntervalDays.isEmpty()
+                    || Integer.parseInt(deleteIntervalDays) <= 0) {
+                throw new ServiceException("Delete interval days value is not set");
             }
             successfulJobCount = idamRoleManagementQueueRepository.deleteInactiveQueueEntries(deleteIntervalDays);
         } catch (Exception ex) {
@@ -120,10 +120,7 @@ public class IdamRoleMappingService {
             String message = String.format("Error occurred while deleting inactive queue records: %s",
                     ex.getMessage());
             log.error(message, ex);
-            processMonitorDto.addProcessStep(message);
-            processMonitorDto.markAsFailed(ex.getMessage());
-            processEventTracker.trackEventCompleted(processMonitorDto);
-            return processMonitorDto;
+            errorMessageBuilder.append(message);
         }
         if (successfulJobCount == 0 && failedJobCount == 0) {
             processMonitorDto.addProcessStep(NO_ENTITIES);
