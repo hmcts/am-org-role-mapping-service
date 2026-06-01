@@ -1,0 +1,6 @@
+package validationrules.divorce;
+
+/*
+ * Financial Remedy has no caseworker-category staff organisational role mappings in the current
+ * staff configuration. CTSC and ADMINISTRATOR mappings live in the sibling divorce drool files.
+ */

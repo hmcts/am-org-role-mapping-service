@@ -1,0 +1,201 @@
+package validationrules.divorce;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import java.util.HashMap
+import java.util.Map
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.Attributes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.RoleName;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.WorkType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.crd.JobTitle;
+import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+
+/*
+ * DIVORCE ctsc "ctsc-team-leader" Org role mapping.
+ */
+rule "divorce_ctsc_team_leader_v1"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+   $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER),
+                                hasValidServiceCode(Jurisdiction.DIVORCE), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                                                            WorkType.HEARING_WORK,
+                                                            WorkType.ROUTINE_WORK,
+                                                            WorkType.DECISION_MAKING_WORK,
+                                                            WorkType.APPLICATIONS,
+                                                            WorkType.REVIEW_CASE,
+                                                            WorkType.EVIDENCE)));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName(RoleName.CTSC_TEAM_LEADER)
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($up.getSkillCodes())
+      .build());
+      logMsg("Rule : divorce_ctsc_team_leader_v1");
+end;
+
+/*
+ * DIVORCE ctsc "ctsc" Org role mapping.
+ */
+rule "divorce_ctsc_v1"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+   $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
+                                hasValidServiceCode(Jurisdiction.DIVORCE), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                                                            WorkType.HEARING_WORK,
+                                                            WorkType.ROUTINE_WORK,
+                                                            WorkType.APPLICATIONS,
+                                                            WorkType.REVIEW_CASE,
+                                                            WorkType.EVIDENCE)));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName(RoleName.CTSC)
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($up.getSkillCodes())
+      .build());
+      logMsg("Rule : divorce_ctsc_v1");
+end;
+
+/*
+ * DIVORCE ctsc "hmcts-ctsc" Org role mapping.
+ */
+rule "divorce_hmcts_ctsc_v1"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+   $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
+                                hasValidServiceCode(Jurisdiction.DIVORCE), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName(RoleName.HMCTS_CTSC)
+      .grantType(GrantType.BASIC)
+      .classification(Classification.PRIVATE)
+      .readOnly(true)
+      .attributes(attribute)
+      .build());
+      logMsg("Rule : divorce_hmcts_ctsc_v1");
+end;
+
+/*
+ * DIVORCE ctsc "task-supervisor" role mapping.
+ */
+rule "divorce_task_supervisor_v1"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+   $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
+                                hasValidServiceCode(Jurisdiction.DIVORCE), !suspended, isTaskSupervisor())
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName(RoleName.TASK_SUPERVISOR)
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($up.getSkillCodes())
+      .build());
+      logMsg("Rule : divorce_task_supervisor_v1");
+end;
+
+/*
+ * DIVORCE ctsc "case-allocator" role mapping.
+ */
+rule "divorce_case_allocator_v1"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+   $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
+                                hasValidServiceCode(Jurisdiction.DIVORCE), !suspended, isCaseAllocator())
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName(RoleName.CASE_ALLOCATOR)
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($up.getSkillCodes())
+      .build());
+      logMsg("Rule : divorce_case_allocator_v1");
+end;
+
+/*
+ * DIVORCE ctsc "specific-access-approver-ctsc" Org role mapping.
+ */
+rule "divorce_specific_access_approver_ctsc_v1"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+   $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER),
+                                hasValidServiceCode(Jurisdiction.DIVORCE), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.ACCESS_REQUESTS.getValue()));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.CTSC)
+      .roleType(RoleType.ORGANISATION)
+      .roleName(RoleName.SPECIFIC_ACCESS_APPROVER_CTSC)
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($up.getSkillCodes())
+      .build());
+      logMsg("Rule : divorce_specific_access_approver_ctsc_v1");
+end;

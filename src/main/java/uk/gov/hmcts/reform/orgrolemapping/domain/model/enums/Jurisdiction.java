@@ -9,6 +9,7 @@ public enum Jurisdiction {
     HRS("HRS", List.of("HRS")),
     IAC("IA", List.of("BFA1")),
     PROBATE("PROBATE", List.of("ABA6")),
+    DIVORCE("DIVORCE", List.of("ABA2")),
     POSSESSIONS("PCS", List.of("AAA3"));
 
     private final String name;
