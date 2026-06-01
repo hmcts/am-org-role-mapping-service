@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.IdamRecordType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.IdamRoleMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
@@ -26,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.OBJECT_MAPPER;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.JUDICIAL;
-import static uk.gov.hmcts.reform.orgrolemapping.scheduler.IrmScheduler.DELETEINTERVALDAYS;
 
 class IrmSchedulerProcessIntegrationTest extends BaseSchedulerTestIntegration {
 
@@ -42,6 +42,9 @@ class IrmSchedulerProcessIntegrationTest extends BaseSchedulerTestIntegration {
     @Autowired
     private IrmScheduler irmScheduler;
 
+    @Autowired
+    private IdamRoleMappingService idamRoleMappingService;
+
 
     /**
      * Delete Inactive Queue Entries - days not set.
@@ -52,7 +55,7 @@ class IrmSchedulerProcessIntegrationTest extends BaseSchedulerTestIntegration {
     })
     void testDeleteInactiveQueueEntries_noDaysSet() {
         // GIVEN
-        System.setProperty(DELETEINTERVALDAYS, "");
+        IrmScheduler irmScheduler =  new IrmScheduler(idamRoleMappingService,"");
 
         // WHEN
         ProcessMonitorDto processMonitorDto = irmScheduler.deleteInactiveQueueEntries();
@@ -80,7 +83,7 @@ class IrmSchedulerProcessIntegrationTest extends BaseSchedulerTestIntegration {
     void testDeleteInactiveQueueEntries() {
         // GIVEN
         Integer noOfDays = 90;
-        System.setProperty(DELETEINTERVALDAYS, noOfDays.toString());
+        IrmScheduler irmScheduler =  new IrmScheduler(idamRoleMappingService,noOfDays.toString());
 
         // WHEN
         ProcessMonitorDto processMonitorDto = irmScheduler.deleteInactiveQueueEntries();

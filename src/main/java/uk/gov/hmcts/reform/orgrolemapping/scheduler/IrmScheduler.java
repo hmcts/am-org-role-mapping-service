@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.scheduler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -13,11 +14,14 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
         "${idam.role.management.scheduling.enabled} || ${testing.support.enabled}")
 public class IrmScheduler {
 
-    public static final String DELETEINTERVALDAYS = "idam.role.management.scheduling.housekeeping.deleteIntervalDays";
     private final IdamRoleMappingService idamRoleMappingService;
+    private final String deleteIntervalDays;
 
-    public IrmScheduler(IdamRoleMappingService idamRoleMappingService) {
+    public IrmScheduler(IdamRoleMappingService idamRoleMappingService,
+                        @Value("${idam.role.management.scheduling.housekeeping.deleteIntervalDays}")
+                        String deleteIntervalDays) {
         this.idamRoleMappingService = idamRoleMappingService;
+        this.deleteIntervalDays = deleteIntervalDays;
     }
 
     @Scheduled(cron = "${idam.role.management.scheduling.judicial.cron}")
@@ -29,7 +33,6 @@ public class IrmScheduler {
     @Scheduled(cron = "${idam.role.management.scheduling.housekeeping.cron}")
     public ProcessMonitorDto deleteInactiveQueueEntries() {
         log.info("Starting IRM Scheduler for Delete Inactive Queue Entries");
-        String deleteIntervalDays = System.getProperty(DELETEINTERVALDAYS);
         log.debug(String.format("deleteIntervalDays=%s", deleteIntervalDays));
         return idamRoleMappingService.deleteInactiveQueueEntries(deleteIntervalDays);
     }
