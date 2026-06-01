@@ -118,22 +118,19 @@ class DroolDivorceAdminOrgRoleMappingTest extends DroolBase {
 
     static Stream<Arguments> divorceAdminScenarios() {
         return Stream.of(
-            Arguments.of(JobTitle.HEARING_CENTRE_TEAM_LEADER, "Y", "Y",
-                    EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER),
-            Arguments.of(JobTitle.HEARING_CENTRE_TEAM_LEADER, "N", "N",
-                    EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER),
-            Arguments.of(JobTitle.HEARING_CENTRE_ADMIN, "Y", "Y",
-                    EXPECTED_ROLES_HEARING_CENTRE_ADMIN),
-            Arguments.of(JobTitle.HEARING_CENTRE_ADMIN, "N", "N",
-                    EXPECTED_ROLES_HEARING_CENTRE_ADMIN),
-            Arguments.of(JobTitle.NBC_TEAM_LEADER, "Y", "Y",
-                    EXPECTED_ROLES_NBC_TEAM_LEADER),
-            Arguments.of(JobTitle.NBC_TEAM_LEADER, "N", "N",
-                    EXPECTED_ROLES_NBC_TEAM_LEADER),
-            Arguments.of(JobTitle.NBC_ADMIN, "Y", "Y",
-                    EXPECTED_ROLES_NBC_ADMIN),
-            Arguments.of(JobTitle.NBC_ADMIN, "N", "N",
-                    EXPECTED_ROLES_NBC_ADMIN)
+            scenariosFor(JobTitle.HEARING_CENTRE_TEAM_LEADER, EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER),
+            scenariosFor(JobTitle.HEARING_CENTRE_ADMIN, EXPECTED_ROLES_HEARING_CENTRE_ADMIN),
+            scenariosFor(JobTitle.NBC_TEAM_LEADER, EXPECTED_ROLES_NBC_TEAM_LEADER),
+            scenariosFor(JobTitle.NBC_ADMIN, EXPECTED_ROLES_NBC_ADMIN)
+        ).flatMap(Function.identity());
+    }
+
+    private static Stream<Arguments> scenariosFor(JobTitle jobTitle, List<ExpectedRole> expectedRoles) {
+        return Stream.of(
+            Arguments.of(jobTitle, "Y", "Y", expectedRoles),
+            Arguments.of(jobTitle, "Y", "N", expectedRoles),
+            Arguments.of(jobTitle, "N", "Y", expectedRoles),
+            Arguments.of(jobTitle, "N", "N", expectedRoles)
         );
     }
 
