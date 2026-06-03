@@ -49,6 +49,10 @@ class DroolIrmJudicialRoleMappingTest extends DroolBase {
                 assertFalse(r.getAttributes().containsKey("workTypes"));
             }
         });
+        roleMappings.getIdamRoles().forEach(r -> {
+            assertNotNull(r.getUserId());
+            assertNotNull(r.getRoleName());
+        });
     }
 
     private List<FeatureFlag> setFeatureFlags() {
