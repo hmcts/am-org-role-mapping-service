@@ -8,6 +8,7 @@
   "request": {
     "pathVariables": {
       "caseworkerRole": "CTSC Administrator",
+      "emailId": "rdam-caseworker-divorce-10@hmcts.net",
       "caseAllocator": "true",
       "taskSupervisor": "true",
       "actorId": "${[scenarioContext][childContexts][F-020_CreateCaseworkerProfileInCRD][testData][actualResponse][body][case_worker_ids][0]}"

@@ -8,6 +8,7 @@
   "request": {
     "pathVariables": {
       "caseworkerRole": "Hearing Centre Team Leader",
+      "emailId": "rdam-caseworker-divorce-03@hmcts.net",
       "caseAllocator": "false",
       "taskSupervisor": "false",
       "actorId": "${[scenarioContext][childContexts][F-020_CreateCaseworkerProfileInCRD][testData][actualResponse][body][case_worker_ids][0]}"

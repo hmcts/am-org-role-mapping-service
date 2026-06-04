@@ -29,7 +29,7 @@
         {
           "first_name": "frtestuser",
           "last_name": "caseworker",
-          "email_id": "${}${[scenarioContext][customValues][generateEmailId]}",
+          "email_id": "${[scenarioContext][parentContext][testData][request][pathVariables][emailId]}",
           "region_id": 1,
           "region": "National",
           "user_type": "CTSC",
