@@ -11,7 +11,7 @@
                     validationrules.stcic,
                     validationrules.hrs,
                     validationrules.probate,
-                    validationrules.divorce,
+                    validationrules.fr,
                     validationrules.possessions">
         <ksession name="org-role-mapping-validation-session" type="stateless"/>
     </kbase>

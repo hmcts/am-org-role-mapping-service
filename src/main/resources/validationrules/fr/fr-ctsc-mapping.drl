@@ -1,4 +1,4 @@
-package validationrules.divorce;
+package validationrules.fr;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.HashMap
@@ -26,7 +26,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  */
 rule "divorce_ctsc_team_leader_v1"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER),
                                 hasValidServiceCode(Jurisdiction.DIVORCE), !suspended)
 then
@@ -61,7 +61,7 @@ end;
  */
 rule "divorce_ctsc_v1"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
                                 hasValidServiceCode(Jurisdiction.DIVORCE), !suspended)
 then
@@ -95,7 +95,7 @@ end;
  */
 rule "divorce_hmcts_ctsc_v1"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
                                 hasValidServiceCode(Jurisdiction.DIVORCE), !suspended)
 then
@@ -120,7 +120,7 @@ end;
  */
 rule "divorce_task_supervisor_v1"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
                                 hasValidServiceCode(Jurisdiction.DIVORCE), !suspended, isTaskSupervisor())
 then
@@ -148,7 +148,7 @@ end;
  */
 rule "divorce_case_allocator_v1"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
                                 hasValidServiceCode(Jurisdiction.DIVORCE), !suspended, isCaseAllocator())
 then
@@ -176,7 +176,7 @@ end;
  */
 rule "divorce_specific_access_approver_ctsc_v1"
 when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER),
                                 hasValidServiceCode(Jurisdiction.DIVORCE), !suspended)
 then

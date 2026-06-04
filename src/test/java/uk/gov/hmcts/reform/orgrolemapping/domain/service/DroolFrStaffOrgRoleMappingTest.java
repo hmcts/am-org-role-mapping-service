@@ -29,9 +29,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
-class DroolDivorceStaffOrgRoleMappingTest extends DroolBase {
+class DroolFrStaffOrgRoleMappingTest extends DroolBase {
 
     private static final String DIVORCE = "DIVORCE";
+    private static final String FEATURE_FLAG_PREFIX = "FR";
     private static final String SERVICE_CODE = "ABA2";
 
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
@@ -70,7 +71,7 @@ class DroolDivorceStaffOrgRoleMappingTest extends DroolBase {
         allProfiles.add(cap);
 
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction(DIVORCE, true));
+            buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction(FEATURE_FLAG_PREFIX, true));
 
         String[] roleNames = StringUtils.isEmpty(expectedRoles) ? new String[0] : expectedRoles.split(",");
         assertEquals(roleNames.length, roleAssignments.size());
@@ -119,7 +120,7 @@ class DroolDivorceStaffOrgRoleMappingTest extends DroolBase {
         allProfiles.add(cap);
 
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction(DIVORCE, false));
+            buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction(FEATURE_FLAG_PREFIX, false));
 
         assertTrue(roleAssignments.isEmpty());
     }
@@ -137,7 +138,7 @@ class DroolDivorceStaffOrgRoleMappingTest extends DroolBase {
         });
 
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction(DIVORCE, true));
+            buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction(FEATURE_FLAG_PREFIX, true));
 
         assertTrue(roleAssignments.isEmpty());
     }

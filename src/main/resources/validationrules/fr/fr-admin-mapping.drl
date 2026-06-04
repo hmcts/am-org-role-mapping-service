@@ -1,4 +1,4 @@
-package validationrules.divorce;
+package validationrules.fr;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.HashMap
@@ -26,7 +26,7 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
  */
 rule "divorce_hmcts_admin_v1"
 when
-    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
                                                    JobTitle.HEARING_CENTRE_ADMIN,
                                                    JobTitle.NBC_TEAM_LEADER,
@@ -55,7 +55,7 @@ end;
  */
 rule "divorce_hearing_centre_admin_v1"
 when
-    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
                                                    JobTitle.HEARING_CENTRE_ADMIN),
                                   hasValidServiceCode(Jurisdiction.DIVORCE),
@@ -89,7 +89,7 @@ end;
  */
 rule "divorce_hearing_centre_team_leader_v1"
 when
-    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER),
                                   hasValidServiceCode(Jurisdiction.DIVORCE),
                                   !suspended)
@@ -122,7 +122,7 @@ end;
  */
 rule "divorce_national_business_centre_v1"
 when
-    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.NBC_TEAM_LEADER,
                                                    JobTitle.NBC_ADMIN),
                                   hasValidServiceCode(Jurisdiction.DIVORCE),
@@ -152,7 +152,7 @@ end;
  */
 rule "divorce_nbc_team_leader_v1"
 when
-    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.NBC_TEAM_LEADER),
                                   hasValidServiceCode(Jurisdiction.DIVORCE),
                                   !suspended)
@@ -181,7 +181,7 @@ end;
  */
 rule "divorce_admin_task_supervisor_v1"
 when
-    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
                                                    JobTitle.HEARING_CENTRE_ADMIN,
                                                    JobTitle.NBC_TEAM_LEADER,
@@ -214,7 +214,7 @@ end;
  */
 rule "divorce_admin_case_allocator_v1"
 when
-    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
                                                    JobTitle.HEARING_CENTRE_ADMIN,
                                                    JobTitle.NBC_TEAM_LEADER,
@@ -247,7 +247,7 @@ end;
  */
 rule "divorce_admin_specific_access_approver_admin_v1"
 when
-    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
                                                    JobTitle.NBC_TEAM_LEADER),
                                   hasValidServiceCode(Jurisdiction.DIVORCE),
@@ -278,7 +278,7 @@ end;
  */
 rule "divorce_admin_specific_access_approver_legal_ops_v1"
 when
-    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.DIVORCE_WA_1_0.getValue())
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER),
                                   hasValidServiceCode(Jurisdiction.DIVORCE),
                                   !suspended)

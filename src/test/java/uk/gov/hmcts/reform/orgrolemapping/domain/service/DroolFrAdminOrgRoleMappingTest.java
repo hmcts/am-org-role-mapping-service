@@ -33,11 +33,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
-class DroolDivorceAdminOrgRoleMappingTest extends DroolBase {
+class DroolFrAdminOrgRoleMappingTest extends DroolBase {
 
     private static final String PRIMARY_LOCATION_ID = UserAccessProfileBuilder.PRIMARY_LOCATION_ID;
     private static final String REGION_ID = "LDN";
     private static final String JURISDICTION = Jurisdiction.DIVORCE.getName();
+    private static final String FEATURE_FLAG_PREFIX = "FR";
 
     private static final String WORK_TYPES_HEARING = "routine_work, review_case";
     private static final String WORK_TYPES_ACCESS_REQUESTS = "access_requests";
@@ -153,7 +154,7 @@ class DroolDivorceAdminOrgRoleMappingTest extends DroolBase {
         allProfiles.add(cap);
 
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("DIVORCE", true));
+            buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction(FEATURE_FLAG_PREFIX, true));
 
         log.info("Returned divorce admin roles for {}: {}",
                 jobTitle, roleAssignments.stream().map(RoleAssignment::getRoleName).toList());
@@ -238,7 +239,7 @@ class DroolDivorceAdminOrgRoleMappingTest extends DroolBase {
         allProfiles.add(cap);
 
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("DIVORCE", false));
+            buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction(FEATURE_FLAG_PREFIX, false));
 
         assertEquals(0, roleAssignments.size());
     }
