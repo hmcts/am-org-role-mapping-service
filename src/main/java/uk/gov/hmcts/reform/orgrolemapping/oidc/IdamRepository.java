@@ -36,6 +36,7 @@ public class IdamRepository {
     private IdamApi idamApi;
     private OIdcAdminConfiguration oidcAdminConfiguration;
     private OAuth2Configuration oauth2Configuration;
+    private OIdcIdamConfiguration oidcIdamConfiguration;
     private RestTemplate restTemplate;
     @Value("${idam.api.url}")
     protected String idamUrl;
@@ -49,10 +50,12 @@ public class IdamRepository {
     public IdamRepository(IdamApi idamApi,
                           OIdcAdminConfiguration oidcAdminConfiguration,
                           OAuth2Configuration oauth2Configuration,
+                          OIdcIdamConfiguration oidcIdamConfiguration,
                           RestTemplate restTemplate, CacheManager cacheManager) {
         this.idamApi = idamApi;
         this.oidcAdminConfiguration = oidcAdminConfiguration;
         this.oauth2Configuration = oauth2Configuration;
+        this.oidcIdamConfiguration = oidcIdamConfiguration;
         this.restTemplate = restTemplate;
         this.cacheManager = cacheManager;
     }
@@ -133,6 +136,23 @@ public class IdamRepository {
                 userId,
                 oidcAdminConfiguration.getSecret(),
                 oidcAdminConfiguration.getScope(),
+                "4",
+                ""
+        );
+        var tokenResponse = idamApi.generateOpenIdToken(tokenRequest);
+        return tokenResponse.accessToken;
+    }
+
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 2000, multiplier = 3))
+    public String getIdamToken() {
+        var tokenRequest = new TokenRequest(
+                oidcIdamConfiguration.getClientId(),
+                oidcIdamConfiguration.getClientSecret(),
+                oidcIdamConfiguration.getGrantType(),
+                "",
+                oidcIdamConfiguration.getUserId(),
+                oidcIdamConfiguration.getPassword(),
+                oidcIdamConfiguration.getScope(),
                 "4",
                 ""
         );
