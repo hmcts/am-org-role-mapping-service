@@ -1,0 +1,13 @@
+{
+  "_guid_": "S-020.01",
+  "title": "trigger IRM scheduler process empty judicial queue",
+  "_extends_": "F-020-ProcessJudicialQueue",
+  "operationName": "Process empty IRM Judicial Queue",
+
+  "expectedResponse": {
+    "body": {
+      "endStatus": "SUCCESS",
+      "processSteps" : [ "IRM Process JUDICIAL Queue", "No entities to process" ]
+    }
+  }
+}

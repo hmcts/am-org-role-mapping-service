@@ -97,6 +97,9 @@ env.JUDICIAL_FTA_ENABLED = "true"
 // Var to turn on JBS FTAs (NB: only disable temporarily if JBS service is unavailable)
 env.BOOKING_FTA_ENABLED = "true"
 
+// Don't run IRM FTAs on AAT
+env.IRM_FTA_ENABLED = "false"
+
 // Don't run PRM FTAs on AAT
 env.PRM_FTA_ENABLED = "false"
 
