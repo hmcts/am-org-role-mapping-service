@@ -59,6 +59,8 @@ java:
     PROFESSIONAL_REFRESH_API_ENABLED: true
     # PROFESSIONAL_SCHEDULING_ENABLED should remain false in PREVIEW to prevent scheduling running in all PRs.
     PROFESSIONAL_SCHEDULING_ENABLED: false
+    # IRM_SCHEDULING_ENABLED should remain false in PREVIEW to prevent scheduling running in all PRs.
+    IRM_SCHEDULING_ENABLED: false
   postgresql:
     enabled: true
     primary:

@@ -60,6 +60,8 @@ java:
     PROFESSIONAL_REFRESH_API_ENABLED: false
     # PROFESSIONAL_SCHEDULING_ENABLED should only be set via FLUX
     PROFESSIONAL_SCHEDULING_ENABLED: false
+    # IRM_SCHEDULING_ENABLED should only be set via FLUX
+    IRM_SCHEDULING_ENABLED: false
 
 #subcharts conditions
 orm:
