@@ -39,6 +39,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class IdamRoleMappingService {
 
+    protected static final String DELETEINACTIVE = "IRM Delete Inactive Queue Entries";
     protected static final String INVITEUSER_NAME = "IRM Invite User";
     protected static final String NO_ENTITIES = "No entities to process";
     protected static final String QUEUE_NAME = "IRM Process %s Queue";
@@ -98,6 +99,37 @@ public class IdamRoleMappingService {
             log.debug("No queue entity found to delete for userId {}", userId);
             return false;
         }
+    }
+
+    @Transactional
+    public ProcessMonitorDto deleteInactiveQueueEntries(String deleteIntervalDays) {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(DELETEINACTIVE);
+        processEventTracker.trackEventStarted(processMonitorDto);
+        processMonitorDto.addProcessStep(DELETEINACTIVE);
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        int successfulJobCount = 0;
+        int failedJobCount = 0;
+        try {
+            if (deleteIntervalDays == null || deleteIntervalDays.isEmpty()
+                    || Integer.parseInt(deleteIntervalDays) <= 0) {
+                throw new ServiceException("Delete interval days value is not set");
+            }
+            successfulJobCount = idamRoleManagementQueueRepository.deleteInactiveQueueEntries(deleteIntervalDays);
+        } catch (Exception ex) {
+            failedJobCount += 1;
+            String message = String.format("Error occurred while deleting inactive queue records: %s",
+                    ex.getMessage());
+            log.error(message, ex);
+            errorMessageBuilder.append(message);
+        }
+        if (successfulJobCount == 0 && failedJobCount == 0) {
+            processMonitorDto.addProcessStep(NO_ENTITIES);
+        }
+        markProcessStatus(processMonitorDto,
+                successfulJobCount, failedJobCount,
+                errorMessageBuilder.toString());
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
     }
 
     public ProcessMonitorDto processJudicialQueue() {

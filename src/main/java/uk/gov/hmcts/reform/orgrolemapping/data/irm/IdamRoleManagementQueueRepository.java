@@ -76,4 +76,15 @@ public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRol
                      String retryOneIntervalMin,
                      String retryTwoIntervalMin, 
                      String retryThreeIntervalMin);
+
+    @Modifying
+    @Query(value = """
+        delete from idam_role_management_queue 
+        where last_updated + (interval '1' day) * CAST(:deleteIntervalDays AS INTEGER) < now() 
+        /* and not in an actve or retry state */
+        and (active = false and retry = 0 and (retry_after < now() or retry_after is null)  
+        /* ... or have no roles */
+        or not exists (select 1 from jsonb_array_elements(data -> 'roles') as role))
+        """, nativeQuery = true)
+    int deleteInactiveQueueEntries(String deleteIntervalDays);
 }

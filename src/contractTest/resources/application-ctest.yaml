@@ -10,6 +10,12 @@ idam:
   s2s-auth:
     url: http://localhost:${wiremock.server.port:4502}
   api.url: http://localhost:${wiremock.server.port:5000}
+  role:
+    management:
+      scheduling:
+        enabled: ${IRM_SCHEDULING_ENABLED:false}
+        housekeeping:
+          deleteIntervalDays: ${IRM_SCHEDULING_HOUSEKEEPING_DAYS:1}
 
 feign:
   client:
