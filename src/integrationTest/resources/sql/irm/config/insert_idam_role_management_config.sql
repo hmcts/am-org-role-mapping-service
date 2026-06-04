@@ -1,0 +1,2 @@
+INSERT INTO idam_role_management_config (role_name, user_type, allow_delete_flag) VALUES ('Senior Legal Caseworker', 'JUDICIAL', 'irm_1_0');
+INSERT INTO idam_role_management_config (role_name, user_type, allow_delete_flag) VALUES ('Legal Caseworker', 'JUDICIAL', 'irm_1_1');

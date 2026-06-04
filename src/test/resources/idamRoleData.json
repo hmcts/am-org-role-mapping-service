@@ -1,0 +1,13 @@
+{
+  "email_id": "someone@somewhere.com",
+  "active_flag": "Y",
+  "deleted_flag": "N",
+  "roles": [
+    {
+      "role_name": "Role1"
+    },
+    {
+      "role_name": "Role2"
+    }
+  ]
+}
