@@ -1,0 +1,9 @@
+{
+  "id": "some-other-user-id",
+  "email": "someoneelse@somewhere.com",
+  "roleNames": [
+    "oldRole2"
+  ],
+  "accountStatus": "ACTIVE",
+  "recordType": "LIVE"
+}

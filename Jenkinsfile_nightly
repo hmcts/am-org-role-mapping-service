@@ -72,6 +72,7 @@ env.S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.int
 env.S2S_URL_BASE = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
 env.OAUTH2_SCOPE_VARIABLES = "openid%20profile%20roles%20authorities"
 env.OPENID_SCOPE_VARIABLES = "openid+profile+roles+authorities"
+env.ORG_ROLE_MAPPING_IDAM_ADMIN_USERID = "orm.admin@hmcts.NET"
 env.MICROSERVICE_NAME = "am_org_role_mapping_service"
 env.EXTERNAL_FLAG_QUERY_PATH = "am/role-mapping/fetchFlagStatus?flagName="
 env.DEFINITION_STORE_HOST = "http://ccd-definition-store-api-pr-575.service.core-compute-preview.internal"
