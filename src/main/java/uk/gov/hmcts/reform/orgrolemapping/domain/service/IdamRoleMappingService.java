@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,14 +8,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.IdamRecordType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.InvitationStatus;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.InvitationType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.AccountStatus;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamInvitation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.IdamFeignClient;
@@ -24,6 +27,7 @@ import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker
 import uk.gov.hmcts.reform.orgrolemapping.util.irm.IdamRoleDataJsonBConverter;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +44,8 @@ public class IdamRoleMappingService {
     protected static final String QUEUE_NAME = "IRM Process %s Queue";
     protected static final String UPDATEUSER_NAME = "IRM Update User";
 
+    private static final String EMPTY_STRING = "";
+
     private final IdamFeignClient idamClient;
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
     private final IdamRoleDataJsonBConverter idamRoleDataJsonBConverter;
@@ -47,19 +53,21 @@ public class IdamRoleMappingService {
     private final String retryOneIntervalMin;
     private final String retryTwoIntervalMin;
     private final String retryThreeIntervalMin;
+    private final String irmServiceName;
 
     @Autowired
     public IdamRoleMappingService(
             IdamFeignClient idamClient,
             IdamRoleManagementQueueRepository idamRoleManagementQueueRepository,
-            PlatformTransactionManager transactionManager,
             ProcessEventTracker processEventTracker,
             @Value("${idam.role.management.scheduling.retryOneIntervalMin}")
             String retryOneIntervalMin,
             @Value("${idam.role.management.scheduling.retryOneIntervalMin}")
             String retryTwoIntervalMin,
             @Value("${idam.role.management.scheduling.retryOneIntervalMin}")
-            String retryThreeIntervalMin) {
+            String retryThreeIntervalMin,
+            @Value("${idam.client.irm.clientId}")
+            String irmServiceName) {
         this.idamClient = idamClient;
         this.idamRoleManagementQueueRepository = idamRoleManagementQueueRepository;
         this.idamRoleDataJsonBConverter = new IdamRoleDataJsonBConverter();
@@ -67,6 +75,7 @@ public class IdamRoleMappingService {
         this.retryOneIntervalMin = retryOneIntervalMin;
         this.retryTwoIntervalMin = retryTwoIntervalMin;
         this.retryThreeIntervalMin = retryThreeIntervalMin;
+        this.irmServiceName = irmServiceName;
     }
 
     @Transactional
@@ -94,7 +103,6 @@ public class IdamRoleMappingService {
         StringBuilder errorMessageBuilder = new StringBuilder();
         int successfulJobCount = 0;
         int failedJobCount = 0;
-        String errorMessage;
         try {
             processMonitorDto.addProcessStep(queueName);
             boolean anyEntitiesInQueue = true;
@@ -103,12 +111,14 @@ public class IdamRoleMappingService {
                 IdamRoleManagementQueueEntity idamRoleManagementQueueEntity
                         = idamRoleManagementQueueRepository.findAndLockSingleActiveRecord(userType.name());
                 if (idamRoleManagementQueueEntity != null) {
-                    errorMessage = processQueueEntry(idamRoleManagementQueueEntity);
-                    if (errorMessage.isEmpty()) {
+                    ProcessMonitorDto queueProcessMonitorDto = processQueueEntry(idamRoleManagementQueueEntity);
+                    queueProcessMonitorDto.getProcessSteps().forEach(step -> processMonitorDto.addProcessStep(step));
+                    boolean isSuccess = EndStatus.SUCCESS.equals(queueProcessMonitorDto.getEndStatus());
+                    if (isSuccess) {
                         successfulJobCount++;
                     } else {
                         failedJobCount++;
-                        errorMessageBuilder.append(errorMessage);
+                        errorMessageBuilder.append(queueProcessMonitorDto.getEndDetail());
                     }
                 }
                 // If there is another record to process then continue, otherwise exit the loop.
@@ -135,14 +145,17 @@ public class IdamRoleMappingService {
     }
 
     @Transactional
-    private String processQueueEntry(IdamRoleManagementQueueEntity idamRoleManagementQueueEntity) {
+    private ProcessMonitorDto processQueueEntry(IdamRoleManagementQueueEntity idamRoleManagementQueueEntity) {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Process Queue Entry");
         StringBuilder errorMessageBuilder = new StringBuilder();
 
         // Update the user
         ProcessMonitorDto updateProcessMonitorDto =
                 updateUser(idamRoleManagementQueueEntity.getUserId(),
                         idamRoleManagementQueueEntity.getData());
-        if (!EndStatus.SUCCESS.equals(updateProcessMonitorDto.getEndStatus())) {
+        updateProcessMonitorDto.getProcessSteps().forEach(step -> processMonitorDto.addProcessStep(step));
+        boolean isSuccess = EndStatus.SUCCESS.equals(updateProcessMonitorDto.getEndStatus());
+        if (!isSuccess) {
             String message = updateProcessMonitorDto.getEndDetail();
             errorMessageBuilder.append(message);
             log.error(message);
@@ -152,13 +165,18 @@ public class IdamRoleMappingService {
                     idamRoleManagementQueueEntity.getUserId(),
                     retryOneIntervalMin, retryTwoIntervalMin, retryThreeIntervalMin);
         }
-        return errorMessageBuilder.toString();
+        markProcessStatus(processMonitorDto,
+                isSuccess ? 1 : 0, isSuccess ? 0 : 1,
+                errorMessageBuilder.toString());
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
     }
 
     @Transactional
     public ProcessMonitorDto updateUser(String userId) {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(UPDATEUSER_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
+        processMonitorDto.addProcessStep(UPDATEUSER_NAME);
         StringBuilder errorMessageBuilder = new StringBuilder();
         boolean isSuccess = false;
         // Get the idam role data
@@ -169,11 +187,10 @@ public class IdamRoleMappingService {
             log.error(message);
         } else {
             // Patch or Invite the user
-            String errorMessage = patchOrInvite(userId, idamRoleData);
-            if (errorMessage.isEmpty()) {
-                isSuccess = true;
-            } else {
-                errorMessageBuilder.append(errorMessage);
+            ProcessMonitorDto patchProcessMonitorDto = patchOrInvite(userId, idamRoleData);
+            isSuccess = EndStatus.SUCCESS.equals(patchProcessMonitorDto.getEndStatus());
+            if (!isSuccess) {
+                errorMessageBuilder.append(patchProcessMonitorDto.getEndDetail());
             }
         }
 
@@ -188,29 +205,42 @@ public class IdamRoleMappingService {
     private ProcessMonitorDto updateUser(String userId, IdamRoleData idamRoleData) {
         ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(UPDATEUSER_NAME);
         processEventTracker.trackEventStarted(processMonitorDto);
+        processMonitorDto.addProcessStep(UPDATEUSER_NAME);
 
         // Patch or Invite the user
-        String errorMessage = patchOrInvite(userId, idamRoleData);
-        boolean isSuccess = errorMessage.isEmpty();
-
+        ProcessMonitorDto patchProcessMonitorDto = patchOrInvite(userId, idamRoleData);
+        patchProcessMonitorDto.getProcessSteps().forEach(step -> processMonitorDto.addProcessStep(step));
+        boolean isSuccess = EndStatus.SUCCESS.equals(patchProcessMonitorDto.getEndStatus());
         markProcessStatus(processMonitorDto,
                 isSuccess ? 1 : 0, isSuccess ? 0 : 1,
-                errorMessage);
+                patchProcessMonitorDto.getEndDetail());
         processEventTracker.trackEventCompleted(processMonitorDto);
         return processMonitorDto;
     }
 
-    private String patchOrInvite(String userId, IdamRoleData idamRoleData) {
+    private ProcessMonitorDto patchOrInvite(String userId, IdamRoleData idamRoleData) {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Patch User");
         StringBuilder errorMessageBuilder = new StringBuilder();
         boolean isSuccess = false;
         IdamRecordType idamRecordType = IdamRecordType.USER;
         try {
             IdamUser user = getIdamUser(userId);
-            if  (user == null) {
-                log.debug("No user found for userId {}", userId);
-                idamRecordType = IdamRecordType.INVITE;
 
-                // TODO - invite user
+            // No valid IDAM user found, so create a user object for invite.
+            if  (user == null) {
+                String email = idamRoleData.getEmailId();
+                log.debug("No user found for userId {} ({})", userId, email);
+                idamRecordType = IdamRecordType.INVITE;
+                List<String> roleNames = idamRoleData.getRoles().stream()
+                        .map(role -> role.getRoleName()).toList();
+                // Invite the user with the roleNames.
+                ProcessMonitorDto inviteProcessMonitorDto =
+                        inviteIdamUser(buildIdamUserFromEmail(userId, email), roleNames);
+                inviteProcessMonitorDto.getProcessSteps().forEach(step -> processMonitorDto.addProcessStep(step));
+                isSuccess = EndStatus.SUCCESS.equals(inviteProcessMonitorDto.getEndStatus());
+                if (!isSuccess) {
+                    errorMessageBuilder.append(inviteProcessMonitorDto.getEndDetail());
+                }
             } else {
                 // Patch the user with the idam role data
                 isSuccess = patchIdamUser(user, idamRoleData);
@@ -220,6 +250,8 @@ public class IdamRoleMappingService {
                     log.error(message);
                 }
             }
+        } catch (ServiceException ex) {
+            errorMessageBuilder.append(ex.getMessage());
         } catch (Exception ex) {
             String message = String.format("Error occurred while updating user with userId %s: %s",
                     userId, ex.getMessage());
@@ -233,7 +265,10 @@ public class IdamRoleMappingService {
                     userId,
                     idamRecordType.name());
         }
-        return errorMessageBuilder.toString();
+        markProcessStatus(processMonitorDto,
+                isSuccess ? 1 : 0, isSuccess ? 0 : 1,
+                errorMessageBuilder.toString());
+        return processMonitorDto;
     }
 
     private IdamRoleData getIdamRoleData(String userId) {
@@ -243,13 +278,27 @@ public class IdamRoleMappingService {
     }
 
     protected IdamUser getIdamUser(String userId) {
-        ResponseEntity<IdamUser> response = idamClient.getUserById(userId);
-        return response != null ? response.getBody() : null;
+        try {
+            ResponseEntity<IdamUser> response = idamClient.getUserById(userId);
+            return response != null ? response.getBody() : null;
+        } catch (FeignException.NotFound ex) {
+            return null;
+        } catch (Exception ex) {
+            throw new ServiceException(String.format("Error occurred while getting user from idam for userId %s: %s",
+                    userId, ex.getMessage()), ex);
+        }
     }
 
     protected IdamUser getIdamUserByEmail(String email) {
-        ResponseEntity<IdamUser> response = idamClient.getUserByEmail(email);
-        return response != null ? response.getBody() : null;
+        try {
+            ResponseEntity<IdamUser> response = idamClient.getUserByEmail(email);
+            return response != null ? response.getBody() : null;
+        } catch (FeignException.NotFound ex) {
+            return null;
+        } catch (Exception ex) {
+            throw new ServiceException(String.format("Error occurred while getting user from idam for email %s: %s",
+                    email, ex.getMessage()), ex);
+        }
     }
 
     protected boolean patchIdamUser(IdamUser user, IdamRoleData idamRoleData) {
@@ -298,6 +347,118 @@ public class IdamRoleMappingService {
 
     private static AccountStatus getIdamUserAccountStatus(String activeFlag) {
         return "N".equalsIgnoreCase(activeFlag) ? AccountStatus.SUSPENDED : AccountStatus.ACTIVE;
+    }
+
+    @Transactional
+    public ProcessMonitorDto inviteUser(String email, List<String> roleNames) {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto(INVITEUSER_NAME);
+        processEventTracker.trackEventStarted(processMonitorDto);
+        processMonitorDto.addProcessStep(INVITEUSER_NAME);
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        boolean isSuccess = false;
+
+        // Check for a valid IDAM user with this email.
+        IdamUser user = getIdamUserByEmail(email);
+
+        // No valid IDAM user found, so create a user object for invite.
+        if (user == null) {
+            log.debug("No user found for email {}", email);
+            user = buildIdamUserFromEmail(null, email);
+        }
+
+        // Invite the user on IDAM.
+        ProcessMonitorDto inviteProcessMonitorDto = inviteIdamUser(user, roleNames);
+        inviteProcessMonitorDto.getProcessSteps().forEach(step -> processMonitorDto.addProcessStep(step));
+        isSuccess = EndStatus.SUCCESS.equals(inviteProcessMonitorDto.getEndStatus());
+        if (!isSuccess) {
+            errorMessageBuilder.append(inviteProcessMonitorDto.getEndDetail());
+        }
+
+        markProcessStatus(processMonitorDto,
+                isSuccess ? 1 : 0, isSuccess ? 0 : 1,
+                errorMessageBuilder.toString());
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
+    }
+
+    protected ProcessMonitorDto inviteIdamUser(IdamUser user, List<String> roleNames) {
+        ProcessMonitorDto processMonitorDto = new ProcessMonitorDto("Invite IDAM User");
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        boolean isSuccess = false;
+
+        try {
+            // Check for any existing invitations
+            List<IdamInvitation> invitations = getIdamUserInvitations(user);
+
+            // Remove any existing invitations
+            deleteIdamUserInvitations(invitations);
+
+            // Create a new invitation
+            isSuccess = createInvitation(user, roleNames);
+            if (!isSuccess) {
+                String message = String.format("Failed to invite userId %s", user.getId());
+                errorMessageBuilder.append(message);
+                log.error(message);
+            }
+        } catch (Exception ex) {
+            String message = String.format("Error occurred during invite for userId %s: %s",
+                    user.getId(), ex.getMessage());
+            errorMessageBuilder.append(message);
+            log.error(message, ex);
+        }
+
+        markProcessStatus(processMonitorDto,
+                isSuccess ? 1 : 0, isSuccess ? 0 : 1,
+                errorMessageBuilder.toString());
+        processEventTracker.trackEventCompleted(processMonitorDto);
+        return processMonitorDto;
+    }
+
+    private List<IdamInvitation> getIdamUserInvitations(IdamUser user) {
+        ResponseEntity<List<IdamInvitation>> response = idamClient.getInvitations(user.getEmail());
+        List<IdamInvitation> invitations = HttpStatus.OK.equals(response.getStatusCode())
+                ? response.getBody() : Collections.emptyList();
+        log.debug("{} Invitations found for userId {}", invitations.size(), user.getId());
+        return invitations;
+    }
+
+    private void deleteIdamUserInvitations(List<IdamInvitation> invitations) {
+        invitations.forEach(invitation -> {
+            log.debug("Removing invitation with id {}", invitation.getId());
+            idamClient.deleteInvitation(invitation.getId());
+        });
+    }
+
+    private boolean createInvitation(IdamUser user, List<String> roleNames) {
+        final IdamInvitation invitation = buildInvitationFromUser(user, roleNames);
+        ResponseEntity<IdamInvitation> response = idamClient.inviteUser(invitation);
+        log.debug("Created invitation with id {}", invitation.getId());
+        return HttpStatus.CREATED.equals(response.getStatusCode());
+    }
+
+    protected IdamUser buildIdamUserFromEmail(String userId, String email) {
+        return IdamUser.builder()
+                .id(userId)
+                .forename(email)
+                .surname(email)
+                .email(email)
+                .build();
+
+    }
+
+    protected IdamInvitation buildInvitationFromUser(IdamUser user, List<String> roleNames) {
+        return IdamInvitation.builder()
+                .userId(user.getId())
+                .email(user.getEmail())
+                .forename(user.getForename())
+                .surname(user.getSurname())
+                .activationRoleNames(roleNames)
+                .invitationType(InvitationType.APPOINT)
+                .invitationStatus(InvitationStatus.PENDING)
+                .clientId(irmServiceName)
+                .successRedirect(EMPTY_STRING)
+                .invitedBy(EMPTY_STRING)
+                .build();
     }
 
     private void markProcessStatus(ProcessMonitorDto processMonitorDto, int successfulJobCount,
