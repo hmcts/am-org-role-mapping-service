@@ -22,10 +22,10 @@ ext['snakeyaml.version'] = '2.4'
 def versions = [
         junit          : '5.11.3',
         junitPlatform  : '1.11.3',
-        lombok         : '1.18.44',
+        lombok         : '1.18.46',
         pitest         : '1.22.1',
-        reformLogging  : '7.0.0',
-        reformS2sClient: '5.3.3',
+        reformLogging  : '8.0.0',
+        reformS2sClient: '5.3.4',
         serenity       : '4.3.4',
         spring         : '6.2.15',
         pact_version   : '4.1.41',
@@ -36,7 +36,7 @@ def versions = [
         testcontainers : '1.21.4',
         drools         : '9.44.0.Final',
         log4JVersion   : '2.24.3',
-        netty_version  : '4.2.10.Final',
+        netty_version  : '4.2.12.Final',
         bouncycastle   : '1.83',
         poi            : '5.5.1'
 ]
@@ -323,7 +323,7 @@ configurations.all {
 }
 
 dependencies {
-    implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.1'
+    implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.2'
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-web')
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-validation')
     implementation(group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa')
@@ -340,9 +340,9 @@ dependencies {
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE'
     implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: versions.bouncycastle
     implementation group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: versions.bouncycastle
-    implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '2.5.1'
+    implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '2.5.2'
 
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.8.16'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.8.17'
 
     implementation group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.4'
     implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '2.26.1'
@@ -372,16 +372,16 @@ dependencies {
 
     //Azure service bus libraries
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '5.3.2'
-    implementation group: 'com.azure', name: 'azure-core', version: '1.57.1'
-    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.17'
-    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.8.4'
+    implementation group: 'com.azure', name: 'azure-core', version: '1.58.0'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.18'
+    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.8.5'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.11.0'
     implementation group: 'com.google.guava', name: 'guava', version: '33.5.0-jre'
-    implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.2.3'
+    implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.2.4'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.10'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.8'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-    implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.1'
+    implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.2'
     implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '3.0.5'
     implementation 'commons-io:commons-io:20030203.000550'
     //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
@@ -395,7 +395,7 @@ dependencies {
     implementation group: 'io.netty', name: 'netty-all', version: versions.netty_version
 
 
-    implementation 'net.bytebuddy:byte-buddy:1.18.7'
+    implementation 'net.bytebuddy:byte-buddy:1.18.8'
 
     testImplementation('com.opentable.components:otj-pg-embedded:1.1.1')
     testImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
@@ -411,14 +411,14 @@ dependencies {
     testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
     testImplementation group: 'info.solidsoft.gradle.pitest', name:'gradle-pitest-plugin', version: '1.15.0'
     testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
-    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:4.3.1')
+    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:4.3.3')
     testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test'
     testImplementation group: 'org.springframework.security',name:'spring-security-test'
-    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '4.3.1'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '4.3.2'
 
     testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
     testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-engine', version: versions.junitPlatform
-    testImplementation 'com.github.hmcts:befta-fw:9.2.4'
+    testImplementation 'com.github.hmcts:befta-fw:9.2.6'
 
     testImplementation group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber
     testImplementation group: 'io.cucumber', name: 'cucumber-junit', version: versions.cucumber
@@ -490,6 +490,12 @@ dependencyManagement {
     dependencies {
         dependency("org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}")
         dependency("org.bouncycastle:bcpkix-jdk18on:${versions.bouncycastle}")
+
+        dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.55') {
+            entry 'tomcat-embed-core'
+            entry 'tomcat-embed-el'
+            entry 'tomcat-embed-websocket'
+        }
     }
 }
 
