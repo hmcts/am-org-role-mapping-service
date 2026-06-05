@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder.buildUserAccessProfile;
 
 class CaseWorkerAccessProfileTest {
@@ -172,4 +174,59 @@ class CaseWorkerAccessProfileTest {
 
     }
 
+    @Nested
+    @DisplayName("isCaseAllocator Tests")
+    class IsCaseAllocatorTests {
+        @Test
+        void shouldReturnTrueWhenCaseAllocatorFlagIsY() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .caseAllocatorFlag("Y")
+                .build();
+            assertTrue(profile.isCaseAllocator(), "Should return true when caseAllocatorFlag is 'Y'");
+        }
+
+        @Test
+        void shouldReturnFalseWhenCaseAllocatorFlagIsN() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .caseAllocatorFlag("N")
+                .build();
+            assertFalse(profile.isCaseAllocator(), "Should return false when caseAllocatorFlag is not 'Y'");
+        }
+
+        @Test
+        void shouldReturnFalseWhenCaseAllocatorFlagIsNull() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .caseAllocatorFlag(null)
+                .build();
+            assertFalse(profile.isCaseAllocator(), "Should return false when caseAllocatorFlag is null");
+        }
+    }
+
+    @Nested
+    @DisplayName("isTaskSupervisor Tests")
+    class IsTaskSupervisorTests {
+        @Test
+        void shouldReturnTrueWhenTaskSupervisorFlagIsY() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .taskSupervisorFlag("Y")
+                .build();
+            assertTrue(profile.isTaskSupervisor(), "Should return true when taskSupervisorFlag is 'Y'");
+        }
+
+        @Test
+        void shouldReturnFalseWhenTaskSupervisorFlagIsN() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .taskSupervisorFlag("N")
+                .build();
+            assertFalse(profile.isTaskSupervisor(), "Should return false when taskSupervisorFlag is not 'Y'");
+        }
+
+        @Test
+        void shouldReturnFalseWhenTaskSupervisorFlagIsNull() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .taskSupervisorFlag(null)
+                .build();
+            assertFalse(profile.isTaskSupervisor(), "Should return false when taskSupervisorFlag is null");
+        }
+    }
 }
