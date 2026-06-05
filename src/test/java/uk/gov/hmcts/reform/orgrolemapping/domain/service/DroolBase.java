@@ -18,6 +18,8 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRoleEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentEnum;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
@@ -169,6 +171,79 @@ public abstract class DroolBase {
     @SneakyThrows
     public static String writeValueAsPrettyJson(Object input) {
         return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(input);
+    }
+
+    /**
+     * Additional test Roles not in list of AdditionalRoles
+     * <see cref="uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRole"/>.
+     */
+    protected enum LegacyAdditionalRole implements AdditionalRoleEnum {
+
+        ANY_OTHER_ROLE("Any Other Role", List.of("any-code"));
+
+        private final String name;
+        private final List<String> codes;
+
+        LegacyAdditionalRole(String name, List<String> codes) {
+            this.name = name;
+            this.codes = codes;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public List<String> getCodes() {
+            return codes;
+        }
+    }
+
+    /**
+     * Additional test Appointments not in list of Appointments
+     * <see cref="uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.Appointment"/>.
+     */
+    protected enum LegacyAppointment implements AppointmentEnum {
+
+        ANY_OTHER_APPOINTMENT("Any Other Appointment", List.of("any-code")),
+        ADJUDICATOR("Adjudicator", List.of("9")),
+        COSTS_JUDGE("Costs Judge", List.of("23")),
+        DEPUTY_COSTS_JUDGE("Deputy Costs Judge", List.of("31")),
+        DEPUTY_DISTRICT_JUDGE("Deputy District Judge", List.of("201")),
+        DEPUTY_DISTRICT_JUDGE_PRFD("Deputy District Judge - PRFD", List.of("99")),
+        DEPUTY_DISTRICT_JUDGE_SITTING_IN_RETIREMENT("Deputy District Judge- Sitting in Retirement", List.of("25")),
+        DEPUTY_INSOLVENCY_AND_COMPANIES_COURT_JUDGE("Deputy Insolvency and Companies Court Judge", List.of("108")),
+        DEPUTY_MASTER("Deputy Master", List.of("95")),
+        DISTRICT_JUDGE("District Judge", List.of("45")),
+        DISTRICT_JUDGE_MC("District Judge (MC)", List.of("46")),
+        DISTRICT_JUDGE_SITTING_IN_RETIREMENT("District Judge (sitting in retirement)", List.of("125")),
+        EMPLOYMENT_JUDGE("Employment Judge", List.of("48")),
+        EMPLOYMENT_JUDGE_SITTING_IN_RETIREMENT("Employment Judge (sitting in retirement)", List.of("128", "215")),
+        HIGH_COURT_JUDGE_SITTING_IN_RETIREMENT("High Court Judge (sitting in retirement)", List.of("186")),
+        INSOLVENCY_AND_COMPANIES_COURT_JUDGE("Insolvency and Companies Court Judge", List.of("193")),
+        INSOLVENCY_AND_COMPANIES_COURT_JUDGE_SITTING_IN_RETIREMENT(
+                "Insolvency and Companies Court Judge (sitting in retirement)", List.of("192")),
+        JUDGE_OF_THE_FIRST_TIER_TRIBUNAL("Judge of the First-tier Tribunal", List.of("160")),
+        RECORDER("Recorder", List.of("67")),
+        REGIONAL_TRIBUNAL_JUDGE("Regional Tribunal Judge", List.of("74")),
+        REGISTRAR_OF_CRIMINAL_APPEALS("Registrar of Criminal Appeals", List.of("145")),
+        SENIOR_COSTS_JUDGE("Senior Costs Judge", List.of("188")),
+        TRIBUNAL_JUDGE("Tribunal Judge", List.of("84"));
+
+        private final String name;
+        private final List<String> codes;
+
+        LegacyAppointment(String name, List<String> codes) {
+            this.name = name;
+            this.codes = codes;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public List<String> getCodes() {
+            return codes;
+        }
     }
 
 }
