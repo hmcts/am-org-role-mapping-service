@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.UtilityFunctions;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -294,7 +295,7 @@ public class RefreshOrchestrator {
         if (NullCheckBiPredicate.test(failureUserIds,refreshJobEntity)) {
             refreshJobEntity.setStatus(ABORTED);
             refreshJobEntity.setUserIds(failureUserIds.toArray(new String[0]));
-            refreshJobEntity.setCreated(ZonedDateTime.now());
+            refreshJobEntity.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
             refreshJobEntity.setLog(String.format(FAILED_JOB, failureUserIds));
             persistenceService.persistRefreshJob(refreshJobEntity);
 
@@ -302,7 +303,7 @@ public class RefreshOrchestrator {
             && NullCheckBiPredicate.test(successUserIds,refreshJobEntity)) {
 
             refreshJobEntity.setStatus(COMPLETED);
-            refreshJobEntity.setCreated(ZonedDateTime.now());
+            refreshJobEntity.setCreated(ZonedDateTime.now(ZoneOffset.UTC));
             refreshJobEntity.setLog(String.format(SUCCESS_JOB, successUserIds));
             persistenceService.persistRefreshJob(refreshJobEntity);
         }
