@@ -1,6 +1,6 @@
 {
   "_guid_": "S-033",
-  "title": "must successfully create judicial role mappings for User having no judicial booking",
+  "title": "must successfully create judicial role mapping with no booking for Tribunal Judge - Fee Paid appointment",
   "_extends_": "F-004_Test_Data_Base",
 
   "specs": [

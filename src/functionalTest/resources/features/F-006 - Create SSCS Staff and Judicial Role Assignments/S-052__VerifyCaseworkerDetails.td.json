@@ -1,15 +1,15 @@
 {
-  "_guid_": "S-051__VerifyCaseworkerDetails",
+  "_guid_": "S-052__VerifyCaseworkerDetails",
   "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
 
   "specs": [
-    "to verify caseworker details for Legal Caseworker"
+    "to verify caseworker details for super-user and clerk"
   ],
 
   "request": {
     "body": {
       "userIds": [
-        "${[scenarioContext][parentContext][childContexts][S-051_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}"
+        "${[scenarioContext][parentContext][childContexts][S-052_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}"
       ]
     }
   },
@@ -20,14 +20,17 @@
         {
           "_extends_": "CaseworkerDetails",
 
-          "id": "${[scenarioContext][parentContext][childContexts][S-051_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}",
+          "id": "${[scenarioContext][parentContext][childContexts][S-052_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}",
 
           "case_allocator": "N",
           "task_supervisor": "N",
 
           "role": [
             {
-              "_extends_": "CaseworkerRole_02_LC"
+              "_extends_": "CaseworkerRole_05_CC"
+            },
+            {
+              "_extends_": "CaseworkerRole_09_CTSC_TL"
             }
           ],
 
