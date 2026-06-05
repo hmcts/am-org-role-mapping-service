@@ -2,8 +2,12 @@ package uk.gov.hmcts.reform.orgrolemapping.drool;
 
 public class HtmlBuilder {
 
-    public static final String COLLAPSE_HEADER_STYLE_CLASS = "collapsible";
-    public static final String COLLAPSE_CONTENT_STYLE_CLASS = "content";
+    public static final String TICK = "&#9989;"; // Unicode character for tick mark
+    public static final String CROSS = "&#10060;"; // Unicode character for cross
+
+    public static final String COLLAPSE_HEADER_BUTTON_CLASS = "collapsible";
+    public static final String COLLAPSE_CONTENT_DIV_CLASS = "content";
+    public static final String COLLAPSE_ACTIVE = " collapsibleActive";
     public static final String COLLAPSE_STYLE = """
             .collapsible {
               cursor: pointer;
@@ -81,16 +85,21 @@ public class HtmlBuilder {
         return String.format("<a href=\"%s\">%s</a>", url, linkText);
     }
 
-    public static String buildHeading2(String text) {
-        return String.format("<h2>%s</h2>", text);
+    public static String buildHeading2(String text, String colour) {
+        return String.format("<h2%s>%s</h2>", buildColorStyle(colour), text);
     }
 
     public static String buildLine(String text) {
         return String.format("<li>%s</li>", text);
     }
 
-    public static String buildButton(String styleClass, String text) {
-        return String.format("<button type=\"button\"%s>%s</button>",
+    public static String buildParagraph(String text, String colour) {
+        return String.format("<p%s>%s</p>", buildColorStyle(colour), text);
+    }
+
+    public static String buildButton(String styleClass, String text, String colour) {
+        return String.format("<button%s type=\"button\"%s>%s</button>",
+                buildColorStyle(colour),
                 buildStyleClassAttribute(styleClass), text);
     }
 
@@ -99,7 +108,37 @@ public class HtmlBuilder {
                 String.format(" class=\"%s\"", styleClass);
     }
 
-    public static String buildDiv(String styleClass, String text) {
-        return String.format("<div%s>%s</div>", buildStyleClassAttribute(styleClass), text);
+    private static String buildStyleAttribute(String style) {
+        return (style == null || style.isEmpty()) ? "" :
+                String.format(" style=\"%s\"", style);
+    }
+
+    public static String buildDiv(String style, String styleClass, String text) {
+        return String.format("<div %s %s>%s</div>",
+                buildStyleClassAttribute(styleClass),
+                buildStyleAttribute(style), text);
+    }
+
+    public static String buildColorStyle(String colour) {
+        return colour != null ? buildStyleAttribute(String.format("color:%s;", colour)) : "";
+    }
+
+    public static String getCollapseHeaderStyleClass(boolean active) {
+        return COLLAPSE_HEADER_BUTTON_CLASS + (active ? COLLAPSE_ACTIVE : "");
+    }
+
+    public static String getCollapseStyle(boolean active) {
+        return active ? "display: block;" : "display: none;";
+    }
+
+    public static String makeHtmlSafe(String text) {
+        return text.replace("&", "&amp);")
+                   .replace("<", "&lt;")
+                   .replace(">", "&gt;")
+                   .replace("\"", "&quot;");
+    }
+
+    public static String buildTickOrCross(boolean isTick) {
+        return isTick ? TICK : CROSS;
     }
 }
