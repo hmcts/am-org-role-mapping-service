@@ -1,0 +1,303 @@
+package validationrules.fr;
+
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialOfficeHolder.Office;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.Attributes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.RoleName;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
+import java.util.ArrayList;
+import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import java.util.HashMap
+import java.util.Map
+import com.fasterxml.jackson.databind.JsonNode;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+
+/*
+ * FINANCIAL REMEDY "hmcts-judiciary" Org role mapping for v1_0.
+ */
+rule "v1_0_fr_hmcts_judiciary_org_role"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
+    $joh: JudicialOfficeHolder(office in (Office.FR.FR_JUDGE_FEE_PAID,
+                                          Office.FR.FR_JUDGE_SALARIED,
+                                          Office.FR.FR_LEADERSHIP_JUDGE_SALARIED))
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    if ($joh.isSalaried()) {
+        attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+    } else{
+        attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.FEE_PAID));
+    }
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($joh.getUserId())
+            .roleCategory(RoleCategory.JUDICIAL)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.HMCTS_JUDICIARY)
+            .grantType(GrantType.BASIC)
+            .classification(Classification.PRIVATE)
+            .readOnly(true)
+            .beginTime($joh.getBeginTime())
+            .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+            .attributes(attribute)
+            .build()
+    );
+
+    logMsg("Rule : v1_0_fr_hmcts_judiciary_org_role");
+end;
+
+/*
+ * FINANCIAL REMEDY "judge" Org role mapping for v1_0.
+ */
+rule "v1_0_fr_judge_org_role"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
+    $joh: JudicialOfficeHolder(office in (Office.FR.FR_JUDGE_SALARIED,
+                                          Office.FR.FR_LEADERSHIP_JUDGE_SALARIED))
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.DECISION_MAKING_WORK.getValue()));
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($joh.getUserId())
+            .roleCategory(RoleCategory.JUDICIAL)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.JUDGE)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .beginTime($joh.getBeginTime())
+            .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+            .attributes(attribute)
+            .authorisations($joh.getTicketCodes())
+            .build()
+    );
+
+    logMsg("Rule : v1_0_fr_judge_org_role");
+end;
+
+/*
+ * FINANCIAL REMEDY "judge" fee paid Org role mapping for v1_0.
+ */
+rule "v1_0_fr_judge_org_role_for_fee_paid_judge"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
+    $joh: JudicialOfficeHolder(office in (Office.FR.FR_JUDGE_FEE_PAID))
+    $bk: JudicialBooking(userId == $joh.userId)
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId() != null ?
+    $bk.getLocationId():$joh.getPrimaryLocation()));
+    attribute.put(Attributes.Name.BASE_LOCATION, JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
+    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
+    attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.FEE_PAID));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.DECISION_MAKING_WORK.getValue()));
+
+    insert(
+        RoleAssignment.builder()
+             .actorIdType(ActorIdType.IDAM)
+             .actorId($joh.getUserId())
+             .roleCategory(RoleCategory.JUDICIAL)
+             .roleType(RoleType.ORGANISATION)
+             .roleName(RoleName.JUDGE)
+             .grantType(GrantType.STANDARD)
+             .classification(Classification.PUBLIC)
+             .readOnly(false)
+             .beginTime($bk.getBeginTime())
+             .endTime($bk.getEndTime())
+             .attributes(attribute)
+             .authorisations($joh.getTicketCodes())
+             .build()
+    );
+
+    logMsg("Rule : v1_0_fr_judge_org_role_for_fee_paid_judge");
+end;
+
+/*
+ * FINANCIAL REMEDY "fee-paid-judge" Org role mapping for v1_0.
+ */
+rule "v1_0_fr_fee_paid_judge_org_role"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
+    $joh: JudicialOfficeHolder(office in (Office.FR.FR_JUDGE_FEE_PAID))
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.FEE_PAID));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+    attribute.put(Attributes.Name.BOOKABLE, JacksonUtils.convertObjectIntoJsonNode("true"));
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($joh.getUserId())
+            .roleCategory(RoleCategory.JUDICIAL)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.FEE_PAID_JUDGE)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .beginTime($joh.getBeginTime())
+            .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+            .attributes(attribute)
+            .authorisations($joh.getTicketCodes())
+            .build()
+    );
+
+    logMsg("Rule : v1_0_fr_fee_paid_judge_org_role");
+end;
+
+/*
+ * FINANCIAL REMEDY "leadership-judge" Org role mapping for v1_0.
+ */
+rule "v1_0_fr_leadership_judge_org_role"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
+    $joh: JudicialOfficeHolder(office in (Office.FR.FR_LEADERSHIP_JUDGE_SALARIED))
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($joh.getUserId())
+            .roleCategory(RoleCategory.JUDICIAL)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.LEADERSHIP_JUDGE)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .beginTime($joh.getBeginTime())
+            .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+            .attributes(attribute)
+            .authorisations($joh.getTicketCodes())
+            .build()
+    );
+
+    logMsg("Rule : v1_0_fr_leadership_judge_org_role");
+end;
+
+/*
+ * FINANCIAL REMEDY "task-supervisor" Org role mapping
+ */
+rule "v1_0_fr_task_supervisor_leadership_judge_salaried_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in (Office.FR.FR_LEADERSHIP_JUDGE_SALARIED))
+
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+
+   insert(
+       RoleAssignment.builder()
+           .actorIdType(ActorIdType.IDAM)
+           .actorId($joh.getUserId())
+           .roleCategory(RoleCategory.JUDICIAL)
+           .roleType(RoleType.ORGANISATION)
+           .roleName(RoleName.TASK_SUPERVISOR)
+           .grantType(GrantType.STANDARD)
+           .classification(Classification.PUBLIC)
+           .readOnly(false)
+           .beginTime($joh.getBeginTime())
+           .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+           .attributes(attribute)
+           .authorisations($joh.getTicketCodes())
+           .build()
+   );
+      logMsg("Rule : v1_0_fr_task_supervisor_leadership_judge_salaried_org_role");
+end;
+
+/*
+ * FINANCIAL REMEDY "case-allocator" Org role mapping
+ */
+rule "v1_0_fr_case-allocator_leadership_judge_salaried_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in (Office.FR.FR_LEADERSHIP_JUDGE_SALARIED))
+
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+
+   insert(
+       RoleAssignment.builder()
+           .actorIdType(ActorIdType.IDAM)
+           .actorId($joh.getUserId())
+           .roleCategory(RoleCategory.JUDICIAL)
+           .roleType(RoleType.ORGANISATION)
+           .roleName(RoleName.CASE_ALLOCATOR)
+           .grantType(GrantType.STANDARD)
+           .classification(Classification.PUBLIC)
+           .readOnly(false)
+           .beginTime($joh.getBeginTime())
+           .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+           .attributes(attribute)
+           .authorisations($joh.getTicketCodes())
+           .build()
+   );
+      logMsg("Rule : v1_0_fr_case-allocator_leadership_judge_salaried_org_role");
+end;
+
+/*
+ * FINANCIAL REMEDY "specific-access-approver-judiciary" Org role mapping
+ */
+rule "v1_0_fr_specific-access-approver-judiciary_leadership_judge_salaried_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
+  $joh: JudicialOfficeHolder(office in (Office.FR.FR_LEADERSHIP_JUDGE_SALARIED))
+
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
+   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.ACCESS_REQUESTS.getValue()));
+
+   insert(
+       RoleAssignment.builder()
+           .actorIdType(ActorIdType.IDAM)
+           .actorId($joh.getUserId())
+           .roleCategory(RoleCategory.JUDICIAL)
+           .roleType(RoleType.ORGANISATION)
+           .roleName(RoleName.SPECIFIC_ACCESS_APPROVER_JUDICIARY)
+           .grantType(GrantType.STANDARD)
+           .classification(Classification.PUBLIC)
+           .readOnly(false)
+           .beginTime($joh.getBeginTime())
+           .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+           .attributes(attribute)
+           .authorisations($joh.getTicketCodes())
+           .build()
+   );
+      logMsg("Rule : v1_0_fr_specific-access-approver-judiciary_leadership_judge_salaried_org_role");
+end;
