@@ -1,0 +1,195 @@
+package validationrules.possessions;
+
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialOfficeHolder.Office;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRole;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.Appointment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentGroup;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.lang.String;
+import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import java.util.HashMap
+import java.util.Map
+import com.fasterxml.jackson.databind.JsonNode;
+import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.addAndGetTicketCodes;
+import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.validateAuthorisation
+
+/*
+ * Rule 1 "Generic Fee Paid" business role mapping to JOH.
+ */
+rule "v1_0_possession_judge_fee_paid_joh"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
+    $jap: JudicialAccessProfile(isFeePaid(),
+                                hasValidEndDate(),
+                                hasValidAuthorisation(Jurisdiction.POSSESSIONS))
+then
+
+    insert(
+        JudicialOfficeHolder.builder()
+            .userId($jap.getUserId())
+            .office(Office.Possessions.POSSESSION_JUDGE_FEE_PAID)
+            .jurisdiction(Jurisdiction.POSSESSIONS.getName())
+            .ticketCodes($jap.getTicketCodes())
+            .beginTime($jap.getBeginTime())
+            .endTime($jap.getEndTime())
+            .regionId($jap.getRegionId())
+            .baseLocationId($jap.getBaseLocationId())
+            .primaryLocation($jap.getPrimaryLocationId())
+            .contractType($jap.getAppointmentType())
+            .build()
+    );
+
+    logMsg("Rule : v1_0_possession_judge_fee_paid_joh");
+end;
+
+/*
+ * Rule 2 "Generic Salaried" business role mapping to JOH.
+ */
+rule "v1_0_possession_judge_salaried_joh"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
+    $jap: JudicialAccessProfile(isSalaried(),
+                                hasValidEndDate(),
+                                hasValidAuthorisation(Jurisdiction.POSSESSIONS))
+then
+
+    insert(
+        JudicialOfficeHolder.builder()
+            .userId($jap.getUserId())
+            .office(Office.Possessions.POSSESSION_JUDGE_SALARIED)
+            .jurisdiction(Jurisdiction.POSSESSIONS.getName())
+            .ticketCodes($jap.getTicketCodes())
+            .beginTime($jap.getBeginTime())
+            .endTime($jap.getEndTime())
+            .regionId($jap.getRegionId())
+            .baseLocationId($jap.getBaseLocationId())
+            .primaryLocation($jap.getPrimaryLocationId())
+            .contractType($jap.getAppointmentType())
+            .build()
+    );
+
+    logMsg("Rule : v1_0_possession_judge_salaried_joh");
+end;
+
+/*
+ * Rule 3 "Generic Circuit Judge Salaried" business role mapping to JOH.
+ */
+rule "v1_0_possession_circuit_judge_salaried_joh"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
+    $jap: JudicialAccessProfile(hasAppointmentCode(Appointment.CIRCUIT_JUDGE)
+                                        || hasAppointmentCode(Appointment.CIRCUIT_JUDGE_CENTRAL_CRIMINAL_COURT)
+                                        || hasAppointmentCode(Appointment.COURT_OF_APPEAL_JUDGE)
+                                        || hasAppointmentCode(Appointment.HIGH_COURT_JUDGE)
+                                        || hasAppointmentCode(Appointment.SENIOR_CIRCUIT_JUDGE)
+                                        || hasAppointmentCode(Appointment.SPECIALIST_CIRCUIT_JUDGE)
+                                        || hasValidAdditionalRole(AdditionalRole.PRESIDING_JUDGE),
+                                isSalaried(),
+                                hasValidEndDate(),
+                                hasValidAuthorisation(Jurisdiction.POSSESSIONS))
+then
+
+    insert(
+        JudicialOfficeHolder.builder()
+            .userId($jap.getUserId())
+            .office(Office.Possessions.POSSESSION_CIRCUIT_JUDGE_SALARIED)
+            .jurisdiction(Jurisdiction.POSSESSIONS.getName())
+            .ticketCodes($jap.getTicketCodes())
+            .beginTime($jap.getBeginTime())
+            .endTime($jap.getEndTime())
+            .regionId($jap.getRegionId())
+            .baseLocationId($jap.getBaseLocationId())
+            .primaryLocation($jap.getPrimaryLocationId())
+            .contractType($jap.getAppointmentType())
+            .build()
+    );
+
+    logMsg("Rule : v1_0_possession_circuit_judge_salaried_joh");
+end;
+
+/*
+ * Rule 4 "Generic Circuit Judge Fee Paid" business role mapping to JOH.
+ */
+rule "v1_0_possession_circuit_judge_fee_paid_joh"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
+    $jap: JudicialAccessProfile(hasAppointmentCode(Appointment.CIRCUIT_JUDGE)
+                                        || hasAppointmentCode(Appointment.CIRCUIT_JUDGE_SITTING_IN_RETIREMENT)
+                                        || hasAppointmentCode(Appointment.DEPUTY_CIRCUIT_JUDGE),
+                                isFeePaid(),
+                                hasValidEndDate(),
+                                hasValidAuthorisation(Jurisdiction.POSSESSIONS))
+then
+
+    insert(
+        JudicialOfficeHolder.builder()
+            .userId($jap.getUserId())
+            .office(Office.Possessions.POSSESSION_CIRCUIT_JUDGE_FEE_PAID)
+            .jurisdiction(Jurisdiction.POSSESSIONS.getName())
+            .ticketCodes($jap.getTicketCodes())
+            .beginTime($jap.getBeginTime())
+            .endTime($jap.getEndTime())
+            .regionId($jap.getRegionId())
+            .baseLocationId($jap.getBaseLocationId())
+            .primaryLocation($jap.getPrimaryLocationId())
+            .contractType($jap.getAppointmentType())
+            .build()
+    );
+
+    logMsg("Rule : v1_0_possession_circuit_judge_fee_paid_joh");
+end;
+
+/*
+ * Rule 5 "Generic Leadership Judge" business role mapping to JOH.
+ */
+rule "v1_0_possession_leadership_judge_salaried_joh"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
+    $jap: JudicialAccessProfile(hasAppointmentCode(Appointment.CHIEF_INSOLVENCY_AND_COMPANIES_COURT_JUDGE)
+                                        || hasAppointmentCode(Appointment.CHIEF_MASTER)
+                                        || hasAppointmentCode(Appointment.DEPUTY_CHAMBER_PRESIDENT)
+                                        || hasAppointmentCode(Appointment.MASTER_OF_THE_ROLLS)
+                                        || hasAppointmentCode(Appointment.REGIONAL_EMPLOYMENT_JUDGE)
+                                        || hasAppointmentCode(Appointment.SENIOR_MASTER)
+                                        || hasValidAdditionalRole(AdditionalRole.DESIGNATED_CIVIL_JUDGE)
+                                        || hasValidAdditionalRole(AdditionalRole.ACTING_DESIGNATED_CIVIL_JUDGE),
+                                isSalaried(),
+                                hasValidEndDate(),
+                                hasValidAuthorisation(Jurisdiction.POSSESSIONS))
+then
+
+    insert(
+        JudicialOfficeHolder.builder()
+            .userId($jap.getUserId())
+            .office(Office.Possessions.POSSESSION_LEADERSHIP_JUDGE_SALARIED)
+            .jurisdiction(Jurisdiction.POSSESSIONS.getName())
+            .ticketCodes($jap.getTicketCodes())
+            .beginTime($jap.getBeginTime())
+            .endTime($jap.getEndTime())
+            .regionId($jap.getRegionId())
+            .baseLocationId($jap.getBaseLocationId())
+            .primaryLocation($jap.getPrimaryLocationId())
+            .contractType($jap.getAppointmentType())
+            .build()
+    );
+
+    logMsg("Rule : v1_0_possession_leadership_judge_salaried_joh");
+end;
+
