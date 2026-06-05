@@ -1,0 +1,61 @@
+{
+  "_guid_": "S-019.10",
+  "title": "must successfully create org role mapping for CTSC Administrator",
+  "_extends_": "F-019_Test_Data_Base",
+
+  "specs": [
+    "contains the actorId of the user just published who has CTSC Administrator role"
+  ],
+
+  "request": {
+    "pathVariables": {
+      "actorId": "4d7a2c9e-1b84-4f6a-8c3d-7e0f9b1a2c10"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "ctsc",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS",
+            "workTypes": "routine_work,applications,decision_making_work,error_management"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-ctsc",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "CTSC",
+          "readOnly": true,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+
+}
