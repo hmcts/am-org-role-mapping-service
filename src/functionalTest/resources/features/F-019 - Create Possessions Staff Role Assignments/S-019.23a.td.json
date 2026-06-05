@@ -1,0 +1,41 @@
+{
+  "_guid_": "S-019.23a",
+  "title": "must successfully create org role mapping for Bailiff Administrator + Task Supervisor",
+  "_extends_": "S-019.23",
+
+  "specs": [
+    "contains the actorId of the user just published who has Bailiff Administrator role + Task Supervisor"
+  ],
+
+  "request": {
+    "pathVariables": {
+      "actorId": "c8f1a6d2-7b3e-4d9a-8f5c-1a2e7b6d4c80"
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS",
+            "region": "[[ANYTHING_PRESENT]]"
+          }
+        }
+      ]
+    }
+  }
+
+}
