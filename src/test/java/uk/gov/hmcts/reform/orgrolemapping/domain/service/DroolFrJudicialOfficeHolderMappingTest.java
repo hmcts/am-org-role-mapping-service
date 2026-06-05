@@ -86,14 +86,6 @@ class DroolFrJudicialOfficeHolderMappingTest extends DroolBase {
                         LegacyAdditionalRole.ANY_OTHER_ROLE),
                 Arguments.of(Appointment.HIGH_COURT_JUDGE,
                         LegacyAdditionalRole.ANY_OTHER_ROLE)
-        // Arguments.of(LegacyAppointment.DISTRICT_JUDGE,
-        //         LegacyAdditionalRole.ANY_OTHER_ROLE),
-        // Arguments.of(LegacyAppointment.DEPUTY_MASTER,
-        //         LegacyAdditionalRole.ANY_OTHER_ROLE),
-        // Arguments.of(LegacyAppointment.TRIBUNAL_JUDGE,
-        //         LegacyAdditionalRole.ANY_OTHER_ROLE),
-        // Arguments.of(Appointment.TRIBUNAL_MEMBER_DISABILITY,
-        //         LegacyAdditionalRole.ANY_OTHER_ROLE)
         );
     }
 
@@ -103,6 +95,21 @@ class DroolFrJudicialOfficeHolderMappingTest extends DroolBase {
         String expectedRoleNames = "leadership-judge,judge,task-supervisor,hmcts-judiciary,case-allocator,"
                 + "specific-access-approver-judiciary";
         runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, expectedRoleNames, "1", false);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Appointment.class, names = {
+        "TRIBUNAL_MEMBER_DISABILITY",
+    })
+    @EnumSource(value = LegacyAppointment.class, names = {
+        "DISTRICT_JUDGE",
+        "DEPUTY_MASTER",
+        "TRIBUNAL_JUDGE"
+    })
+    void verifyGenericSalariedAndSptwRoles(AppointmentEnum appointment) {
+        String expectedRoleNames = "judge,hmcts-judiciary";
+        runSalariedTestsForSalariedAndSptw(appointment, LegacyAdditionalRole.ANY_OTHER_ROLE, 
+                expectedRoleNames, "1", false);
     }
 
     @ParameterizedTest
