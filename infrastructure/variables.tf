@@ -30,6 +30,28 @@ variable "common_tags" {
 }
 
 ////////////////////////////////
+// Alerts
+////////////////////////////////
+
+variable "enable_prm_process_not_started_alerts" {
+  type        = bool
+  default     = false
+  description = "Enables the alerts for processes not started. Defaults to false"
+}
+
+variable "enable_prm_process_not_completed_alerts" {
+  type        = bool
+  default     = false
+  description = "Enables the alerts for processes not completed. Defaults to false"
+}
+
+variable "enable_prm_process_failure_alerts" {
+  type        = bool
+  default     = false
+  description = "Enables the alerts for processes with failures. Defaults to false"
+}
+
+////////////////////////////////
 // Database
 ////////////////////////////////
 
