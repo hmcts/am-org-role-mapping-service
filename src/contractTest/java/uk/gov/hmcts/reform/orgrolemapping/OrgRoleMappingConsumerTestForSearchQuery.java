@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
@@ -53,16 +53,16 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
     public static final String POST_ASSIGNMENTS = SERVICE
             + ".post-assignment-query-request+json;charset=UTF-8;version=2.0";
 
-    @MockBean
+    @MockitoBean
     JRDTopicPublisher jrdPublisher;
-    @MockBean
+    @MockitoBean
     CRDTopicPublisher crdPublisher;
 
-    @MockBean
+    @MockitoBean
     @Qualifier("crdPublisher")
     ServiceBusSenderClient serviceBusSenderClient;
 
-    @MockBean
+    @MockitoBean
     @Qualifier("jrdPublisher")
     ServiceBusSenderClient serviceBusSenderClientJrd;
 
