@@ -11,7 +11,7 @@
       "actorIdType": "IDAM",
       "actorId": "[[IDAM_ID]]",
       "roleType": "ORGANISATION",
-      "roleName": "judge",
+      "roleName": "leadership-judge",
       "classification": "PUBLIC",
       "grantType": "STANDARD",
       "roleCategory": "JUDICIAL",
@@ -22,12 +22,33 @@
       "attributes": {
         "contractType": "Salaried",
         "primaryLocation": "123456",
-        "jurisdiction": "CIVIL",
-        "region": "1",
-        "workTypes": "decision_making_work,applications"
+        "jurisdiction": "PRIVATELAW",
+        "region": "1"
       },
       "authorisations": [
-        "294"
+        "315"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "leadership-judge",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "PRIVATELAW",
+        "region": "5"
+      },
+      "authorisations": [
+        "315"
       ]
     },
     {
@@ -45,12 +66,171 @@
       "attributes": {
         "contractType": "Salaried",
         "primaryLocation": "123456",
-        "jurisdiction": "CIVIL",
-        "region": "5",
-        "workTypes": "decision_making_work,applications"
+        "jurisdiction": "PRIVATELAW",
+        "region": "1",
+        "workTypes": "hearing_work,decision_making_work,applications,routine_work"
       },
       "authorisations": [
-        "294"
+        "315"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "judge",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "PRIVATELAW",
+        "region": "5",
+        "workTypes": "hearing_work,decision_making_work,applications,routine_work"
+      },
+      "authorisations": [
+        "315"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "task-supervisor",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "PRIVATELAW",
+        "region": "1",
+        "workTypes": "routine_work,hearing_work,applications"
+      },
+      "authorisations": [
+        "315"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "task-supervisor",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "PRIVATELAW",
+        "region": "5",
+        "workTypes": "routine_work,hearing_work,applications"
+      },
+      "authorisations": [
+        "315"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "specific-access-approver-judiciary",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "PRIVATELAW",
+        "region": "1",
+        "workTypes": "access_requests"
+      },
+      "authorisations": [
+        "315"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "specific-access-approver-judiciary",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "PRIVATELAW",
+        "region": "5",
+        "workTypes": "access_requests"
+      },
+      "authorisations": [
+        "315"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "case-allocator",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "PRIVATELAW",
+        "region": "1"
+      },
+      "authorisations": [
+        "315"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "case-allocator",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction": "PRIVATELAW",
+        "region": "5"
+      },
+      "authorisations": [
+        "315"
       ]
     },
     {
@@ -66,54 +246,7 @@
       "endTime": "[[APPOINTMENT_END_TIME]]",
       "created": "[[NOW_DATE_TIME]]",
       "attributes": {
-        "contractType": "Salaried"
       }
-    },
-    {
-      "actorIdType": "IDAM",
-      "actorId": "[[IDAM_ID]]",
-      "roleType": "ORGANISATION",
-      "roleName": "district-judge",
-      "classification": "PUBLIC",
-      "grantType": "STANDARD",
-      "roleCategory": "JUDICIAL",
-      "readOnly": false,
-      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
-      "endTime": "[[APPOINTMENT_END_TIME]]",
-      "created": "[[NOW_DATE_TIME]]",
-      "attributes": {
-        "contractType": "Salaried",
-        "primaryLocation": "123456",
-        "jurisdiction": "CIVIL",
-        "region": "1",
-        "workTypes": "decision_making_work,applications,multi_track_decision_making_work,intermediate_track_decision_making_work"
-      },
-      "authorisations": [
-        "294"
-      ]
-    },
-    {
-      "actorIdType": "IDAM",
-      "actorId": "[[IDAM_ID]]",
-      "roleType": "ORGANISATION",
-      "roleName": "district-judge",
-      "classification": "PUBLIC",
-      "grantType": "STANDARD",
-      "roleCategory": "JUDICIAL",
-      "readOnly": false,
-      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
-      "endTime": "[[APPOINTMENT_END_TIME]]",
-      "created": "[[NOW_DATE_TIME]]",
-      "attributes": {
-        "contractType": "Salaried",
-        "primaryLocation": "123456",
-        "jurisdiction": "CIVIL",
-        "region": "5",
-        "workTypes": "decision_making_work,applications,multi_track_decision_making_work,intermediate_track_decision_making_work"
-      },
-      "authorisations": [
-        "294"
-      ]
     },
     {
       "actorIdType": "IDAM",
@@ -129,56 +262,10 @@
       "created": "[[NOW_DATE_TIME]]",
       "attributes": {
         "primaryLocation": "123456",
-        "jurisdiction": "CIVIL"
+        "jurisdiction": "PRIVATELAW"
       },
       "authorisations": [
-        "294"
-      ]
-    },
-    {
-      "actorIdType": "IDAM",
-      "actorId": "[[IDAM_ID]]",
-      "roleType": "ORGANISATION",
-      "roleName" : "fl401-judge",
-      "classification": "PUBLIC",
-      "grantType": "STANDARD",
-      "roleCategory": "JUDICIAL",
-      "readOnly": false,
-      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
-      "endTime": "[[APPOINTMENT_END_TIME]]",
-      "created": "[[NOW_DATE_TIME]]",
-      "attributes": {
-        "contractType": "Salaried",
-        "primaryLocation": "123456",
-        "jurisdiction" : "PRIVATELAW",
-        "region": "1",
-        "workTypes" : "hearing_work,decision_making_work,applications,routine_work"
-      },
-      "authorisations": [
-        "294"
-      ]
-    },
-    {
-      "actorIdType": "IDAM",
-      "actorId": "[[IDAM_ID]]",
-      "roleType": "ORGANISATION",
-      "roleName" : "fl401-judge",
-      "classification": "PUBLIC",
-      "grantType": "STANDARD",
-      "roleCategory": "JUDICIAL",
-      "readOnly": false,
-      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
-      "endTime": "[[APPOINTMENT_END_TIME]]",
-      "created": "[[NOW_DATE_TIME]]",
-      "attributes": {
-        "contractType": "Salaried",
-        "primaryLocation": "123456",
-        "jurisdiction" : "PRIVATELAW",
-        "region": "5",
-        "workTypes" : "hearing_work,decision_making_work,applications,routine_work"
-      },
-      "authorisations": [
-        "294"
+        "315"
       ]
     }
   ]
