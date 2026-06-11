@@ -18,6 +18,7 @@ plugins {
 }
 
 ext['snakeyaml.version'] = '2.4'
+ext['netty.version'] = '4.1.133.Final' // Fix CVE-2026-42578..CVE-2026-42588, CVE-2026-41417
 ext['log4j2.version'] = '2.25.4' // Fix CVE-2026-34477...CVE-2026-34481, CVE-2025-68161
 ext['kotlin.version'] = '2.1.0' // Fix CVE-2020-29582
 ext['commons-lang3.version'] = '3.20.0' // Fix CVE-2025-48924
