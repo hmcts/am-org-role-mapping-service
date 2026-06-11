@@ -44,8 +44,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(MockitoExtension.class)
 class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
 
-    static final String JURISDICTION = "PRIVATELAW";
-    static final String SERVICE_CODE_PRL = "ABA5";
+    static final String JURISDICTION = Jurisdiction.PRIVATELAW.getName();
+    static final String SERVICE_CODE_PRL = Jurisdiction.PRIVATELAW.getServiceCodes().get(0);
 
     static final String USER_ID = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
     static final String ACCESS_PROFILE_PRIMARY_LOCATION_ID = "London";
@@ -183,8 +183,8 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
     void verifyCircuitJudgeSalariedAndSptwRoles(AppointmentEnum appointment) {
         List<String> expectedRoleNames = List.of(RoleName.JUDGE, RoleName.CIRCUIT_JUDGE, RoleName.HMCTS_JUDICIARY);
         AdditionalRoleEnum assignedRoles = LegacyAdditionalRole.ANY_OTHER_ROLE;
-        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "1", false);
-        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "5", false);
+        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "1", true);
+        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "5", true);
         runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "2", false);
     }
 
@@ -221,8 +221,8 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
             RoleName.SPECIFIC_ACCESS_APPROVER_JUDICIARY,
             RoleName.CASE_ALLOCATOR
         );
-        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "1", false);
-        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "5", false);
+        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "1", true);
+        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "5", true);
         runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "2", false);
     }
 
@@ -262,8 +262,8 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
     @MethodSource("genericJudgeSalaried")
     void verifyGenericSalariedAndSptwRoles(AppointmentEnum appointment, AdditionalRoleEnum assignedRoles) {
         List<String> expectedRoleNames = List.of(RoleName.JUDGE, RoleName.HMCTS_JUDICIARY);
-        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "1", false);
-        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "5", false);
+        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "1", true);
+        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "5", true);
         runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "2", false);
     }
 
@@ -307,8 +307,8 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
         List<String> expectedRoleNames = List.of(RoleName.FL401_JUDGE);
         AdditionalRoleEnum assignedRoles = LegacyAdditionalRole.ANY_OTHER_ROLE;
         Jurisdiction.CIVIL.getServiceCodes().forEach(serviceCode -> {
-            runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, serviceCode, expectedRoleNames, "1", false);
-            runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, serviceCode, expectedRoleNames, "5", false);
+            runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, serviceCode, expectedRoleNames, "1", true);
+            runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, serviceCode, expectedRoleNames, "5", true);
             runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, serviceCode, expectedRoleNames, "2", false);
         });
     }
