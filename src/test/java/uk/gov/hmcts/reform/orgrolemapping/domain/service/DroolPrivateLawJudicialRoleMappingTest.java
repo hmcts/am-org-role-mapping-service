@@ -1,32 +1,41 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.Attributes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.RoleName;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRole;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRoleEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.Appointment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentEnum;
+import uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertHelper.MultiRegion;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -35,378 +44,479 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(MockitoExtension.class)
 class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
 
-    static final String REGION_ID = "LDN";
     static final String JURISDICTION = "PRIVATELAW";
-    static final RoleCategory ROLE_CATEGORY = RoleCategory.JUDICIAL;
+    static final String SERVICE_CODE_PRL = "ABA5";
 
     static final String USER_ID = "3168da13-00b3-41e3-81fa-cbc71ac28a69";
-    static final String PRIMARY_LOCATION_ID = "London";
+    static final String ACCESS_PROFILE_PRIMARY_LOCATION_ID = "London";
+    static final ZonedDateTime ACCESS_PROFILE_BEGIN_TIME = ZonedDateTime.now(ZoneOffset.UTC).minusMonths(1);
+    static final ZonedDateTime ACCESS_PROFILE_END_TIME = ZonedDateTime.now(ZoneOffset.UTC).plusMonths(1);
+
     static final String BOOKING_LOCATION_ID = "Scotland";
     static final String BOOKING_REGION_ID = "1";
+    static final ZonedDateTime BOOKING_BEGIN_TIME = ZonedDateTime.now(ZoneOffset.UTC).minusDays(1);
+    static final ZonedDateTime BOOKING_END_TIME = ZonedDateTime.now(ZoneOffset.UTC).plusDays(1);
+
+    // NB: multi-regions are: London and South-East
+    static List<String> multiRegionList = List.of("1", "5");
+
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
     static {
-        expectedRoleNameWorkTypesMap.put("judge", "hearing_work,decision_making_work,applications,routine_work");
-        expectedRoleNameWorkTypesMap.put("hmcts-judiciary", null);
-        expectedRoleNameWorkTypesMap.put("leadership-judge", null);
-        expectedRoleNameWorkTypesMap.put("task-supervisor", "routine_work,hearing_work,applications");
-        expectedRoleNameWorkTypesMap.put("case-allocator", null);
-        expectedRoleNameWorkTypesMap.put("specific-access-approver-judiciary", "access_requests");
-        expectedRoleNameWorkTypesMap.put("circuit-judge", "hearing_work,decision_making_work,applications,"
-                + "routine_work");
-        expectedRoleNameWorkTypesMap.put("fee-paid-judge", "hearing_work,decision_making_work,applications,"
-                + "routine_work");
-        expectedRoleNameWorkTypesMap.put("magistrate", "hearing_work,applications,routine_work");
-        expectedRoleNameWorkTypesMap.put("fl401-judge", "hearing_work,decision_making_work,applications,routine_work");
+        expectedRoleNameWorkTypesMap.put(RoleName.JUDGE, "hearing_work,decision_making_work,applications,routine_work");
+        expectedRoleNameWorkTypesMap.put(RoleName.HMCTS_JUDICIARY, null);
+        expectedRoleNameWorkTypesMap.put(RoleName.LEADERSHIP_JUDGE, null);
+        expectedRoleNameWorkTypesMap.put(RoleName.TASK_SUPERVISOR, "routine_work,hearing_work,applications");
+        expectedRoleNameWorkTypesMap.put(RoleName.CASE_ALLOCATOR, null);
+        expectedRoleNameWorkTypesMap.put(RoleName.SPECIFIC_ACCESS_APPROVER_JUDICIARY, "access_requests");
+        expectedRoleNameWorkTypesMap.put(RoleName.CIRCUIT_JUDGE,
+            "hearing_work,decision_making_work,applications,routine_work");
+        expectedRoleNameWorkTypesMap.put(RoleName.FEE_PAID_JUDGE,
+            "hearing_work,decision_making_work,applications,routine_work");
+        expectedRoleNameWorkTypesMap.put(RoleName.MAGISTRATE, "hearing_work,applications,routine_work");
+        expectedRoleNameWorkTypesMap.put(RoleName.FL401_JUDGE,
+            "hearing_work,decision_making_work,applications,routine_work");
     }
 
-    static void assertCommonRoleAssignmentAttributes(RoleAssignment r, String appointment, String serviceCode) {
+
+    static void assertCommonRoleAssignmentAttributes(RoleAssignment r,
+                                                     String appointmentType,
+                                                     String serviceCode,
+                                                     Map<String, List<String>> roleNameToRegionsMap) {
         assertEquals(ActorIdType.IDAM, r.getActorIdType());
         assertEquals(USER_ID, r.getActorId());
         assertEquals(RoleType.ORGANISATION, r.getRoleType());
-        assertEquals(ROLE_CATEGORY, r.getRoleCategory());
+        assertEquals(RoleCategory.JUDICIAL, r.getRoleCategory());
 
         String primaryLocation = null;
-        if (r.getAttributes().get("primaryLocation") != null) {
-            primaryLocation = r.getAttributes().get("primaryLocation").asText();
+        if (r.getAttributes().get(Attributes.Name.PRIMARY_LOCATION) != null) {
+            primaryLocation = r.getAttributes().get(Attributes.Name.PRIMARY_LOCATION).asText();
         }
 
-        if (List.of("hmcts-judiciary").contains(
-                r.getRoleName())) {
+        if (roleNameToRegionsMap != null) {
+            // check region status and add to map
+            MultiRegion.assertRegionStatusAndUpdateRoleToRegionMap(r, roleNameToRegionsMap);
+        }
+
+        if (r.getRoleName().equals(RoleName.HMCTS_JUDICIARY)) {
             assertEquals(Classification.PRIVATE, r.getClassification());
             assertEquals(GrantType.BASIC, r.getGrantType());
-            assertEquals(null, r.getAttributes().get("jurisdiction"));
+            assertNull(r.getAttributes().get(Attributes.Name.JURISDICTION));
             assertTrue(r.isReadOnly());
             assertNull(primaryLocation);
-            assertNull(r.getAttributes().get("region"));
+            assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
+            assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());
+            assertNull(r.getAttributes().get(Attributes.Name.REGION));
+            assertNull(r.getAttributes().get(Attributes.Name.BASE_LOCATION));
         } else {
             assertEquals(Classification.PUBLIC, r.getClassification());
             assertEquals(GrantType.STANDARD, r.getGrantType());
-            assertEquals(JURISDICTION, r.getAttributes().get("jurisdiction").asText());
+            assertEquals(JURISDICTION, r.getAttributes().get(Attributes.Name.JURISDICTION).asText());
             assertFalse(r.isReadOnly());
             assertEquals(serviceCode, r.getAuthorisations().get(0));
 
-            if (bookingLocationAppointments.contains(appointment)
-                    && List.of("circuit-judge", "judge", "fl401-judge").contains(r.getRoleName())) {
+            if ((r.getRoleName().equals(RoleName.JUDGE)
+                || r.getRoleName().equals(RoleName.CIRCUIT_JUDGE)
+                || r.getRoleName().equals(RoleName.FL401_JUDGE))
+                && appointmentType.equals(AppointmentType.FEE_PAID)) {
+                assertEquals(BOOKING_BEGIN_TIME, r.getBeginTime());
+                assertEquals(BOOKING_END_TIME, r.getEndTime());
                 assertEquals(BOOKING_LOCATION_ID, primaryLocation);
-                assertEquals(BOOKING_REGION_ID, r.getAttributes().get("region").asText());
-                assertEquals(BOOKING_LOCATION_ID, r.getAttributes().get("baseLocation").asText());
-            } else if (r.getRoleName().equals("fee-paid-judge")) {
-                assertEquals(PRIMARY_LOCATION_ID, primaryLocation);
-                assertNull(r.getAttributes().get("baseLocation"));
-                assertNull(r.getAttributes().get("region"));
+                assertEquals(BOOKING_REGION_ID, r.getAttributes().get(Attributes.Name.REGION).asText());
+                assertEquals(BOOKING_LOCATION_ID, r.getAttributes().get(Attributes.Name.BASE_LOCATION).asText());
+            } else if (r.getRoleName().equals(RoleName.FEE_PAID_JUDGE)) {
+                assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
+                assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());
+                assertEquals(ACCESS_PROFILE_PRIMARY_LOCATION_ID, primaryLocation);
+                assertNull(r.getAttributes().get(Attributes.Name.BASE_LOCATION));
+                assertNull(r.getAttributes().get(Attributes.Name.REGION));
             } else {
-                assertEquals(PRIMARY_LOCATION_ID, primaryLocation);
-                assertEquals(REGION_ID, r.getAttributes().get("region").asText());
-                assertNull(r.getAttributes().get("baseLocation"));
+                assertEquals(ACCESS_PROFILE_BEGIN_TIME, r.getBeginTime());
+                assertEquals(ACCESS_PROFILE_END_TIME.plusDays(1), r.getEndTime());
+                assertEquals(ACCESS_PROFILE_PRIMARY_LOCATION_ID, primaryLocation);
+                assertNull(r.getAttributes().get(Attributes.Name.BASE_LOCATION));
             }
-
         }
 
         String expectedWorkTypes = expectedRoleNameWorkTypesMap.get(r.getRoleName());
         String actualWorkTypes = null;
-        if (r.getAttributes().get("workTypes") != null) {
-            actualWorkTypes = r.getAttributes().get("workTypes").asText();
+        if (r.getAttributes().get(Attributes.Name.WORK_TYPES) != null) {
+            actualWorkTypes = r.getAttributes().get(Attributes.Name.WORK_TYPES).asText();
         }
         assertEquals(expectedWorkTypes, actualWorkTypes);
     }
 
 
-    List<String> judgeRoleNamesWithWorkTypes = List.of("judge", "circuit-judge", "fee-paid-judge");
-    static List<String> bookingLocationAppointments = List.of(
-            "Deputy District Judge- Fee-Paid",
-            "Deputy District Judge",
-            "Deputy District Judge- Sitting in Retirement",
-            "Deputy District Judge (sitting in retirement)",
-            "Recorder",
-            "Deputy District Judge - PRFD",
-            "Deputy District Judge (MC)- Fee paid",
-            "Deputy District Judge (MC)- Sitting in Retirement",
-            "Deputy High Court Judge",
-            "High Court Judge- Sitting in Retirement",
-            "Deputy Circuit Judge",
-            "Circuit Judge (sitting in retirement)",
-            "District Judge (MC) (sitting in retirement)",
-            "District Judge (sitting in retirement)");
-
-    static Stream<Arguments> endToEndData() {
-        // Parameters String appointment, String appointmentType, List<String> assignedRoles,
-        // List<String> expectedRoleNames boolean privateLawV13IsEnabled
+    static Stream<Arguments> genericJudgeSalaried() {
+        // Parameters AppointmentEnum appointment, AdditionalRoleEnum assignedRoles
         return Stream.of(
-                Arguments.of("Circuit Judge",
-                        "Salaried",
-                        List.of(""),
-                        List.of("judge", "circuit-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("Circuit Judge",
-                        "SPTW",
-                        List.of(""),
-                        List.of("judge", "circuit-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("Deputy Circuit Judge",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("judge","circuit-judge", "fee-paid-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("Circuit Judge (sitting in retirement)",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("judge","circuit-judge", "fee-paid-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("Deputy District Judge - PRFD",
-                        "Fee Paid",
-                        List.of("Deputy District Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("Deputy District Judge (MC)- Fee paid",
-                        "Fee Paid",
-                        List.of("Deputy District Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("Deputy District Judge (MC)- Sitting in Retirement",
-                        "Fee Paid",
-                        List.of("Deputy District Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("Deputy District Judge- Fee-Paid",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("Deputy District Judge",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("Deputy District Judge- Sitting in Retirement",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("Deputy District Judge (sitting in retirement)",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("Deputy High Court Judge",
-                        "Fee Paid",
-                        List.of("Deputy High Court Judge"),
-                        List.of("judge","fee-paid-judge","hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("District Judge",
-                        "Salaried",
-                        List.of(""),
-                        List.of("judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("District Judge (MC)",
-                        "SPTW",
-                        List.of("District Judge"),
-                        List.of("judge","hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("High Court Judge",
-                        "Salaried",
-                        List.of(""),
-                        List.of("judge", "circuit-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("High Court Judge- Sitting in Retirement",
-                        "Fee Paid",
-                        List.of("High Court Judge"),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("Recorder",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("",
-                        "",
-                        List.of("Designated Family Judge"),
-                        List.of("leadership-judge","judge","task-supervisor","hmcts-judiciary","case-allocator",
-                                "specific-access-approver-judiciary"),
-                        "ABA5"),
-                Arguments.of("",
-                        "",
-                        List.of("Family Division Liaison Judge"),
-                        List.of("judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("",
-                        "",
-                        List.of("Senior Family Liaison Judge"),
-                        List.of("judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("Magistrate",
-                        "Voluntary",
-                        List.of("Magistrates-Voluntary"),
-                        List.of("magistrate"),
-                        "ABA5"),
-                Arguments.of("District Judge (MC) (sitting in retirement)",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                Arguments.of("District Judge (sitting in retirement)",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("judge", "fee-paid-judge", "hmcts-judiciary"),
-                        "ABA5"),
-                //"Deputy District Judge- Fee-Paid",
-                //"Deputy District Judge",
-                //"Deputy District Judge- Sitting in Retirement",
-                //"Deputy District Judge (sitting in retirement)",
-                //"Recorder"
-                //AAA6 and AAA7 for civil
-                Arguments.of("Deputy District Judge- Fee-Paid",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("fl401-judge"),
-                        "AAA6"),
-                Arguments.of("Deputy District Judge- Fee-Paid",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("fl401-judge"),
-                        "AAA7"),
-                Arguments.of("Deputy District Judge",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("fl401-judge"),
-                        "AAA6"),
-                Arguments.of("Deputy District Judge",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("fl401-judge"),
-                        "AAA7"),
-                Arguments.of("Deputy District Judge- Sitting in Retirement",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("fl401-judge"),
-                        "AAA6"),
-                Arguments.of("Deputy District Judge- Sitting in Retirement",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("fl401-judge"),
-                        "AAA7"),
-                Arguments.of("Deputy District Judge (sitting in retirement)",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("fl401-judge"),
-                        "AAA6"),
-                Arguments.of("Deputy District Judge (sitting in retirement)",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("fl401-judge"),
-                        "AAA7"),
-                Arguments.of("Recorder",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("fl401-judge"),
-                        "AAA6"),
-                Arguments.of("Recorder",
-                        "Fee Paid",
-                        List.of(""),
-                        List.of("fl401-judge"),
-                        "AAA7"),
-                Arguments.of("District Judge",
-                        "Salaried",
-                        List.of(""),
-                        List.of("fl401-judge"),
-                        "AAA6"),
-                Arguments.of("District Judge",
-                        "Salaried",
-                        List.of(""),
-                        List.of("fl401-judge"),
-                        "AAA7"),
-                Arguments.of("District Judge",
-                        "SPTW",
-                        List.of(""),
-                        List.of("fl401-judge"),
-                        "AAA6"),
-                Arguments.of("District Judge",
-                        "SPTW",
-                        List.of(""),
-                        List.of("fl401-judge"),
-                        "AAA7")
+            // Appointments
+            Arguments.of(LegacyAppointment.DISTRICT_JUDGE,
+                LegacyAdditionalRole.ANY_OTHER_ROLE),
+            Arguments.of(LegacyAppointment.DISTRICT_JUDGE_MC,
+                LegacyAdditionalRole.ANY_OTHER_ROLE),
+            // Additional Roles
+            Arguments.of(LegacyAppointment.ANY_OTHER_APPOINTMENT,
+                LegacyAdditionalRole.FAMILY_DIVISION_LIAISON_JUDGE),
+            Arguments.of(LegacyAppointment.ANY_OTHER_APPOINTMENT,
+                LegacyAdditionalRole.SENIOR_FAMILY_LIAISON_JUDGE)
         );
+    }
+
+    static Stream<Arguments> leadershipJudgeSalaried() {
+        // Parameters AppointmentEnum appointment, AdditionalRoleEnum assignedRoles
+        return Stream.of(
+            // Appointments
+            // :: NONE
+            // Additional Roles
+            Arguments.of(LegacyAppointment.ANY_OTHER_APPOINTMENT,
+                AdditionalRole.DESIGNATED_FAMILY_JUDGE)
+        );
+    }
+
+
+    @ParameterizedTest
+    @EnumSource(value = Appointment.class, names = {
+        "CIRCUIT_JUDGE",
+        "HIGH_COURT_JUDGE",
+    })
+    void verifyCircuitJudgeSalariedAndSptwRoles(AppointmentEnum appointment) {
+        List<String> expectedRoleNames = List.of(RoleName.JUDGE, RoleName.CIRCUIT_JUDGE, RoleName.HMCTS_JUDICIARY);
+        AdditionalRoleEnum assignedRoles = LegacyAdditionalRole.ANY_OTHER_ROLE;
+        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "1", false);
+        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "5", false);
+        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "2", false);
+    }
+
+
+    @ParameterizedTest
+    @EnumSource(value = Appointment.class, names = {
+        "DEPUTY_CIRCUIT_JUDGE",
+        "CIRCUIT_JUDGE_SITTING_IN_RETIREMENT",
+    })
+    void verifyCircuitJudgeFeePaidRoles(AppointmentEnum appointment) {
+        List<String> expectedRoleNamesWithBooking = List.of(
+            RoleName.JUDGE, RoleName.CIRCUIT_JUDGE, RoleName.FEE_PAID_JUDGE, RoleName.HMCTS_JUDICIARY
+        );
+        List<String> expectedRoleNamesWithOutBooking = List.of(
+            RoleName.FEE_PAID_JUDGE, RoleName.HMCTS_JUDICIARY
+        );
+        shouldReturnFeePaidRolesFromJudicialAccessProfile(
+            appointment, SERVICE_CODE_PRL, expectedRoleNamesWithBooking, true
+        );
+        shouldReturnFeePaidRolesFromJudicialAccessProfile(
+            appointment, SERVICE_CODE_PRL, expectedRoleNamesWithOutBooking, false
+        );
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("leadershipJudgeSalaried")
+    void verifyLeadershipJudgeSalariedAndSptwRoles(AppointmentEnum appointment, AdditionalRoleEnum assignedRoles) {
+        List<String> expectedRoleNames = List.of(
+            RoleName.LEADERSHIP_JUDGE,
+            RoleName.JUDGE,
+            RoleName.TASK_SUPERVISOR,
+            RoleName.HMCTS_JUDICIARY,
+            RoleName.SPECIFIC_ACCESS_APPROVER_JUDICIARY,
+            RoleName.CASE_ALLOCATOR
+        );
+        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "1", false);
+        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "5", false);
+        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "2", false);
+    }
+
+
+    @ParameterizedTest
+    @EnumSource(value = LegacyAppointment.class, names = {
+        "DEPUTY_DISTRICT_JUDGE_PRFD",
+        "DEPUTY_DISTRICT_JUDGE_MC",
+        "DEPUTY_DISTRICT_JUDGE_MC_SITTING_IN_RETIREMENT",
+        "DEPUTY_DISTRICT_JUDGE_FEE_PAID",
+        "DEPUTY_DISTRICT_JUDGE",
+        "DEPUTY_DISTRICT_JUDGE_SITTING_IN_RETIREMENT",
+        "DEPUTY_DISTRICT_JUDGE_SITTING_IN_RETIREMENT2",
+        "DEPUTY_HIGH_COURT_JUDGE",
+        "DISTRICT_JUDGE_MC_SITTING_IN_RETIREMENT",
+        "DISTRICT_JUDGE_SITTING_IN_RETIREMENT",
+        "HIGH_COURT_JUDGE_SITTING_IN_RETIREMENT2",
+        "RECORDER",
+    })
+    void verifyGenericFeePaidRoles(AppointmentEnum appointment) {
+        List<String> expectedRoleNamesWithBooking = List.of(
+            RoleName.JUDGE, RoleName.FEE_PAID_JUDGE, RoleName.HMCTS_JUDICIARY
+        );
+        List<String> expectedRoleNamesWithOutBooking = List.of(
+            RoleName.FEE_PAID_JUDGE, RoleName.HMCTS_JUDICIARY
+        );
+        shouldReturnFeePaidRolesFromJudicialAccessProfile(
+            appointment, SERVICE_CODE_PRL, expectedRoleNamesWithBooking, true
+        );
+        shouldReturnFeePaidRolesFromJudicialAccessProfile(
+            appointment, SERVICE_CODE_PRL, expectedRoleNamesWithOutBooking, false
+        );
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("genericJudgeSalaried")
+    void verifyGenericSalariedAndSptwRoles(AppointmentEnum appointment, AdditionalRoleEnum assignedRoles) {
+        List<String> expectedRoleNames = List.of(RoleName.JUDGE, RoleName.HMCTS_JUDICIARY);
+        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "1", false);
+        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "5", false);
+        runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, SERVICE_CODE_PRL, expectedRoleNames, "2", false);
+    }
+
+
+    @ParameterizedTest
+    @EnumSource(value = Appointment.class, names = {
+        "MAGISTRATE",
+    })
+    void verifyMagistrateRoles(AppointmentEnum appointment) {
+        List<String> expectedRoleNamesWithBooking = List.of(RoleName.MAGISTRATE);
+        shouldReturnMagistrateRolesFromJudicialAccessProfile(appointment, expectedRoleNamesWithBooking);
+    }
+
+
+    @ParameterizedTest
+    @EnumSource(value = LegacyAppointment.class, names = {
+        "DEPUTY_DISTRICT_JUDGE_FEE_PAID",
+        "DEPUTY_DISTRICT_JUDGE",
+        "DEPUTY_DISTRICT_JUDGE_SITTING_IN_RETIREMENT",
+        "DEPUTY_DISTRICT_JUDGE_SITTING_IN_RETIREMENT2",
+        "RECORDER",
+    })
+    void verifyCivilJudgeFeePaidRoles(AppointmentEnum appointment) {
+        List<String> expectedRoleNamesWithBooking = List.of(RoleName.FL401_JUDGE);
+        List<String> expectedRoleNamesWithOutBooking = List.of();
+        Jurisdiction.CIVIL.getServiceCodes().forEach(serviceCode -> {
+            shouldReturnFeePaidRolesFromJudicialAccessProfile(
+                appointment, serviceCode, expectedRoleNamesWithBooking, true
+            );
+            shouldReturnFeePaidRolesFromJudicialAccessProfile(
+                appointment, serviceCode, expectedRoleNamesWithOutBooking, false
+            );
+        });
     }
 
     @ParameterizedTest
-    @MethodSource("endToEndData")
-    void shouldTakeJudicialAccessProfileConvertToJudicialOfficeHolderThenReturnRoleAssignments(
-            String appointment, String appointmentType, List<String> assignedRoles,
-            List<String> expectedRoleNames, String serviceCode) {
+    @EnumSource(value = LegacyAppointment.class, names = {
+        "DISTRICT_JUDGE",
+    })
+    void verifyCivilJudgeSalariedAndSptwRoles(AppointmentEnum appointment) {
+        List<String> expectedRoleNames = List.of(RoleName.FL401_JUDGE);
+        AdditionalRoleEnum assignedRoles = LegacyAdditionalRole.ANY_OTHER_ROLE;
+        Jurisdiction.CIVIL.getServiceCodes().forEach(serviceCode -> {
+            runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, serviceCode, expectedRoleNames, "1", false);
+            runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, serviceCode, expectedRoleNames, "5", false);
+            runSalariedTestsForSalariedAndSptw(appointment, assignedRoles, serviceCode, expectedRoleNames, "2", false);
+        });
+    }
 
-        judicialAccessProfiles.clear();
-        judicialOfficeHolders.clear();
-        JudicialBooking booking = JudicialBooking.builder().userId(USER_ID).locationId(BOOKING_LOCATION_ID)
-                .regionId(BOOKING_REGION_ID).build();
-        judicialBookings.add(booking);
 
-        judicialAccessProfiles.add(
-                JudicialAccessProfile.builder()
-                        .appointment(appointment)
-                        .appointmentType(appointmentType)
-                        .userId(USER_ID)
-                        .roles(assignedRoles)
-                        .regionId(REGION_ID)
-                        .primaryLocationId(PRIMARY_LOCATION_ID)
-                        .ticketCodes(List.of(serviceCode))
-                        .authorisations(List.of(
-                                Authorisation.builder()
-                                        .serviceCodes(List.of(serviceCode))
-                                        .endDate(LocalDateTime.now().plusYears(1L))
-                                        .build()
-                        ))
-                        .build()
+    private void runSalariedTestsForSalariedAndSptw(AppointmentEnum appointment,
+                                                    AdditionalRoleEnum assignedRoles,
+                                                    String serviceCode,
+                                                    List<String>  expectedRoleNames,
+                                                    String region,
+                                                    boolean expectMultiRegion) {
+        shouldReturnSalariedRolesFromJudicialAccessProfile(
+            appointment, AppointmentType.SALARIED, assignedRoles, serviceCode,
+            expectedRoleNames, region, expectMultiRegion
+        );
+        shouldReturnSalariedRolesFromJudicialAccessProfile(
+            appointment, AppointmentType.SPTW, assignedRoles, serviceCode,
+            expectedRoleNames, region, expectMultiRegion
+        );
+    }
+
+
+    void shouldReturnSalariedRolesFromJudicialAccessProfile(AppointmentEnum appointment,
+                                                            String appointmentType,
+                                                            AdditionalRoleEnum assignedRole,
+                                                            String serviceCode,
+                                                            List<String>  expectedRoleNames,
+                                                            String region,
+                                                            boolean expectMultiRegion) {
+
+        clearAndPrepareProfilesForDroolSession(
+            appointment,
+            appointmentType,
+            assignedRole,
+            serviceCode,
+            region,
+            false
         );
 
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(true));
+        // create map for all salaried roleNames that need regions
+        List<String> rolesThatRequireRegions = List.of(
+            RoleName.JUDGE,
+            RoleName.LEADERSHIP_JUDGE,
+            RoleName.TASK_SUPERVISOR,
+            RoleName.CASE_ALLOCATOR,
+            RoleName.SPECIFIC_ACCESS_APPROVER_JUDICIARY,
+            RoleName.CIRCUIT_JUDGE,
+            RoleName.SPECIFIC_ACCESS_APPROVER_LEGAL_OPS,
+            RoleName.FL401_JUDGE
+        );
 
-        //assertions
-        assertFalse(roleAssignments.isEmpty());
+        Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
-        List<String> roleNameResults =
-                roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList());
-        assertThat(roleNameResults, containsInAnyOrder(expectedRoleNames.toArray()));
+        // Execute Kie session
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
 
-        for (RoleAssignment r : roleAssignments) {
-            assertCommonRoleAssignmentAttributes(r,appointment,serviceCode);
+        // assertions
+        MultiRegion.assertRoleAssignmentCount(
+            roleAssignments,
+            expectedRoleNames,
+            expectMultiRegion,
+            rolesThatRequireRegions,
+            multiRegionList
+        );
+
+        roleAssignments.forEach(r -> {
+            if (r.getAttributes().get(Attributes.Name.CONTRACT_TYPE) != null) {
+                assertEquals(Attributes.ContractType.SALARIED,
+                    r.getAttributes().get(Attributes.Name.CONTRACT_TYPE).asText());
+            }
+
+            assertCommonRoleAssignmentAttributes(r, appointmentType, serviceCode, roleNameToRegionsMap);
+        });
+
+        // verify regions add to map
+        MultiRegion.assertRoleNameToRegionsMapIsAsExpected(
+            roleNameToRegionsMap,
+            expectedRoleNames,
+            expectMultiRegion,
+            multiRegionList,
+            region, // fallback if not multi-region scenario
+            null // i.e. no bookings
+        );
+    }
+
+
+    void shouldReturnFeePaidRolesFromJudicialAccessProfile(AppointmentEnum appointment,
+                                                           String serviceCode,
+                                                           List<String> expectedRoleNames,
+                                                           boolean addBooking) {
+        String appointmentType = AppointmentType.FEE_PAID;
+        String region = "any-region";
+
+        clearAndPrepareProfilesForDroolSession(
+            appointment,
+            appointmentType,
+            LegacyAdditionalRole.ANY_OTHER_ROLE,
+            serviceCode,
+            region,
+            addBooking
+        );
+
+        // Execute Kie session
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
+
+        // assertions
+        List<String> actualRoleNames = roleAssignments.stream().map(RoleAssignment::getRoleName).toList();
+        assertTrue(actualRoleNames.containsAll(expectedRoleNames));
+        assertEquals(expectedRoleNames.size(), roleAssignments.size());
+
+        roleAssignments.forEach(r -> {
+            if (r.getAttributes().get(Attributes.Name.CONTRACT_TYPE) != null) {
+                assertEquals(Attributes.ContractType.FEE_PAID,
+                    r.getAttributes().get(Attributes.Name.CONTRACT_TYPE).asText());
+            }
+
+            assertCommonRoleAssignmentAttributes(r, appointmentType, serviceCode, null);
+        });
+    }
+
+    void shouldReturnMagistrateRolesFromJudicialAccessProfile(AppointmentEnum appointment,
+                                                           List<String> expectedRoleNames) {
+        String appointmentType = AppointmentType.VOLUNTARY;
+        String region = "any-region";
+        String serviceCode = SERVICE_CODE_PRL;
+
+        clearAndPrepareProfilesForDroolSession(
+            appointment,
+            appointmentType,
+            LegacyAdditionalRole.ANY_OTHER_ROLE,
+            serviceCode,
+            region,
+            false
+        );
+
+        // Execute Kie session
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags());
+
+        // assertions
+        List<String> actualRoleNames = roleAssignments.stream().map(RoleAssignment::getRoleName).toList();
+        assertTrue(actualRoleNames.containsAll(expectedRoleNames));
+        assertEquals(expectedRoleNames.size(), roleAssignments.size());
+
+        roleAssignments.forEach(r -> {
+            if (r.getAttributes().get(Attributes.Name.CONTRACT_TYPE) != null) {
+                assertEquals(Attributes.ContractType.VOLUNTARY,
+                    r.getAttributes().get(Attributes.Name.CONTRACT_TYPE).asText());
+            }
+            assertEquals(region, r.getAttributes().get(Attributes.Name.REGION).asText());
+
+            assertCommonRoleAssignmentAttributes(r, appointmentType, serviceCode, null);
+        });
+    }
+
+    private void clearAndPrepareProfilesForDroolSession(AppointmentEnum appointment,
+                                                        String appointmentType,
+                                                        AdditionalRoleEnum role,
+                                                        String serviceCode,
+                                                        String region,
+                                                        boolean addBooking) {
+        allProfiles.clear();
+        judicialAccessProfiles.clear();
+        judicialOfficeHolders.clear();
+        judicialBookings.clear();
+
+        judicialAccessProfiles.add(
+            JudicialAccessProfile.builder()
+                .appointment(appointment.getName())
+                .appointmentCode(appointment.getCodes().get(0))
+                .appointmentType(appointmentType)
+                .userId(USER_ID)
+                .roles(List.of(role.getName()))
+                .regionId(region)
+                .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
+                .ticketCodes(List.of(serviceCode))
+                .beginTime(ACCESS_PROFILE_BEGIN_TIME)
+                .endTime(ACCESS_PROFILE_END_TIME)
+                .additionalRoles(List.of(RoleV2.builder()
+                    .jurisdictionRoleName(role.getName())
+                    .jurisdictionRoleId(role.getCodes().get(0)) // any role code will do in this test
+                    .startDate(LocalDate.now().minusDays(20L))
+                    .endDate(LocalDate.now().plusDays(20L)) // i.e. valid end date
+                    .build()))
+                .authorisations(List.of(
+                    Authorisation.builder()
+                        .serviceCodes(List.of(serviceCode))
+                        .jurisdiction(JURISDICTION)
+                        .endDate(LocalDateTime.now().plusYears(1L))
+                        .build()
+                ))
+                .build()
+        );
+
+        if (addBooking) {
+            judicialBookings.add(
+                JudicialBooking.builder()
+                    .userId(USER_ID)
+                    .locationId(BOOKING_LOCATION_ID)
+                    .regionId(BOOKING_REGION_ID)
+                    .beginTime(BOOKING_BEGIN_TIME)
+                    .endTime(BOOKING_END_TIME)
+                    .build()
+            );
         }
     }
 
-
-    @Test
-    void falsePrivateLawFlagTest() {
-
-        judicialAccessProfiles.clear();
-        judicialOfficeHolders.clear();
-
-        judicialAccessProfiles.add(
-                JudicialAccessProfile.builder()
-                        .appointment("District Judge (MC)")
-                        .appointmentType("SPTW")
-                        .userId(USER_ID)
-                        .roles(List.of("District Judge"))
-                        .regionId(REGION_ID)
-                        .primaryLocationId(PRIMARY_LOCATION_ID)
-                        .ticketCodes(List.of("ABA5"))
-                        .authorisations(List.of(
-                                Authorisation.builder()
-                                        .serviceCodes(List.of("ABA5"))
-                                        .endDate(LocalDateTime.now().plusYears(1L))
-                                        .build()
-                        ))
-                        .build()
-        );
-
-        //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(getFeatureFlags(false));
-
-        //assertions
-        assertTrue(roleAssignments.isEmpty());
-    }
-
-    List<FeatureFlag> getFeatureFlags(Boolean status) {
-        return getAllFeatureFlagsToggleByJurisdiction("PRIVATELAW", status);
+    List<FeatureFlag> getFeatureFlags() {
+        return getAllFeatureFlagsToggleByJurisdiction("PRIVATELAW", true);
     }
 
 }
