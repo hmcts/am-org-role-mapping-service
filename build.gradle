@@ -38,7 +38,7 @@ def versions = [
         feign_jackson  : '13.9.3',
         jacksondata    : '2.18.3',
         testcontainers : '1.21.4',
-        drools         : '9.44.0.Final',
+        drools         : '10.2.0',
         log4JVersion   : '2.24.3',
         netty_version  : '4.2.13.Final',
         bouncycastle   : '1.83',
