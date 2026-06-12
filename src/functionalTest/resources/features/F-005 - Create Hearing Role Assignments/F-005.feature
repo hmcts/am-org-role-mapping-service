@@ -65,6 +65,7 @@ Feature: F-005 : Create SSCS Role Assignments for Hearing Roles
   Scenario: must successfully create organisational role mapping for SSCS judicial role assignments (Tribunal Judge -> hearing-viewer)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-045_DeleteDataForRoleAssignments]
+    And a successful call [to snapshot judicial details] as in [S-045__SnapshotJudicialDetails],
     And a successful call [to post create organisational role mapping request on ORM] as in [S-045_PostCreateRequestToORM],
     When a request is prepared with appropriate values,
     And the request [contains the actorId of the user just published for judicial role assignments],
