@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.orgrolemapping.drool;
 
 import org.apache.commons.lang3.StringUtils;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArgumentOverrides;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArguments;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +11,11 @@ import java.util.Map;
 
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.adjustTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.cloneListOfTestArgumentsForMultiRegion;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.formatRasRequestFileNameWithSuffix;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateOverrideFlagOffCatchAll;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardFeePaidTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardSalariedTestArguments;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.overrideTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_01_LONDON;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_02_MIDLANDS;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_03_NORTH_EAST;
@@ -233,11 +238,17 @@ public class CivilJudicialIT {
             )
         );
 
+        // FlagOff Tests
+        arguments.addAll(flagOffTestsPrivateLawWa19(arguments));
+
+
         arguments = adjustTestArgumentsForServiceCode(arguments, serviceCode);
+
 
         // adjust test arguments ready for use
         return adjustTestArguments(arguments, "Civil");
     }
+
 
     private static List<DroolJudicialTestArguments> adjustTestArgumentsForServiceCode(
         List<DroolJudicialTestArguments> arguments,
@@ -261,6 +272,7 @@ public class CivilJudicialIT {
             )
             .toList();
     }
+
 
     private static List<DroolJudicialTestArguments> generateFeePaidTestArguments(String jrdResponseFileName,
                                                                                  String rasRequestFileName,
@@ -293,6 +305,7 @@ public class CivilJudicialIT {
 
         return arguments;
     }
+
 
     private static List<DroolJudicialTestArguments> generateSalariedTestArguments(String jrdResponseFileName,
                                                                                   String rasRequestFileName,
@@ -331,6 +344,41 @@ public class CivilJudicialIT {
         );
 
         return arguments;
+    }
+
+
+    private static List<DroolJudicialTestArguments> flagOffTestsPrivateLawWa19(
+        List<DroolJudicialTestArguments> inputArguments
+    ) {
+        String multiRegionFileNameSuffix =
+            "multiRegion_" + String.join("_", List.of(REGION_01_LONDON, REGION_05_SOUTH_EAST));
+
+        List<DroolJudicialTestArgumentOverrides> testOverrides = new ArrayList<>();
+        FeatureFlagEnum flag = FeatureFlagEnum.PRIVATELAW_WA_1_9;
+
+        String djRasFileNameMultiRegion = formatRasRequestFileNameWithSuffix(
+            "006_DJ",
+            multiRegionFileNameSuffix
+        );
+
+        // no multi region when flag is off
+        testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
+            .overrideDescription("no_FL401_multi_region")
+            .findRasRequestFileNameWithoutBooking(djRasFileNameMultiRegion)
+            .overrideRasRequestFileNameWithoutBooking(
+                "FlagOff_PUBLICLAW_WA_1_9/" + djRasFileNameMultiRegion
+            )
+            .overrideRasRequestFileNameWithBooking(
+                "FlagOff_PUBLICLAW_WA_1_9/" + djRasFileNameMultiRegion
+            )
+            .overrideTurnOffFlags(List.of(flag))
+            .build()
+        );
+
+        // must use a catch-all override to run all unaffected tests with the flag off
+        testOverrides.add(generateOverrideFlagOffCatchAll(flag));
+
+        return overrideTestArguments(inputArguments, testOverrides);
     }
 
 }
