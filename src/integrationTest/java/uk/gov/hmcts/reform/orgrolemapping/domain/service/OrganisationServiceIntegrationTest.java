@@ -2,8 +2,8 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
@@ -44,7 +44,7 @@ public class OrganisationServiceIntegrationTest extends BaseTestIntegration {
     @Autowired
     private BatchLastRunTimestampRepository batchLastRunTimestampRepository;
 
-    @MockBean
+    @MockitoBean
     private PrdService prdService;
 
     @Test

@@ -5,10 +5,10 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -34,27 +34,27 @@ import static org.mockito.Mockito.when;
 
 @TestConfiguration
 public class ProviderTestConfiguration {
-    @MockBean
+    @MockitoBean
     CRDService crdService;
-    @MockBean
+    @MockitoBean
     JRDService jrdService;
-    @MockBean
+    @MockitoBean
     PrdService prdService;
-    @MockBean
+    @MockitoBean
     UserRefreshQueueRepository userRefreshQueueRepository;
-    @MockBean
+    @MockitoBean
     SecurityUtils securityUtils;
-    @MockBean
+    @MockitoBean
     ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
-    @MockBean
+    @MockitoBean
     private CacheManager cacheManager;
-    @MockBean
+    @MockitoBean
     JudicialBookingService judicialBookingService;
-    @MockBean
+    @MockitoBean
     RoleAssignmentService roleAssignmentService;
-    @MockBean
+    @MockitoBean
     PersistenceService persistenceService;
-    @MockBean
+    @MockitoBean
     ProcessEventTracker processEventTracker;
 
     private KieServices kieServices = KieServices.Factory.get();
