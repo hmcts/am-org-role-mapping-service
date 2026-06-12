@@ -1,14 +1,12 @@
 package uk.gov.hmcts.reform.orgrolemapping.drool;
 
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArguments;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.NO_BOOKABLE_ROLES_FLAG;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.adjustTestArguments;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateFlagOffTestArgumentsWithOutputFolder;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardFeePaidTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardSalariedTestArguments;
 
@@ -121,12 +119,6 @@ public class IacJudicialIT {
         arguments = adjustAllTestsToUseAppointmentExpiredFallback(arguments);
 
 
-        // generate extra flag off tests for IAC_WA_1_7
-        List<DroolJudicialTestArguments> argumentsflagOffTestsIacWa17 = flagOffTestsIacWa17(arguments);
-        // add flag off tests to the main arguments list
-        arguments.addAll(argumentsflagOffTestsIacWa17);
-
-
         // adjust test arguments ready for use
         return adjustTestArguments(arguments, "IAC");
     }
@@ -152,18 +144,6 @@ public class IacJudicialIT {
                     .build();
             })
             .toList());
-    }
-
-    private static List<DroolJudicialTestArguments> flagOffTestsIacWa17(
-        List<DroolJudicialTestArguments> inputArguments
-    ) {
-        // NB: Flag Off 1.7 tests are using an alternative output template location
-        return generateFlagOffTestArgumentsWithOutputFolder(
-            inputArguments,
-            "Old worktypes",
-            "FlagOff_IAC_WA_1_7",
-            FeatureFlagEnum.IAC_WA_1_7
-        );
     }
 
 }
