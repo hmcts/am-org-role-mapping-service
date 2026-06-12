@@ -1,0 +1,95 @@
+{
+  "_guid_": "S-020.04",
+  "title": "must successfully create org role mapping for CTSC Admin + Task Supervisor + Case Allocator (Divorce)",
+  "_extends_": "F-020_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published who has CTSC Admin (Divorce) role"
+  ],
+  "request": {
+    "pathVariables": {
+      "caseworkerRole": "CTSC Administrator",
+      "emailId": "rdam-caseworker-divorce-10@hmcts.net",
+      "caseAllocator": "true",
+      "taskSupervisor": "true",
+      "actorId": "${[scenarioContext][childContexts][F-020_CreateCaseworkerProfileInCRD][testData][actualResponse][body][case_worker_ids][0]}"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "ctsc",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "DIVORCE",
+            "workTypes": "hearing_work, routine_work, applications, review_case, evidence"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-ctsc",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "CTSC",
+          "readOnly": true,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "DIVORCE"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "DIVORCE"
+          }
+        }
+      ]
+    }
+  }
+}
