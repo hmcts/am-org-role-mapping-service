@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.drool;
 
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArgumentOverrides;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArguments;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 
@@ -10,10 +9,8 @@ import java.util.List;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.NO_BOOKABLE_ROLES_FLAG;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.adjustTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateFlagOffTestArgumentsWithOutputFolder;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateOverrideFlagOffCatchAll;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardFeePaidTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardSalariedTestArguments;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.overrideTestArguments;
 
 public class IacJudicialIT {
 
@@ -124,12 +121,9 @@ public class IacJudicialIT {
         arguments = adjustAllTestsToUseAppointmentExpiredFallback(arguments);
 
 
-        // generate extra flag off tests for IAC_WA_1_6
-        List<DroolJudicialTestArguments> argumentsflagOffTestsIacWa16 = flagOffTestsIacWa16(arguments);
         // generate extra flag off tests for IAC_WA_1_7
         List<DroolJudicialTestArguments> argumentsflagOffTestsIacWa17 = flagOffTestsIacWa17(arguments);
         // add flag off tests to the main arguments list
-        arguments.addAll(argumentsflagOffTestsIacWa16);
         arguments.addAll(argumentsflagOffTestsIacWa17);
 
 
@@ -158,36 +152,6 @@ public class IacJudicialIT {
                     .build();
             })
             .toList());
-    }
-
-    private static List<DroolJudicialTestArguments> flagOffTestsIacWa16(
-        List<DroolJudicialTestArguments> inputArguments
-    ) {
-        List<DroolJudicialTestArgumentOverrides> testOverrides = new ArrayList<>();
-        FeatureFlagEnum flag = FeatureFlagEnum.IAC_WA_1_6;
-
-        // the following scenarios will default back to Salaried_Judge when flag is off
-        testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
-            .overrideDescription("Default_back_to_Salaried_Judge")
-            .findJrdResponseFileName("002_Resident_Tribunal_Judge__Salaried")
-            .overrideRasRequestFileNameWithoutBooking(SALARIED_JUDGE_OUTPUT_TEMPLATE)
-            .overrideRasRequestFileNameWithBooking(SALARIED_JUDGE_OUTPUT_TEMPLATE)
-            .overrideTurnOffFlags(List.of(flag))
-            .build()
-        );
-        testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
-            .overrideDescription("Default_back_to_Salaried_Judge")
-            .findJrdResponseFileName("004_Acting_Resident_Judge__Salaried")
-            .overrideRasRequestFileNameWithoutBooking(SALARIED_JUDGE_OUTPUT_TEMPLATE)
-            .overrideRasRequestFileNameWithBooking(SALARIED_JUDGE_OUTPUT_TEMPLATE)
-            .overrideTurnOffFlags(List.of(flag))
-            .build()
-        );
-
-        // must use a catch-all override to run all unaffected tests with the flag off
-        testOverrides.add(generateOverrideFlagOffCatchAll(flag));
-
-        return overrideTestArguments(inputArguments, testOverrides);
     }
 
     private static List<DroolJudicialTestArguments> flagOffTestsIacWa17(
