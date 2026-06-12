@@ -12,9 +12,11 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.FlagRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.PersistenceService;
 import uk.gov.hmcts.reform.orgrolemapping.util.PersistenceUtil;
 
+import java.util.Map;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -45,6 +47,22 @@ class FeatureFlagControllerTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertTrue((Boolean) Objects.requireNonNull(responseEntity.getBody()));
 
+    }
+
+    @Test
+    void getAllFeatureFlags() {
+
+        Map<String, Boolean> allFlags = Map.of("iac_1_1", Boolean.TRUE, "iac_1_2", Boolean.FALSE);
+
+        Mockito.when(persistenceService.getAllFeatureFlags()).thenReturn(allFlags);
+        ResponseEntity<Map<String, Boolean>> responseEntity = sut.getAllFeatureFlags();
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+        assertTrue((responseEntity.getBody() instanceof Map));
+        Map<String, Boolean> bodyMap = (Map<String, Boolean>) responseEntity.getBody();
+        assertEquals(allFlags.size(), bodyMap.size());
+        assertTrue(bodyMap.get("iac_1_1"));
+        assertFalse(bodyMap.get("iac_1_2"));
     }
 
     @Test
