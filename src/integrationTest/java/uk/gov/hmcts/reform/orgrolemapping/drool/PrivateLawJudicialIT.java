@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.drool;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArgumentOverrides;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArguments;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
-import uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -270,6 +269,16 @@ public class PrivateLawJudicialIT {
             List.of(REGION_02_MIDLANDS), // any single region
             List.of(REGION_01_LONDON, REGION_05_SOUTH_EAST) // multi-regions
         );
+
+        // Re-adjust all AdditionalRole tests back to use common HEARING_ROLES_ONLY_OUTPUT_TEMPLATE file as
+        // we don't need to use MultiRegion specific files for the fallback template as no regions are in use.
+        if (additionalRoleTest) {
+            arguments = arguments.stream()
+                .map(argument -> argument.cloneBuilder()
+                    .additionalRoleExpiredFallbackFileName(HEARING_ROLES_ONLY_OUTPUT_TEMPLATE)
+                    .build())
+                .toList();
+        }
 
         return arguments;
     }
