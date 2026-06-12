@@ -1,29 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
     <suppress>
-        <notes>
-            <![CDATA[
-        Reviewed 2026-06-10
-        False positive:
-        CVE-2025-21199 applies to Microsoft Azure Agent and Site Recovery.
-        Affected libraries reported by dependency-check are:
-        - applicationinsights-core 3.7.8
-        Versions of used libraries are their latest respectively.
-      ]]>
-        </notes>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1319 Azure Agent</notes>
         <cve>CVE-2025-21199</cve>
     </suppress>
     <suppress>
-        <notes>
-            <![CDATA[
-        Reviewed 2026-06-10
-        False positive:
-        CVE-2026-33117 applies to Microsoft Azure Java SDK.
-        Affected libraries reported by dependency-check are:
-          - microsoft:azure_sdk_for_java:2.6.4
-        Versions of used libraries are their latest respectively.
-      ]]>
-        </notes>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1321 Azure Java SDK</notes>
         <cve>CVE-2026-33117</cve>
     </suppress>
     <suppress>
