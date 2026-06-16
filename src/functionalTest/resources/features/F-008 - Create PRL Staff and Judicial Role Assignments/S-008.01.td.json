@@ -1,19 +1,19 @@
 {
   "_guid_": "S-008.01",
   "title": "must successfully create org role mapping for Senior Legal Caseworker",
-  "_extends_": "F-008_Test_Data_Base",
+  "_extends_": "VerifyOrgRoleAssignments_withLabels",
+
   "specs": [
     "contains the actorId of the user just published who has Senior Legal Caseworker role"
   ],
-  "method": "GET",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+
   "request": {
     "pathVariables": {
       "actorId": "260d03c3-0480-4b4f-807d-4fcb5585ee54"
     }
   },
+
   "expectedResponse": {
-    "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
         {
@@ -26,6 +26,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-legal-operations",
+          "roleLabel": "HMCTS Legal Operations",
           "classification": "PRIVATE",
           "grantType": "BASIC",
           "roleCategory": "LEGAL_OPERATIONS",
@@ -41,6 +42,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "senior-tribunal-caseworker",
+          "roleLabel": "Senior Tribunal Caseworker",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "LEGAL_OPERATIONS",
@@ -60,6 +62,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "specific-access-approver-legal-ops",
+          "roleLabel": "Specific Access Approver Legal Ops",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "LEGAL_OPERATIONS",
@@ -79,6 +82,7 @@
           "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType" : "ORGANISATION",
           "roleName" : "hearing-viewer",
+          "roleLabel": "Hearing Viewer",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
           "roleCategory" : "LEGAL_OPERATIONS",
@@ -96,6 +100,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-manager",
+          "roleLabel": "Hearing Manager",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "LEGAL_OPERATIONS",

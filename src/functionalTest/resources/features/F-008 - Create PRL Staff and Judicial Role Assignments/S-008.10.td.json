@@ -1,19 +1,19 @@
 {
   "_guid_": "S-008.10",
   "title": "must successfully create org role mapping for CTSC Admin",
-  "_extends_": "F-008_Test_Data_Base",
+  "_extends_": "VerifyOrgRoleAssignments_withLabels",
+
   "specs": [
     "contains the actorId of the user just published who has CTSC Admin role"
   ],
-  "method": "GET",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+
   "request": {
     "pathVariables": {
       "actorId": "713b68ff-6fd2-4001-8ad1-01f8a887c103"
     }
   },
+
   "expectedResponse": {
-    "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
         {
@@ -26,6 +26,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-ctsc",
+          "roleLabel": "HMCTS CTSC",
           "classification": "PRIVATE",
           "grantType": "BASIC",
           "roleCategory": "CTSC",
@@ -41,6 +42,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "ctsc",
+          "roleLabel": "CTSC",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "CTSC",
@@ -59,6 +61,7 @@
           "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType" : "ORGANISATION",
           "roleName" : "hearing-viewer",
+          "roleLabel": "Hearing Viewer",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
           "roleCategory" : "CTSC",
@@ -76,6 +79,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-manager",
+          "roleLabel": "Hearing Manager",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "CTSC",

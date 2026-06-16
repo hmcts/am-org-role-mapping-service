@@ -1,19 +1,19 @@
 {
   "_guid_": "S-008.03",
   "title": "must successfully create org role mapping for Hearing Centre Team Leader",
-  "_extends_": "F-008_Test_Data_Base",
+  "_extends_": "VerifyOrgRoleAssignments_withLabels",
+
   "specs": [
     "contains the actorId of the user just published who has Hearing Centre Team Leader role"
   ],
-  "method": "GET",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+
   "request": {
     "pathVariables": {
       "actorId": "124c2945-61b8-4448-95c6-7153d9cbfa51"
     }
   },
+
   "expectedResponse": {
-    "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
         {
@@ -26,6 +26,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-admin",
+          "roleLabel": "HMCTS Admin",
           "classification": "PRIVATE",
           "grantType": "BASIC",
           "roleCategory": "ADMIN",
@@ -41,6 +42,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-centre-team-leader",
+          "roleLabel": "Hearing Centre Team Leader",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "ADMIN",
@@ -60,6 +62,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-centre-admin",
+          "roleLabel": "Hearing Centre Admin",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "ADMIN",
@@ -79,6 +82,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "specific-access-approver-admin",
+          "roleLabel": "Specific Access Approver Admin",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "ADMIN",
@@ -98,6 +102,7 @@
           "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType" : "ORGANISATION",
           "roleName" : "hearing-viewer",
+          "roleLabel": "Hearing Viewer",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
           "roleCategory" : "ADMIN",
@@ -115,6 +120,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-manager",
+          "roleLabel": "Hearing Manager",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "ADMIN",
