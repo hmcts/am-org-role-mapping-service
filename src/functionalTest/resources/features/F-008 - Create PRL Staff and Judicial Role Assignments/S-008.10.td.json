@@ -4,6 +4,7 @@
   "_extends_": "VerifyOrgRoleAssignments_withLabels",
 
   "specs": [
+    "an active IDAM profile with full permissions",
     "contains the actorId of the user just published who has CTSC Admin role"
   ],
 
