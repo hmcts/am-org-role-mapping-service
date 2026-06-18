@@ -1,9 +1,9 @@
 {
   "_guid_": "F-020-Base-Root",
   "users": {
-    "invokingUser": {
-      "_extends_": "AmBeftaUser1"
-    }
+      "invokingUser": {
+        "_extends_": "AmBeftaUser1"
+      }
   },
   "request": {
     "headers": {
