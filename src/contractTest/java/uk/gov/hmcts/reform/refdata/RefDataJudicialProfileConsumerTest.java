@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.refdata;
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
-import au.com.dius.pact.core.model.annotations.PactFolder;
+import au.com.dius.pact.core.model.annotations.PactDirectory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
@@ -41,7 +41,7 @@ import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 @ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactFolder("pacts")
+@PactDirectory("pacts")
 @PactTestFor(providerName = "referenceData_judicial", port = "8991")
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {

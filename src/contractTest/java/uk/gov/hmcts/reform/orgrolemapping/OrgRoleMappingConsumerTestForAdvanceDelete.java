@@ -6,7 +6,7 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import au.com.dius.pact.core.model.annotations.PactFolder;
+import au.com.dius.pact.core.model.annotations.PactDirectory;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
@@ -28,7 +28,7 @@ import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactTestFor(providerName = "am_roleAssignment_deleteAssignment")
-@PactFolder("pacts")
+@PactDirectory("pacts")
 public class OrgRoleMappingConsumerTestForAdvanceDelete  extends BaseTestContract {
     private static final String RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL = "/am/role-assignments/query";
     private static final String RAS_ADVANCE_DELETE = RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL + "/delete";
