@@ -45,7 +45,8 @@
             "substantive": "Y",
             "contractType": "Fee-Paid",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "ST_CIC"
+            "jurisdiction": "ST_CIC",
+            "workTypes": "decision_making_work"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }

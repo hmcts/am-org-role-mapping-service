@@ -1,0 +1,17 @@
+{
+  "_guid_": "S-163_DeleteDataForBookings",
+  "_extends_": "DeleteDataForBookings__PositiveResponse_Base",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmJRDUser1"
+    }
+  },
+
+  "request": {
+    "pathVariables": {
+      "userId": "${[scenarioContext][parentContext][testData][users][invokingUser][id]}"
+    }
+  }
+
+}

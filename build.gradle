@@ -2,7 +2,7 @@ plugins {
     id 'idea'
     id 'java'
     id 'application'
-    id 'uk.gov.hmcts.java' version '0.12.67'
+    id 'uk.gov.hmcts.java' version '0.12.68'
     id 'pmd'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.1.7'
@@ -10,11 +10,11 @@ plugins {
     id 'info.solidsoft.pitest' version '1.15.0'
     id 'org.sonarqube' version '6.2.0.5505'
     id 'org.owasp.dependencycheck' version '12.1.3'
-    id 'com.github.ben-manes.versions' version '0.52.0'
-    id 'au.com.dius.pact' version '4.6.17'
+    id 'com.github.ben-manes.versions' version '0.53.0'
+    id 'au.com.dius.pact' version '4.6.20'
     id 'com.github.spacialcircumstances.gradle-cucumber-reporting' version '0.1.25'
     id 'org.flywaydb.flyway' version '9.22.3'
-    id 'net.serenity-bdd.serenity-gradle-plugin' version '4.2.34'
+    id 'net.serenity-bdd.serenity-gradle-plugin' version '4.3.2'
 }
 
 ext['snakeyaml.version'] = '2.4'
@@ -22,25 +22,27 @@ ext['snakeyaml.version'] = '2.4'
 def versions = [
         junit          : '5.11.3',
         junitPlatform  : '1.11.3',
-        lombok         : '1.18.38',
-        pitest         : '1.19.1',
+        lombok         : '1.18.46',
+        pitest         : '1.22.1',
         reformLogging  : '6.1.9',
-        reformS2sClient: '5.3.3',
-        serenity       : '4.2.34',
-        spring         : '6.1.3',
+        reformS2sClient: '5.3.4',
+        serenity       : '4.3.4',
+        spring         : '6.2.15',
         pact_version   : '4.6.17',
-        rest_assured   : '5.5.5',
+        rest_assured   : '5.5.7',
         cucumber       : '5.7.0',
-        feign_jackson  : '13.6',
+        feign_jackson  : '13.9.3',
         jacksondata    : '2.18.3',
+        testcontainers : '1.21.4',
         drools         : '9.44.0.Final',
         log4JVersion   : '2.24.3',
-        netty_version  : '4.2.3.Final',
-        poi            : '5.4.1'
+        netty_version  : '4.2.12.Final',
+        bouncycastle   : '1.83',
+        poi            : '5.5.1'
 ]
 
 def springBootVersion = plugins.getPlugin('org.springframework.boot').class.package.implementationVersion
-def springCloudVersion = '2023.0.5'
+def springCloudVersion = '2023.0.6'
 
 application {
     mainClass = 'uk.gov.hmcts.reform.orgrolemapping.OrgRoleMappingApplication'
@@ -209,7 +211,7 @@ jacocoTestReport {
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 jacoco {
-    toolVersion = "0.8.13"
+    toolVersion = "0.8.15"
 }
 
 task migratePostgresDatabase(type: org.flywaydb.gradle.task.FlywayMigrateTask) {
@@ -316,8 +318,16 @@ tasks.named('integration') {
     }
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'org.springframework'){
+            details.useVersion versions.spring
+        }
+    }
+}
+
 dependencies {
-    implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.0'
+    implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.2'
     implementation group: 'org.springframework.boot', name:'spring-boot-starter-web'
     implementation group: 'org.springframework.boot', name:'spring-boot-starter-validation'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
@@ -334,12 +344,12 @@ dependencies {
     implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.12'
     implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.81'
     implementation group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: '1.81'
-    implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '2.4.1'
+    implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '2.5.2'
 
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.8.17'
 
     implementation group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.4'
-    implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '1.33.6'
+    implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '2.26.1'
 
     implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.2.1'
 
@@ -364,18 +374,26 @@ dependencies {
     implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
 
     //Azure service bus libraries
-    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.12.0'
-    implementation group: 'com.azure', name: 'azure-core', version: '1.55.5'
-    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.12'
-    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.7.8'
-    implementation group: 'commons-cli', name: 'commons-cli', version: '1.9.0'
-    implementation group: 'com.google.guava', name: 'guava', version: '32.1.3-jre'
-    implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.2.2'
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.7'
-    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.48'
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '5.3.2'
+    implementation group: 'com.azure', name: 'azure-core', version: '1.58.1'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.18'
+    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.8.6'
+    implementation group: 'commons-cli', name: 'commons-cli', version: '1.11.0'
+    implementation group: 'com.google.guava', name: 'guava', version: '33.5.0-jre'
+    implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.2.4'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.11'
+    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.8'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '3.0.4'
     implementation group: 'commons-io', name: 'commons-io', version: '2.19.0'
+    implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.2'
+    implementation group: 'com.github.hmcts', name: 'idam-java-client', version: '3.0.5'
+    implementation 'commons-io:commons-io:20030203.000550'
+    //CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090
+    // To be cleaned up later
+    implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.28.0'
+    implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.6.0'
+
     implementation group: 'org.apache.poi', name: 'poi', version: versions.poi
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: versions.poi
     implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: versions.poi
@@ -383,8 +401,16 @@ dependencies {
 
 
     testImplementation('com.opentable.components:otj-pg-embedded:1.1.1')
+    implementation 'net.bytebuddy:byte-buddy:1.18.10'
+
+    testImplementation('com.opentable.components:otj-pg-embedded:1.1.1')
+    testImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
+    testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
+
+    pitest 'org.pitest:pitest-junit5-plugin:1.2.3'
+
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.15.2'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.21.0'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
 
@@ -393,10 +419,14 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:4.2.0'
     testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test'
     testImplementation group: 'org.springframework.security', name:'spring-security-test'
+    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:4.3.3')
+    testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test'
+    testImplementation group: 'org.springframework.security',name:'spring-security-test'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '4.3.2'
 
     testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
     testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-engine', version: versions.junitPlatform
-    testImplementation 'com.github.hmcts:befta-fw:9.2.4'
+    testImplementation 'com.github.hmcts:befta-fw:9.2.6'
 
     testImplementation group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber
     testImplementation group: 'io.cucumber', name: 'cucumber-junit', version: versions.cucumber
@@ -410,7 +440,7 @@ dependencies {
     testImplementation group: 'net.serenity-bdd', name: 'serenity-junit5', version: versions.serenity
     testImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
-    testImplementation 'com.github.hmcts:fortify-client:1.4.9:all'
+    testImplementation 'com.github.hmcts:fortify-client:1.4.10:all'
 
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
     smokeTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit5', version: versions.serenity
@@ -437,6 +467,8 @@ dependencies {
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     testCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    integrationTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     smokeTestImplementation sourceSets.main.runtimeClasspath
     smokeTestImplementation sourceSets.test.runtimeClasspath
     smokeTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
@@ -444,6 +476,7 @@ dependencies {
     functionalTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     functionalTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
+    contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'java8', version: '4.1.43'
     contractTestImplementation group: 'au.com.dius.pact', name: 'consumer', version: versions.pact_version
     contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
     contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5', version: versions.pact_version
@@ -464,8 +497,14 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
     dependencies {
-        dependency("org.bouncycastle:bcprov-jdk18on:1.81")
-        dependency("org.bouncycastle:bcpkix-jdk18on:1.81")
+        dependency("org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}")
+        dependency("org.bouncycastle:bcpkix-jdk18on:${versions.bouncycastle}")
+
+        dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.55') {
+            entry 'tomcat-embed-core'
+            entry 'tomcat-embed-el'
+            entry 'tomcat-embed-websocket'
+        }
     }
 }
 

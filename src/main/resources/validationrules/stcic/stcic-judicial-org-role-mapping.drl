@@ -392,11 +392,14 @@ end;
 
 /*
  * 9: ST_CIC "fee-paid-tribunal-member" Org role mapping.
+ * Made obsolete in DTSAM-1147 - disabled by st_cic_wa_1_3 flag.
+ * To be removed in DTSAM-1152.
  */
 
 rule "st_cic_fee_paid_tribunal_member_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+  $f1: FeatureFlag(status == false && flagName == FeatureFlagEnum.ST_CIC_WA_1_3.getValue())
   $joh: JudicialOfficeHolder(office in ("ST_CIC Tribunal Member-Fee Paid",
                                         "ST_CIC Tribunal Member Lay-Fee Paid",
                                         "ST_CIC Tribunal Member Disability-Fee Paid",
@@ -425,12 +428,51 @@ then
 end;
 
 /*
+ * 9: ST_CIC "fee-paid-tribunal-member" Org role mapping for 1.3.
+ */
+
+rule "v1_3_st_cic_fee_paid_tribunal_member_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_3.getValue())
+  $joh: JudicialOfficeHolder(office in ("ST_CIC Tribunal Member-Fee Paid",
+                                        "ST_CIC Tribunal Member Lay-Fee Paid",
+                                        "ST_CIC Tribunal Member Disability-Fee Paid",
+                                        "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("fee-paid-tribunal-member")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v1_3_st_cic_fee_paid_tribunal_member_org_role");
+end;
+
+/*
  * 10: ST_CIC "medical" Org role mapping.
+ * Made obsolete in DTSAM-1147 - disabled by st_cic_wa_1_3 flag.
+ * To be removed in DTSAM-1152.
  */
 
 rule "st_cic_medical_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+  $f1: FeatureFlag(status == false && flagName == FeatureFlagEnum.ST_CIC_WA_1_3.getValue())
   $joh: JudicialOfficeHolder(office == "ST_CIC Tribunal Member Medical-Salaried")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -457,12 +499,48 @@ then
 end;
 
 /*
+ * 10: ST_CIC "medical" Org role mapping for 1.3
+ */
+
+rule "v1_3_st_cic_medical_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_3.getValue())
+  $joh: JudicialOfficeHolder(office == "ST_CIC Tribunal Member Medical-Salaried")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Salaried"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("medical")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v1_3_st_cic_medical_org_role");
+end;
+
+/*
  * 11: ST_CIC "fee-paid-medical" Org role mapping.
+ * Made obsolete in DTSAM-1147 - disabled by st_cic_wa_1_3 flag.
+ * To be removed in DTSAM-1152.
  */
 
 rule "st_cic_fee_paid_medical_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+  $f1: FeatureFlag(status == false && flagName == FeatureFlagEnum.ST_CIC_WA_1_3.getValue())
   $joh: JudicialOfficeHolder(office in ("ST_CIC Tribunal Member Medical-Fee Paid",
                                         "ST_CIC Tribunal Member Optometrist-Fee Paid"))
 then
@@ -490,12 +568,49 @@ then
 end;
 
 /*
+ * 11: ST_CIC "fee-paid-medical" Org role mapping for 1.3.
+ */
+
+rule "v1_3_st_cic_fee_paid_medical_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_3.getValue())
+  $joh: JudicialOfficeHolder(office in ("ST_CIC Tribunal Member Medical-Fee Paid",
+                                        "ST_CIC Tribunal Member Optometrist-Fee Paid"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("fee-paid-medical")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v1_3_st_cic_fee_paid_medical_org_role");
+end;
+
+/*
  * 12: ST_CIC "fee-paid-disability" Org role mapping.
+ * Made obsolete in DTSAM-1147 - disabled by st_cic_wa_1_3 flag.
+ * To be removed in DTSAM-1152.
  */
 
 rule "st_cic_fee_paid_disability_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+  $f1: FeatureFlag(status == false && flagName == FeatureFlagEnum.ST_CIC_WA_1_3.getValue())
   $joh: JudicialOfficeHolder(office in ("ST_CIC Tribunal Member Disability-Fee Paid",
                                         "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid"))
 then
@@ -522,12 +637,49 @@ then
 end;
 
 /*
+ * 12: ST_CIC "fee-paid-disability" Org role mapping for 1.3.
+ */
+
+rule "v1_3_st_cic_fee_paid_disability_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_3.getValue())
+  $joh: JudicialOfficeHolder(office in ("ST_CIC Tribunal Member Disability-Fee Paid",
+                                        "ST_CIC Member of the First-tier Tribunal (sitting in retirement)-Fee Paid"))
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("fee-paid-disability")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v1_3_st_cic_fee_paid_disability_org_role");
+end;
+
+/*
  * 13: ST_CIC "fee-paid-financial" Org role mapping.
+ * Made obsolete in DTSAM-1147 - disabled by st_cic_wa_1_3 flag.
+ * To be removed in DTSAM-1152.
  */
 
 rule "st_cic_fee_paid_financial_org_role"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_0.getValue())
+  $f1: FeatureFlag(status == false && flagName == FeatureFlagEnum.ST_CIC_WA_1_3.getValue())
   $joh: JudicialOfficeHolder(office == "ST_CIC Tribunal Member Financially Qualified-Fee Paid")
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -550,6 +702,39 @@ then
       .authorisations($joh.getTicketCodes())
       .build());
       logMsg("Rule : st_cic_fee_paid_financial_org_role");
+end;
+
+/*
+ * 13: ST_CIC "fee-paid-financial" Org role mapping for 1.3.
+ */
+
+rule "v1_3_st_cic_fee_paid_financial_org_role"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.ST_CIC_WA_1_3.getValue())
+  $joh: JudicialOfficeHolder(office == "ST_CIC Tribunal Member Financially Qualified-Fee Paid")
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("ST_CIC"));
+   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
+   attribute.put("contractType", JacksonUtils.convertObjectIntoJsonNode("Fee-Paid"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("decision_making_work"));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($joh.getUserId())
+      .roleCategory(RoleCategory.JUDICIAL)
+      .roleType(RoleType.ORGANISATION)
+      .roleName("fee-paid-financial")
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .beginTime($joh.getBeginTime())
+      .endTime($joh.getEndTime() !=null ? $joh.getEndTime().plusDays(1):null)
+      .attributes(attribute)
+      .authorisations($joh.getTicketCodes())
+      .build());
+      logMsg("Rule : v1_3_st_cic_fee_paid_financial_org_role");
 end;
 
 /*

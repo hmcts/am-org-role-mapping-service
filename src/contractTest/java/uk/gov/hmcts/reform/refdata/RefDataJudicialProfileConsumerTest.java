@@ -41,8 +41,11 @@ import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactDirectory("pacts")
 @PactTestFor(providerName = "referenceData_judicial", port = "8991", pactVersion = PactSpecVersion.V3)
-@ContextConfiguration(classes = {RefDataCaseworkerConsumerApplication.class})
-@TestPropertySource(properties = {"feign.client.config.crdclient.url=http://localhost:8991"})
+@ContextConfiguration(classes = {RefDataConsumerApplication.class})
+@TestPropertySource(properties = {
+    "feign.client.config.crdclient.url=http://localhost:8991",
+    "feign.client.config.prdClient.url=http://localhost:8090"
+})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class RefDataJudicialProfileConsumerTest {
 

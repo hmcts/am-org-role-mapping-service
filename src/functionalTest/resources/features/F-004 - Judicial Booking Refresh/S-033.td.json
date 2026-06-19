@@ -1,26 +1,66 @@
 {
   "_guid_": "S-033",
-  "title": "must successfully create judicial role assignments for a user having single judicial booking",
+  "title": "must successfully create judicial role mappings for User having no judicial booking",
   "_extends_": "F-004_Test_Data_Base",
+
   "specs": [
-    "contains the actorIds of the user having existing judicial role assignments",
-    "contains the actorIds of the user for which above booking is created"
+    "a judicial profile that supports judicial bookings",
+
+    "contains the actorId of the user having existing judicial role assignments",
+    "contains the actorId of the user for which no bookings exist",
+
+    "contains a bookable fee-paid-judge role-assignment",
+    "contains no booked judge/fee-paid role-assignments"
   ],
-  "method": "POST",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmJRDUser2"
+    }
+  },
+
   "request": {
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-033_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-      "roleName" : ["judge"],
+      "actorId": ["${[scenarioContext][testData][users][invokingUser][id]}"],
+      "roleName" : ["judge", "fee-paid-judge"],
       "attributes": {
         "contractType": ["Fee-Paid"]
       }
     }
   },
+
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body" : {
-      "roleAssignmentResponse" : []
+      "roleAssignmentResponse" : [
+        {
+          "__elementId__": "roleName,attributes.jurisdiction,attributes.region"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "fee-paid-judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "bookable" : "true",
+            "substantive": "N",
+            "contractType": "Fee-Paid",
+            "jurisdiction": "SSCS",
+            "region" : "2",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "workTypes": "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        }
+      ]
     }
   }
 }

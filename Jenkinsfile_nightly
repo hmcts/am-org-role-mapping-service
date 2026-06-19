@@ -47,6 +47,8 @@ def secrets = [
       secret('test-am-crd-user1-befta-password', 'TEST_AM_CRD_USER1_BEFTA_PASSWORD'),
       secret('test-am-jrd-user1-befta', 'TEST_AM_JRD_USER1_BEFTA'),
       secret('test-am-jrd-user1-befta-password', 'TEST_AM_JRD_USER1_BEFTA_PASSWORD'),
+      secret('test-am-jrd-user2-befta', 'TEST_AM_JRD_USER2_BEFTA'),
+      secret('test-am-jrd-user2-befta-password', 'TEST_AM_JRD_USER2_BEFTA_PASSWORD'),
       secret('caseworker-topic-primary-send-listen-shared-access-key', 'AMQP_CRD_SHARED_ACCESS_KEY_VALUE'),
       secret('judicial-topic-primary-send-listen-shared-access-key', 'AMQP_JRD_SHARED_ACCESS_KEY_VALUE')
     ]
@@ -60,6 +62,9 @@ env.IDAM_API_URL_BASE = "https://idam-api.aat.platform.hmcts.net"
 env.IDAM_TESTING_SUPPORT_URL = "https://idam-testing-support-api.aat.platform.hmcts.net"
 env.IDAM_S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
 env.BEFTA_S2S_CLIENT_ID = "am_org_role_mapping_service"
+env.BEFTA_RETRY_MAX_ATTEMPTS = "3"
+env.BEFTA_RETRY_STATUS_CODES = "502,503,504"
+env.BEFTA_RETRY_MAX_DELAY = "1000"
 env.OAUTH2_REDIRECT_URI = "http://am-role-assignment-service-aat.service.core-compute-aat.internal/oauth2redirect"
 env.OAUTH2_ACCESS_TOKEN_TYPE = "OIDC"
 env.BEFTA_RESPONSE_HEADER_CHECK_POLICY = "JUST_WARN"
@@ -72,6 +77,8 @@ env.EXTERNAL_FLAG_QUERY_PATH = "am/role-mapping/fetchFlagStatus?flagName="
 env.DEFINITION_STORE_HOST = "http://ccd-definition-store-api-pr-575.service.core-compute-preview.internal"
 env.DEFINITION_STORE_URL_BASE = "http://ccd-definition-store-api-aat.service.core-compute-aat.internal"
 env.CRD_URL = "http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal"
+env.JRD_URL = "http://rd-judicial-api-aat.service.core-compute-aat.internal"
+env.PRD_URL = "http://rd-professional-api-aat.service.core-compute-aat.internal"
 // Vars for Kubernetes PACT
 env.PACT_BROKER_FULL_URL = "https://pact-broker.platform.hmcts.net"
 env.AMQP_HOST = "rd-servicebus-aat.servicebus.windows.net"
@@ -89,6 +96,9 @@ env.JUDICIAL_FTA_ENABLED = "true"
 // Var to turn on JBS FTAs (NB: only disable temporarily if JBS service is unavailable)
 env.BOOKING_FTA_ENABLED = "true"
 
+// Don't run PRM FTAs on AAT
+env.PRM_FTA_ENABLED = "false"
+
 // Var to turn FTA on for azure-messaging-servicebus DTSAM-150
 env.AZURE_SERVICE_BUS_FTA_ENABLED = "true"
 
@@ -97,7 +107,7 @@ env.REFRESH_FTA_ENABLED = "false"
 
 // Vars for Azure Container Registries DTSAM-370
 env.TESTCONTAINERS_HOST_OVERRIDE="localhost"
-env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX="hmctspublic.azurecr.io/imported/"
+env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX="hmctsprod.azurecr.io/imported/"
 
   overrideVaultEnvironments(vaultOverrides)
   loadVaultSecrets(secrets)
@@ -112,6 +122,13 @@ env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX="hmctspublic.azurecr.io/imported/"
 
     afterSuccess('build') {
         stage("integration tests") {
+            // Authenticate Docker to hmctsprod ACR so Testcontainers can pull the Ryuk reaper
+            // and base images via TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX. Reuses the managed
+            // identity already established by `az login --identity` earlier in the pipeline.
+            sh '''
+              env AZURE_CONFIG_DIR=/opt/jenkins/.azure-nonprod az acr login --name hmctsprod
+            '''
+
             sh "./gradlew integration"
             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
         }
@@ -128,6 +145,16 @@ env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX="hmctspublic.azurecr.io/imported/"
                 reportFiles          : "overview-features.html,overview-failures.html,",
                 reportTitles         : "Features,Failures",
                 reportName           : "Functional Test Report"
+        ]
+
+        publishHTML target: [
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "build/test-results/DroolTests/Judicial",
+                reportFiles          : "JudicialTestIndex.html",
+                reportTitles         : "Index",
+                reportName           : "Drool Judicial Test Report"
         ]
     }
 

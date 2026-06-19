@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-001.01a",
+  "title": "must successfully create org role mapping for Senior Tribunal Case Worker + Task Supervisor",
+  "_extends_": "S-001.01",
+  "specs": [
+    "contains the actorId of the user just published who has Senior Tribunal Case Worker role + Task Supervisor"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "72bd7ee2-aaac-4d7f-986e-9aca90280a53"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "IA",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}

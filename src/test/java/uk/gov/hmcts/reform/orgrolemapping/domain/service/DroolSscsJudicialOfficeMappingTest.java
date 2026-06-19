@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
@@ -46,6 +45,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         Regional Medical Member,Salaried
         Tribunal Judge,Fee Paid
         Judge of the First-tier Tribunal (sitting in retirement),Fee Paid
+        Chairman,Fee Paid
+        Deputy District Judge (MC)- Fee paid,Fee Paid
+        Employment Judge,Fee Paid
+        Recorder,Fee Paid
         Tribunal Member Medical,Fee Paid
         Tribunal Member Optometrist,Fee Paid
         Tribunal Member Disability,Fee Paid
@@ -59,6 +62,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         """;
 
     @BeforeEach
+    @Override
     public void setUp() {
         super.setUp();
         judicialOfficeHolders = new HashSet<>();
@@ -73,8 +77,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
                 + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
         "Principal Judge,Salaried,BBA3,'leadership-judge,judge,post-hearing-salaried-judge,case-allocator,"
                     + "task-supervisor,specific-access-approver-judiciary,hmcts-judiciary'",
-        "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'",
-        "Judge of the First-tier Tribunal,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge'"
+        "Tribunal Judge,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge,case-allocator,"
+                + "task-supervisor'",
+        "Judge of the First-tier Tribunal,Salaried,BBA3,'hmcts-judiciary,judge,post-hearing-salaried-judge,"
+                + "case-allocator,task-supervisor'"
     })
     void shouldReturnSalariedRoles(String appointment, String appointmentType,
                                    String serviceCode, String expectedRoles) {
@@ -91,7 +97,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
 
         roleAssignments.forEach(r -> {
@@ -114,6 +120,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Judge,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
         "Judge of the First-tier Tribunal (sitting in retirement),"
             + "Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
+        "Chairman,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
+        "Deputy District Judge (MC)- Fee paid,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
+        "Employment Judge,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
+        "Recorder,Fee Paid,BBA3,'fee-paid-judge,hmcts-judiciary','371'",
         "Tribunal Member Medical,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary','371'",
         "Tribunal Member Optometrist,Fee Paid,BBA3,'fee-paid-medical,hmcts-judiciary','371'",
         "Tribunal Member Disability,Fee Paid,BBA3,'fee-paid-disability,hmcts-judiciary','371'",
@@ -148,7 +158,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
 
         roleAssignments.forEach(r -> {
@@ -186,13 +196,12 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
 
         roleAssignments.forEach(r -> {
@@ -226,8 +235,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
         //assertion
         assertTrue(roleAssignments.isEmpty());
     }
@@ -243,8 +251,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -319,6 +326,10 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
     @ParameterizedTest
     @CsvSource({
         "Judge of the First-tier Tribunal (sitting in retirement)",
+        "Chairman",
+        "Deputy District Judge (MC)- Fee paid",
+        "Employment Judge",
+        "Recorder",
         "Tribunal Member Medical",
         "Tribunal Member Disability",
         "Member of the First-tier Tribunal Lay",
@@ -362,7 +373,11 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Member Service,AAA",
         "Tribunal Member,AAA",
         "Tribunal Judge,AAA",
-        "Judge of the First-tier Tribunal (sitting in retirement),AAA"
+        "Judge of the First-tier Tribunal (sitting in retirement),AAA",
+        "Chairman,AAA",
+        "Deputy District Judge (MC)- Fee paid,AAA",
+        "Employment Judge,AAA",
+        "Recorder,AAA"
     })
     void shouldNotReturnTribunalFeePaidRolesExpiredEndDate(String appointment,
                                                            String serviceCode) {
@@ -426,7 +441,11 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         "Tribunal Member Service,AAA",
         "Tribunal Member,AAA",
         "Tribunal Judge,AAA",
-        "Judge of the First-tier Tribunal (sitting in retirement),AAA"
+        "Judge of the First-tier Tribunal (sitting in retirement),AAA",
+        "Chairman,AAA",
+        "Deputy District Judge (MC)- Fee paid,AAA",
+        "Employment Judge,AAA",
+        "Recorder,AAA"
     })
     void shouldNotReturnFeePaidRolesExpiredDateAndWServiceCode(String appointment,
                                                                String serviceCode) {
@@ -466,12 +485,11 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
         assertFalse(roleAssignments.isEmpty());
 
@@ -505,12 +523,11 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertEquals(expectedRoles.split(",").length, roleAssignments.size());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder(expectedRoles.split(",")));
         assertFalse(roleAssignments.isEmpty());
         roleAssignments.forEach(r -> {
@@ -537,12 +554,11 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
-        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).collect(Collectors.toList()),
+        assertThat(roleAssignments.stream().map(RoleAssignment::getRoleName).toList(),
                 containsInAnyOrder("leadership-judge", "task-supervisor", "case-allocator",
                         "specific-access-approver-judiciary", "hmcts-judiciary", "judge",
                         "post-hearing-salaried-judge"));
@@ -569,8 +585,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
@@ -587,8 +602,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         List<JudicialOfficeHolder> outputJoh = new ArrayList<>();
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("SSCS", true), outputJoh);
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags(), outputJoh);
 
         // verify region and baseLocation are blank
         outputJoh.forEach(joh -> {
@@ -611,8 +625,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         List<JudicialOfficeHolder> outputJoh = new ArrayList<>();
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("SSCS", true), outputJoh);
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags(), outputJoh);
 
         // verify region and baseLocation are blank
         outputJoh.forEach(joh -> {
@@ -646,7 +659,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
 
         // if expecting a booking verify we got its region
         if ("Fee Paid".equals(appointmentType)
-            && List.of("Tribunal Judge", "Judge of the First-tier Tribunal (sitting in retirement)")
+            && List.of("Tribunal Judge", "Judge of the First-tier Tribunal (sitting in retirement)",
+                        "Chairman", "Deputy District Judge (MC)- Fee paid", "Employment Judge", "Recorder")
                 .contains(appointment)) {
             assertTrue(foundBookedRegion.get());
         } else {
@@ -700,8 +714,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         }
     }
 
-    private static List<FeatureFlag> setFeatureFlags() {
-        return List.of(FeatureFlag.builder().flagName("sscs_wa_1_0").status(true).build(),
-                FeatureFlag.builder().flagName("sscs_wa_1_3").status(true).build());
+    private List<FeatureFlag> setFeatureFlags() {
+        return getAllFeatureFlagsToggleByJurisdiction("SSCS", true, false);
     }
+
 }

@@ -1,0 +1,17 @@
+{
+  "_guid_": "RefreshJudicialUserRoleAssignments__PositiveResponse_Base",
+  "_extends_": "RefreshJudicialUserRoleAssignments__Base",
+ 
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "Message" : "Role assignments have been refreshed successfully"
+    }
+  }
+}

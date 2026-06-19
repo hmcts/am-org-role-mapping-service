@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertHelper.MultiRegion;
@@ -111,8 +112,7 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         List<String> expectedRoleList = Arrays.stream(expectedRoles.split(",")).toList();
@@ -241,8 +241,7 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         List<String> expectedRoleList = Arrays.stream(expectedRoles.split(",")).toList();
@@ -360,8 +359,7 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
         Map<String, List<String>> roleNameToRegionsMap = MultiRegion.buildRoleNameToRegionsMap(rolesThatRequireRegions);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         List<String> expectedRoleList = Arrays.stream(expectedRoles.split(",")).toList();
@@ -445,8 +443,7 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
         allProfiles.add(cap);
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("SSCS", true));
+        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags());
 
         //assertion
         assertFalse(roleAssignments.isEmpty());
@@ -492,10 +489,14 @@ class DroolSscsStaffOrgRolesTest extends DroolBase {
 
         //Execute Kie session
         List<RoleAssignment> roleAssignments =
-                buildExecuteKieSession(getFeatureFlags("sscs_wa_1_0", false));
+                buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction("SSCS", false));
 
         //assertion
         assertTrue(roleAssignments.isEmpty());
+    }
+
+    private List<FeatureFlag> setFeatureFlags() {
+        return getAllFeatureFlagsToggleByJurisdiction("SSCS", true, false);
     }
 
 }

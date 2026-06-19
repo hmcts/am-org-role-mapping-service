@@ -1,0 +1,18 @@
+{
+  "_guid_": "S-164_DeleteDataForRoleAssignments",
+  "_extends_": "DeleteDataForRoleAssignments",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmJRDUser2"
+    }
+  },
+
+  "request": {
+    "pathVariables": {
+      "process": "judicial-organisational-role-mapping",
+      "reference": "${[scenarioContext][parentContext][testData][users][invokingUser][id]}"
+    }
+  }
+
+}

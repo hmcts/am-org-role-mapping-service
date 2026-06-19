@@ -1,0 +1,39 @@
+{
+  "_guid_": "S-012.01a",
+  "title": "must successfully create org role mapping for Senior Legal Caseworker",
+  "_extends_": "S-012.01",
+  "specs": [
+    "contains the actorId of the user just published who has Senior Legal Caseworker role + Task Supervisor"
+  ],
+  "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "request": {
+    "pathVariables": {
+      "actorId": "353f7596-4056-4c33-b759-3b2afb675a7b"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "ST_CIC"
+          }
+        }
+      ]
+    }
+  }
+}

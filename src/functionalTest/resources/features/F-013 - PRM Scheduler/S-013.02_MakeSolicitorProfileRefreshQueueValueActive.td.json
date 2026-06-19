@@ -1,0 +1,15 @@
+{
+  "_guid_": "S-013.02_MakeSolicitorProfileRefreshQueueValueActive",
+  "_extends_": "MakeProfileRefreshQueueActive__PositiveResponse_Base",
+
+  "specs": [
+    "to make the SOLICITOR_PROFILE refresh queue value active"
+  ],
+
+  "request": {
+    "queryParams": {
+      "organisationProfileId": "SOLICITOR_PROFILE"
+    }
+  }
+
+}

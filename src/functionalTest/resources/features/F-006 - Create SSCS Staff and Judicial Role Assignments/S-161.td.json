@@ -46,11 +46,12 @@
           "roleCategory": "JUDICIAL",
           "readOnly": false,
           "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
             "contractType": "Salaried",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "primaryLocation": "[[ANY_NULLABLE]]",
             "jurisdiction": "SSCS"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
@@ -66,10 +67,11 @@
           "roleCategory": "JUDICIAL",
           "readOnly": false,
           "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "primaryLocation" : "[[ANY_NULLABLE]]",
             "jurisdiction": "SSCS"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
@@ -85,6 +87,7 @@
           "roleCategory": "JUDICIAL",
           "readOnly": true,
           "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
@@ -102,11 +105,12 @@
           "roleCategory": "JUDICIAL",
           "readOnly": false,
           "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "Y",
             "contractType": "Salaried",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "primaryLocation": "[[ANY_NULLABLE]]",
             "jurisdiction": "SSCS",
             "workTypes": "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
           },
@@ -123,11 +127,12 @@
           "roleCategory": "JUDICIAL",
           "readOnly": false,
           "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "Y",
             "contractType": "Salaried",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "primaryLocation": "[[ANY_NULLABLE]]",
             "jurisdiction": "SSCS"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
@@ -143,11 +148,12 @@
           "roleCategory": "JUDICIAL",
           "readOnly": false,
           "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "Y",
             "contractType": "Salaried",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "primaryLocation": "[[ANY_NULLABLE]]",
             "jurisdiction": "SSCS"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
@@ -163,11 +169,12 @@
           "roleCategory": "JUDICIAL",
           "readOnly": false,
           "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
             "contractType": "Salaried",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "primaryLocation": "[[ANY_NULLABLE]]",
             "jurisdiction": "SSCS",
             "workTypes": "access_requests"
           },
@@ -184,11 +191,12 @@
           "roleCategory": "JUDICIAL",
           "readOnly": false,
           "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
             "contractType": "Salaried",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "primaryLocation": "[[ANY_NULLABLE]]",
             "jurisdiction": "SSCS"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
