@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.orgrolemapping.provider;
 
+import au.com.dius.pact.core.model.annotations.PactDirectory;
 import au.com.dius.pact.provider.junit5.PactVerificationContext;
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider;
 import au.com.dius.pact.provider.junitsupport.IgnoreNoPactsToVerify;
@@ -37,6 +38,7 @@ import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @Provider("am_orgRoleMapping_refresh")
+@PactDirectory("pacts")
 @PactBroker(scheme = "${PACT_BROKER_SCHEME:http}",
         host = "${PACT_BROKER_URL:localhost}", port = "${PACT_BROKER_PORT:9292}",
         consumerVersionSelectors = {@VersionSelector(tag = "master")})
