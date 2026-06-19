@@ -80,36 +80,6 @@ then
 end;
 
 /*
- * "PRIVATELAW Deputy District Judge-Fee-Paid" business role business role mapping to JOH.
- * Made obsolete in DTSAM-626 - rule will be disabled when PRIVATELAW_WA_1_6 is enabled.
- * To be removed in DTSAM-871.
- */
-rule "privatelaw_deputy_district_judge_fee_paid_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
-   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
-   $jap: JudicialAccessProfile(appointment == "Deputy District Judge- Fee-Paid",
-                               appointmentType == "Fee Paid",
-                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations, "ABA5"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("PRIVATELAW Deputy District Judge-Fee-Paid")
-      .jurisdiction("PRIVATELAW")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : privatelaw_deputy_district_judge_fee_paid_joh");
-end;
-
-/*
  * "PRIVATELAW Deputy District Judge-Fee-Paid" business role business role mapping to JOH For v1.6.
  * The creation of the JOH object accommodates for both 'Deputy District Judge-Fee-Paid'
  * and 'Deputy District Judge' appointments. See DTSAM-626.
@@ -137,36 +107,6 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : v1_6_privatelaw_deputy_district_judge_fee_paid_joh");
-end;
-
-/*
- * "PRIVATELAW Deputy District Judge - Sitting in Retirement-Fee-Paid" business role business role mapping to JOH.
- * Made obsolete in DTSAM-626 - rule will be disabled when PRIVATELAW_WA_1_6 is enabled.
- * To be removed in DTSAM-871.
- */
-rule "privatelaw_deputy_district_judge_sitting_in_retirement_fee_paid_joh"
-when
-   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_0.getValue())
-   $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.PRIVATELAW_WA_1_6.getValue())
-   $jap: JudicialAccessProfile(appointment == "Deputy District Judge- Sitting in Retirement",
-                               appointmentType == "Fee Paid",
-                               (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0),
-                               validateAuthorisation(authorisations, "ABA5"))
-then
-  insert(
-      JudicialOfficeHolder.builder()
-      .userId($jap.getUserId())
-      .office("PRIVATELAW Deputy District Judge - Sitting in Retirement-Fee-Paid")
-      .jurisdiction("PRIVATELAW")
-      .ticketCodes($jap.getTicketCodes())
-      .beginTime($jap.getBeginTime())
-      .endTime($jap.getEndTime())
-      .regionId($jap.getRegionId())
-      .baseLocationId($jap.getBaseLocationId())
-      .primaryLocation($jap.getPrimaryLocationId())
-      .contractType($jap.getAppointmentType())
-      .build());
-      logMsg("Rule : privatelaw_deputy_district_judge_sitting_in_retirement_fee_paid_joh");
 end;
 
 /*
