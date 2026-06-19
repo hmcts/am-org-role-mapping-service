@@ -36,7 +36,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import java.util.List;
 import java.util.Map;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
