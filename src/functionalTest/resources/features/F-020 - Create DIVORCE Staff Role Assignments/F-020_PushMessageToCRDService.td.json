@@ -1,0 +1,4 @@
+{
+  "_guid_": "F-020_PushMessageToCRDService",
+  "_extends_": "PushMessageToSend2CrdTopic"
+}
