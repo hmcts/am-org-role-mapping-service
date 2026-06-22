@@ -33,6 +33,7 @@
           ],
           "roles": [
             {
+              "role_id": "4",
               "role": "hearing-centre-admin",
               "is_primary": true
             }

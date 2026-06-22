@@ -34,6 +34,7 @@
           ],
           "roles": [
             {
+              "role_id": "9",
               "role": "ctsc-team-leader",
               "is_primary": true
             }

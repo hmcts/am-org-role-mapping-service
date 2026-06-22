@@ -33,6 +33,7 @@
           ],
           "roles": [
             {
+              "role_id": "11",
               "role": "nbc-admin",
               "is_primary": true
             }
