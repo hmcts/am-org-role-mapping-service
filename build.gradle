@@ -520,7 +520,7 @@ project.ext {
 }
 
 static def getCheckedOutGitCommitHash() {
-    'git rev-parse --verify --short=9 HEAD'.execute().text.trim()
+    'git rev-parse --verify --short=10 HEAD'.execute().text.trim()
 }
 
 task contract(type: Test) {
