@@ -1,0 +1,39 @@
+{
+  "_guid_": "S-020.03b",
+  "title": "must successfully create org role mapping for Hearing Centre Team Leader + Case Allocator (Financial Remedy)",
+  "_extends_": "S-020.03",
+  "specs": [
+    "contains the actorId of the user just published who has Hearing Centre Team Leader + Case Allocator (Financial Remedy) role"
+  ],
+  "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "request": {
+    "pathVariables": {
+      "actorId": "98902767-2d29-485a-8b9f-f07b86b0d030"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "DIVORCE"
+          }
+        }
+      ]
+    }
+  }
+}
