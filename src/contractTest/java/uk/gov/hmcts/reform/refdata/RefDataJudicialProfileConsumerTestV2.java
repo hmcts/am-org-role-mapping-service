@@ -29,7 +29,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 
 import java.util.Map;
@@ -37,7 +36,6 @@ import java.util.Set;
 
 import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 
-@ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @PactDirectory("pacts")
