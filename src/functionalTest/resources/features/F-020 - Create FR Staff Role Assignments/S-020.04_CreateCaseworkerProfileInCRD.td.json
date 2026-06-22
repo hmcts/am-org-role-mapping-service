@@ -26,16 +26,14 @@
           "email_id": "${}${[scenarioContext][customValues][generateEmailId]}",
           "region_id": 1,
           "region": "National",
-          "user_type": "ADMIN",
+          "user_type": "CTSC",
           "suspended": false,
-          "case_allocator": "N",
-          "task_supervisor": "N",
           "idam_roles": [
-            "caseworker"
+            "caseworker-iac-bulkscan"
           ],
           "roles": [
             {
-              "role": "Hearing Centre Administrator",
+              "role": "hearing-centre-admin",
               "is_primary": true
             }
           ],
@@ -48,7 +46,7 @@
           ],
           "work_area": [
             {
-              "area_of_work": "Financial Remedy",
+              "area_of_work": "1",
               "service_code": "ABA2"
             }
           ]

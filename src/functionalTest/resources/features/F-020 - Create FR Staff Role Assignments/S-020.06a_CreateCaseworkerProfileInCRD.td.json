@@ -26,16 +26,15 @@
           "email_id": "${}${[scenarioContext][customValues][generateEmailId]}",
           "region_id": 1,
           "region": "National",
-          "user_type": "ADMIN",
+          "user_type": "CTSC",
           "suspended": false,
-          "case_allocator": "N",
           "task_supervisor": "Y",
           "idam_roles": [
-            "caseworker"
+            "caseworker-iac-bulkscan"
           ],
           "roles": [
             {
-              "role": "National Business Centre Team Leader",
+              "role": "nbc-team-leader",
               "is_primary": true
             }
           ],
@@ -48,7 +47,7 @@
           ],
           "work_area": [
             {
-              "area_of_work": "Financial Remedy",
+              "area_of_work": "1",
               "service_code": "ABA2"
             }
           ]
