@@ -1,0 +1,2 @@
+-- enable possessions_wa_1_0 flag in Prod for: POFCC-117
+update flag_config set status='true' where flag_name='possessions_wa_1_0' and env in ('demo', 'aat', 'perftest', 'ithc', 'prod') AND service_name = 'pofcc';
