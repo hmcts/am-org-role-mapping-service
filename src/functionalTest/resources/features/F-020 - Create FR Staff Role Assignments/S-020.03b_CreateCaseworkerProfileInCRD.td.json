@@ -34,6 +34,7 @@
           ],
           "roles": [
             {
+              "role_id": "3",
               "role": "hearing-centre-team-leader",
               "is_primary": true
             }
