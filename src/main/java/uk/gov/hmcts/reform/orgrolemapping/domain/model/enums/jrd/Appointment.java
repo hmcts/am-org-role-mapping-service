@@ -38,12 +38,13 @@ public enum Appointment implements AppointmentEnum {
     HIGH_COURT_JUDGE("High Court Judge", List.of("51")),
     SENIOR_CIRCUIT_JUDGE("Senior Circuit Judge", List.of("75")),
     SPECIALIST_CIRCUIT_JUDGE("Specialist Circuit Judge", List.of("82")),
-    CIRCUIT_JUDGE_SITTING_IN_RETIREMENT("Circuit Judge (Sitting in retirement)", List.of("124")),
+    CIRCUIT_JUDGE_SITTING_IN_RETIREMENT("Circuit Judge (sitting in retirement)", List.of("124")),
     DEPUTY_CIRCUIT_JUDGE("Deputy Circuit Judge", List.of("30")),
     CHIEF_INSOLVENCY_AND_COMPANIES_COURT_JUDGE("Chief Insolvency and Companies Court Judge", List.of("117")),
     CHIEF_MASTER("Chief Master", List.of("16")),
     DEPUTY_CHAMBER_PRESIDENT("Deputy Chamber President", List.of("32")),
     MASTER_OF_THE_ROLLS("Master of the Rolls", List.of("59")),
+    MAGISTRATE("Magistrate", List.of("1")),
     SENIOR_MASTER("Senior Master", List.of("80"));
 
     private final String name;

@@ -44,6 +44,7 @@ public enum FeatureFlagEnum {
     PRIVATELAW_WA_1_6("privatelaw_wa_1_6"),
     PRIVATELAW_WA_1_7("privatelaw_wa_1_7"),
     PRIVATELAW_WA_1_8("privatelaw_wa_1_8"),
+    PRIVATELAW_WA_1_9("privatelaw_wa_1_9"),
     PUBLICLAW_WA_1_2("publiclaw_wa_1_2"),
     CIVIL_WA_1_4("civil_wa_1_4"),
     CIVIL_WA_1_5("civil_wa_1_5"),
