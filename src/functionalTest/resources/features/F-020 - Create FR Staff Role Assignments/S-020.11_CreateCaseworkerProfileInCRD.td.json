@@ -1,0 +1,70 @@
+{
+  "_guid_": "S-020.11_CreateCaseworkerProfileInCRD",
+  "productName": "Caseworker Reference Data",
+  "operationName": "Create Caseworker Profile in CRD",
+  "method": "POST",
+  "uri": "{{CRD_URL}}/refdata/case-worker/users/",
+  "specs": [
+    "to create the caseworker profile"
+  ],
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "arrayInMap": [
+        {
+          "first_name": "frs02011",
+          "last_name": "wa-test-user",
+          "email_id": "${}${[scenarioContext][customValues][generateEmailId]}",
+          "region_id": 1,
+          "region": "National",
+          "user_type": "ADMIN",
+          "suspended": false,
+          "case_allocator": "N",
+          "task_supervisor": "N",
+          "idam_roles": [
+            "caseworker"
+          ],
+          "roles": [
+            {
+              "role": "National Business Centre Administrator",
+              "is_primary": true
+            }
+          ],
+          "base_location": [
+            {
+              "location_id": 2191654,
+              "location": "Aberdeen Tribunal Hearing Centre",
+              "is_primary": true
+            }
+          ],
+          "work_area": [
+            {
+              "area_of_work": "Financial Remedy",
+              "service_code": "ABA2"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_201_Response",
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "message": "Case Worker Profiles Created",
+      "case_worker_ids": "[[ANYTHING_PRESENT]]"
+    }
+  }
+}

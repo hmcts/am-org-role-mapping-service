@@ -8,6 +8,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
   @FeatureToggle(DB:fr_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to create the caseworker profile] as in [S-020.03_CreateCaseworkerProfileInCRD],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader (Financial Remedy)] as in [S-020.03__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-020_PushMessageToCRDService],
@@ -22,6 +23,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
   @FeatureToggle(DB:fr_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Task Supervisor (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to create the caseworker profile] as in [S-020.03a_CreateCaseworkerProfileInCRD],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (Financial Remedy)] as in [S-020.03a__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-020_PushMessageToCRDService],
@@ -36,6 +38,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
   @FeatureToggle(DB:fr_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Case Allocator (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to create the caseworker profile] as in [S-020.03b_CreateCaseworkerProfileInCRD],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader + Case Allocator (Financial Remedy)] as in [S-020.03b__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-020_PushMessageToCRDService],
@@ -50,6 +53,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
   @FeatureToggle(DB:fr_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Hearing Centre Administrator (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to create the caseworker profile] as in [S-020.04_CreateCaseworkerProfileInCRD],
     And a successful call [to verify caseworker details for Hearing Centre Administrator (Financial Remedy)] as in [S-020.04__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-020_PushMessageToCRDService],
@@ -64,6 +68,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
   @FeatureToggle(DB:fr_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for NBC Team Leader (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to create the caseworker profile] as in [S-020.06_CreateCaseworkerProfileInCRD],
     And a successful call [to verify caseworker details for NBC Team Leader (Financial Remedy)] as in [S-020.06__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-020_PushMessageToCRDService],
@@ -78,6 +83,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
   @FeatureToggle(DB:fr_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for NBC Team Leader + Task Supervisor (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to create the caseworker profile] as in [S-020.06a_CreateCaseworkerProfileInCRD],
     And a successful call [to verify caseworker details for NBC Team Leader + Task Supervisor (Financial Remedy)] as in [S-020.06a__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-020_PushMessageToCRDService],
@@ -92,6 +98,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
   @FeatureToggle(DB:fr_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for NBC Team Leader + Case Allocator (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to create the caseworker profile] as in [S-020.06b_CreateCaseworkerProfileInCRD],
     And a successful call [to verify caseworker details for NBC Team Leader + Case Allocator (Financial Remedy)] as in [S-020.06b__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-020_PushMessageToCRDService],
@@ -106,6 +113,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
   @FeatureToggle(DB:fr_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for NBC Admin (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to create the caseworker profile] as in [S-020.11_CreateCaseworkerProfileInCRD],
     And a successful call [to verify caseworker details for NBC Admin (Financial Remedy)] as in [S-020.11__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-020_PushMessageToCRDService],
@@ -120,6 +128,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
   @FeatureToggle(DB:fr_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Team Leader (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to create the caseworker profile] as in [S-020.09_CreateCaseworkerProfileInCRD],
     And a successful call [to verify caseworker details for CTSC Team Leader (Financial Remedy)] as in [S-020.09__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-020_PushMessageToCRDService],
@@ -134,6 +143,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
   @FeatureToggle(DB:fr_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Team Leader + Task Supervisor (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to create the caseworker profile] as in [S-020.09a_CreateCaseworkerProfileInCRD],
     And a successful call [to verify caseworker details for CTSC Team Leader + Task Supervisor (Financial Remedy)] as in [S-020.09a__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-020_PushMessageToCRDService],
@@ -148,6 +158,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
   @FeatureToggle(DB:fr_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Team Leader + Case Allocator (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to create the caseworker profile] as in [S-020.09b_CreateCaseworkerProfileInCRD],
     And a successful call [to verify caseworker details for CTSC Team Leader + Case Allocator (Financial Remedy)] as in [S-020.09b__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-020_PushMessageToCRDService],
@@ -162,6 +173,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
   @FeatureToggle(DB:fr_wa_1_0=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Admin (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to create the caseworker profile] as in [S-020.10_CreateCaseworkerProfileInCRD],
     And a successful call [to verify caseworker details for CTSC Admin (Financial Remedy)] as in [S-020.10__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [F-020_PushMessageToCRDService],
