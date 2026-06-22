@@ -33,6 +33,7 @@
           ],
           "roles": [
             {
+              "role_id": "10",
               "role": "ctsc-admin",
               "is_primary": true
             }
