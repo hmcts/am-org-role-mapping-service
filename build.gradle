@@ -510,11 +510,9 @@ dependencyManagement {
 
 project.ext {
     pacticipant = 'accessMgmt_orgRoleMapping'
-    // Prefer explicit Pact branch env, then Jenkins branch name, then a local default.
-    pactBranchName = System.getenv("PACT_BRANCH_NAME") ?: System.getenv("BRANCH_NAME") ?: 'Dev'
     if (System.env.GIT_COMMIT) {
-        // Use a stable 10-char short SHA so publish/check/deploy reference the same pacticipant version.
-        pacticipantVersion = System.env.GIT_COMMIT.take(10)
+        // DTSAM-379 canIDeploy Index 0 out of bounds for length 0 Issue
+        pacticipantVersion = System.env.GIT_COMMIT.substring(0,9)
     } else {
         // DTSAM-382 GIT_COMMIT null in local build fix
         pacticipantVersion = getCheckedOutGitCommitHash()
@@ -522,7 +520,7 @@ project.ext {
 }
 
 static def getCheckedOutGitCommitHash() {
-    'git rev-parse --verify --short=10 HEAD'.execute().text.trim()
+    'git rev-parse --verify --short HEAD'.execute().text.trim()
 }
 
 task contract(type: Test) {
@@ -553,7 +551,7 @@ pact {
     publish {
         pactDirectory = 'pacts'
         version = project.pacticipantVersion
-        tags = [project.pactBranchName]
+        tags = [System.getenv("PACT_BRANCH_NAME") ?: 'Dev']
         pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
     }
 }
