@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-020.10_CreateCaseworkerProfileInCRD",
+  "_guid_": "S-020.DIAG",
   "productName": "Caseworker Reference Data",
   "operationName": "Create Caseworker Profile in CRD",
   "method": "POST",
@@ -21,7 +21,7 @@
     "body": {
       "arrayInMap": [
         {
-          "first_name": "frs02010",
+          "first_name": "frs02003",
           "last_name": "wa-test-user",
           "email_id": "${}${[scenarioContext][customValues][generateEmailId]}",
           "region_id": 1,
@@ -33,8 +33,8 @@
           ],
           "roles": [
             {
-              "role_id": "10",
-              "role": "ctsc-admin",
+              "role_id": "3",
+              "role": "hearing-centre-team-leader",
               "is_primary": true
             }
           ],
@@ -56,14 +56,14 @@
     }
   },
   "expectedResponse": {
-    "_extends_": "Common_201_Response",
-    "headers": {
-      "Content-Length": "[[ANYTHING_PRESENT]]",
-      "Content-Type": "application/json"
-    },
+    "responseCode": 500,
     "body": {
-      "message": "Case Worker Profiles Created",
-      "case_worker_ids": "[[ANYTHING_PRESENT]]"
+      "errorCode": "__CRD_ERROR_CODE__",
+      "status": "__CRD_STATUS__",
+      "errorMessage": "__CRD_ERROR_MESSAGE__",
+      "errorDescription": "__CRD_ERROR_DESCRIPTION__",
+      "timeStamp": "[[ANYTHING_PRESENT]]"
     }
-  }
+  },
+  "title": "diagnostic create Financial Remedy caseworker profile in CRD"
 }
