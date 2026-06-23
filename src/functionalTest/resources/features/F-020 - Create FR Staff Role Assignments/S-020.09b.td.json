@@ -9,7 +9,7 @@
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
   "request": {
     "pathVariables": {
-      "actorId": "${[scenarioContext][childContexts][S-020.09b_CreateCaseworkerProfileInCRD][testData][actualResponse][body][case_worker_ids][0]}"
+      "actorId": "{{FR_CTSC_TL_CA_USER_ID}}"
     }
   },
   "expectedResponse": {
