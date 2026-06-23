@@ -39,7 +39,7 @@ import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @PactDirectory("pacts")
-@PactTestFor(providerName = "referenceData_judicialv2", port = "8991", pactVersion = PactSpecVersion.V3)
+@PactTestFor(providerName = "referenceData_judicialv2", pactVersion = PactSpecVersion.V3)
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",

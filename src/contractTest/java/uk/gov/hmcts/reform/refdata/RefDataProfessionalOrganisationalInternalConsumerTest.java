@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactDirectory("pacts")
-@PactTestFor(providerName = "referenceData_organisationalInternal", port = "8090", pactVersion = PactSpecVersion.V3)
+@PactTestFor(providerName = "referenceData_organisationalInternal", pactVersion = PactSpecVersion.V3)
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
