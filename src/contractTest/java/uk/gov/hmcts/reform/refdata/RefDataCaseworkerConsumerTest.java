@@ -43,7 +43,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCase
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactDirectory("pacts")
-@PactTestFor(providerName = "referenceData_caseworkerRefUsers", pactVersion = PactSpecVersion.V3)
+@PactTestFor(providerName = "referenceData_caseworkerRefUsers", port = "8991", pactVersion = PactSpecVersion.V3)
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
