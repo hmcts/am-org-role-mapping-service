@@ -4,6 +4,7 @@ import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslJsonRootValue;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
+import au.com.dius.pact.consumer.junit.MockServerConfig;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.PactSpecVersion;
@@ -39,7 +40,8 @@ import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @PactDirectory("pacts")
-@PactTestFor(providerName = "referenceData_judicialv2", port = "8990", pactVersion = PactSpecVersion.V3)
+@PactTestFor(providerName = "referenceData_judicialv2", pactVersion = PactSpecVersion.V3)
+@MockServerConfig(hostInterface = "localhost", port = "8090")
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",

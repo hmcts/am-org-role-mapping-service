@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.refdata;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
+import au.com.dius.pact.consumer.junit.MockServerConfig;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.PactSpecVersion;
@@ -36,7 +37,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactDirectory("pacts")
-@PactTestFor(providerName = "referenceData_organisationalInternal", port = "8090", pactVersion = PactSpecVersion.V3)
+@PactTestFor(providerName = "referenceData_organisationalInternal", pactVersion = PactSpecVersion.V3)
+@MockServerConfig(hostInterface = "localhost", port = "8090")
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
