@@ -1,0 +1,13 @@
+{
+  "_guid_": "S-006.01c_Region7",
+  "title": "must successfully create org role mapping for Senior Legal Caseworker + Region 7 (BBA3)",
+  "_extends_": "S-006.01c_Region6",
+  "specs": [
+    "contains the actorId of the user just published who has Senior Legal Caseworker role + Region 7 (BBA3)"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "340d7f8b-17be-4ccf-85ac-d4464b1fcf31"
+    }
+  }
+}
