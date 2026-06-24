@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/refdata/case-worker/users/fetchUsersById"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "crd/fetchCaseworkersById.json.hbs",
+    "transformers": ["response-template"]
+  }
+}
