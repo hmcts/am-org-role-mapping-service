@@ -70,13 +70,13 @@ public class JudicialBookingCreateConsumerTest {
     private DslPart createJudicialBookingsResponse() {
         return newJsonBody(o -> o
                 .object("bookingResponse", br -> br
-                                .stringType("beginTime", "3031-01-01T00:00:00Z")
-                                .stringType("created", "2021-02-23T06:37:58Z")
-                                .stringType("endTime", "3031-09-01T00:00:00Z")
                                 .stringType("id", "fcb4f03c-4b3f-4c3c-bf3a-662b4557b470")
+                                .stringType("userId", USER_ID)
                                 .stringType("locationId", "south-east")
                                 .stringType("regionId", "BFA1")
-                                .stringType("userId", USER_ID)
+                                .stringType("beginTime", "3031-01-01T00:00:00Z")
+                                .stringType("endTime", "3031-09-01T00:00:00Z")
+                                .stringType("created", "2021-02-23T06:37:58Z")
                 )).build();
     }
 

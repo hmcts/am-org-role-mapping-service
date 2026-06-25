@@ -71,7 +71,6 @@ public class JudicialBookingQueryConsumerTest {
         return responseHeaders;
     }
 
-
     private DslPart createJudicialBookingsResponse() {
         return newJsonBody(o -> o
                 .array("bookings", rar -> rar

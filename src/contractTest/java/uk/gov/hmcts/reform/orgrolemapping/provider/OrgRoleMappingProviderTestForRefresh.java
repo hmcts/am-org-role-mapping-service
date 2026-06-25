@@ -87,7 +87,7 @@ public class OrgRoleMappingProviderTestForRefresh {
     void beforeCreate(PactVerificationContext context) {
         MockMvcTestTarget testTarget = new MockMvcTestTarget();
         //uncomment to force publishing of pacts results to central server
-        System.getProperties().setProperty("pact.verifier.publishResults", "true");
+        //System.getProperties().setProperty("pact.verifier.publishResults", "true");
         testTarget.setControllers(new RefreshController(
                 refreshOrchestrator, judicialRefreshOrchestrator, professionalRefreshOrchestrator,
                 true
