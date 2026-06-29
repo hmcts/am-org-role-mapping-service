@@ -12,6 +12,7 @@ public enum AdditionalRole implements AdditionalRoleEnum {
     ACTING_DESIGNATED_CIVIL_JUDGE("Acting Designated Civil Judge", List.of("90155")),
 
     DESIGNATED_CIVIL_JUDGE("Designated Civil Judge", List.of("90001")),
+    DESIGNATED_FAMILY_JUDGE("Designated Family Judge", List.of("90066")),
 
     PRESIDING_JUDGE("Presiding Judge", List.of("90073"));
 
