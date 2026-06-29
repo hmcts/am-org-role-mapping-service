@@ -65,7 +65,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
 
 
   @S-075
-  @FeatureToggle(DB:privatelaw_wa_1_7=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
+  @FeatureToggle(DB:privatelaw_wa_1_9=on) @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
   Scenario: must successfully create judicial role mapping for Civil District Judge - salaried appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-075_DeleteDataForRoleAssignments],
