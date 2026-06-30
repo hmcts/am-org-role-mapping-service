@@ -1,19 +1,20 @@
 {
   "_guid_": "S-008.09",
   "title": "must successfully create org role mapping for CTSC Team Leader",
-  "_extends_": "F-008_Test_Data_Base",
+  "_extends_": "VerifyOrgRoleAssignments_withLabels",
+
   "specs": [
+    "an active IDAM profile with full permissions",
     "contains the actorId of the user just published who has CTSC Team Leader role"
   ],
-  "method": "GET",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+
   "request": {
     "pathVariables": {
       "actorId": "08007162-5a32-4689-820b-1130ce0d4ff2"
     }
   },
+
   "expectedResponse": {
-    "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
         {
@@ -26,6 +27,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-ctsc",
+          "roleLabel": "HMCTS CTSC",
           "classification": "PRIVATE",
           "grantType": "BASIC",
           "roleCategory": "CTSC",
@@ -41,6 +43,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "specific-access-approver-ctsc",
+          "roleLabel": "Specific Access Approver CTSC",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "CTSC",
@@ -59,6 +62,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "ctsc-team-leader",
+          "roleLabel": "CTSC Team Leader",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "CTSC",
@@ -77,6 +81,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "ctsc",
+          "roleLabel": "CTSC",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "CTSC",
@@ -95,6 +100,7 @@
           "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType" : "ORGANISATION",
           "roleName" : "hearing-viewer",
+          "roleLabel": "Hearing Viewer",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
           "roleCategory" : "CTSC",
@@ -112,6 +118,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "hearing-manager",
+          "roleLabel": "Hearing Manager",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "CTSC",

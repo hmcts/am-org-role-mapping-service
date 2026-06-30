@@ -1,19 +1,20 @@
 {
   "_guid_": "S-008.18",
   "title": "must successfully create org role mapping for Cafcass Cymru Caseworker",
-  "_extends_": "F-008_Test_Data_Base",
+  "_extends_": "VerifyOrgRoleAssignments_withLabels",
+
   "specs": [
+    "an active IDAM profile with full permissions",
     "contains the actorId of the user just published who has Cafcass Cymru Caseworker role"
   ],
-  "method": "GET",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+
   "request": {
     "pathVariables": {
       "actorId": "e3d26938-ad7d-49af-b040-8f7e13b31145"
     }
   },
+
   "expectedResponse": {
-    "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
         {
@@ -26,6 +27,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "caseworker-privatelaw-externaluser-viewonly",
+          "roleLabel": "Cafcass Cymru Caseworker",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "OTHER_GOV_DEPT",

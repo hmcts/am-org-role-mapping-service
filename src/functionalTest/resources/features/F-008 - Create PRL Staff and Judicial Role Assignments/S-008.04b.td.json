@@ -2,14 +2,17 @@
   "_guid_": "S-008.04b",
   "title": "must successfully create org role mapping for Hearing Centre Administrator + Case allocator",
   "_extends_": "S-008.04",
+
   "specs": [
     "contains the actorId of the user just published who has Hearing Centre Administrator role + Case allocator"
   ],
+
   "request": {
     "pathVariables": {
       "actorId": "3c28915a-756f-4750-a1f3-ec00046da0c9"
     }
   },
+
   "expectedResponse": {
     "body": {
       "roleAssignmentResponse": [
@@ -19,6 +22,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "case-allocator",
+          "roleLabel": "Case Allocator",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "ADMIN",

@@ -1,0 +1,31 @@
+{
+  "_guid_": "VerifyOrgRoleAssignments_withLabels",
+  "_extends_": "QueryRoleAssignments__PositiveResponse_Base",
+
+  "specs": [
+    "to verify role assignments are correct for test userId",
+
+    "NB: This test uses pathVariables.actorId to allow it to also work with DeleteDataForRoleAssignments and common S-XYZ.AB__VerifyCaseworkerDetails"
+  ],
+
+  "request": {
+    "body": {
+      "pathVariables": {
+        "actorId": "OVERRIDE_ME"
+      },
+      "queryParams": {
+        "includeLabels": "true"
+      },
+      "queryRequests": [
+        {
+          "actorId": [
+            "${[scenarioContext][testData][request][pathVariables][actorId]}"
+          ],
+          "roleType": [
+            "ORGANISATION"
+          ]
+        }
+      ]
+    }
+  }
+}

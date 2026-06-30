@@ -2,14 +2,17 @@
   "_guid_": "S-008.03b",
   "title": "must successfully create org role mapping for Hearing Centre Team Leader + Case allocator",
   "_extends_": "S-008.03",
+
   "specs": [
     "contains the actorId of the user just published who has Hearing Centre Team Leader role + Case allocator"
   ],
+
   "request": {
     "pathVariables": {
       "actorId": "ffa8ec0d-2d77-47df-9d90-8b9888af2bf3"
     }
   },
+
   "expectedResponse": {
     "body": {
       "roleAssignmentResponse": [
@@ -19,6 +22,7 @@
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
           "roleName": "case-allocator",
+          "roleLabel": "Case Allocator",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "ADMIN",
