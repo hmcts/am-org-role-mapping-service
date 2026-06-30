@@ -40,7 +40,7 @@ import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @PactDirectory("pacts")
-@PactTestFor(providerName = "referenceData_judicialv2", pactVersion = PactSpecVersion.V3)
+@PactTestFor(providerName = "referenceData_judicialv2", pactVersion = PactSpecVersion.V1)
 @MockServerConfig(hostInterface = "localhost", port = "8090")
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
