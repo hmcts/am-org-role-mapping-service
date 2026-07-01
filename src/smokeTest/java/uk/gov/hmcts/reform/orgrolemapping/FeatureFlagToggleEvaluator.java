@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assume;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
