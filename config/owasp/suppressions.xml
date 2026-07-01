@@ -16,4 +16,12 @@
         <notes>https://tools.hmcts.net/jira/browse/DTSAM-1324 Plex Utils</notes>
         <cve>CVE-2025-67030</cve>
     </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1339 jackson-databind</notes>
+        <cve>CVE-2026-54515</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1340 JetBrains Kotlin</notes>
+        <cve>CVE-2026-53914</cve>
+    </suppress>
 </suppressions>
