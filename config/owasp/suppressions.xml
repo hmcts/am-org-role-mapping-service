@@ -1,3 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1319 Azure Agent</notes>
+        <cve>CVE-2025-21199</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1321 Azure Java SDK</notes>
+        <cve>CVE-2026-33117</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1323 Apache Commons Untrusted Configurations</notes>
+        <cve>CVE-2025-46392</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1324 Plex Utils</notes>
+        <cve>CVE-2025-67030</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1339 jackson-databind</notes>
+        <cve>CVE-2026-54515</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1340 JetBrains Kotlin</notes>
+        <cve>CVE-2026-53914</cve>
+    </suppress>
 </suppressions>
