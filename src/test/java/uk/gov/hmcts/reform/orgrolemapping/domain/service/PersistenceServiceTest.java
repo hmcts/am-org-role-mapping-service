@@ -12,8 +12,11 @@ import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.RefreshJobsRepository;
 
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -138,10 +141,46 @@ class PersistenceServiceTest {
 
     }
 
+    @Test
+    void shouldGetAllFeatureFlags() {
+
+        // GIVEN
+        List<FlagConfig> flagConfigs = List.of(
+                getFlagConfig("pr", "iac_1_1", true),
+                getFlagConfig("pr", "iac_1_2", false),
+                getFlagConfig("pr", "iac_1_3", true),
+                getFlagConfig("dev", "iac_1_1", true)
+        );
+        String env = flagConfigs.get(0).getEnv();
+        when(environmentConfiguration.getEnvironment()).thenReturn(env);
+        when(flagConfigRepository.findAll()).thenReturn(flagConfigs);
+
+        // WHEN
+        Map<String, Boolean> response = sut.getAllFeatureFlags();
+
+        // THEN
+        assertNotNull(response);
+        assertEquals(3, response.size()); // 3 'pr' entries.
+        flagConfigs.stream()
+                .filter(flagConfig -> flagConfig.getEnv().equals(env))
+                .forEach(flagConfig -> {
+                    assertEquals(flagConfig.getStatus(), response.get(flagConfig.getFlagName()));
+                });
+
+        // check environment config lookup is used once
+        verify(environmentConfiguration, times(1)).getEnvironment();
+        // check flagConfig lookup is used once
+        verify(flagConfigRepository, times(1)).findAll();
+    }
+
     private FlagConfig getFlagConfig(Boolean status) {
+        return getFlagConfig("pr", "iac_1_1", status);
+    }
+
+    private FlagConfig getFlagConfig(String env, String flagName, Boolean status) {
         return FlagConfig.builder()
-                .env("pr")
-                .flagName("iac_1_1")
+                .env(env)
+                .flagName(flagName)
                 .serviceName("iac")
                 .status(status)
                 .build();
