@@ -44,7 +44,8 @@ public enum Appointment implements AppointmentEnum {
     CHIEF_MASTER("Chief Master", List.of("16")),
     DEPUTY_CHAMBER_PRESIDENT("Deputy Chamber President", List.of("32")),
     MASTER_OF_THE_ROLLS("Master of the Rolls", List.of("59")),
-    SENIOR_MASTER("Senior Master", List.of("80"));
+    SENIOR_MASTER("Senior Master", List.of("80")),
+    DISTRICT_JUDGE("District Judge", List.of("45"));
 
     private final String name;
     private final List<String> codes;// support for multiple codes in future (i.e. different spellings for same role)

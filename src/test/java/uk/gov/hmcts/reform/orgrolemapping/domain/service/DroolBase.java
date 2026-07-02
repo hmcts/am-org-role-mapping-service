@@ -211,6 +211,7 @@ public abstract class DroolBase {
         DEPUTY_DISTRICT_JUDGE("Deputy District Judge", List.of("201")),
         DEPUTY_DISTRICT_JUDGE_PRFD("Deputy District Judge - PRFD", List.of("99")),
         DEPUTY_DISTRICT_JUDGE_SITTING_IN_RETIREMENT("Deputy District Judge- Sitting in Retirement", List.of("25")),
+        DEPUTY_HIGH_COURT_JUDGE("Deputy High Court Judge", List.of("33")),
         DEPUTY_INSOLVENCY_AND_COMPANIES_COURT_JUDGE("Deputy Insolvency and Companies Court Judge", List.of("108")),
         DEPUTY_MASTER("Deputy Master", List.of("95")),
         DISTRICT_JUDGE("District Judge", List.of("45")),
