@@ -411,7 +411,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
      And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.09
-  @FeatureToggle(DB:iac_wa_1_8=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_8=off) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC team leader
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC team leader (BFA1 IA)] as in [S-001.09__VerifyCaseworkerDetails],
@@ -425,7 +425,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.09a
-  @FeatureToggle(DB:iac_wa_1_8=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_8=off) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC team leader + Task Supervisor
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC team leader + Task Supervisor (BFA1 IA)] as in [S-001.09a__VerifyCaseworkerDetails],
@@ -439,7 +439,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.09b
-  @FeatureToggle(DB:iac_wa_1_8=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_8=off) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC team leader + Case allocator
      Given a user with [an active IDAM profile with full permissions],
      And a successful call [to verify caseworker details for CTSC team leader + Case allocator (BFA1 IA)] as in [S-001.09b__VerifyCaseworkerDetails],
@@ -453,7 +453,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
      And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.10
-  @FeatureToggle(DB:iac_wa_1_8=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_8=off) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Administrator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Administrator (BFA1 IA)] as in [S-001.10__VerifyCaseworkerDetails],
@@ -467,7 +467,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.10a
-  @FeatureToggle(DB:iac_wa_1_8=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_8=off) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Administrator + Task Supervisor
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Administrator + Task Supervisor (BFA1 IA)] as in [S-001.10a__VerifyCaseworkerDetails],
@@ -481,7 +481,7 @@ Feature: F-001 : Create Role Assignments for Caseworker Users
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.10b
-  @FeatureToggle(DB:iac_wa_1_8=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_8=off) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for CTSC Administrator + Case allocator
      Given a user with [an active IDAM profile with full permissions],
      And a successful call [to verify caseworker details for CTSC Administrator + Case allocator (BFA1 IA)] as in [S-001.10b__VerifyCaseworkerDetails],
