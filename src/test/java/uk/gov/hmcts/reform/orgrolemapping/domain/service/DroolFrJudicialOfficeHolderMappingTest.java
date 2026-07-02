@@ -19,7 +19,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
-//import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRole;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRole;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AdditionalRoleEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.Appointment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.AppointmentEnum;
@@ -63,7 +63,7 @@ class DroolFrJudicialOfficeHolderMappingTest extends DroolBase {
     private static final String ACCESS_PROFILE_REGION_ID = "LDN";
 
     // NB: multi-regions are: London and South-East
-    static List<String> multiRegionList = List.of("1", "5");
+    static List<String> multiRegionList =  List.of();
 
     static Map<String, String> expectedRoleNameWorkTypesMap = new HashMap<>();
 
@@ -85,7 +85,11 @@ class DroolFrJudicialOfficeHolderMappingTest extends DroolBase {
                 Arguments.of(Appointment.CIRCUIT_JUDGE,
                         LegacyAdditionalRole.ANY_OTHER_ROLE),
                 Arguments.of(Appointment.HIGH_COURT_JUDGE,
-                        LegacyAdditionalRole.ANY_OTHER_ROLE)
+                        LegacyAdditionalRole.ANY_OTHER_ROLE),
+                Arguments.of(LegacyAppointment.DISTRICT_JUDGE,
+                        LegacyAdditionalRole.ANY_OTHER_ROLE),
+                Arguments.of(Appointment.SENIOR_CIRCUIT_JUDGE,
+                    AdditionalRole.LEAD_FINANCIAL_REMEDY_JUDGE)
         );
     }
 
@@ -102,7 +106,6 @@ class DroolFrJudicialOfficeHolderMappingTest extends DroolBase {
         "TRIBUNAL_MEMBER_DISABILITY",
     })
     @EnumSource(value = LegacyAppointment.class, names = {
-        "DISTRICT_JUDGE",
         "DEPUTY_MASTER",
         "TRIBUNAL_JUDGE"
     })

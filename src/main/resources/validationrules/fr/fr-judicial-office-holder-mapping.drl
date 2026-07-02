@@ -95,7 +95,9 @@ rule "v1_0_fr_leadership_judge_salaried_joh"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $jap: JudicialAccessProfile(hasAppointmentCode(Appointment.CIRCUIT_JUDGE)
-                                        || hasAppointmentCode(Appointment.HIGH_COURT_JUDGE),
+                                        || hasAppointmentCode(Appointment.HIGH_COURT_JUDGE)
+                                        || hasAppointmentCode(Appointment.DISTRICT_JUDGE)
+                                        || hasValidAdditionalRole(AdditionalRole.LEAD_FINANCIAL_REMEDY_JUDGE),
                                 isSalaried(),
                                 hasValidEndDate(),
                                 hasValidAuthorisation(Jurisdiction.DIVORCE))
