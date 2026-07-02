@@ -491,7 +491,7 @@ dependencyManagement {
         dependency("org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}")
         dependency("org.bouncycastle:bcpkix-jdk18on:${versions.bouncycastle}")
 
-        dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.55') {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.56') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-el'
             entry 'tomcat-embed-websocket'
