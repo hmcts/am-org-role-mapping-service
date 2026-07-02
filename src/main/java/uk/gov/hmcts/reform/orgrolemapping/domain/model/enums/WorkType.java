@@ -15,6 +15,8 @@ public enum WorkType {
     POST_HEARING("post_hearing"),
     PRE_HEARING("pre_hearing"),
     PRIORITY("priority"),
+    QUERIES("queries"),
+    QUERIES_STF("queries_stf"),
     QUERY_WORK("query_work"),
     REVIEW_CASE("review_case"),
     ROUTINE_WORK("routine_work"),
@@ -26,9 +28,7 @@ public enum WorkType {
     STF_24W_UPPER_TRIBUNAL("stf_24w_upper_tribunal"),
     STOPPED_APPLICATIONS("stopped_applications"),
     UPPER_TRIBUNAL("upper_tribunal"),
-    WELSH_TRANSLATION_WORK("welsh_translation_work"),
-    QUERIES("queries"),
-    QUERIES_STF("queries_stf");
+    WELSH_TRANSLATION_WORK("welsh_translation_work");
 
     private final String value;
 
