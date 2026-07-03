@@ -89,7 +89,7 @@ end;
  * PROBATE ctsc "ctsc" Org role mapping for v1_8.
  */
 
-rule "v1_8_probate_ctsc"
+rule "v1_8_iac_ctsc_caseworker"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_8.getValue())
   $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
@@ -123,7 +123,7 @@ then
         .attributes(attribute)
         .authorisations($up.getSkillCodes())
         .build());
-      logMsg("Rule : v1_8_probate_ctsc");
+      logMsg("Rule : v1_8_iac_ctsc_caseworker");
 end;
 
 rule "iac_hmcts_ctsc_caseworker_v11"
