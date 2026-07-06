@@ -136,7 +136,7 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
             caseAllocator()
     );
 
-    static Stream<Arguments> divorceAdminScenarios() {
+    static Stream<Arguments> frAdminScenarios() {
         return Stream.of(
             scenariosFor(JobTitle.HEARING_CENTRE_TEAM_LEADER, EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER),
             scenariosFor(JobTitle.HEARING_CENTRE_ADMIN, EXPECTED_ROLES_HEARING_CENTRE_ADMIN),
@@ -155,11 +155,11 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
     }
 
     @ParameterizedTest
-    @MethodSource("divorceAdminScenarios")
-    void shouldReturnDivorceAdminMappings(JobTitle jobTitle,
-                                          String taskSupervisorFlag,
-                                          String caseAllocatorFlag,
-                                          List<ExpectedRole> expectedBaseRoles) {
+    @MethodSource("frAdminScenarios")
+    void shouldReturnFrAdminMappings(JobTitle jobTitle,
+                                     String taskSupervisorFlag,
+                                     String caseAllocatorFlag,
+                                     List<ExpectedRole> expectedBaseRoles) {
         allProfiles.clear();
 
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId5();
@@ -175,7 +175,7 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
         List<RoleAssignment> roleAssignments =
             buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction(FEATURE_FLAG_PREFIX, true));
 
-        log.info("Returned divorce admin roles for {}: {}",
+        log.info("Returned FR admin roles for {}: {}",
                 jobTitle, roleAssignments.stream().map(RoleAssignment::getRoleName).toList());
 
         assertFalse(roleAssignments.isEmpty());
@@ -244,7 +244,7 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
     }
 
     @Test
-    void shouldNotReturnDivorceAdminRolesWhenFeatureFlagIsOff() {
+    void shouldNotReturnFrAdminRolesWhenFeatureFlagIsOff() {
         allProfiles.clear();
 
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId5();
@@ -274,10 +274,10 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
         "10,'ctsc,hmcts-ctsc,case-allocator',N,Y",
         "10,'ctsc,hmcts-ctsc,task-supervisor,case-allocator',Y,Y"
     })
-    void shouldReturnDivorceCtscMappings(String roleId,
-                                         String expectedRoles,
-                                         String taskSupervisorFlag,
-                                         String caseAllocatorFlag) {
+    void shouldReturnFrCtscMappings(String roleId,
+                                    String expectedRoles,
+                                    String taskSupervisorFlag,
+                                    String caseAllocatorFlag) {
         allProfiles.clear();
 
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
@@ -325,7 +325,7 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
     }
 
     @Test
-    void shouldNotReturnDivorceRolesWhenFeatureFlagIsOff() {
+    void shouldNotReturnFrRolesWhenFeatureFlagIsOff() {
         allProfiles.clear();
 
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
@@ -343,16 +343,23 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
         assertTrue(roleAssignments.isEmpty());
     }
 
-    @Test
-    void shouldNotReturnOrgRolesForCaseWorkerWithSuspendedProfile() {
+    @ParameterizedTest
+    @CsvSource({
+        "Y,Y",
+        "Y,N",
+        "N,Y",
+        "N,N"
+    })
+    void shouldNotReturnOrgRolesForCaseWorkerWithSuspendedProfile(String taskSupervisorFlag,
+                                                                   String caseAllocatorFlag) {
         allProfiles.clear();
         IntStream.range(1, 11).forEach(roleId ->
                 allProfiles.add(TestDataBuilder.buildUserAccessProfile(String.valueOf(roleId), true)));
 
         allProfiles.forEach(userAccessProfile -> {
             userAccessProfile.setServiceCode(Jurisdiction.FR.getServiceCodes().getFirst());
-            userAccessProfile.setCaseAllocatorFlag("Y");
-            userAccessProfile.setTaskSupervisorFlag("Y");
+            userAccessProfile.setCaseAllocatorFlag(caseAllocatorFlag);
+            userAccessProfile.setTaskSupervisorFlag(taskSupervisorFlag);
             userAccessProfile.setRegionId(REGION_ID);
         });
 
