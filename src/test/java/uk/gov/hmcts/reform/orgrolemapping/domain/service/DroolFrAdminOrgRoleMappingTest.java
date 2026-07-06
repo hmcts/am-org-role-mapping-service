@@ -49,18 +49,18 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
 
     private static final String WORK_TYPES_HEARING = "routine_work, review_case";
     private static final String WORK_TYPES_ACCESS_REQUESTS = "access_requests";
-        private static final String WORK_TYPES_CTSC_TEAM_LEADER =
+    private static final String WORK_TYPES_CTSC_TEAM_LEADER =
             "hearing_work, routine_work, decision_making_work, applications, review_case, evidence";
-        private static final String WORK_TYPES_CTSC =
+    private static final String WORK_TYPES_CTSC =
             "hearing_work, routine_work, applications, review_case, evidence";
 
-        private static final Map<String, String> STAFF_ROLE_WORK_TYPES = new HashMap<>();
+    private static final Map<String, String> STAFF_ROLE_WORK_TYPES = new HashMap<>();
 
-        static {
+    static {
         STAFF_ROLE_WORK_TYPES.put(RoleName.CTSC_TEAM_LEADER, WORK_TYPES_CTSC_TEAM_LEADER);
         STAFF_ROLE_WORK_TYPES.put(RoleName.CTSC, WORK_TYPES_CTSC);
         STAFF_ROLE_WORK_TYPES.put(RoleName.SPECIFIC_ACCESS_APPROVER_CTSC, WORK_TYPES_ACCESS_REQUESTS);
-        }
+    }
 
     private record ExpectedRole(String roleName,
                                 RoleCategory roleCategory,
@@ -312,7 +312,8 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
                 assertEquals(JURISDICTION, r.getAttributes().get(Attributes.Name.JURISDICTION).asText());
                 assertEquals(Classification.PUBLIC, r.getClassification());
                 assertEquals(GrantType.STANDARD, r.getGrantType());
-                assertEquals(cap.getPrimaryLocationId(), r.getAttributes().get(Attributes.Name.PRIMARY_LOCATION).asText());
+                assertEquals(cap.getPrimaryLocationId(),
+                        r.getAttributes().get(Attributes.Name.PRIMARY_LOCATION).asText());
             }
             if (STAFF_ROLE_WORK_TYPES.containsKey(r.getRoleName())) {
                 assertEquals(STAFF_ROLE_WORK_TYPES.get(r.getRoleName()),
