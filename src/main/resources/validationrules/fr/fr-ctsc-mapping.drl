@@ -28,10 +28,10 @@ rule "fr_ctsc_team_leader_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER),
-                                hasValidServiceCode(Jurisdiction.DIVORCE), !suspended)
+                                hasValidServiceCode(Jurisdiction.FR), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                                                             WorkType.HEARING_WORK,
@@ -63,10 +63,10 @@ rule "fr_ctsc_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
-                                hasValidServiceCode(Jurisdiction.DIVORCE), !suspended)
+                                hasValidServiceCode(Jurisdiction.FR), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                                                             WorkType.HEARING_WORK,
@@ -97,7 +97,7 @@ rule "fr_hmcts_ctsc_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
-                                hasValidServiceCode(Jurisdiction.DIVORCE), !suspended)
+                                hasValidServiceCode(Jurisdiction.FR), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
   insert(
@@ -122,10 +122,10 @@ rule "fr_task_supervisor_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
-                                hasValidServiceCode(Jurisdiction.DIVORCE), !suspended, isTaskSupervisor())
+                                hasValidServiceCode(Jurisdiction.FR), !suspended, isTaskSupervisor())
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
   insert(
       RoleAssignment.builder()
@@ -150,10 +150,10 @@ rule "fr_case_allocator_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
-                                hasValidServiceCode(Jurisdiction.DIVORCE), !suspended, isCaseAllocator())
+                                hasValidServiceCode(Jurisdiction.FR), !suspended, isCaseAllocator())
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
   insert(
       RoleAssignment.builder()
@@ -178,10 +178,10 @@ rule "fr_specific_access_approver_ctsc_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER),
-                                hasValidServiceCode(Jurisdiction.DIVORCE), !suspended)
+                                hasValidServiceCode(Jurisdiction.FR), !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.ACCESS_REQUESTS.getValue()));
   insert(
