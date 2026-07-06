@@ -22,9 +22,9 @@ import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
- * DIVORCE ctsc "ctsc-team-leader" Org role mapping.
+ * FR ctsc "ctsc-team-leader" Org role mapping.
  */
-rule "divorce_ctsc_team_leader_v1"
+rule "fr_ctsc_team_leader_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER),
@@ -53,13 +53,13 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : divorce_ctsc_team_leader_v1");
+      logMsg("Rule : fr_ctsc_team_leader_v1");
 end;
 
 /*
- * DIVORCE ctsc "ctsc" Org role mapping.
+ * FR ctsc "ctsc" Org role mapping.
  */
-rule "divorce_ctsc_v1"
+rule "fr_ctsc_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
@@ -87,13 +87,13 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : divorce_ctsc_v1");
+      logMsg("Rule : fr_ctsc_v1");
 end;
 
 /*
- * DIVORCE ctsc "hmcts-ctsc" Org role mapping.
+ * FR ctsc "hmcts-ctsc" Org role mapping.
  */
-rule "divorce_hmcts_ctsc_v1"
+rule "fr_hmcts_ctsc_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
@@ -112,13 +112,13 @@ then
       .readOnly(true)
       .attributes(attribute)
       .build());
-      logMsg("Rule : divorce_hmcts_ctsc_v1");
+      logMsg("Rule : fr_hmcts_ctsc_v1");
 end;
 
 /*
- * DIVORCE ctsc "task-supervisor" role mapping.
+ * FR ctsc "task-supervisor" role mapping.
  */
-rule "divorce_task_supervisor_v1"
+rule "fr_task_supervisor_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
@@ -140,13 +140,13 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : divorce_task_supervisor_v1");
+      logMsg("Rule : fr_task_supervisor_v1");
 end;
 
 /*
- * DIVORCE ctsc "case-allocator" role mapping.
+ * FR ctsc "case-allocator" role mapping.
  */
-rule "divorce_case_allocator_v1"
+rule "fr_case_allocator_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER, JobTitle.CTSC_ADMIN),
@@ -168,13 +168,13 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : divorce_case_allocator_v1");
+      logMsg("Rule : fr_case_allocator_v1");
 end;
 
 /*
- * DIVORCE ctsc "specific-access-approver-ctsc" Org role mapping.
+ * FR ctsc "specific-access-approver-ctsc" Org role mapping.
  */
-rule "divorce_specific_access_approver_ctsc_v1"
+rule "fr_specific_access_approver_ctsc_v1"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
    $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER),
@@ -197,5 +197,5 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : divorce_specific_access_approver_ctsc_v1");
+      logMsg("Rule : fr_specific_access_approver_ctsc_v1");
 end;
