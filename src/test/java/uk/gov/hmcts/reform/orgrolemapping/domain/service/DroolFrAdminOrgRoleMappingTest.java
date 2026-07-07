@@ -70,37 +70,38 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
                                 String jurisdiction,
                                 String primaryLocation,
                                 String region,
+                                String caseType,
                                 String workTypes) {
     }
 
     private static ExpectedRole basicAdminRole(String roleName) {
         return new ExpectedRole(roleName, RoleCategory.ADMIN,
                 Classification.PRIVATE, GrantType.BASIC, true,
-                null, null, null, null);
+                null, null, null, null, null);
     }
 
     private static ExpectedRole standardAdminRole(String roleName, String workTypes) {
         return new ExpectedRole(roleName, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, workTypes);
+                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FR", workTypes);
     }
 
     private static ExpectedRole standardAdminRoleWithRegion(String roleName, String workTypes) {
         return new ExpectedRole(roleName, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, workTypes);
+                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FR", workTypes);
     }
 
     private static ExpectedRole taskSupervisor() {
         return new ExpectedRole(RoleName.TASK_SUPERVISOR, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, null);
+                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FR", null);
     }
 
     private static ExpectedRole caseAllocator() {
         return new ExpectedRole(RoleName.CASE_ALLOCATOR, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, null);
+                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FR", null);
     }
 
     private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER = List.of(
@@ -230,6 +231,15 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
                 assertNotNull(actual.getAttributes().get(Attributes.Name.REGION));
                 assertEquals(expected.region(),
                         actual.getAttributes().get(Attributes.Name.REGION).asText());
+            }
+
+            if (expected.caseType() == null) {
+                assertNull(actual.getAttributes().get(Attributes.Name.CASE_TYPE),
+                        "Expected no caseType on " + expected.roleName());
+            } else {
+                assertNotNull(actual.getAttributes().get(Attributes.Name.CASE_TYPE));
+                assertEquals(expected.caseType(),
+                        actual.getAttributes().get(Attributes.Name.CASE_TYPE).asText());
             }
 
             if (expected.workTypes() == null) {
