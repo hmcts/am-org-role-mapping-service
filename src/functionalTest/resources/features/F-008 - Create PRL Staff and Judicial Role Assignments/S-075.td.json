@@ -3,7 +3,9 @@
   "title": "must successfully create judicial role mapping for Civil District Judge - salaried appointment",
   "_extends_": "F-008_Test_Data_Base",
   "specs": [
-    "contains the actorIds of the user just published"
+    "contains the actorIds of the user just published",
+
+    "NB: The current test judge triggers PRL multi-region expanion for London (region 1) and South East (region 5)."
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
@@ -30,6 +32,9 @@
     "body": {
       "roleAssignmentResponse": [
         {
+          "__elementId__": "roleName,attributes.jurisdiction,attributes.region"
+        },
+        {
           "id" : "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
@@ -46,7 +51,29 @@
             "contractType": "Salaried",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PRIVATELAW",
-            "region": "[[ANYTHING_PRESENT]]",
+            "region": "1",
+            "workTypes": "hearing_work,decision_making_work,applications,routine_work"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "fl401-judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "contractType": "Salaried",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW",
+            "region": "5",
             "workTypes": "hearing_work,decision_making_work,applications,routine_work"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
