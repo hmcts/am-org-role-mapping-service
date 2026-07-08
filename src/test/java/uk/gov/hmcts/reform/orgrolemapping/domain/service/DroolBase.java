@@ -179,7 +179,10 @@ public abstract class DroolBase {
      */
     protected enum LegacyAdditionalRole implements AdditionalRoleEnum {
 
-        ANY_OTHER_ROLE("Any Other Role", List.of("any-code"));
+        ANY_OTHER_ROLE("Any Other Role", List.of("any-code")),
+
+        FAMILY_DIVISION_LIAISON_JUDGE("Family Division Liaison Judge", List.of("unknown-code")),
+        SENIOR_FAMILY_LIAISON_JUDGE("Senior Family Liaison Judge", List.of("unknown-code"));
 
         private final String name;
         private final List<String> codes;
@@ -202,23 +205,32 @@ public abstract class DroolBase {
      * Additional test Appointments not in list of Appointments
      * <see cref="uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.Appointment"/>.
      */
+    @SuppressWarnings("checkstyle:linelength")
     protected enum LegacyAppointment implements AppointmentEnum {
 
         ANY_OTHER_APPOINTMENT("Any Other Appointment", List.of("any-code")),
+
         ADJUDICATOR("Adjudicator", List.of("9")),
         COSTS_JUDGE("Costs Judge", List.of("23")),
         DEPUTY_COSTS_JUDGE("Deputy Costs Judge", List.of("31")),
         DEPUTY_DISTRICT_JUDGE("Deputy District Judge", List.of("201")),
+        DEPUTY_DISTRICT_JUDGE_FEE_PAID("Deputy District Judge", List.of("201")),
+        DEPUTY_DISTRICT_JUDGE_MC("Deputy District Judge (MC)- Fee paid", List.of("26")),
+        DEPUTY_DISTRICT_JUDGE_MC_SITTING_IN_RETIREMENT("Deputy District Judge (MC)- Sitting in Retirement", List.of("27")),
         DEPUTY_DISTRICT_JUDGE_PRFD("Deputy District Judge - PRFD", List.of("99")),
         DEPUTY_DISTRICT_JUDGE_SITTING_IN_RETIREMENT("Deputy District Judge- Sitting in Retirement", List.of("25")),
+        DEPUTY_DISTRICT_JUDGE_SITTING_IN_RETIREMENT2("Deputy District Judge (sitting in retirement)", List.of("202")),
+        DEPUTY_HIGH_COURT_JUDGE("Deputy High Court Judge", List.of("33")),
         DEPUTY_INSOLVENCY_AND_COMPANIES_COURT_JUDGE("Deputy Insolvency and Companies Court Judge", List.of("108")),
         DEPUTY_MASTER("Deputy Master", List.of("95")),
         DISTRICT_JUDGE("District Judge", List.of("45")),
         DISTRICT_JUDGE_MC("District Judge (MC)", List.of("46")),
+        DISTRICT_JUDGE_MC_SITTING_IN_RETIREMENT("District Judge (MC) (sitting in retirement)", List.of("204")),
         DISTRICT_JUDGE_SITTING_IN_RETIREMENT("District Judge (sitting in retirement)", List.of("125")),
         EMPLOYMENT_JUDGE("Employment Judge", List.of("48")),
         EMPLOYMENT_JUDGE_SITTING_IN_RETIREMENT("Employment Judge (sitting in retirement)", List.of("128", "215")),
         HIGH_COURT_JUDGE_SITTING_IN_RETIREMENT("High Court Judge (sitting in retirement)", List.of("186")),
+        HIGH_COURT_JUDGE_SITTING_IN_RETIREMENT2("High Court Judge- Sitting in Retirement", List.of("52")),
         INSOLVENCY_AND_COMPANIES_COURT_JUDGE("Insolvency and Companies Court Judge", List.of("193")),
         INSOLVENCY_AND_COMPANIES_COURT_JUDGE_SITTING_IN_RETIREMENT(
                 "Insolvency and Companies Court Judge (sitting in retirement)", List.of("192")),
