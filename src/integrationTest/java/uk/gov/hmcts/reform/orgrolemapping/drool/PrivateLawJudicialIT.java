@@ -1,14 +1,23 @@
 package uk.gov.hmcts.reform.orgrolemapping.drool;
 
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArgumentOverrides;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArguments;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.adjustTestArguments;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.cloneListOfTestArgumentsForMultiRegion;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.formatRasRequestFileNameWithSuffix;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateOverrideFlagOffCatchAll;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardFeePaidTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardSalariedTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardVoluntaryTestArguments;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.overrideTestArguments;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_01_LONDON;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_02_MIDLANDS;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_05_SOUTH_EAST;
 
 public class PrivateLawJudicialIT {
 
@@ -27,15 +36,17 @@ public class PrivateLawJudicialIT {
         // PrivateLaw special tests:
         // * Additional Role tests will use a fallback when the Additional Role has expired as the hearing role
         //   mappings are based on any active Appointment + Authorisation being present
+        // * multi region tests for 1 & 5 for all salaried judges
 
         List<DroolJudicialTestArguments> arguments = new ArrayList<>();
 
 
         // 001 Circuit Judge - Salaried
         arguments.addAll(
-            generateStandardSalariedTestArguments(
+            generateSalariedTestArguments(
                 "001_Circuit_Judge__Salaried",
-                SALARIED_CIRCUIT_JUDGE_OUTPUT_TEMPLATE
+                SALARIED_CIRCUIT_JUDGE_OUTPUT_TEMPLATE,
+                false
             )
         );
 
@@ -117,27 +128,30 @@ public class PrivateLawJudicialIT {
 
         // 009 District Judge - Salaried
         arguments.addAll(
-            generateStandardSalariedTestArguments(
+            generateSalariedTestArguments(
                 "009_District_Judge__Salaried",
-                SALARIED_JUDGE_OUTPUT_TEMPLATE
+                SALARIED_JUDGE_OUTPUT_TEMPLATE,
+                false
             )
         );
 
 
         // 010 District Judge (MC) - Salaried
         arguments.addAll(
-            generateStandardSalariedTestArguments(
+            generateSalariedTestArguments(
                 "010_District_Judge-(MC)__Salaried",
-                SALARIED_JUDGE_OUTPUT_TEMPLATE
+                SALARIED_JUDGE_OUTPUT_TEMPLATE,
+                false
             )
         );
 
 
         // 011 High Court Judge - Salaried
         arguments.addAll(
-            generateStandardSalariedTestArguments(
+            generateSalariedTestArguments(
                 "011_High_Court_Judge__Salaried",
-                SALARIED_CIRCUIT_JUDGE_OUTPUT_TEMPLATE
+                SALARIED_CIRCUIT_JUDGE_OUTPUT_TEMPLATE,
+                false
             )
         );
 
@@ -162,30 +176,30 @@ public class PrivateLawJudicialIT {
 
         // 014 Designated Family Judge - Salaried
         arguments.addAll(
-            generateStandardSalariedTestArguments(
+            generateSalariedTestArguments(
                 "014_Designated_Family_Judge__Salaried",
                 LEADERSHIP_JUDGE_OUTPUT_TEMPLATE,
-                HEARING_ROLES_ONLY_OUTPUT_TEMPLATE // hearing fallback needed on this additional role test
+                true
             )
         );
 
 
         // 015 Family Division Liaison Judge (Presiding Judge - Salaried)
         arguments.addAll(
-            generateStandardSalariedTestArguments(
+            generateSalariedTestArguments(
                 "015_Family_Division_Liaison_Judge",
                 SALARIED_JUDGE_OUTPUT_TEMPLATE,
-                HEARING_ROLES_ONLY_OUTPUT_TEMPLATE // hearing fallback needed on this additional role test
+                true
             )
         );
 
 
         // 016 Senior Family Liaison Judge (Resident Judge - Salaried)
         arguments.addAll(
-            generateStandardSalariedTestArguments(
+            generateSalariedTestArguments(
                 "016_Senior_Family_Liaison_Judge",
                 SALARIED_JUDGE_OUTPUT_TEMPLATE,
-                HEARING_ROLES_ONLY_OUTPUT_TEMPLATE // hearing fallback needed on this additional role test
+                true
             )
         );
 
@@ -229,8 +243,132 @@ public class PrivateLawJudicialIT {
         );
 
 
+        // FlagOff Tests
+        arguments.addAll(flagOffTestsPrivateLawWa19(arguments));
+
+
         // adjust test arguments ready for use
         return adjustTestArguments(arguments, "PrivateLaw");
+    }
+
+
+    private static List<DroolJudicialTestArguments> generateSalariedTestArguments(String jrdResponseFileName,
+                                                                                  String rasRequestFileName,
+                                                                                  boolean additionalRoleTest) {
+
+        List<DroolJudicialTestArguments> arguments = generateStandardSalariedTestArguments(
+            jrdResponseFileName,
+            rasRequestFileName,
+            additionalRoleTest // if additional role test...
+                ? HEARING_ROLES_ONLY_OUTPUT_TEMPLATE // hearing fallback needed on this additional role test
+                : null // else no fallback required
+        );
+
+        arguments = cloneListOfTestArgumentsForMultiRegion(
+            arguments,
+            List.of(REGION_02_MIDLANDS), // any single region
+            List.of(REGION_01_LONDON, REGION_05_SOUTH_EAST) // multi-regions
+        );
+
+        // Re-adjust all AdditionalRole tests back to use common HEARING_ROLES_ONLY_OUTPUT_TEMPLATE file as
+        // we don't need to use MultiRegion specific files for the fallback template as no regions are in use.
+        if (additionalRoleTest) {
+            arguments = arguments.stream()
+                .map(argument -> argument.cloneBuilder()
+                    .additionalRoleExpiredFallbackFileName(HEARING_ROLES_ONLY_OUTPUT_TEMPLATE)
+                    .build())
+                .toList();
+        }
+
+        return arguments;
+    }
+
+
+    private static List<DroolJudicialTestArguments> flagOffTestsPrivateLawWa19(
+        List<DroolJudicialTestArguments> inputArguments
+    ) {
+        String singleRegionFileNameSuffix = "singleRegion";
+        String multiRegionFileNameSuffix =
+            "multiRegion_" + String.join("_", List.of(REGION_01_LONDON, REGION_05_SOUTH_EAST));
+
+        List<DroolJudicialTestArgumentOverrides> testOverrides = new ArrayList<>();
+        FeatureFlagEnum flag = FeatureFlagEnum.PRIVATELAW_WA_1_9;
+
+        // no multi region when flag is off
+        testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
+            .overrideDescription("no_multi_region")
+            .findRasRequestFileNameWithoutBooking(
+                formatRasRequestFileNameWithSuffix(
+                    LEADERSHIP_JUDGE_OUTPUT_TEMPLATE,
+                    multiRegionFileNameSuffix
+                )
+            )
+            .overrideRasRequestFileNameWithoutBooking(
+                formatRasRequestFileNameWithSuffix(
+                    LEADERSHIP_JUDGE_OUTPUT_TEMPLATE,
+                    singleRegionFileNameSuffix
+                )
+            )
+            .overrideRasRequestFileNameWithBooking(
+                formatRasRequestFileNameWithSuffix(
+                    LEADERSHIP_JUDGE_OUTPUT_TEMPLATE,
+                    singleRegionFileNameSuffix
+                )
+            )
+            .overrideTurnOffFlags(List.of(flag))
+            .build()
+        );
+        testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
+            .overrideDescription("no_multi_region")
+            .findRasRequestFileNameWithoutBooking(
+                formatRasRequestFileNameWithSuffix(
+                    SALARIED_JUDGE_OUTPUT_TEMPLATE,
+                    multiRegionFileNameSuffix
+                )
+            )
+            .overrideRasRequestFileNameWithoutBooking(
+                formatRasRequestFileNameWithSuffix(
+                    SALARIED_JUDGE_OUTPUT_TEMPLATE,
+                    singleRegionFileNameSuffix
+                )
+            )
+            .overrideRasRequestFileNameWithBooking(
+                formatRasRequestFileNameWithSuffix(
+                    SALARIED_JUDGE_OUTPUT_TEMPLATE,
+                    singleRegionFileNameSuffix
+                )
+            )
+            .overrideTurnOffFlags(List.of(flag))
+            .build()
+        );
+        testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
+            .overrideDescription("no_multi_region")
+            .findRasRequestFileNameWithoutBooking(
+                formatRasRequestFileNameWithSuffix(
+                    SALARIED_CIRCUIT_JUDGE_OUTPUT_TEMPLATE,
+                    multiRegionFileNameSuffix
+                )
+            )
+            .overrideRasRequestFileNameWithoutBooking(
+                formatRasRequestFileNameWithSuffix(
+                    SALARIED_CIRCUIT_JUDGE_OUTPUT_TEMPLATE,
+                    singleRegionFileNameSuffix
+                )
+            )
+            .overrideRasRequestFileNameWithBooking(
+                formatRasRequestFileNameWithSuffix(
+                    SALARIED_CIRCUIT_JUDGE_OUTPUT_TEMPLATE,
+                    singleRegionFileNameSuffix
+                )
+            )
+            .overrideTurnOffFlags(List.of(flag))
+            .build()
+        );
+
+        // must use a catch-all override to run all unaffected tests with the flag off
+        testOverrides.add(generateOverrideFlagOffCatchAll(flag));
+
+        return overrideTestArguments(inputArguments, testOverrides);
     }
 
 }
