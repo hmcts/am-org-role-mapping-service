@@ -151,7 +151,30 @@
         "contractType": "Salaried",
         "primaryLocation": "123456",
         "jurisdiction" : "PRIVATELAW",
-        "region": "[[REGION_ID]]",
+        "region": "1",
+        "workTypes" : "hearing_work,decision_making_work,applications,routine_work"
+      },
+      "authorisations": [
+        "294"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName" : "fl401-judge",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Salaried",
+        "primaryLocation": "123456",
+        "jurisdiction" : "PRIVATELAW",
+        "region": "5",
         "workTypes" : "hearing_work,decision_making_work,applications,routine_work"
       },
       "authorisations": [
