@@ -48,7 +48,7 @@
       "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
       "roleType": "ORGANISATION",
       "roleName": "hearing-centre-admin",
-      "roleLabel": "Hearing Centre Admin",
+      "roleLabel": "Hearing Centre Administrator",
       "classification": "PUBLIC",
       "grantType": "STANDARD",
       "roleCategory": "ADMIN",
