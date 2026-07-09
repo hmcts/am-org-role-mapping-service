@@ -2,7 +2,9 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -37,6 +39,37 @@ public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile 
     private String staffAdmin;
     private List<String> skillCodes;
 
+    private static final Set<String> CONSENTED_SKILLS = new HashSet<>(Arrays.asList(
+            "ManageScannedDocuments",
+            "CheckingHWF",
+            "CheckingApplications",
+            "ProcessApprovedOrders",
+            "CheckRefusedOrder",
+            "CheckOrderResponse",
+            "ListforHearing",
+            "ClosingCases",
+            "ReviewingConsentApplications"
+    ));
+
+    private static final Set<String> CONTESTED_SKILLS = new HashSet<>(Arrays.asList(
+            "ProcessingGeneralApplicationsContested",
+            "ProcessingConsentApplicationsContested",
+            "CheckingHWFContested",
+            "CheckingApplicationsContested",
+            "IssuingApplicationsContested",
+            "ProgressingApplicationsContested",
+            "AmendingOrdersContested",
+            "GeneralQueriesContested",
+            "ClosingCasesContested",
+            "ManagingScannedDocsContested",
+            "ManagingHearingsContested",
+            "ProcessingOrdersContested",
+            "SendingOrdersContested",
+            "UploadingDraftOrdersContested",
+            "HandlingUrgentCasesContested",
+            "ReallocatingCasesContested"
+    ));
+
     @JsonIgnore
     public boolean hasValidJobTitle(JobTitle... jobTitles) {
         return Arrays.stream(jobTitles)
@@ -61,8 +94,22 @@ public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile 
 
     @JsonIgnore
     public boolean isContestedSkill() {
-        return skillCodes != null && skillCodes.stream()
-                .anyMatch(s -> s.matches("(^Contested_.*|.*:ABA2:.*Contested.*)"));
+        if (skillCodes == null || skillCodes.isEmpty()) {
+            return false;
+        }
+        return skillCodes.stream()
+                .anyMatch(skill -> CONTESTED_SKILLS.stream()
+                        .anyMatch(skill::contains));
+    }
+
+    @JsonIgnore
+    public boolean isConsentedSkill() {
+        if (skillCodes == null || skillCodes.isEmpty()) {
+            return false;
+        }
+        return skillCodes.stream()
+                .anyMatch(skill -> CONSENTED_SKILLS.stream()
+                        .anyMatch(skill::contains));
     }
 
 }
