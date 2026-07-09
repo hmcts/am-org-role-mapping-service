@@ -250,7 +250,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Team Leader + Task Supervisor (ABA5 PRL)] as in [S-008.09a__VerifyCaseworkerDetails],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForStaffRoleAssignments_RasV1],
-    And a successful call [to publish existing CRD user ids to endpoint] as in [PUSHMESSAGETOCRDPROFILEPROCESS_RasV1],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [PushMessageToCRDProfileProcess_RasV1],
     When a request is prepared with appropriate values,
     And the request [contains the actorId of the user just published who has CTSC Team Leader role + Task Supervisor],
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
