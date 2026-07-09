@@ -1,5 +1,5 @@
 @F-018 @FeatureToggle(EV:JUDICIAL_FTA_ENABLED=on)
-Feature: F-019 : Create Possessions Judicial Role Assignments
+Feature: F-018 : Create Possessions Judicial Role Assignments
 
   Background:
     Given an appropriate test context as detailed in the test data source
