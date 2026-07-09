@@ -59,4 +59,10 @@ public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile 
         return this.taskSupervisorFlag != null && this.taskSupervisorFlag.equals("Y");
     }
 
+    @JsonIgnore
+    public boolean isContestedSkill() {
+        return skillCodes != null && skillCodes.stream()
+                .anyMatch(s -> s.matches("(^Contested_.*|.*:ABA2:.*Contested.*)"));
+    }
+
 }
