@@ -43,7 +43,7 @@ then
                WorkType.CONTESTED_EVIDENCE,
                WorkType.CONTESTED_PRE_HEARING,
                WorkType.CONTESTED_POST_HEARING)));
-   } else {
+   } else if ($up.isConsentedSkill()) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                WorkType.HEARING_WORK,
@@ -91,7 +91,7 @@ then
                WorkType.CONTESTED_EVIDENCE,
                WorkType.CONTESTED_PRE_HEARING,
                WorkType.CONTESTED_POST_HEARING)));
-   } else {
+   } else if ($up.isConsentedSkill()) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                WorkType.HEARING_WORK,
@@ -156,7 +156,7 @@ then
    
    if ($up.isContestedSkill()) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
-   } else {
+   } else if ($up.isConsentedSkill()) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
    }
   insert(
@@ -190,7 +190,7 @@ then
    
    if ($up.isContestedSkill()) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
-   } else {
+   } else if ($up.isConsentedSkill()) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
    }
   insert(
@@ -225,7 +225,7 @@ then
    
    if ($up.isContestedSkill()) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
-   } else {
+   } else if ($up.isConsentedSkill()) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
    }
   insert(
