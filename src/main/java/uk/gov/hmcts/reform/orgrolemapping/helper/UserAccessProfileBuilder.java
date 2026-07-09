@@ -69,6 +69,7 @@ public class UserAccessProfileBuilder {
                 .serviceCode("BFA1")
                 .roleId("2")
                 .suspended(true)
+                .skillCodes(Arrays.asList("ManageScannedDocuments"))
                 .build();
     }
 
@@ -102,6 +103,7 @@ public class UserAccessProfileBuilder {
                 .serviceCode("AAA3")
                 .roleId("")
                 .suspended(true)
+                .skillCodes(Arrays.asList("CheckingApplications"))
                 .build();
     }
 
