@@ -91,7 +91,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
 
 
   @S-008.01a
@@ -106,7 +106,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
 
 
   @S-008.01b
@@ -121,7 +121,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
 
 
   @S-008.02
@@ -136,7 +136,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
 
 
   @S-008.02b
@@ -151,7 +151,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
 
 
   @S-008.03
@@ -166,7 +166,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
 
 
   @S-008.03a
@@ -181,7 +181,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
 
 
   @S-008.03b
@@ -196,7 +196,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
 
 
   @S-008.04
@@ -211,7 +211,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
 
 
   @S-008.04b
@@ -226,7 +226,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
 
 
   @S-008.09
@@ -241,7 +241,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
 
 
   @S-008.09a
@@ -256,7 +256,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
 
 
   @S-008.09b
@@ -271,7 +271,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
 
 
   @S-008.10
@@ -286,7 +286,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
 
 
   @S-008.10b
@@ -301,7 +301,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
 
 
   @S-008.18
@@ -316,4 +316,4 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And it is submitted to call the [Query Role Assignments] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete role assignments just created above] as in [DeleteDataForRoleAssignments].
+    And a successful call [to delete role assignments just created above] as in [DeleteDataForStaffRoleAssignments_RasV1].
