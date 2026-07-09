@@ -1,0 +1,82 @@
+{
+  "_guid_": "S-008.04__roleAssignmentResponse",
+
+  "roleAssignmentResponse": [
+    {
+      "__ordering__": "UNORDERED",
+      "__elementId__": "roleName"
+    },
+    {
+      "id": "[[ANYTHING_PRESENT]]",
+      "actorIdType": "IDAM",
+      "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+      "roleType": "ORGANISATION",
+      "roleName": "hmcts-admin",
+      "roleLabel": "HMCTS Admin",
+      "classification": "PRIVATE",
+      "grantType": "BASIC",
+      "roleCategory": "ADMIN",
+      "readOnly": true,
+      "created": "[[ANYTHING_PRESENT]]",
+      "attributes": {
+        "substantive": "N"
+      }
+    },
+    {
+      "id": "[[ANYTHING_PRESENT]]",
+      "actorIdType": "IDAM",
+      "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+      "roleType": "ORGANISATION",
+      "roleName": "hearing-centre-admin",
+      "roleLabel": "Hearing Centre Admin",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "ADMIN",
+      "readOnly": false,
+      "created": "[[ANYTHING_PRESENT]]",
+      "attributes": {
+        "substantive": "Y",
+        "primaryLocation": "[[ANYTHING_PRESENT]]",
+        "jurisdiction": "PRIVATELAW",
+        "region": "[[ANYTHING_PRESENT]]",
+        "workTypes": "routine_work,hearing_work,applications"
+      }
+    },
+    {
+      "id" : "[[ANYTHING_PRESENT]]",
+      "actorIdType" : "IDAM",
+      "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+      "roleType" : "ORGANISATION",
+      "roleName" : "hearing-viewer",
+      "roleLabel" : "Hearing Viewer",
+      "classification" : "PUBLIC",
+      "grantType" : "STANDARD",
+      "roleCategory" : "ADMIN",
+      "readOnly" : false,
+      "created" : "[[ANYTHING_PRESENT]]",
+      "attributes" : {
+        "substantive" : "N",
+        "primaryLocation" : "[[ANYTHING_PRESENT]]",
+        "jurisdiction" : "PRIVATELAW"
+      }
+    },
+    {
+      "id": "[[ANYTHING_PRESENT]]",
+      "actorIdType": "IDAM",
+      "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+      "roleType": "ORGANISATION",
+      "roleName": "hearing-manager",
+      "roleLabel": "Hearing Manager",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "ADMIN",
+      "readOnly": false,
+      "created": "[[ANYTHING_PRESENT]]",
+      "attributes": {
+        "substantive": "N",
+        "primaryLocation": "[[ANYTHING_PRESENT]]",
+        "jurisdiction": "PRIVATELAW"
+      }
+    }
+  ]
+}
