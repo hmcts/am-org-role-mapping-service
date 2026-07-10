@@ -51,6 +51,14 @@ then
                WorkType.APPLICATIONS,
                WorkType.REVIEW_CASE,
                WorkType.EVIDENCE)));
+   } else {
+       attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+               WorkType.HEARING_WORK,
+               WorkType.ROUTINE_WORK,
+               WorkType.DECISION_MAKING_WORK,
+               WorkType.APPLICATIONS,
+               WorkType.REVIEW_CASE,
+               WorkType.EVIDENCE)));
    }
   insert(
       RoleAssignment.builder()
@@ -92,6 +100,13 @@ then
                WorkType.CONTESTED_POST_HEARING)));
    } else if ($up.isConsentedSkill()) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
+       attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+               WorkType.HEARING_WORK,
+               WorkType.ROUTINE_WORK,
+               WorkType.APPLICATIONS,
+               WorkType.REVIEW_CASE,
+               WorkType.EVIDENCE)));
+   } else {
        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                WorkType.HEARING_WORK,
                WorkType.ROUTINE_WORK,

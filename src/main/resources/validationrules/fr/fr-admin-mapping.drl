@@ -83,6 +83,10 @@ then
                 WorkType.APPLICATIONS,
                 WorkType.REVIEW_CASE,
                 WorkType.EVIDENCE)));
+    } else {
+        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                WorkType.ROUTINE_WORK,
+                WorkType.REVIEW_CASE)));
     }
     
     insert(
@@ -133,6 +137,10 @@ then
                 WorkType.APPLICATIONS,
                 WorkType.REVIEW_CASE,
                 WorkType.EVIDENCE)));
+    } else {
+        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                WorkType.ROUTINE_WORK,
+                WorkType.REVIEW_CASE)));
     }
     
     insert(
