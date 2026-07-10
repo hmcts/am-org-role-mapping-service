@@ -38,24 +38,13 @@ then
    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
-   
-   if ($up.hasSkillMatching(ctscConsentedSkillPattern())) {
-       attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
-               WorkType.HEARING_WORK,
-               WorkType.ROUTINE_WORK,
-               WorkType.DECISION_MAKING_WORK,
-               WorkType.APPLICATIONS,
-               WorkType.REVIEW_CASE,
-               WorkType.EVIDENCE)));
-   } else {
-       attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
-               WorkType.HEARING_WORK,
-               WorkType.ROUTINE_WORK,
-               WorkType.DECISION_MAKING_WORK,
-               WorkType.APPLICATIONS,
-               WorkType.REVIEW_CASE,
-               WorkType.EVIDENCE)));
-   }
+   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+       WorkType.HEARING_WORK,
+       WorkType.ROUTINE_WORK,
+       WorkType.DECISION_MAKING_WORK,
+       WorkType.APPLICATIONS,
+       WorkType.REVIEW_CASE,
+       WorkType.EVIDENCE)));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -85,22 +74,12 @@ then
    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
-   
-   if ($up.hasSkillMatching(ctscConsentedSkillPattern())) {
-       attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
-               WorkType.HEARING_WORK,
-               WorkType.ROUTINE_WORK,
-               WorkType.APPLICATIONS,
-               WorkType.REVIEW_CASE,
-               WorkType.EVIDENCE)));
-   } else {
-       attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
-               WorkType.HEARING_WORK,
-               WorkType.ROUTINE_WORK,
-               WorkType.APPLICATIONS,
-               WorkType.REVIEW_CASE,
-               WorkType.EVIDENCE)));
-   }
+   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+       WorkType.HEARING_WORK,
+       WorkType.ROUTINE_WORK,
+       WorkType.APPLICATIONS,
+       WorkType.REVIEW_CASE,
+       WorkType.EVIDENCE)));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
