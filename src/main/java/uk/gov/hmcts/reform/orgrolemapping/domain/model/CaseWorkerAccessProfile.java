@@ -2,9 +2,8 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -39,36 +38,10 @@ public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile 
     private String staffAdmin;
     private List<String> skillCodes;
 
-    private static final Set<String> CONSENTED_SKILLS = new HashSet<>(Arrays.asList(
-            "ManageScannedDocuments",
-            "CheckingHWF",
-            "CheckingApplications",
-            "ProcessApprovedOrders",
-            "CheckRefusedOrder",
-            "CheckOrderResponse",
-            "ListforHearing",
-            "ClosingCases",
-            "ReviewingConsentApplications"
-    ));
-
-    private static final Set<String> CONTESTED_SKILLS = new HashSet<>(Arrays.asList(
-            "ProcessingGeneralApplicationsContested",
-            "ProcessingConsentApplicationsContested",
-            "CheckingHWFContested",
-            "CheckingApplicationsContested",
-            "IssuingApplicationsContested",
-            "ProgressingApplicationsContested",
-            "AmendingOrdersContested",
-            "GeneralQueriesContested",
-            "ClosingCasesContested",
-            "ManagingScannedDocsContested",
-            "ManagingHearingsContested",
-            "ProcessingOrdersContested",
-            "SendingOrdersContested",
-            "UploadingDraftOrdersContested",
-            "HandlingUrgentCasesContested",
-            "ReallocatingCasesContested"
-    ));
+    private static final Pattern CONTESTED_PATTERN =
+            Pattern.compile("^(SKILL:ABA2:).*(Contested)$");
+    private static final Pattern CONSENTED_PATTERN =
+            Pattern.compile("^(SKILL:ABA2:).*(?<!Contested)$");
 
     @JsonIgnore
     public boolean hasValidJobTitle(JobTitle... jobTitles) {
@@ -98,8 +71,7 @@ public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile 
             return false;
         }
         return skillCodes.stream()
-                .anyMatch(skill -> CONTESTED_SKILLS.stream()
-                        .anyMatch(skill::contains));
+                .anyMatch(skill -> CONTESTED_PATTERN.matcher(skill).matches());
     }
 
     @JsonIgnore
@@ -108,8 +80,7 @@ public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile 
             return false;
         }
         return skillCodes.stream()
-                .anyMatch(skill -> CONSENTED_SKILLS.stream()
-                        .anyMatch(skill::contains));
+                .anyMatch(skill -> CONSENTED_PATTERN.matcher(skill).matches());
     }
 
 }

@@ -58,8 +58,8 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
     private static final String WORK_TYPES_CONTESTED =
             "contested_hearing_work, contested_routine_work, contested_applications, "
                     + "contested_evidence, contested_pre_hearing, contested_post_hearing";
-    private static final List<String> CONSENTED_SKILL_CODE = List.of("CheckingApplications");
-    private static final List<String> CONTESTED_SKILL_CODE = List.of("CheckingApplicationsContested");
+    private static final List<String> CONSENTED_SKILL_CODE = List.of("SKILL:ABA2:CheckingApplications");
+    private static final List<String> CONTESTED_SKILL_CODE = List.of("SKILL:ABA2:CheckingApplicationsContested");
 
     private static final Map<String, String> STAFF_ROLE_WORK_TYPES = new HashMap<>();
 
