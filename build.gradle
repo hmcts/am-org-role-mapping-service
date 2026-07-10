@@ -6,7 +6,7 @@ plugins {
     id 'pmd'
     id 'jacoco'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.springframework.boot' version '3.5.15'
+    id 'org.springframework.boot' version '3.5.16'
     id 'info.solidsoft.pitest' version '1.15.0'
     id 'com.github.ben-manes.versions' version '0.53.0'
     id 'org.sonarqube' version '4.4.1.3373'
@@ -36,7 +36,7 @@ def versions = [
         rest_assured   : '5.5.7',
         cucumber       : '5.7.0',
         feign_jackson  : '13.9.3',
-        jacksondata    : '2.18.3',
+        jacksondata    : '2.18.9',
         testcontainers : '1.21.4',
         drools         : '10.2.0',
         log4JVersion   : '2.24.3',
@@ -340,7 +340,7 @@ dependencies {
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-oauth2-client')
     implementation(group: 'org.springframework.boot', name:'spring-boot-starter-oauth2-resource-server')
 
-    implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.12'
+    implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.13'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE'
     implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: versions.bouncycastle
     implementation group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: versions.bouncycastle
@@ -351,7 +351,7 @@ dependencies {
     implementation group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.4'
     implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '2.26.1'
 
-    implementation 'org.apache.httpcomponents.client5:httpclient5:5.6.1'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.6.2'
 
     // drools engine dependency
     implementation group: 'org.drools', name: 'drools-core', version: versions.drools
@@ -382,7 +382,7 @@ dependencies {
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.11.0'
     implementation group: 'com.google.guava', name: 'guava', version: '33.5.0-jre'
     implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.2.4'
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.11'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.12'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.8'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.2'
@@ -422,7 +422,7 @@ dependencies {
 
     testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
     testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-engine', version: versions.junitPlatform
-    testImplementation 'com.github.hmcts:befta-fw:9.2.6'
+    testImplementation 'com.github.hmcts:befta-fw:9.2.7'
 
     testImplementation group: 'io.cucumber', name: 'cucumber-java', version: versions.cucumber
     testImplementation group: 'io.cucumber', name: 'cucumber-junit', version: versions.cucumber
@@ -495,7 +495,7 @@ dependencyManagement {
         dependency("org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}")
         dependency("org.bouncycastle:bcpkix-jdk18on:${versions.bouncycastle}")
 
-        dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.55') {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.56') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-el'
             entry 'tomcat-embed-websocket'

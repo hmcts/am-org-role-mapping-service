@@ -1,15 +1,15 @@
 {
-  "_guid_": "S-001.09",
-  "title": "must successfully create org role mapping for CTSC team leader",
-  "_extends_": "F-001_Test_Data_Base",
+  "_guid_": "S-008.09",
+  "title": "must successfully create org role mapping for CTSC Team Leader",
+  "_extends_": "F-008_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published who has CTSC team leader role"
+    "contains the actorId of the user just published who has CTSC Team Leader role"
   ],
- "method": "GET",
+  "method": "GET",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
   "request": {
     "pathVariables": {
-      "actorId": "aa269e1a-495e-480f-82cc-4fb21994f65e"
+      "actorId": "08007162-5a32-4689-820b-1130ce0d4ff2"
     }
   },
   "expectedResponse": {
@@ -25,7 +25,22 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "hearing-manager",
+          "roleName": "hmcts-ctsc",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "CTSC",
+          "readOnly": true,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "specific-access-approver-ctsc",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "CTSC",
@@ -34,25 +49,8 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "IA"
-          }
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
-          "roleType": "ORGANISATION",
-          "roleName": "ctsc",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "CTSC",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "IA",
-            "workTypes" : "hearing_work, upper_tribunal, routine_work, stf_24w_hearing_work, stf_24w_upper_tribunal, stf_24w_routine_work, queries, queries_stf"
+            "jurisdiction": "PRIVATELAW",
+            "workTypes": "access_requests"
           }
         },
         {
@@ -69,8 +67,8 @@
           "attributes": {
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "IA",
-            "workTypes" : "hearing_work, upper_tribunal, routine_work, stf_24w_hearing_work, stf_24w_upper_tribunal, stf_24w_routine_work"
+            "jurisdiction": "PRIVATELAW",
+            "workTypes": "routine_work,hearing_work,applications"
           }
         },
         {
@@ -78,15 +76,34 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "hmcts-ctsc",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
+          "roleName": "ctsc",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
           "roleCategory": "CTSC",
-          "readOnly": true,
+          "readOnly": false,
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "substantive": "N",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]"
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PRIVATELAW",
+            "workTypes": "routine_work,hearing_work,applications"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "hearing-viewer",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "CTSC",
+          "readOnly" : false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "N",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "jurisdiction" : "PRIVATELAW"
           }
         },
         {
@@ -94,7 +111,7 @@
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
           "roleType": "ORGANISATION",
-          "roleName": "hearing-viewer",
+          "roleName": "hearing-manager",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "CTSC",
@@ -103,7 +120,7 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "IA"
+            "jurisdiction": "PRIVATELAW"
           }
         }
       ]
