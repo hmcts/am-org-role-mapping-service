@@ -21,6 +21,14 @@ import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
+function String ctscContestedSkillPattern() {
+    return "^(SKILL:ABA2:).*(Contested)$";
+}
+
+function String ctscConsentedSkillPattern() {
+    return "^(SKILL:ABA2:).*(?<!Contested)$";
+}
+
 /*
  * FR ctsc "ctsc-team-leader" Org role mapping.
  */
@@ -34,9 +42,9 @@ then
    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    
-   if ($up.hasSkillMatching("^(SKILL:ABA2:).*(Contested)$")) {
+    if ($up.hasSkillMatching(ctscContestedSkillPattern())) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
-   } else if ($up.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$")) {
+    } else if ($up.hasSkillMatching(ctscConsentedSkillPattern())) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                WorkType.HEARING_WORK,
@@ -83,9 +91,9 @@ then
    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    
-   if ($up.hasSkillMatching("^(SKILL:ABA2:).*(Contested)$")) {
+    if ($up.hasSkillMatching(ctscContestedSkillPattern())) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
-   } else if ($up.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$")) {
+    } else if ($up.hasSkillMatching(ctscConsentedSkillPattern())) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                WorkType.HEARING_WORK,
@@ -155,9 +163,9 @@ then
    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    
-   if ($up.hasSkillMatching("^(SKILL:ABA2:).*(Contested)$")) {
+    if ($up.hasSkillMatching(ctscContestedSkillPattern())) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
-   } else if ($up.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$")) {
+    } else if ($up.hasSkillMatching(ctscConsentedSkillPattern())) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
    }
   insert(
@@ -189,9 +197,9 @@ then
    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    
-   if ($up.hasSkillMatching("^(SKILL:ABA2:).*(Contested)$")) {
+    if ($up.hasSkillMatching(ctscContestedSkillPattern())) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
-   } else if ($up.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$")) {
+    } else if ($up.hasSkillMatching(ctscConsentedSkillPattern())) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
    }
   insert(
@@ -224,9 +232,9 @@ then
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.ACCESS_REQUESTS.getValue()));
    
-   if ($up.hasSkillMatching("^(SKILL:ABA2:).*(Contested)$")) {
+    if ($up.hasSkillMatching(ctscContestedSkillPattern())) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
-   } else if ($up.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$")) {
+    } else if ($up.hasSkillMatching(ctscConsentedSkillPattern())) {
        attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
    }
   insert(
