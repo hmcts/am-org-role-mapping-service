@@ -78,8 +78,11 @@ then
     } else if ($cap.isConsentedSkill()) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
         attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                WorkType.HEARING_WORK,
                 WorkType.ROUTINE_WORK,
-                WorkType.REVIEW_CASE)));
+                WorkType.APPLICATIONS,
+                WorkType.REVIEW_CASE,
+                WorkType.EVIDENCE)));
     }
     
     insert(
@@ -125,8 +128,11 @@ then
     } else if ($cap.isConsentedSkill()) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
         attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                WorkType.HEARING_WORK,
                 WorkType.ROUTINE_WORK,
-                WorkType.REVIEW_CASE)));
+                WorkType.APPLICATIONS,
+                WorkType.REVIEW_CASE,
+                WorkType.EVIDENCE)));
     }
     
     insert(
