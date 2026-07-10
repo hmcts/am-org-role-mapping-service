@@ -66,7 +66,7 @@ then
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     
-    if ($cap.isContestedSkill()) {
+    if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
         attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                 WorkType.CONTESTED_HEARING_WORK,
@@ -75,7 +75,7 @@ then
                 WorkType.CONTESTED_EVIDENCE,
                 WorkType.CONTESTED_PRE_HEARING,
                 WorkType.CONTESTED_POST_HEARING)));
-    } else if ($cap.isConsentedSkill()) {
+    } else if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
         attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                 WorkType.HEARING_WORK,
@@ -120,7 +120,7 @@ then
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     
-    if ($cap.isContestedSkill()) {
+    if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
         attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                 WorkType.CONTESTED_HEARING_WORK,
@@ -129,7 +129,7 @@ then
                 WorkType.CONTESTED_EVIDENCE,
                 WorkType.CONTESTED_PRE_HEARING,
                 WorkType.CONTESTED_POST_HEARING)));
-    } else if ($cap.isConsentedSkill()) {
+    } else if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
         attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                 WorkType.HEARING_WORK,
@@ -175,9 +175,9 @@ then
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     
-    if ($cap.isContestedSkill()) {
+    if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
-    } else if ($cap.isConsentedSkill()) {
+    } else if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
         attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                 WorkType.ROUTINE_WORK,
@@ -215,9 +215,9 @@ then
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     
-    if ($cap.isContestedSkill()) {
+    if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
-    } else if ($cap.isConsentedSkill()) {
+    } else if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
         attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                 WorkType.ROUTINE_WORK,
@@ -259,9 +259,9 @@ then
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     
-    if ($cap.isContestedSkill()) {
+    if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
-    } else if ($cap.isConsentedSkill()) {
+    } else if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
     }
     
@@ -300,9 +300,9 @@ then
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     
-    if ($cap.isContestedSkill()) {
+    if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
-    } else if ($cap.isConsentedSkill()) {
+    } else if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
     }
     
@@ -338,9 +338,9 @@ then
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     
-    if ($cap.isContestedSkill()) {
+    if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
-    } else if ($cap.isConsentedSkill()) {
+    } else if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
     }
     
@@ -376,9 +376,9 @@ then
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     
-    if ($cap.isContestedSkill()) {
+    if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
-    } else if ($cap.isConsentedSkill()) {
+    } else if ($cap.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$")) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
     }
     

@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -38,10 +37,13 @@ public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile 
     private String staffAdmin;
     private List<String> skillCodes;
 
-    private static final Pattern CONTESTED_PATTERN =
-            Pattern.compile("^(SKILL:ABA2:).*(Contested)$");
-    private static final Pattern CONSENTED_PATTERN =
-            Pattern.compile("^(SKILL:ABA2:).*(?<!Contested)$");
+    @JsonIgnore
+    public boolean hasSkillMatching(String regex) {
+        if (skillCodes == null || skillCodes.isEmpty()) {
+            return false;
+        }
+        return skillCodes.stream().anyMatch(skill -> skill.matches(regex));
+    }
 
     @JsonIgnore
     public boolean hasValidJobTitle(JobTitle... jobTitles) {
@@ -63,24 +65,6 @@ public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile 
     @JsonIgnore
     public boolean isTaskSupervisor() {
         return this.taskSupervisorFlag != null && this.taskSupervisorFlag.equals("Y");
-    }
-
-    @JsonIgnore
-    public boolean isContestedSkill() {
-        if (skillCodes == null || skillCodes.isEmpty()) {
-            return false;
-        }
-        return skillCodes.stream()
-                .anyMatch(skill -> CONTESTED_PATTERN.matcher(skill).matches());
-    }
-
-    @JsonIgnore
-    public boolean isConsentedSkill() {
-        if (skillCodes == null || skillCodes.isEmpty()) {
-            return false;
-        }
-        return skillCodes.stream()
-                .anyMatch(skill -> CONSENTED_PATTERN.matcher(skill).matches());
     }
 
 }
