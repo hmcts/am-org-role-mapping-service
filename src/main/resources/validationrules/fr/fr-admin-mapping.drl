@@ -179,6 +179,9 @@ then
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
     } else if ($cap.isConsentedSkill()) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
+        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                WorkType.ROUTINE_WORK,
+                WorkType.REVIEW_CASE)));
     }
     
     insert(
@@ -216,6 +219,9 @@ then
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyContested"));
     } else if ($cap.isConsentedSkill()) {
         attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
+        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                WorkType.ROUTINE_WORK,
+                WorkType.REVIEW_CASE)));
     }
     
     insert(
