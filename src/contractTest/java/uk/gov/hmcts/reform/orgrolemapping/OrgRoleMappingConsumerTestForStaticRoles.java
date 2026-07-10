@@ -8,19 +8,17 @@ import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import groovy.util.logging.Slf4j;
 import jakarta.annotation.PreDestroy;
-import org.apache.http.client.fluent.Executor;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
@@ -32,7 +30,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
@@ -44,27 +42,31 @@ public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
     @Autowired
     DataSource dataSource;
 
-    @MockitoBean
-    JRDTopicPublisher jrdPublisher;
-    @MockitoBean
-    CRDTopicPublisher crdPublisher;
+    @Bean
+    public JRDTopicPublisher jrdPublisher() {
+        return Mockito.mock(JRDTopicPublisher.class);
+    }
 
-    @MockitoBean
+    @Bean
+    public CRDTopicPublisher crdPublisher() {
+        return Mockito.mock(CRDTopicPublisher.class);
+    }
+
+    @Bean
     @Qualifier("crdPublisher")
-    ServiceBusSenderClient serviceBusSenderClient;
+    public ServiceBusSenderClient serviceBusSenderClient() {
+        return Mockito.mock(ServiceBusSenderClient.class);
+    }
 
-    @MockitoBean
+    @Bean
     @Qualifier("jrdPublisher")
-    ServiceBusSenderClient serviceBusSenderClientJrd;
+    public ServiceBusSenderClient serviceBusSenderClientJrd() {
+        return Mockito.mock(ServiceBusSenderClient.class);
+    }
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
         Thread.sleep(2000);
-    }
-
-    @AfterEach
-    void teardown() {
-        Executor.closeIdleConnections();
     }
 
     @NotNull

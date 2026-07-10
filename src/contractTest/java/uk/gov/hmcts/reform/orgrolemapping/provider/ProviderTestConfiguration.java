@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
@@ -34,42 +33,77 @@ import static org.mockito.Mockito.when;
 
 @TestConfiguration
 public class ProviderTestConfiguration {
-    @MockitoBean
-    CRDService crdService;
-    @MockitoBean
-    JRDService jrdService;
-    @MockitoBean
-    PrdService prdService;
-    @MockitoBean
-    UserRefreshQueueRepository userRefreshQueueRepository;
-    @MockitoBean
-    SecurityUtils securityUtils;
-    @MockitoBean
-    ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
-    @MockitoBean
-    private CacheManager cacheManager;
-    @MockitoBean
-    JudicialBookingService judicialBookingService;
-    @MockitoBean
-    RoleAssignmentService roleAssignmentService;
-    @MockitoBean
-    PersistenceService persistenceService;
-    @MockitoBean
-    ProcessEventTracker processEventTracker;
+
+
+    @Bean
+    public CRDService crdService() {
+        return Mockito.mock(CRDService.class);
+    }
+
+    @Bean
+    public JRDService jrdService() {
+        return Mockito.mock(JRDService.class);
+    }
+
+    @Bean
+    public PrdService prdService() {
+        return Mockito.mock(PrdService.class);
+    }
+
+    @Bean
+    public UserRefreshQueueRepository userRefreshQueueRepository() {
+        return Mockito.mock(UserRefreshQueueRepository.class);
+    }
+
+    @Bean
+    public SecurityUtils securityUtils() {
+        return Mockito.mock(SecurityUtils.class);
+    }
+
+    @Bean
+    public ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper() {
+        return Mockito.mock(ProfessionalRefreshOrchestrationHelper.class);
+    }
+
+    @Bean
+    public CacheManager cacheManager() {
+        return Mockito.mock(CacheManager.class);
+    }
+
+    @Bean
+    public JudicialBookingService judicialBookingService() {
+        return Mockito.mock(JudicialBookingService.class);
+    }
+
+    @Bean
+    public RoleAssignmentService roleAssignmentService() {
+        return Mockito.mock(RoleAssignmentService.class);
+    }
+
+    @Bean
+    public PersistenceService persistenceService() {
+        return Mockito.mock(PersistenceService.class);
+    }
+
+    @Bean
+    public ProcessEventTracker processEventTracker() {
+        return Mockito.mock(ProcessEventTracker.class);
+    }
+
 
     private KieServices kieServices = KieServices.Factory.get();
 
     @Bean
     @Primary
     public RetrieveDataService getRetrieveDataService() {
-        return new RetrieveDataService(getParseRequestService(), crdService, jrdService, true);
+        return new RetrieveDataService(getParseRequestService(), crdService(), jrdService(), true);
     }
 
     @Bean
     @Primary
     public RequestMappingService<UserAccessProfile> getRequestMappingService() {
-        return new RequestMappingService<>(persistenceService, getEnvironmentConfiguration(), roleAssignmentService,
-                getStatelessKieSession(), securityUtils);
+        return new RequestMappingService<>(persistenceService(), getEnvironmentConfiguration(), roleAssignmentService(),
+                getStatelessKieSession(), securityUtils());
     }
 
     @Bean
@@ -93,10 +127,10 @@ public class ProviderTestConfiguration {
                 getRetrieveDataService(),
                 getRequestMappingService(),
                 getParseRequestService(),
-                crdService,
-                persistenceService,
-                securityUtils,
-                judicialBookingService,
+                crdService(),
+                persistenceService(),
+                securityUtils(),
+                judicialBookingService(),
                 "1",
                 "descending",
                 "1",
@@ -109,17 +143,17 @@ public class ProviderTestConfiguration {
     @Primary
     public JudicialRefreshOrchestrator judicialRefreshOrchestrator() {
         return new JudicialRefreshOrchestrator(getRetrieveDataService(), getParseRequestService(),
-                judicialBookingService, getRequestMappingService());
+                judicialBookingService(), getRequestMappingService());
     }
 
     @Bean
     @Primary
     public ProfessionalRefreshOrchestrator professionalRefreshOrchestrator() {
         return new ProfessionalRefreshOrchestrator(
-            userRefreshQueueRepository,
-            prdService,
-            professionalRefreshOrchestrationHelper,
-            processEventTracker
+            userRefreshQueueRepository(),
+            prdService(),
+            professionalRefreshOrchestrationHelper(),
+            processEventTracker()
         );
     }
 
