@@ -71,8 +71,8 @@ then
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
-        WorkType.ROUTINE_WORK,
-        WorkType.REVIEW_CASE)));
+            WorkType.ROUTINE_WORK,
+            WorkType.REVIEW_CASE)));
     
     if ($cap.hasSkillMatching(adminConsentedSkillPattern())) {
         attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
@@ -115,8 +115,8 @@ then
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
-        WorkType.ROUTINE_WORK,
-        WorkType.REVIEW_CASE)));
+            WorkType.ROUTINE_WORK,
+            WorkType.REVIEW_CASE)));
     
     if ($cap.hasSkillMatching(adminConsentedSkillPattern())) {
         attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
