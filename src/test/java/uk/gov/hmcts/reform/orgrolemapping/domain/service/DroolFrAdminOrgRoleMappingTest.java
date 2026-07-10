@@ -523,53 +523,6 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
         "10,'ctsc,hmcts-ctsc,case-allocator',N,Y",
         "10,'ctsc,hmcts-ctsc,task-supervisor,case-allocator',Y,Y"
     })
-    void shouldReturnFrCtscMappingsForContestedSkills(String roleId,
-                                                       String expectedRolesStr,
-                                                       String taskSupervisorFlag,
-                                                       String caseAllocatorFlag) {
-        allProfiles.clear();
-
-        CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
-        cap.setServiceCode(Jurisdiction.FR.getServiceCodes().getFirst());
-        cap.setSuspended(false);
-        cap.setRoleId(roleId);
-        cap.setTaskSupervisorFlag(taskSupervisorFlag);
-        cap.setCaseAllocatorFlag(caseAllocatorFlag);
-        cap.setRegionId(REGION_ID);
-        cap.setSkillCodes(CONTESTED_SKILL_CODE);
-        allProfiles.add(cap);
-
-        List<RoleAssignment> roleAssignments =
-            buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction(FEATURE_FLAG_PREFIX, true));
-
-        String[] roleNames = expectedRolesStr.isBlank() ? new String[0] : expectedRolesStr.split(",");
-        assertEquals(roleNames.length, roleAssignments.size());
-
-        roleAssignments.forEach(r -> {
-            if (!RoleName.HMCTS_CTSC.equals(r.getRoleName())) {
-                assertNotNull(r.getAttributes().get(Attributes.Name.CASE_TYPE),
-                        "Expected caseType on " + r.getRoleName());
-                assertEquals("FinancialRemedyContested",
-                        r.getAttributes().get(Attributes.Name.CASE_TYPE).asText());
-            }
-            if (RoleName.CTSC.equals(r.getRoleName()) || RoleName.CTSC_TEAM_LEADER.equals(r.getRoleName())) {
-                assertFalse(r.getAttributes().containsKey(Attributes.Name.WORK_TYPES),
-                        r.getRoleName() + " should have no work types when contested");
-            }
-        });
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "9,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc',N,N",
-        "9,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc,task-supervisor',Y,N",
-        "9,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc,case-allocator',N,Y",
-        "9,'ctsc-team-leader,ctsc,hmcts-ctsc,specific-access-approver-ctsc,task-supervisor,case-allocator',Y,Y",
-        "10,'ctsc,hmcts-ctsc',N,N",
-        "10,'ctsc,hmcts-ctsc,task-supervisor',Y,N",
-        "10,'ctsc,hmcts-ctsc,case-allocator',N,Y",
-        "10,'ctsc,hmcts-ctsc,task-supervisor,case-allocator',Y,Y"
-    })
     void shouldReturnFrCtscMappings(String roleId,
                                     String expectedRoles,
                                     String taskSupervisorFlag,
