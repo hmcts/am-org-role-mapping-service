@@ -21,10 +21,6 @@ import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
-function String ctscContestedSkillPattern() {
-    return "^(SKILL:ABA2:).*(Contested)$";
-}
-
 function String ctscConsentedSkillPattern() {
     return "^(SKILL:ABA2:).*(?<!Contested)$";
 }
