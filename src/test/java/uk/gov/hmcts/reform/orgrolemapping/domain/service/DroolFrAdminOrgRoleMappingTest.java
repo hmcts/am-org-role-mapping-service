@@ -83,25 +83,25 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
     private static ExpectedRole standardAdminRole(String roleName, String workTypes) {
         return new ExpectedRole(roleName, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FinancialRemedyMVP2", workTypes);
+                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, null, workTypes);
     }
 
     private static ExpectedRole standardAdminRoleWithRegion(String roleName, String workTypes) {
         return new ExpectedRole(roleName, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FinancialRemedyMVP2", workTypes);
+                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, null, workTypes);
     }
 
     private static ExpectedRole taskSupervisor() {
         return new ExpectedRole(RoleName.TASK_SUPERVISOR, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FinancialRemedyMVP2", null);
+                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, null, null);
     }
 
     private static ExpectedRole caseAllocator() {
         return new ExpectedRole(RoleName.CASE_ALLOCATOR, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FinancialRemedyMVP2", null);
+                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, null, null);
     }
 
     private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER = List.of(
