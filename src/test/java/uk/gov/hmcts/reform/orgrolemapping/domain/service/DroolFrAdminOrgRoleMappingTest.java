@@ -162,10 +162,14 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
     // --- Consented skill expected roles ---
     private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER_CONSENTED = List.of(
             basicAdminRole(RoleName.HMCTS_ADMIN),
-            adminRoleWithCaseType(RoleName.HEARING_CENTRE_ADMIN, "FinancialRemedyMVP2", WORK_TYPES_CONSENTED_HEARING),
-            adminRoleWithCaseType(RoleName.HEARING_CENTRE_TEAM_LEADER, "FinancialRemedyMVP2", WORK_TYPES_CONSENTED_HEARING),
-            adminRoleWithCaseType(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN, "FinancialRemedyMVP2", WORK_TYPES_ACCESS_REQUESTS),
-            adminRoleWithCaseType(RoleName.SPECIFIC_ACCESS_APPROVER_LEGAL_OPS, "FinancialRemedyMVP2", WORK_TYPES_ACCESS_REQUESTS),
+            adminRoleWithCaseType(RoleName.HEARING_CENTRE_ADMIN, "FinancialRemedyMVP2",
+                WORK_TYPES_CONSENTED_HEARING),
+            adminRoleWithCaseType(RoleName.HEARING_CENTRE_TEAM_LEADER, "FinancialRemedyMVP2",
+                WORK_TYPES_CONSENTED_HEARING),
+            adminRoleWithCaseType(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN, "FinancialRemedyMVP2",
+                WORK_TYPES_ACCESS_REQUESTS),
+            adminRoleWithCaseType(RoleName.SPECIFIC_ACCESS_APPROVER_LEGAL_OPS, "FinancialRemedyMVP2",
+                WORK_TYPES_ACCESS_REQUESTS),
             taskSupervisorWithCaseType("FinancialRemedyMVP2"),
             caseAllocatorWithCaseType("FinancialRemedyMVP2")
     );
@@ -181,7 +185,8 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
             basicAdminRole(RoleName.HMCTS_ADMIN),
             adminRoleWithCaseType(RoleName.NBC, "FinancialRemedyMVP2", WORK_TYPES_HEARING),
             adminRoleWithCaseType(RoleName.NBC_TEAM_LEADER, "FinancialRemedyMVP2", WORK_TYPES_HEARING),
-            adminRoleWithCaseType(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN, "FinancialRemedyMVP2", WORK_TYPES_ACCESS_REQUESTS),
+            adminRoleWithCaseType(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN, "FinancialRemedyMVP2",
+                WORK_TYPES_ACCESS_REQUESTS),
             taskSupervisorWithCaseType("FinancialRemedyMVP2"),
             caseAllocatorWithCaseType("FinancialRemedyMVP2")
     );
@@ -194,16 +199,16 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
     );
 
     // --- Contested skill expected roles ---
-        private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER_CONTESTED =
+    private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER_CONTESTED =
             EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER;
 
-        private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_ADMIN_CONTESTED =
+    private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_ADMIN_CONTESTED =
             EXPECTED_ROLES_HEARING_CENTRE_ADMIN;
 
-        private static final List<ExpectedRole> EXPECTED_ROLES_NBC_TEAM_LEADER_CONTESTED =
+    private static final List<ExpectedRole> EXPECTED_ROLES_NBC_TEAM_LEADER_CONTESTED =
             EXPECTED_ROLES_NBC_TEAM_LEADER;
 
-        private static final List<ExpectedRole> EXPECTED_ROLES_NBC_ADMIN_CONTESTED =
+    private static final List<ExpectedRole> EXPECTED_ROLES_NBC_ADMIN_CONTESTED =
             EXPECTED_ROLES_NBC_ADMIN;
 
     static Stream<Arguments> frAdminScenarios() {
