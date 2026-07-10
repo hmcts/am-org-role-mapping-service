@@ -22,7 +22,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
- * FR admin "hmcts-admin" Org role mapping. TODO add regex for skill
+ * FR admin "hmcts-admin" Org role mapping.
  */
 rule "fr_hmcts_admin_v1"
 when
