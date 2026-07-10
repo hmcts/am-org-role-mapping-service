@@ -55,9 +55,6 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
             "hearing_work, routine_work, applications, review_case, evidence";
     private static final String WORK_TYPES_CONSENTED_HEARING =
             "hearing_work, routine_work, applications, review_case, evidence";
-    private static final String WORK_TYPES_CONTESTED =
-            "contested_hearing_work, contested_routine_work, contested_applications, "
-                    + "contested_evidence, contested_pre_hearing, contested_post_hearing";
     private static final List<String> CONSENTED_SKILL_CODE = List.of("SKILL:ABA2:CheckingApplications");
     private static final List<String> CONTESTED_SKILL_CODE = List.of("SKILL:ABA2:CheckingApplicationsContested");
 
@@ -197,38 +194,17 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
     );
 
     // --- Contested skill expected roles ---
-    private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER_CONTESTED = List.of(
-            basicAdminRole(RoleName.HMCTS_ADMIN),
-            adminRoleWithCaseType(RoleName.HEARING_CENTRE_ADMIN, "FinancialRemedyContested", WORK_TYPES_CONTESTED),
-            adminRoleWithCaseType(RoleName.HEARING_CENTRE_TEAM_LEADER, "FinancialRemedyContested", WORK_TYPES_CONTESTED),
-            adminRoleWithCaseType(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN, "FinancialRemedyContested", WORK_TYPES_ACCESS_REQUESTS),
-            adminRoleWithCaseType(RoleName.SPECIFIC_ACCESS_APPROVER_LEGAL_OPS, "FinancialRemedyContested", WORK_TYPES_ACCESS_REQUESTS),
-            taskSupervisorWithCaseType("FinancialRemedyContested"),
-            caseAllocatorWithCaseType("FinancialRemedyContested")
-    );
+        private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER_CONTESTED =
+            EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER;
 
-    private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_ADMIN_CONTESTED = List.of(
-            basicAdminRole(RoleName.HMCTS_ADMIN),
-            adminRoleWithCaseType(RoleName.HEARING_CENTRE_ADMIN, "FinancialRemedyContested", WORK_TYPES_CONTESTED),
-            taskSupervisorWithCaseType("FinancialRemedyContested"),
-            caseAllocatorWithCaseType("FinancialRemedyContested")
-    );
+        private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_ADMIN_CONTESTED =
+            EXPECTED_ROLES_HEARING_CENTRE_ADMIN;
 
-    private static final List<ExpectedRole> EXPECTED_ROLES_NBC_TEAM_LEADER_CONTESTED = List.of(
-            basicAdminRole(RoleName.HMCTS_ADMIN),
-            adminRoleWithCaseType(RoleName.NBC, "FinancialRemedyContested", null),
-            adminRoleWithCaseType(RoleName.NBC_TEAM_LEADER, "FinancialRemedyContested", null),
-            adminRoleWithCaseType(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN, "FinancialRemedyContested", WORK_TYPES_ACCESS_REQUESTS),
-            taskSupervisorWithCaseType("FinancialRemedyContested"),
-            caseAllocatorWithCaseType("FinancialRemedyContested")
-    );
+        private static final List<ExpectedRole> EXPECTED_ROLES_NBC_TEAM_LEADER_CONTESTED =
+            EXPECTED_ROLES_NBC_TEAM_LEADER;
 
-    private static final List<ExpectedRole> EXPECTED_ROLES_NBC_ADMIN_CONTESTED = List.of(
-            basicAdminRole(RoleName.HMCTS_ADMIN),
-            adminRoleWithCaseType(RoleName.NBC, "FinancialRemedyContested", null),
-            taskSupervisorWithCaseType("FinancialRemedyContested"),
-            caseAllocatorWithCaseType("FinancialRemedyContested")
-    );
+        private static final List<ExpectedRole> EXPECTED_ROLES_NBC_ADMIN_CONTESTED =
+            EXPECTED_ROLES_NBC_ADMIN;
 
     static Stream<Arguments> frAdminScenarios() {
         return Stream.of(
