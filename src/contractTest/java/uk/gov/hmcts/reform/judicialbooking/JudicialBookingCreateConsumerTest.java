@@ -27,14 +27,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Map;
 
 import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
 
 @ExtendWith(PactConsumerTestExt.class)
-@ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactTestFor(providerName = "am_judicialBooking_create", pactVersion = PactSpecVersion.V3)
 @PactFolder("pacts")
@@ -111,7 +109,7 @@ public class JudicialBookingCreateConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeCreateJudicialBooking")
+    @PactTestFor(pactMethod = "executeCreateJudicialBooking", pactVersion = PactSpecVersion.V3)
     void executeGetJrdProfilesListOfIds(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =

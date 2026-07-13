@@ -29,7 +29,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 
@@ -39,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 
 @ExtendWith(PactConsumerTestExt.class)
-@ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactTestFor(providerName = "am_judicialBooking_query", pactVersion = PactSpecVersion.V3)
 @PactFolder("pacts")
@@ -116,7 +114,7 @@ public class JudicialBookingQueryConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeQueryJudicialBooking")
+    @PactTestFor(pactMethod = "executeQueryJudicialBooking", pactVersion = PactSpecVersion.V3)
     void executeGetJrdProfilesListOfIds(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
