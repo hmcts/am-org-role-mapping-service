@@ -1,0 +1,39 @@
+{
+  "_guid_": "S-020.06b",
+  "title": "must successfully create org role mapping for NBC Team Leader + Case Allocator (Financial Remedy)",
+  "_extends_": "S-020.06",
+  "specs": [
+    "contains the actorId of the user just published who has NBC Team Leader + Case Allocator (Financial Remedy) role"
+  ],
+  "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "request": {
+    "pathVariables": {
+      "actorId": "f6048e37-b38e-4f35-9d32-b79b21d6bcb1"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "DIVORCE"
+          }
+        }
+      ]
+    }
+  }
+}
