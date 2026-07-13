@@ -21,6 +21,10 @@ import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
+function String ctscConsentedSkillPattern() {
+    return "^(SKILL:ABA2:).*(?<!Contested)$";
+}
+
 /*
  * FR ctsc "ctsc-team-leader" Org role mapping.
  */
@@ -33,6 +37,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                                                             WorkType.HEARING_WORK,
                                                             WorkType.ROUTINE_WORK,
@@ -68,6 +73,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                                                             WorkType.HEARING_WORK,
                                                             WorkType.ROUTINE_WORK,
@@ -127,6 +133,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -155,6 +162,7 @@ then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+   attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -184,6 +192,7 @@ then
    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.ACCESS_REQUESTS.getValue()));
+   attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)

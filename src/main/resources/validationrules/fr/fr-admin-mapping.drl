@@ -21,6 +21,10 @@ import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
+function String adminConsentedSkillPattern() {
+    return "^(SKILL:ABA2:).*(?<!Contested)$";
+}
+
 /*
  * FR admin "hmcts-admin" Org role mapping.
  */
@@ -65,9 +69,20 @@ then
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
             WorkType.ROUTINE_WORK,
             WorkType.REVIEW_CASE)));
+    
+    if ($cap.hasSkillMatching(adminConsentedSkillPattern())) {
+        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                WorkType.HEARING_WORK,
+                WorkType.ROUTINE_WORK,
+                WorkType.APPLICATIONS,
+                WorkType.REVIEW_CASE,
+                WorkType.EVIDENCE)));
+    }
+    
     insert(
         RoleAssignment.builder()
             .actorIdType(ActorIdType.IDAM)
@@ -98,9 +113,20 @@ then
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
             WorkType.ROUTINE_WORK,
             WorkType.REVIEW_CASE)));
+    
+    if ($cap.hasSkillMatching(adminConsentedSkillPattern())) {
+        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                WorkType.HEARING_WORK,
+                WorkType.ROUTINE_WORK,
+                WorkType.APPLICATIONS,
+                WorkType.REVIEW_CASE,
+                WorkType.EVIDENCE)));
+    }
+    
     insert(
         RoleAssignment.builder()
             .actorIdType(ActorIdType.IDAM)
@@ -132,6 +158,14 @@ then
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
+    
+    if ($cap.hasSkillMatching(adminConsentedSkillPattern())) {
+        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                WorkType.ROUTINE_WORK,
+                WorkType.REVIEW_CASE)));
+    }
+    
     insert(
         RoleAssignment.builder()
             .actorIdType(ActorIdType.IDAM)
@@ -162,6 +196,14 @@ then
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
+    
+    if ($cap.hasSkillMatching(adminConsentedSkillPattern())) {
+        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                WorkType.ROUTINE_WORK,
+                WorkType.REVIEW_CASE)));
+    }
+    
     insert(
         RoleAssignment.builder()
             .actorIdType(ActorIdType.IDAM)
@@ -196,6 +238,8 @@ then
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
+    
     insert(
         RoleAssignment.builder()
             .actorIdType(ActorIdType.IDAM)
@@ -230,6 +274,8 @@ then
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
+    
     insert(
         RoleAssignment.builder()
             .actorIdType(ActorIdType.IDAM)
@@ -261,6 +307,8 @@ then
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
+    
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.ACCESS_REQUESTS.getValue()));
     insert(
         RoleAssignment.builder()
@@ -292,6 +340,8 @@ then
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
+    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
+    
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.ACCESS_REQUESTS.getValue()));
     insert(
         RoleAssignment.builder()
