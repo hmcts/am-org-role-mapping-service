@@ -1,10 +1,10 @@
 {
   "_guid_": "S-021.03",
-  "title": "must successfully create judicial role mapping for any District Judge Salaried appointment in Financial Remedy",
+  "title": "must successfully create judicial role mapping for any Generic Leadership Judge appointment in Financial Remedy",
   "_extends_": "F-021_Test_Data_Base",
 
   "specs": [
-    "contains the actorId of the user just published who has any District Judge Salaried appointment in Financial Remedy"
+    "contains the actorId of the user just published who has any Generic Leadership Judge appointment in Financial Remedy"
   ],
 
   "method": "POST",
@@ -15,6 +15,9 @@
       "sort": "roleName",
       "direction": "ASC",
       "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
+    },
+    "queryParams": {
+      "includeLabels": "true"
     },
     "body": {
       "queryRequests":[
@@ -48,6 +51,7 @@
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "case-allocator",
+          "roleLabel": "Case Allocator",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
@@ -70,6 +74,7 @@
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-judiciary",
+          "roleLabel": "HMCTS Judiciary",
           "classification": "PRIVATE",
           "grantType": "BASIC",
           "roleCategory": "JUDICIAL",
@@ -88,6 +93,7 @@
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "judge",
+          "roleLabel": "Judge",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
@@ -111,6 +117,7 @@
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "leadership-judge",
+          "roleLabel": "Leadership Judge",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
@@ -133,6 +140,7 @@
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "specific-access-approver-judiciary",
+          "roleLabel": "Specific Access Approver Judiciary",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
@@ -156,6 +164,7 @@
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "task-supervisor",
+          "roleLabel": "Task Supervisor",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",

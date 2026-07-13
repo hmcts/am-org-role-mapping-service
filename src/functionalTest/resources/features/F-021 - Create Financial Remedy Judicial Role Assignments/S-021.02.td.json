@@ -1,10 +1,10 @@
 {
   "_guid_": "S-021.02",
-  "title": "must successfully create judicial role mapping for any Generic Leadership Judge appointment in Financial Remedy",
+  "title": "must successfully create judicial role mapping for any Generic Salaried Judge appointment in Financial Remedy",
   "_extends_": "F-021_Test_Data_Base",
 
   "specs": [
-    "contains the actorId of the user just published who has any Generic Leadership Judge appointment in Financial Remedy"
+    "contains the actorId of the user just published who has any Generic Salaried Judge appointment in Financial Remedy"
   ],
 
   "method": "POST",
@@ -16,10 +16,13 @@
       "direction": "ASC",
       "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
     },
+    "queryParams": {
+      "includeLabels": "true"
+    },
     "body": {
       "queryRequests":[
         {
-          "actorId": [ "d4a9f8c1-6b73-4e2d-8ac5-1f7e93b6d042" ],
+          "actorId": [ "9b2f3e71-c8a6-4cdb-95ef-75f3a8d6410b" ],
           "roleName": [ "hmcts-judiciary" ],
           "attributes": {
             "contractType": [ "Salaried" ]
@@ -43,33 +46,12 @@
           "__elementId__": "roleName,attributes.jurisdiction"
         },
         {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "case-allocator",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "JUDICIAL",
-          "readOnly": false,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N",
-            "contractType": "Salaried",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "region": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "DIVORCE"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
           "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-judiciary",
+          "roleLabel": "HMCTS Judiciary",
           "classification": "PRIVATE",
           "grantType": "BASIC",
           "roleCategory": "JUDICIAL",
@@ -88,6 +70,7 @@
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "judge",
+          "roleLabel": "Judge",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
@@ -102,73 +85,6 @@
             "region": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
             "workTypes": "decision_making_work"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "leadership-judge",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "JUDICIAL",
-          "readOnly": false,
-          "beginTime": "[[ANYTHING_PRESENT]]",
-          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "Y",
-            "contractType": "Salaried",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "region": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "DIVORCE"
-          },
-          "authorisations": "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "specific-access-approver-judiciary",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "JUDICIAL",
-          "readOnly": false,
-          "beginTime": "[[ANYTHING_PRESENT]]",
-          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N",
-            "contractType": "Salaried",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "region": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "DIVORCE",
-            "workTypes": "access_requests"
-          },
-          "authorisations": "[[ANYTHING_PRESENT]]"
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
-          "roleType": "ORGANISATION",
-          "roleName": "task-supervisor",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "JUDICIAL",
-          "readOnly": false,
-          "beginTime" : "[[ANYTHING_PRESENT]]",
-          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N",
-            "contractType": "Salaried",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "region": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "DIVORCE"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }
