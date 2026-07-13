@@ -51,6 +51,7 @@ public class ProviderTestConfiguration {
     }
 
     @Bean
+    @Primary
     public UserRefreshQueueRepository userRefreshQueueRepository() {
         return Mockito.mock(UserRefreshQueueRepository.class);
     }

@@ -19,22 +19,22 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 public class RefDataConsumerApplication {
 
     @Bean
-    IdamClient idamClient() {
+    public IdamClient idamClient() {
         return Mockito.mock(IdamClient.class);
     }
 
     @Bean
-    SecurityUtils securityUtils() {
+    public SecurityUtils securityUtils() {
         return Mockito.mock(SecurityUtils.class);
     }
 
     @Bean
-    IdamRepository idamRepository() {
+    public IdamRepository idamRepository() {
         return Mockito.mock(IdamRepository.class);
     }
 
     @Bean
-    OIdcAdminConfiguration oidcAdminConfiguration() {
+    public OIdcAdminConfiguration oidcAdminConfiguration() {
         return Mockito.mock(OIdcAdminConfiguration.class);
     }
 }
