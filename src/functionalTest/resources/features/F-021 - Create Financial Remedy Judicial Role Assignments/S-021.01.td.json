@@ -16,6 +16,9 @@
       "direction": "ASC",
       "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
     },
+    "queryParams": {
+      "includeLabels": "true"
+    },
     "body": {
       "queryRequests":[
         {
@@ -48,6 +51,7 @@
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "fee-paid-judge",
+          "roleLabel": "Fee Paid Judge",
           "classification": "PUBLIC",
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
@@ -70,6 +74,7 @@
           "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
           "roleType": "ORGANISATION",
           "roleName": "hmcts-judiciary",
+          "roleLabel": "HMCTS Judiciary",
           "classification": "PRIVATE",
           "grantType": "BASIC",
           "roleCategory": "JUDICIAL",
