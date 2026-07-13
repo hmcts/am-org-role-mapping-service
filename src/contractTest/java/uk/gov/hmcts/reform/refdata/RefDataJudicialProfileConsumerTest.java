@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.refdata;
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
-import au.com.dius.pact.core.model.annotations.PactDirectory;
+import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
@@ -23,9 +23,7 @@ import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import org.apache.http.client.fluent.Executor;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -36,12 +34,12 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 import java.util.Map;
 import java.util.Set;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactDirectory("pacts")
+@PactFolder("pacts")
 @PactTestFor(providerName = "referenceData_judicial", port = "8991")
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
@@ -59,11 +57,6 @@ public class RefDataJudicialProfileConsumerTest {
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
         Thread.sleep(2000);
-    }
-
-    @After
-    void teardown() {
-        Executor.closeIdleConnections();
     }
 
     @Pact(provider = "referenceData_judicial", consumer = "accessMgmt_orgRoleMapping")

@@ -43,6 +43,7 @@ public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
     public JRDTopicPublisher jrdPublisher() {
         return Mockito.mock(JRDTopicPublisher.class);
     }
+    
     @Bean
     public CRDTopicPublisher crdPublisher() {
         return Mockito.mock(CRDTopicPublisher.class);

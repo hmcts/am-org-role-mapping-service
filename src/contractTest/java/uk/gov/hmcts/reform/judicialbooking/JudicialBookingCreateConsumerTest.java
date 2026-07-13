@@ -8,7 +8,7 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import au.com.dius.pact.core.model.annotations.PactDirectory;
+import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.google.common.collect.Maps;
 import io.restassured.http.ContentType;
 import jakarta.validation.constraints.NotNull;
@@ -31,13 +31,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Map;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactTestFor(providerName = "am_judicialBooking_create", pactVersion = PactSpecVersion.V3)
-@PactDirectory("pacts")
+@PactFolder("pacts")
 @ContextConfiguration(classes = {JudicialBookingConsumerApplication.class})
 @TestPropertySource(properties = {"feign.client.config.jbsClient.url=http://localhost:4097"})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
