@@ -22,6 +22,8 @@ public enum WorkType {
     POST_HEARING("post_hearing"),
     PRE_HEARING("pre_hearing"),
     PRIORITY("priority"),
+    QUERIES("queries"),
+    QUERIES_STF("queries_stf"),
     QUERY_WORK("query_work"),
     REVIEW_CASE("review_case"),
     ROUTINE_WORK("routine_work"),
