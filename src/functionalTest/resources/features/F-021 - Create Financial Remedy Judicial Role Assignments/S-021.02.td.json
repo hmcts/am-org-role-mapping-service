@@ -19,7 +19,7 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": [ "p26eb06c-6e1f-4485-923c-313063a32a60" ],
+          "actorId": [ "d4a9f8c1-6b73-4e2d-8ac5-1f7e93b6d042" ],
           "roleName": [ "hmcts-judiciary" ],
           "attributes": {
             "contractType": [ "Salaried" ]

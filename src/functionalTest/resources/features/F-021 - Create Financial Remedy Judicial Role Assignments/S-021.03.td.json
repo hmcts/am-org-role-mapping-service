@@ -1,10 +1,10 @@
 {
   "_guid_": "S-021.03",
-  "title": "must successfully create judicial role mapping for any Generic Salaried appointment in Financial Remedy",
+  "title": "must successfully create judicial role mapping for any District Judge Salaried appointment in Financial Remedy",
   "_extends_": "F-021_Test_Data_Base",
 
   "specs": [
-    "contains the actorId of the user just published who has any Generic Salaried appointment in Financial Remedy"
+    "contains the actorId of the user just published who has any District Judge Salaried appointment in Financial Remedy"
   ],
 
   "method": "POST",
@@ -41,6 +41,28 @@
         {
           "__ordering__": "UNORDERED",
           "__elementId__": "roleName,attributes.jurisdiction"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "contractType": "Salaried",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "region": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "DIVORCE"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
@@ -80,6 +102,73 @@
             "region": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
             "workTypes": "decision_making_work"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "leadership-judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "contractType": "Salaried",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "region": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "DIVORCE"
+          },
+          "authorisations": "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "specific-access-approver-judiciary",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "contractType": "Salaried",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "region": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "DIVORCE",
+            "workTypes": "access_requests"
+          },
+          "authorisations": "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "contractType": "Salaried",
+            "primaryLocation" : "[[ANYTHING_PRESENT]]",
+            "region": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "DIVORCE"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }
