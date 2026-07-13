@@ -29,4 +29,8 @@
         <cve>CVE-2026-54399</cve>
         <cve>CVE-2026-54428</cve>
     </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1322 Jakarta Mail</notes>
+        <cve>CVE-2025-7962</cve>
+    </suppress>
 </suppressions>
