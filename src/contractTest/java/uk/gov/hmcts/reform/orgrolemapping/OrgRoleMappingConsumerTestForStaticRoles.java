@@ -4,7 +4,6 @@ import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.annotations.PactFolder;
-import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import groovy.util.logging.Slf4j;
 import jakarta.annotation.PreDestroy;
@@ -12,15 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -38,31 +32,6 @@ import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 @PactTestFor(providerName = "am_roleAssignment_getRoles")
 @PactFolder("pacts")
 public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
-
-    @Autowired
-    DataSource dataSource;
-
-    @Bean
-    public JRDTopicPublisher jrdPublisher() {
-        return Mockito.mock(JRDTopicPublisher.class);
-    }
-
-    @Bean
-    public CRDTopicPublisher crdPublisher() {
-        return Mockito.mock(CRDTopicPublisher.class);
-    }
-
-    @Bean
-    @Qualifier("crdPublisher")
-    public ServiceBusSenderClient serviceBusSenderClient() {
-        return Mockito.mock(ServiceBusSenderClient.class);
-    }
-
-    @Bean
-    @Qualifier("jrdPublisher")
-    public ServiceBusSenderClient serviceBusSenderClientJrd() {
-        return Mockito.mock(ServiceBusSenderClient.class);
-    }
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {

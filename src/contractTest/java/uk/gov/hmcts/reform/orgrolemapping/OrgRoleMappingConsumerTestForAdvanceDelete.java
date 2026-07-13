@@ -8,7 +8,6 @@ import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
-import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
 import org.json.JSONException;
@@ -16,14 +15,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
-import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -37,28 +31,6 @@ public class OrgRoleMappingConsumerTestForAdvanceDelete  extends BaseTestContrac
     public static final String SERVICE = "application/vnd.uk.gov.hmcts.role-assignment-service";
     public static final String DELETE_ASSIGNMENTS = SERVICE
             + ".post-assignments-delete-request+json;charset=UTF-8;version=1.0";
-
-    @Bean
-    public JRDTopicPublisher jrdPublisher() {
-        return Mockito.mock(JRDTopicPublisher.class);
-    }
-
-    @Bean
-    public CRDTopicPublisher crdPublisher() {
-        return Mockito.mock(CRDTopicPublisher.class);
-    }
-
-    @Bean
-    @Qualifier("crdPublisher")
-    public ServiceBusSenderClient serviceBusSenderClient() {
-        return Mockito.mock(ServiceBusSenderClient.class);
-    }
-
-    @Bean
-    @Qualifier("jrdPublisher")
-    public ServiceBusSenderClient serviceBusSenderClientJrd() {
-        return Mockito.mock(ServiceBusSenderClient.class);
-    }
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
