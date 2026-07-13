@@ -1,20 +1,28 @@
 package uk.gov.hmcts.reform.orgrolemapping;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.mockito.Mockito;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.lang.NonNull;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTest;
+import uk.gov.hmcts.reform.orgrolemapping.controller.RefreshController;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 
 @ContextConfiguration(initializers = {BaseTestContract.WireMockServerInitializer.class})
 @ActiveProfiles("ctest")
 public abstract class BaseTestContract extends BaseTest {
+
+    @Bean
+    public RefreshController refreshController() {
+        return Mockito.mock(RefreshController.class);
+    }
 
     public static class WireMockServerInitializer
             implements ApplicationContextInitializer<ConfigurableApplicationContext> {
