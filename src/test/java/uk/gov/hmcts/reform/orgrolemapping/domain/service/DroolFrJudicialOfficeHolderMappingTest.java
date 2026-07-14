@@ -236,7 +236,7 @@ class DroolFrJudicialOfficeHolderMappingTest extends DroolBase {
                         .roles(List.of(role.getName()))
                         .regionId(region)
                         .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
-                        .ticketCodes(Jurisdiction.DIVORCE.getServiceCodes())
+                        .ticketCodes(Jurisdiction.FR.getServiceCodes())
                         .beginTime(ACCESS_PROFILE_BEGIN_TIME)
                         .endTime(ACCESS_PROFILE_END_TIME)
                         .additionalRoles(List.of(RoleV2.builder()
@@ -247,7 +247,7 @@ class DroolFrJudicialOfficeHolderMappingTest extends DroolBase {
                                 .build()))
                         .authorisations(List.of(
                                 Authorisation.builder()
-                                        .serviceCodes(Jurisdiction.DIVORCE.getServiceCodes())
+                                        .serviceCodes(Jurisdiction.FR.getServiceCodes())
                                         .jurisdiction("DIVORCE")
                                         .endDate(LocalDateTime.now().plusYears(1L))
                                         .build()
