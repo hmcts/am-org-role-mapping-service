@@ -37,4 +37,9 @@ public class RefDataConsumerApplication {
     public OIdcAdminConfiguration oidcAdminConfiguration() {
         return Mockito.mock(OIdcAdminConfiguration.class);
     }
+
+    @Bean
+    public CRDFeignClient crdFeignClient() {
+        Mockito.mock(CRDFeignClient.class);
+    }
 }

@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +56,7 @@ public class RefDataCaseworkerConsumerTest {
     @MockitoBean
     private IdamApi idamApi;
 
-    @MockitoBean
+    @Autowired
     CRDFeignClient crdFeignClient;
 
     @BeforeEach
