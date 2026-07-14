@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.refdata;
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
+import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.http.ContentType;
@@ -40,7 +41,7 @@ import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
-@PactTestFor(providerName = "referenceData_judicial", port = "8991")
+@PactTestFor(providerName = "referenceData_judicial", port = "8991", pactVersion = PactSpecVersion.V3)
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
@@ -78,7 +79,7 @@ public class RefDataJudicialProfileConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "getJrdProfilesListOfIds")
+    @PactTestFor(pactMethod = "getJrdProfilesListOfIds", pactVersion = PactSpecVersion.V3)
     void executeGetJrdProfilesListOfIds(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
@@ -116,7 +117,7 @@ public class RefDataJudicialProfileConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "getJrdProfilesServiceName")
+    @PactTestFor(pactMethod = "getJrdProfilesServiceName", pactVersion = PactSpecVersion.V3)
     void executeGetJrdProfilesServiceName(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =

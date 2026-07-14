@@ -5,6 +5,7 @@ import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
+import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
@@ -39,7 +40,7 @@ import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
-@PactTestFor(providerName = "referenceData_judicialv2", port = "8991")
+@PactTestFor(providerName = "referenceData_judicialv2", port = "8991", pactVersion = PactSpecVersion.V3)
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
@@ -77,7 +78,7 @@ public class RefDataJudicialProfileConsumerTestV2 {
     }
 
     @Test
-    @PactTestFor(pactMethod = "getJrdProfilesListOfIds")
+    @PactTestFor(pactMethod = "getJrdProfilesListOfIds", pactVersion = PactSpecVersion.V3)
     void executeGetJrdProfilesListOfIds(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
@@ -115,7 +116,7 @@ public class RefDataJudicialProfileConsumerTestV2 {
     }
 
     @Test
-    @PactTestFor(pactMethod = "getJrdProfilesServiceName")
+    @PactTestFor(pactMethod = "getJrdProfilesServiceName", pactVersion = PactSpecVersion.V3)
     void executeGetJrdProfilesServiceName(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =

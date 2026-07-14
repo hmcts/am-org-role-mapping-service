@@ -4,6 +4,7 @@ import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
+import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
@@ -35,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
-@PactTestFor(providerName = "referenceData_organisationalInternal", port = "8090")
+@PactTestFor(providerName = "referenceData_organisationalInternal", port = "8090", pactVersion = PactSpecVersion.V3)
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
@@ -82,7 +83,7 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
 
     @Disabled
     @Test
-    @PactTestFor(pactMethod = "getOrganisationsByProfileIdsWithPageSize")
+    @PactTestFor(pactMethod = "getOrganisationsByProfileIdsWithPageSize", pactVersion = PactSpecVersion.V3)
     public void verifyGetOrganisationsByProfileIdsWithPageSize() {
         ResponseEntity<OrganisationByProfileIdsResponse> response = prdFeignClient
                 .getOrganisationsByProfileIds(PAGE_SIZE, null, new OrganisationByProfileIdsRequest(
@@ -118,7 +119,8 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
 
     @Disabled
     @Test
-    @PactTestFor(pactMethod = "getOrganisationsByProfileIdsWithPageSizeAndSearchAfter")
+    @PactTestFor(pactMethod = "getOrganisationsByProfileIdsWithPageSizeAndSearchAfter",
+            pactVersion = PactSpecVersion.V3)
     public void verifyGetOrganisationsByProfileIdsWithPageSizeAndSearchAfter() {
         ResponseEntity<OrganisationByProfileIdsResponse> response = prdFeignClient
                 .getOrganisationsByProfileIds(PAGE_SIZE, SEARCH_AFTER, new OrganisationByProfileIdsRequest(
@@ -150,7 +152,7 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
     //@TODO temp disabled during PR build - remove at master
     @Disabled
     @Test
-    @PactTestFor(pactMethod = "retrieveOrganisations")
+    @PactTestFor(pactMethod = "retrieveOrganisations", pactVersion = PactSpecVersion.V3)
     public void verifyRetrieveOrganisations() {
         ResponseEntity<OrganisationsResponse> response = prdFeignClient
                 .retrieveOrganisations(null, LAST_UPDATED_SINCE, null, 1, PAGE_SIZE);
