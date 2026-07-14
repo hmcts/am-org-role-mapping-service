@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,8 +47,11 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCase
 @PactFolder("pacts")
 @PactTestFor(providerName = "referenceData_caseworkerRefUsers", port = "8991", pactVersion = PactSpecVersion.V3)
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
-@TestPropertySource(properties = {"feign.client.config.crdclient.url=http://localhost:8991",
-    "feign.client.config.prdClient.url=http://localhost:8090"})
+@TestPropertySource(properties = {
+        "feign.client.config.crdclient.url=http://localhost:8991",
+        "feign.client.config.prdClient.url=http://localhost:8090"
+})
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class RefDataCaseworkerConsumerTest {
 
     private static final String CRD_GET_USERS_BY_SERVICE = "/refdata/internal/staff/usersByServiceName";
