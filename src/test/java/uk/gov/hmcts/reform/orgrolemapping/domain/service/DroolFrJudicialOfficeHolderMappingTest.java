@@ -88,7 +88,8 @@ class DroolFrJudicialOfficeHolderMappingTest extends DroolBase {
                         LegacyAdditionalRole.ANY_OTHER_ROLE),
                 Arguments.of(LegacyAppointment.DISTRICT_JUDGE,
                         LegacyAdditionalRole.ANY_OTHER_ROLE),
-                Arguments.of(Appointment.SENIOR_CIRCUIT_JUDGE,
+                // Additional Roles
+                Arguments.of(LegacyAppointment.ANY_OTHER_APPOINTMENT,
                     AdditionalRole.LEAD_FINANCIAL_REMEDY_JUDGE)
         );
     }
