@@ -82,10 +82,22 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
                 JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FinancialRemedyMVP2", null);
     }
 
+    private static ExpectedRole taskSupervisor(RoleCategory roleCategory, String primaryLocation, String region) {
+        return new ExpectedRole(RoleName.TASK_SUPERVISOR, roleCategory,
+                Classification.PUBLIC, GrantType.STANDARD, false,
+                JURISDICTION, primaryLocation, region, "FinancialRemedyMVP2", null);
+    }
+
     private static ExpectedRole caseAllocator() {
         return new ExpectedRole(RoleName.CASE_ALLOCATOR, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
                 JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FinancialRemedyMVP2", null);
+    }
+
+    private static ExpectedRole caseAllocator(RoleCategory roleCategory, String primaryLocation, String region) {
+        return new ExpectedRole(RoleName.CASE_ALLOCATOR, roleCategory,
+                Classification.PUBLIC, GrantType.STANDARD, false,
+                JURISDICTION, primaryLocation, region, "FinancialRemedyMVP2", null);
     }
 
     private static ExpectedRole adminRoleWithCaseType(String roleName, String caseType, String workTypes) {
@@ -116,18 +128,6 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
         return new ExpectedRole(RoleName.SPECIFIC_ACCESS_APPROVER_CTSC, RoleCategory.CTSC,
                 Classification.PUBLIC, GrantType.STANDARD, false,
                 JURISDICTION, null, null, "FinancialRemedyMVP2", WORK_TYPES_ACCESS_REQUESTS);
-    }
-
-    private static ExpectedRole taskSupervisor(RoleCategory roleCategory, String primaryLocation, String region) {
-        return new ExpectedRole(RoleName.TASK_SUPERVISOR, roleCategory,
-                Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, primaryLocation, region, "FinancialRemedyMVP2", null);
-    }
-
-    private static ExpectedRole caseAllocator(RoleCategory roleCategory, String primaryLocation, String region) {
-        return new ExpectedRole(RoleName.CASE_ALLOCATOR, roleCategory,
-                Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, primaryLocation, region, "FinancialRemedyMVP2", null);
     }
 
     private static ExpectedRole taskSupervisorWithCaseType(String caseType) {
