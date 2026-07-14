@@ -40,6 +40,6 @@ public class RefDataConsumerApplication {
 
     @Bean
     public CRDFeignClient crdFeignClient() {
-        Mockito.mock(CRDFeignClient.class);
+        return Mockito.mock(CRDFeignClient.class);
     }
 }
