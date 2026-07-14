@@ -106,10 +106,10 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
                 JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, caseType, workTypes);
     }
 
-    private static ExpectedRole accessApproverAdminRole(String roleName) {
+    private static ExpectedRole accessApproverAdminRole(String roleName, String workTypes) {
         return new ExpectedRole(roleName, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, null, REGION_ID, "FinancialRemedyMVP2", WORK_TYPES_ACCESS_REQUESTS);
+                JURISDICTION, null, REGION_ID, "FinancialRemedyMVP2", workTypes);
     }
 
     private static ExpectedRole basicCtscRole(String roleName) {
@@ -124,10 +124,10 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
                 JURISDICTION, PRIMARY_LOCATION_ID, null, "FinancialRemedyMVP2", workTypes);
     }
 
-    private static ExpectedRole accessApproverCtscRole() {
+    private static ExpectedRole accessApproverCtscRole(String workTypes) {
         return new ExpectedRole(RoleName.SPECIFIC_ACCESS_APPROVER_CTSC, RoleCategory.CTSC,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, null, null, "FinancialRemedyMVP2", WORK_TYPES_ACCESS_REQUESTS);
+                JURISDICTION, null, null, "FinancialRemedyMVP2", workTypes);
     }
 
     private static ExpectedRole taskSupervisorWithCaseType(String caseType) {
@@ -146,6 +146,8 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
             basicAdminRole(RoleName.HMCTS_ADMIN),
             standardAdminRole(RoleName.HEARING_CENTRE_ADMIN, WORK_TYPES_HEARING),
             standardAdminRole(RoleName.HEARING_CENTRE_TEAM_LEADER, WORK_TYPES_HEARING),
+            accessApproverAdminRole(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN, null),
+            accessApproverAdminRole(RoleName.SPECIFIC_ACCESS_APPROVER_LEGAL_OPS, null),
             taskSupervisor(),
             caseAllocator()
     );
@@ -161,6 +163,7 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
             basicAdminRole(RoleName.HMCTS_ADMIN),
             standardAdminRole(RoleName.NBC, null),
             standardAdminRole(RoleName.NBC_TEAM_LEADER, null),
+            accessApproverAdminRole(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN, null),
             taskSupervisor(),
             caseAllocator()
     );
@@ -179,8 +182,8 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
                 WORK_TYPES_HEARING),
             adminRoleWithCaseType(RoleName.HEARING_CENTRE_TEAM_LEADER, "FinancialRemedyMVP2",
                 WORK_TYPES_HEARING),
-            accessApproverAdminRole(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN),
-            accessApproverAdminRole(RoleName.SPECIFIC_ACCESS_APPROVER_LEGAL_OPS),
+            accessApproverAdminRole(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN, WORK_TYPES_ACCESS_REQUESTS),
+            accessApproverAdminRole(RoleName.SPECIFIC_ACCESS_APPROVER_LEGAL_OPS, WORK_TYPES_ACCESS_REQUESTS),
             taskSupervisorWithCaseType("FinancialRemedyMVP2"),
             caseAllocatorWithCaseType("FinancialRemedyMVP2")
     );
@@ -196,7 +199,7 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
             basicAdminRole(RoleName.HMCTS_ADMIN),
             adminRoleWithCaseType(RoleName.NBC, "FinancialRemedyMVP2", WORK_TYPES_HEARING),
             adminRoleWithCaseType(RoleName.NBC_TEAM_LEADER, "FinancialRemedyMVP2", WORK_TYPES_HEARING),
-            accessApproverAdminRole(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN),
+            accessApproverAdminRole(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN, WORK_TYPES_ACCESS_REQUESTS),
             taskSupervisorWithCaseType("FinancialRemedyMVP2"),
             caseAllocatorWithCaseType("FinancialRemedyMVP2")
     );
@@ -212,7 +215,7 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
             standardCtscRole(RoleName.CTSC_TEAM_LEADER, WORK_TYPES_CTSC_TEAM_LEADER),
             standardCtscRole(RoleName.CTSC, WORK_TYPES_CTSC),
             basicCtscRole(RoleName.HMCTS_CTSC),
-            accessApproverCtscRole(),
+            accessApproverCtscRole(WORK_TYPES_ACCESS_REQUESTS),
             taskSupervisor(RoleCategory.CTSC, PRIMARY_LOCATION_ID, null),
             caseAllocator(RoleCategory.CTSC, PRIMARY_LOCATION_ID, null)
     );
@@ -225,12 +228,20 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
     );
 
     private static final List<ExpectedRole> EXPECTED_ROLES_CTSC_TEAM_LEADER = List.of(
+            standardCtscRole(RoleName.CTSC_TEAM_LEADER, null),
+            standardCtscRole(RoleName.CTSC, null),
             basicCtscRole(RoleName.HMCTS_CTSC),
+            accessApproverCtscRole(null),
             taskSupervisor(RoleCategory.CTSC, PRIMARY_LOCATION_ID, null),
             caseAllocator(RoleCategory.CTSC, PRIMARY_LOCATION_ID, null)
     );
 
-    private static final List<ExpectedRole> EXPECTED_ROLES_CTSC_ADMIN = EXPECTED_ROLES_CTSC_TEAM_LEADER;
+    private static final List<ExpectedRole> EXPECTED_ROLES_CTSC_ADMIN = List.of(
+            standardCtscRole(RoleName.CTSC, null),
+            basicCtscRole(RoleName.HMCTS_CTSC),
+            taskSupervisor(RoleCategory.CTSC, PRIMARY_LOCATION_ID, null),
+            caseAllocator(RoleCategory.CTSC, PRIMARY_LOCATION_ID, null)
+    );
 
     static Stream<Arguments> frAdminScenarios() {
         return Stream.of(

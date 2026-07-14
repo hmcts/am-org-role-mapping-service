@@ -283,7 +283,6 @@ when
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
                                                    JobTitle.NBC_TEAM_LEADER),
                                   hasValidServiceCode(Jurisdiction.FR),
-                                  hasSkillMatching(adminConsentedSkillPattern()),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
@@ -291,7 +290,10 @@ then
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
     
-    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.ACCESS_REQUESTS.getValue()));
+    if ($cap.hasSkillMatching(adminConsentedSkillPattern())) {
+        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(
+                WorkType.ACCESS_REQUESTS.getValue()));
+    }
     insert(
         RoleAssignment.builder()
             .actorIdType(ActorIdType.IDAM)
@@ -316,7 +318,6 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER),
                                   hasValidServiceCode(Jurisdiction.FR),
-                                  hasSkillMatching(adminConsentedSkillPattern()),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
@@ -324,7 +325,10 @@ then
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
     
-    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.ACCESS_REQUESTS.getValue()));
+    if ($cap.hasSkillMatching(adminConsentedSkillPattern())) {
+        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(
+                WorkType.ACCESS_REQUESTS.getValue()));
+    }
     insert(
         RoleAssignment.builder()
             .actorIdType(ActorIdType.IDAM)
