@@ -38,7 +38,7 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $jap: JudicialAccessProfile(isFeePaid(),
                                 hasValidEndDate(),
-                                hasValidAuthorisation(Jurisdiction.DIVORCE))
+                                hasValidAuthorisation(Jurisdiction.FR))
 then
 
     insert(
@@ -67,7 +67,7 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $jap: JudicialAccessProfile(isSalaried(),
                                 hasValidEndDate(),
-                                hasValidAuthorisation(Jurisdiction.DIVORCE))
+                                hasValidAuthorisation(Jurisdiction.FR))
 then
 
     insert(
@@ -100,7 +100,7 @@ when
                                         || hasValidAdditionalRole(AdditionalRole.LEAD_FINANCIAL_REMEDY_JUDGE),
                                 isSalaried(),
                                 hasValidEndDate(),
-                                hasValidAuthorisation(Jurisdiction.DIVORCE))
+                                hasValidAuthorisation(Jurisdiction.FR))
 then
 
     insert(
