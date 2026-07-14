@@ -4,6 +4,7 @@ import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
+import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
@@ -17,17 +18,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
-import uk.gov.hmcts.reform.orgrolemapping.oidc.IdamRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +43,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCase
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
-@PactTestFor(providerName = "referenceData_caseworkerRefUsers", port = "8991")
-@Import(RefDataConsumerApplication.class)
+@PactTestFor(providerName = "referenceData_caseworkerRefUsers", port = "8991", pactVersion = PactSpecVersion.V3)
+@ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
     "feign.client.config.prdClient.url=http://localhost:8090"
@@ -58,9 +58,6 @@ public class RefDataCaseworkerConsumerTest {
 
     @Autowired
     CRDFeignClient crdFeignClient;
-
-    @Autowired
-    IdamRepository idamRepository;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
@@ -98,7 +95,7 @@ public class RefDataCaseworkerConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "generatePactFragment")
+    @PactTestFor(pactMethod = "generatePactFragment", pactVersion = PactSpecVersion.V3)
     public void verifyCaseworkersFetch() {
         ResponseEntity<List<Object>> response = null;
         List<CaseWorkerProfile> caseWorkerProfiles = new ArrayList<>();
@@ -111,7 +108,7 @@ public class RefDataCaseworkerConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "getCaseworkersByServiceNamePact")
+    @PactTestFor(pactMethod = "getCaseworkersByServiceNamePact", pactVersion = PactSpecVersion.V3)
     public void verifyCaseworkersByServiceName() {
         ResponseEntity<List<CaseWorkerProfilesResponse>> caseWorkerProfiles =
                 crdFeignClient.getCaseworkerDetailsByServiceName("IA",20,1,
