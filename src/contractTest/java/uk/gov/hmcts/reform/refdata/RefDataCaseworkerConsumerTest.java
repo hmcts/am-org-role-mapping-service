@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCase
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
 @PactTestFor(providerName = "referenceData_caseworkerRefUsers", port = "8991")
-@ContextConfiguration(classes = {RefDataConsumerApplication.class})
+@Import(RefDataConsumerApplication.class)
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
     "feign.client.config.prdClient.url=http://localhost:8090"
