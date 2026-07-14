@@ -74,15 +74,6 @@ then
             WorkType.ROUTINE_WORK,
             WorkType.REVIEW_CASE)));
     
-    if ($cap.hasSkillMatching(adminConsentedSkillPattern())) {
-        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
-                WorkType.HEARING_WORK,
-                WorkType.ROUTINE_WORK,
-                WorkType.APPLICATIONS,
-                WorkType.REVIEW_CASE,
-                WorkType.EVIDENCE)));
-    }
-    
     insert(
         RoleAssignment.builder()
             .actorIdType(ActorIdType.IDAM)
@@ -117,15 +108,6 @@ then
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
             WorkType.ROUTINE_WORK,
             WorkType.REVIEW_CASE)));
-    
-    if ($cap.hasSkillMatching(adminConsentedSkillPattern())) {
-        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
-                WorkType.HEARING_WORK,
-                WorkType.ROUTINE_WORK,
-                WorkType.APPLICATIONS,
-                WorkType.REVIEW_CASE,
-                WorkType.EVIDENCE)));
-    }
     
     insert(
         RoleAssignment.builder()
@@ -301,11 +283,11 @@ when
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER,
                                                    JobTitle.NBC_TEAM_LEADER),
                                   hasValidServiceCode(Jurisdiction.FR),
+                                  hasSkillMatching(adminConsentedSkillPattern()),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
-    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
     
@@ -334,11 +316,11 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HEARING_CENTRE_TEAM_LEADER),
                                   hasValidServiceCode(Jurisdiction.FR),
+                                  hasSkillMatching(adminConsentedSkillPattern()),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
-    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
     
