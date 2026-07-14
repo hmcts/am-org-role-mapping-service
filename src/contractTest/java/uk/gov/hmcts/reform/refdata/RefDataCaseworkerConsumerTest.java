@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.oidc.IdamRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,9 @@ public class RefDataCaseworkerConsumerTest {
 
     @Autowired
     CRDFeignClient crdFeignClient;
+
+    @Autowired
+    IdamRepository idamRepository;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
