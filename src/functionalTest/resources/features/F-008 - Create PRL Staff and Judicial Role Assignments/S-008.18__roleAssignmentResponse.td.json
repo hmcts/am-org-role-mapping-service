@@ -1,0 +1,28 @@
+{
+  "_guid_": "S-008.18__roleAssignmentResponse",
+
+  "roleAssignmentResponse": [
+    {
+      "__ordering__": "UNORDERED",
+      "__elementId__": "roleName"
+    },
+    {
+      "id" : "[[ANYTHING_PRESENT]]",
+      "actorIdType": "IDAM",
+      "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+      "roleType": "ORGANISATION",
+      "roleName": "caseworker-privatelaw-externaluser-viewonly",
+      "roleLabel": "Cafcass Cymru Caseworker",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "OTHER_GOV_DEPT",
+      "readOnly": false,
+      "created" : "[[ANYTHING_PRESENT]]",
+      "attributes": {
+        "substantive" : "N",
+        "region": "[[ANYTHING_PRESENT]]",
+        "jurisdiction": "PRIVATELAW"
+      }
+    }
+  ]
+}
