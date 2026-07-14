@@ -45,10 +45,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCase
 @PactFolder("pacts")
 @PactTestFor(providerName = "referenceData_caseworkerRefUsers", port = "8991", pactVersion = PactSpecVersion.V3)
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
-@TestPropertySource(properties = {
-    "feign.client.config.crdclient.url=http://localhost:8991",
-    "feign.client.config.prdClient.url=http://localhost:8090"
-})
+@TestPropertySource(properties = {"feign.client.config.crdclient.url=http://localhost:8991",
+                "feign.client.config.prdClient.url=http://localhost:8090"})
 public class RefDataCaseworkerConsumerTest {
 
     private static final String CRD_GET_USERS_BY_SERVICE = "/refdata/internal/staff/usersByServiceName";

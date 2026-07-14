@@ -17,8 +17,6 @@ feign:
     config:
       roleAssignmentApp:
         url: http://localhost:${wiremock.server.port:4096}
-      ccdClient:
-        url: http://localhost:${wiremock.server.port:4451}
 
 amqp:
   crd:
