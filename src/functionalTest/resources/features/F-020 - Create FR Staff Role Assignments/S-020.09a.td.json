@@ -30,7 +30,8 @@
           "attributes": {
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "DIVORCE"
+            "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2"
           }
         }
       ]

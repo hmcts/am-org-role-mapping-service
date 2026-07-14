@@ -50,6 +50,7 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2",
             "workTypes": "hearing_work, routine_work, decision_making_work, applications, review_case, evidence"
           }
         },
@@ -68,6 +69,7 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2",
             "workTypes": "hearing_work, routine_work, applications, review_case, evidence"
           }
         },
@@ -86,7 +88,8 @@
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
-            "workTypes": "access_requests"
+            "workTypes": "access_requests",
+            "caseType" : "FinancialRemedyMVP2"
           }
         }
       ]

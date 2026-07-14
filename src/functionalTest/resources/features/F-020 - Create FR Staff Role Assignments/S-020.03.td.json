@@ -50,6 +50,7 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2",
             "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "routine_work, review_case"
           }
@@ -69,6 +70,7 @@
             "substantive": "Y",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2",
             "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "routine_work, review_case"
           }
@@ -88,6 +90,8 @@
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2",
+            "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "access_requests"
           }
         },
@@ -106,6 +110,8 @@
             "substantive": "N",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2",
+            "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "access_requests"
           }
         }
