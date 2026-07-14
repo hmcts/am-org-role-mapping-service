@@ -20,6 +20,6 @@ feign:
 
 amqp:
   crd:
-    enabled: true
+    enabled: false
   jrd:
     enabled: false
