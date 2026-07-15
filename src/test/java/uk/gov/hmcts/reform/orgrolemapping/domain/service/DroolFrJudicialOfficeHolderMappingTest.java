@@ -88,7 +88,8 @@ class DroolFrJudicialOfficeHolderMappingTest extends DroolBase {
                         LegacyAdditionalRole.ANY_OTHER_ROLE),
                 Arguments.of(LegacyAppointment.DISTRICT_JUDGE,
                         LegacyAdditionalRole.ANY_OTHER_ROLE),
-                Arguments.of(Appointment.SENIOR_CIRCUIT_JUDGE,
+                // Additional Roles
+                Arguments.of(LegacyAppointment.ANY_OTHER_APPOINTMENT,
                     AdditionalRole.LEAD_FINANCIAL_REMEDY_JUDGE)
         );
     }
@@ -236,7 +237,7 @@ class DroolFrJudicialOfficeHolderMappingTest extends DroolBase {
                         .roles(List.of(role.getName()))
                         .regionId(region)
                         .primaryLocationId(ACCESS_PROFILE_PRIMARY_LOCATION_ID)
-                        .ticketCodes(Jurisdiction.DIVORCE.getServiceCodes())
+                        .ticketCodes(Jurisdiction.FR.getServiceCodes())
                         .beginTime(ACCESS_PROFILE_BEGIN_TIME)
                         .endTime(ACCESS_PROFILE_END_TIME)
                         .additionalRoles(List.of(RoleV2.builder()
@@ -247,7 +248,7 @@ class DroolFrJudicialOfficeHolderMappingTest extends DroolBase {
                                 .build()))
                         .authorisations(List.of(
                                 Authorisation.builder()
-                                        .serviceCodes(Jurisdiction.DIVORCE.getServiceCodes())
+                                        .serviceCodes(Jurisdiction.FR.getServiceCodes())
                                         .jurisdiction("DIVORCE")
                                         .endDate(LocalDateTime.now().plusYears(1L))
                                         .build()

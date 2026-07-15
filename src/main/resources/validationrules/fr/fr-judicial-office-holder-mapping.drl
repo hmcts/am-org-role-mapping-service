@@ -38,14 +38,14 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $jap: JudicialAccessProfile(isFeePaid(),
                                 hasValidEndDate(),
-                                hasValidAuthorisation(Jurisdiction.DIVORCE))
+                                hasValidAuthorisation(Jurisdiction.FR))
 then
 
     insert(
         JudicialOfficeHolder.builder()
             .userId($jap.getUserId())
             .office(Office.FR.FR_JUDGE_FEE_PAID)
-            .jurisdiction(Jurisdiction.DIVORCE.getName())
+            .jurisdiction(Jurisdiction.FR.getName())
             .ticketCodes($jap.getTicketCodes())
             .beginTime($jap.getBeginTime())
             .endTime($jap.getEndTime())
@@ -67,14 +67,14 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.FR_WA_1_0.getValue())
     $jap: JudicialAccessProfile(isSalaried(),
                                 hasValidEndDate(),
-                                hasValidAuthorisation(Jurisdiction.DIVORCE))
+                                hasValidAuthorisation(Jurisdiction.FR))
 then
 
     insert(
         JudicialOfficeHolder.builder()
             .userId($jap.getUserId())
             .office(Office.FR.FR_JUDGE_SALARIED)
-            .jurisdiction(Jurisdiction.DIVORCE.getName())
+            .jurisdiction(Jurisdiction.FR.getName())
             .ticketCodes($jap.getTicketCodes())
             .beginTime($jap.getBeginTime())
             .endTime($jap.getEndTime())
@@ -100,14 +100,14 @@ when
                                         || hasValidAdditionalRole(AdditionalRole.LEAD_FINANCIAL_REMEDY_JUDGE),
                                 isSalaried(),
                                 hasValidEndDate(),
-                                hasValidAuthorisation(Jurisdiction.DIVORCE))
+                                hasValidAuthorisation(Jurisdiction.FR))
 then
 
     insert(
         JudicialOfficeHolder.builder()
             .userId($jap.getUserId())
             .office(Office.FR.FR_LEADERSHIP_JUDGE_SALARIED)
-            .jurisdiction(Jurisdiction.DIVORCE.getName())
+            .jurisdiction(Jurisdiction.FR.getName())
             .ticketCodes($jap.getTicketCodes())
             .beginTime($jap.getBeginTime())
             .endTime($jap.getEndTime())
