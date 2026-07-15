@@ -24,6 +24,11 @@
               "_extends_": "CaseworkerRole_10_CTSC_Admin"
             }
           ],
+          "skills" : [ {
+            "skill_id" : "[[ANYTHING_PRESENT]]",
+            "skill_code" : "SKILL:ABA2:ManageScannedDocuments",
+            "description" : "Manage Scanned Documents"
+          } ],
           "work_area": [
             {
               "_extends_": "WorkArea_ABA2_FinancialRemedy"

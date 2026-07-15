@@ -24,6 +24,11 @@
               "_extends_": "CaseworkerRole_11_NBC_Admin"
             }
           ],
+          "skills" : [ {
+            "skill_id" : "[[ANYTHING_PRESENT]]",
+            "skill_code" : "SKILL:ABA2:ListforHearing",
+            "description" : "List for Hearing"
+          } ],
           "work_area": [
             {
               "_extends_": "WorkArea_ABA2_FinancialRemedy"

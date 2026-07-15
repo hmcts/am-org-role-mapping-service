@@ -24,6 +24,11 @@
               "_extends_": "CaseworkerRole_04_HC_Admin"
             }
           ],
+          "skills" : [ {
+            "skill_id" : "[[ANYTHING_PRESENT]]",
+            "skill_code" : "SKILL:ABA2:CheckingApplications",
+            "description" : "Checking Applications"
+          } ],
           "work_area": [
             {
               "_extends_": "WorkArea_ABA2_FinancialRemedy"
