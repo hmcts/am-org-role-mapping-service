@@ -39,6 +39,7 @@
         "contractType": "Salaried",
         "primaryLocation": "123456",
         "jurisdiction": "DIVORCE",
+        "caseType" : "FinancialRemedyMVP2",
         "region": "[[REGION_ID]]",
         "workTypes": "decision_making_work"
       },

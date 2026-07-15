@@ -39,7 +39,8 @@
         "bookable": "true",
         "contractType": "Fee-Paid",
         "primaryLocation": "123456",
-        "jurisdiction": "DIVORCE"
+        "jurisdiction": "DIVORCE",
+        "caseType" : "FinancialRemedyMVP2"
       },
       "authorisations": [
         "410"
@@ -62,6 +63,7 @@
         "primaryLocation": "[[JBS_LOCATION_ID]]",
         "baseLocation": "[[JBS_LOCATION_ID]]",
         "jurisdiction": "DIVORCE",
+        "caseType" : "FinancialRemedyMVP2",
         "region": "[[JBS_REGION_ID]]",
         "workTypes": "decision_making_work"
       },
