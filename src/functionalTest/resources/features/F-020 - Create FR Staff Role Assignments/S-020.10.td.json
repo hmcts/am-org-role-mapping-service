@@ -52,7 +52,8 @@
             "jurisdiction": "DIVORCE",
             "caseType" : "FinancialRemedyMVP2",
             "workTypes": "hearing_work, routine_work, applications, review_case, evidence"
-          }
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
         }
       ]
     }
