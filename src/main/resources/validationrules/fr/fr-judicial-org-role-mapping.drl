@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.CaseType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
@@ -68,7 +69,8 @@ when
 then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
+    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode(CaseType.FR_MVP2.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.DECISION_MAKING_WORK.getValue()));
@@ -108,7 +110,8 @@ then
     attribute.put(Attributes.Name.BASE_LOCATION, JacksonUtils.convertObjectIntoJsonNode($bk.getLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($bk.getRegionId()));
     attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.FEE_PAID));
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
+    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode(CaseType.FR_MVP2.getName()));
     attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.DECISION_MAKING_WORK.getValue()));
 
     insert(
@@ -141,7 +144,8 @@ when
 then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.FEE_PAID));
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
+    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode(CaseType.FR_MVP2.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
     attribute.put(Attributes.Name.BOOKABLE, JacksonUtils.convertObjectIntoJsonNode("true"));
 
@@ -175,7 +179,8 @@ when
 then
     Map<String,JsonNode> attribute = new HashMap<>();
     attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
+    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode(CaseType.FR_MVP2.getName()));
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
 
@@ -210,7 +215,8 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
-   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
+   attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode(CaseType.FR_MVP2.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
 
@@ -244,7 +250,8 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
-   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
+   attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode(CaseType.FR_MVP2.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
 
@@ -278,7 +285,8 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put(Attributes.Name.CONTRACT_TYPE, JacksonUtils.convertObjectIntoJsonNode(Attributes.ContractType.SALARIED));
-   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.DIVORCE.getName()));
+   attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
+   attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode(CaseType.FR_MVP2.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($joh.getPrimaryLocation()));
    attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($joh.getRegionId()));
    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.ACCESS_REQUESTS.getValue()));
