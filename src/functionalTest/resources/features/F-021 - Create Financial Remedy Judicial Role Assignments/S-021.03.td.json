@@ -64,7 +64,8 @@
             "contractType": "Salaried",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "region": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "DIVORCE"
+            "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },
@@ -107,6 +108,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "region": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2",
             "workTypes": "decision_making_work"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
@@ -130,7 +132,8 @@
             "contractType": "Salaried",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "region": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "DIVORCE"
+            "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
         },
@@ -154,6 +157,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "region": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2",
             "workTypes": "access_requests"
           },
           "authorisations": "[[ANYTHING_PRESENT]]"
@@ -177,7 +181,8 @@
             "contractType": "Salaried",
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "region": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "DIVORCE"
+            "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         }

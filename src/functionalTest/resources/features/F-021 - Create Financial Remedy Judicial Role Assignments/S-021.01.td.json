@@ -64,7 +64,8 @@
             "contractType": "Fee-Paid",
             "bookable": "true",
             "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "DIVORCE"
+            "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
         },

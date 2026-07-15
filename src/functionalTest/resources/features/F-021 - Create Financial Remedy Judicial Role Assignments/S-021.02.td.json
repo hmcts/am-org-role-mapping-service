@@ -84,6 +84,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "region": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2",
             "workTypes": "decision_making_work"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
