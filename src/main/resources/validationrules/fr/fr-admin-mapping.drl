@@ -70,9 +70,11 @@ then
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
-    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
-            WorkType.ROUTINE_WORK,
-            WorkType.REVIEW_CASE)));
+    if ($cap.hasSkillMatching(adminConsentedSkillPattern())) {
+        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                WorkType.ROUTINE_WORK,
+                WorkType.REVIEW_CASE)));
+    }
     
     insert(
         RoleAssignment.builder()
@@ -105,9 +107,12 @@ then
     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
     attribute.put(Attributes.Name.REGION, JacksonUtils.convertObjectIntoJsonNode($cap.getRegionId()));
     attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
-    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
-            WorkType.ROUTINE_WORK,
-            WorkType.REVIEW_CASE)));
+
+    if ($cap.hasSkillMatching(adminConsentedSkillPattern())) {
+        attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                WorkType.ROUTINE_WORK,
+                WorkType.REVIEW_CASE)));
+    }
     
     insert(
         RoleAssignment.builder()
@@ -233,7 +238,6 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
-            .authorisations($cap.getSkillCodes())
             .build());
     logMsg("Rule : fr_admin_task_supervisor_v1");
 end;
@@ -269,7 +273,6 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
-            .authorisations($cap.getSkillCodes())
             .build());
     logMsg("Rule : fr_admin_case_allocator_v1");
 end;
@@ -305,7 +308,6 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
-            .authorisations($cap.getSkillCodes())
             .build());
     logMsg("Rule : fr_admin_specific_access_approver_admin_v1");
 end;
@@ -340,7 +342,6 @@ then
             .classification(Classification.PUBLIC)
             .readOnly(false)
             .attributes(attribute)
-            .authorisations($cap.getSkillCodes())
             .build());
     logMsg("Rule : fr_admin_specific_access_approver_legal_ops_v1");
 end;
