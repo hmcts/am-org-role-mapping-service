@@ -249,7 +249,7 @@ class DroolFrJudicialOfficeHolderMappingTest extends DroolBase {
                         .authorisations(List.of(
                                 Authorisation.builder()
                                         .serviceCodes(Jurisdiction.FR.getServiceCodes())
-                                        .jurisdiction("DIVORCE")
+                                        .jurisdiction(Jurisdiction.FR.getName())
                                         .endDate(LocalDateTime.now().plusYears(1L))
                                         .build()
                         ))
@@ -305,6 +305,7 @@ class DroolFrJudicialOfficeHolderMappingTest extends DroolBase {
             assertEquals(GrantType.STANDARD, r.getGrantType());
             assertEquals("ABA2", r.getAuthorisations().get(0));
             assertEquals("DIVORCE", r.getAttributes().get("jurisdiction").asText());
+            assertEquals("FinancialRemedyMVP2", r.getAttributes().get("caseType").asText());
             assertFalse(r.isReadOnly());
 
             if (r.getRoleName().equals("judge") && appointmentType.equals("Fee Paid")) {
