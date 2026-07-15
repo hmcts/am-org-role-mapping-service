@@ -34,6 +34,26 @@
             "caseType" : "FinancialRemedyMVP2"
           },
           "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "ctsc",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "CTSC",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2",
+            "workTypes": "hearing_work, routine_work, applications, review_case, evidence"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
         }
       ]
     }

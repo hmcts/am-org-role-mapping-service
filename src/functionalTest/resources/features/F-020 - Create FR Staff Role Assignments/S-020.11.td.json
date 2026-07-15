@@ -51,10 +51,8 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
             "caseType" : "FinancialRemedyMVP2",
-            "region": "[[ANYTHING_PRESENT]]",
-            "workTypes" : "routine_work, review_case"
-          },
-          "authorisations" : "[[ANYTHING_PRESENT]]"
+            "region": "[[ANYTHING_PRESENT]]"
+          }
         }
       ]
     }
