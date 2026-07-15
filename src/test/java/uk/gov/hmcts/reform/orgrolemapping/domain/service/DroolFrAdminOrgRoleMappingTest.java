@@ -61,91 +61,93 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
                                 String primaryLocation,
                                 String region,
                                 String caseType,
-                                String workTypes) {
+                                String workTypes,
+                                List<String> authorisations) {
     }
 
     private static ExpectedRole basicAdminRole(String roleName) {
         return new ExpectedRole(roleName, RoleCategory.ADMIN,
                 Classification.PRIVATE, GrantType.BASIC, true,
-                null, null, null, null, null);
+                null, null, null, null, null, null);
     }
 
-    private static ExpectedRole standardAdminRole(String roleName, String workTypes) {
+    private static ExpectedRole standardAdminRole(String roleName, String workTypes, List<String> authorisations) {
         return new ExpectedRole(roleName, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FinancialRemedyMVP2", workTypes);
+                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FinancialRemedyMVP2", workTypes, authorisations);
     }
 
     private static ExpectedRole taskSupervisor() {
         return new ExpectedRole(RoleName.TASK_SUPERVISOR, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FinancialRemedyMVP2", null);
+                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FinancialRemedyMVP2", null, null);
     }
 
     private static ExpectedRole taskSupervisor(RoleCategory roleCategory, String primaryLocation, String region) {
         return new ExpectedRole(RoleName.TASK_SUPERVISOR, roleCategory,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, primaryLocation, region, "FinancialRemedyMVP2", null);
+                JURISDICTION, primaryLocation, region, "FinancialRemedyMVP2", null, null);
     }
 
     private static ExpectedRole caseAllocator() {
         return new ExpectedRole(RoleName.CASE_ALLOCATOR, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FinancialRemedyMVP2", null);
+                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, "FinancialRemedyMVP2", null, null);
     }
 
     private static ExpectedRole caseAllocator(RoleCategory roleCategory, String primaryLocation, String region) {
         return new ExpectedRole(RoleName.CASE_ALLOCATOR, roleCategory,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, primaryLocation, region, "FinancialRemedyMVP2", null);
+                JURISDICTION, primaryLocation, region, "FinancialRemedyMVP2", null, null);
     }
 
-    private static ExpectedRole adminRoleWithCaseType(String roleName, String caseType, String workTypes) {
+    private static ExpectedRole adminRoleWithCaseType(String roleName, String caseType, String workTypes,
+                                                     List<String> authorisations) {
         return new ExpectedRole(roleName, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, caseType, workTypes);
+                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, caseType, workTypes, authorisations);
     }
 
     private static ExpectedRole accessApproverAdminRole(String roleName, String workTypes) {
         return new ExpectedRole(roleName, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, null, REGION_ID, "FinancialRemedyMVP2", workTypes);
+                JURISDICTION, null, REGION_ID, "FinancialRemedyMVP2", workTypes, null);
     }
 
     private static ExpectedRole basicCtscRole(String roleName) {
         return new ExpectedRole(roleName, RoleCategory.CTSC,
                 Classification.PRIVATE, GrantType.BASIC, true,
-                null, null, null, null, null);
+                null, null, null, null, null, null);
     }
 
-    private static ExpectedRole standardCtscRole(String roleName, String workTypes) {
+    private static ExpectedRole standardCtscRole(String roleName, String workTypes, List<String> authorisations) {
         return new ExpectedRole(roleName, RoleCategory.CTSC,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, PRIMARY_LOCATION_ID, null, "FinancialRemedyMVP2", workTypes);
+                JURISDICTION, PRIMARY_LOCATION_ID, null, "FinancialRemedyMVP2", workTypes, authorisations);
     }
 
     private static ExpectedRole accessApproverCtscRole(String workTypes) {
         return new ExpectedRole(RoleName.SPECIFIC_ACCESS_APPROVER_CTSC, RoleCategory.CTSC,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, null, null, "FinancialRemedyMVP2", workTypes);
+                JURISDICTION, null, null, "FinancialRemedyMVP2", workTypes, null);
     }
 
     private static ExpectedRole taskSupervisorWithCaseType(String caseType) {
         return new ExpectedRole(RoleName.TASK_SUPERVISOR, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, caseType, null);
+                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, caseType, null, null);
     }
 
     private static ExpectedRole caseAllocatorWithCaseType(String caseType) {
         return new ExpectedRole(RoleName.CASE_ALLOCATOR, RoleCategory.ADMIN,
                 Classification.PUBLIC, GrantType.STANDARD, false,
-                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, caseType, null);
+                JURISDICTION, PRIMARY_LOCATION_ID, REGION_ID, caseType, null, null);
     }
 
     private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER = List.of(
             basicAdminRole(RoleName.HMCTS_ADMIN),
-            standardAdminRole(RoleName.HEARING_CENTRE_ADMIN, WORK_TYPES_HEARING),
-            standardAdminRole(RoleName.HEARING_CENTRE_TEAM_LEADER, WORK_TYPES_HEARING),
+            standardAdminRole(RoleName.HEARING_CENTRE_ADMIN, null, null),
+            standardAdminRole(RoleName.HEARING_CENTRE_TEAM_LEADER, null, null),
             accessApproverAdminRole(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN, null),
             accessApproverAdminRole(RoleName.SPECIFIC_ACCESS_APPROVER_LEGAL_OPS, null),
             taskSupervisor(),
@@ -154,15 +156,15 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
 
     private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_ADMIN = List.of(
             basicAdminRole(RoleName.HMCTS_ADMIN),
-            standardAdminRole(RoleName.HEARING_CENTRE_ADMIN, WORK_TYPES_HEARING),
+            standardAdminRole(RoleName.HEARING_CENTRE_ADMIN, null, null),
             taskSupervisor(),
             caseAllocator()
     );
 
     private static final List<ExpectedRole> EXPECTED_ROLES_NBC_TEAM_LEADER = List.of(
             basicAdminRole(RoleName.HMCTS_ADMIN),
-            standardAdminRole(RoleName.NBC, null),
-            standardAdminRole(RoleName.NBC_TEAM_LEADER, null),
+            standardAdminRole(RoleName.NBC, null, null),
+            standardAdminRole(RoleName.NBC_TEAM_LEADER, null, null),
             accessApproverAdminRole(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN, null),
             taskSupervisor(),
             caseAllocator()
@@ -170,7 +172,7 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
 
     private static final List<ExpectedRole> EXPECTED_ROLES_NBC_ADMIN = List.of(
             basicAdminRole(RoleName.HMCTS_ADMIN),
-            standardAdminRole(RoleName.NBC, null),
+            standardAdminRole(RoleName.NBC, null, null),
             taskSupervisor(),
             caseAllocator()
     );
@@ -179,9 +181,9 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
     private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_TEAM_LEADER_CONSENTED = List.of(
             basicAdminRole(RoleName.HMCTS_ADMIN),
             adminRoleWithCaseType(RoleName.HEARING_CENTRE_ADMIN, "FinancialRemedyMVP2",
-                WORK_TYPES_HEARING),
+                WORK_TYPES_HEARING, CONSENTED_SKILL_CODE),
             adminRoleWithCaseType(RoleName.HEARING_CENTRE_TEAM_LEADER, "FinancialRemedyMVP2",
-                WORK_TYPES_HEARING),
+                WORK_TYPES_HEARING, CONSENTED_SKILL_CODE),
             accessApproverAdminRole(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN, WORK_TYPES_ACCESS_REQUESTS),
             accessApproverAdminRole(RoleName.SPECIFIC_ACCESS_APPROVER_LEGAL_OPS, WORK_TYPES_ACCESS_REQUESTS),
             taskSupervisorWithCaseType("FinancialRemedyMVP2"),
@@ -190,15 +192,17 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
 
     private static final List<ExpectedRole> EXPECTED_ROLES_HEARING_CENTRE_ADMIN_CONSENTED = List.of(
             basicAdminRole(RoleName.HMCTS_ADMIN),
-            adminRoleWithCaseType(RoleName.HEARING_CENTRE_ADMIN, "FinancialRemedyMVP2", WORK_TYPES_HEARING),
+            adminRoleWithCaseType(RoleName.HEARING_CENTRE_ADMIN, "FinancialRemedyMVP2", WORK_TYPES_HEARING,
+                    CONSENTED_SKILL_CODE),
             taskSupervisorWithCaseType("FinancialRemedyMVP2"),
             caseAllocatorWithCaseType("FinancialRemedyMVP2")
     );
 
     private static final List<ExpectedRole> EXPECTED_ROLES_NBC_TEAM_LEADER_CONSENTED = List.of(
             basicAdminRole(RoleName.HMCTS_ADMIN),
-            adminRoleWithCaseType(RoleName.NBC, "FinancialRemedyMVP2", WORK_TYPES_HEARING),
-            adminRoleWithCaseType(RoleName.NBC_TEAM_LEADER, "FinancialRemedyMVP2", WORK_TYPES_HEARING),
+            adminRoleWithCaseType(RoleName.NBC, "FinancialRemedyMVP2", WORK_TYPES_HEARING, CONSENTED_SKILL_CODE),
+            adminRoleWithCaseType(RoleName.NBC_TEAM_LEADER, "FinancialRemedyMVP2", WORK_TYPES_HEARING,
+                    CONSENTED_SKILL_CODE),
             accessApproverAdminRole(RoleName.SPECIFIC_ACCESS_APPROVER_ADMIN, WORK_TYPES_ACCESS_REQUESTS),
             taskSupervisorWithCaseType("FinancialRemedyMVP2"),
             caseAllocatorWithCaseType("FinancialRemedyMVP2")
@@ -206,14 +210,14 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
 
     private static final List<ExpectedRole> EXPECTED_ROLES_NBC_ADMIN_CONSENTED = List.of(
             basicAdminRole(RoleName.HMCTS_ADMIN),
-            adminRoleWithCaseType(RoleName.NBC, "FinancialRemedyMVP2", WORK_TYPES_HEARING),
+            adminRoleWithCaseType(RoleName.NBC, "FinancialRemedyMVP2", WORK_TYPES_HEARING, CONSENTED_SKILL_CODE),
             taskSupervisorWithCaseType("FinancialRemedyMVP2"),
             caseAllocatorWithCaseType("FinancialRemedyMVP2")
     );
 
     private static final List<ExpectedRole> EXPECTED_ROLES_CTSC_TEAM_LEADER_CONSENTED = List.of(
-            standardCtscRole(RoleName.CTSC_TEAM_LEADER, WORK_TYPES_CTSC_TEAM_LEADER),
-            standardCtscRole(RoleName.CTSC, WORK_TYPES_CTSC),
+            standardCtscRole(RoleName.CTSC_TEAM_LEADER, WORK_TYPES_CTSC_TEAM_LEADER, CONSENTED_SKILL_CODE),
+            standardCtscRole(RoleName.CTSC, WORK_TYPES_CTSC, CONSENTED_SKILL_CODE),
             basicCtscRole(RoleName.HMCTS_CTSC),
             accessApproverCtscRole(WORK_TYPES_ACCESS_REQUESTS),
             taskSupervisor(RoleCategory.CTSC, PRIMARY_LOCATION_ID, null),
@@ -221,15 +225,15 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
     );
 
     private static final List<ExpectedRole> EXPECTED_ROLES_CTSC_ADMIN_CONSENTED = List.of(
-            standardCtscRole(RoleName.CTSC, WORK_TYPES_CTSC),
+            standardCtscRole(RoleName.CTSC, WORK_TYPES_CTSC, CONSENTED_SKILL_CODE),
             basicCtscRole(RoleName.HMCTS_CTSC),
             taskSupervisor(RoleCategory.CTSC, PRIMARY_LOCATION_ID, null),
             caseAllocator(RoleCategory.CTSC, PRIMARY_LOCATION_ID, null)
     );
 
     private static final List<ExpectedRole> EXPECTED_ROLES_CTSC_TEAM_LEADER = List.of(
-            standardCtscRole(RoleName.CTSC_TEAM_LEADER, null),
-            standardCtscRole(RoleName.CTSC, null),
+            standardCtscRole(RoleName.CTSC_TEAM_LEADER, null, null),
+            standardCtscRole(RoleName.CTSC, null, null),
             basicCtscRole(RoleName.HMCTS_CTSC),
             accessApproverCtscRole(null),
             taskSupervisor(RoleCategory.CTSC, PRIMARY_LOCATION_ID, null),
@@ -237,7 +241,7 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
     );
 
     private static final List<ExpectedRole> EXPECTED_ROLES_CTSC_ADMIN = List.of(
-            standardCtscRole(RoleName.CTSC, null),
+            standardCtscRole(RoleName.CTSC, null, null),
             basicCtscRole(RoleName.HMCTS_CTSC),
             taskSupervisor(RoleCategory.CTSC, PRIMARY_LOCATION_ID, null),
             caseAllocator(RoleCategory.CTSC, PRIMARY_LOCATION_ID, null)
@@ -399,6 +403,13 @@ class DroolFrAdminOrgRoleMappingTest extends DroolBase {
                 assertNotNull(actual.getAttributes().get(Attributes.Name.WORK_TYPES));
                 assertEquals(expected.workTypes(),
                         actual.getAttributes().get(Attributes.Name.WORK_TYPES).asText());
+            }
+            if (expected.authorisations() == null) {
+                assertTrue(actual.getAuthorisations() == null || actual.getAuthorisations().isEmpty(),
+                        "Expected no authorisations on " + expected.roleName());
+            } else {
+                assertEquals(expected.authorisations(), actual.getAuthorisations(),
+                        "Authorisations mismatch on " + expected.roleName());
             }
         });
     }

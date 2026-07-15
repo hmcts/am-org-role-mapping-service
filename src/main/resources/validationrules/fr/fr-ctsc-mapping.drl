@@ -149,7 +149,6 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
-      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : fr_task_supervisor_v1");
 end;
@@ -178,7 +177,6 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
-      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : fr_case_allocator_v1");
 end;
@@ -210,7 +208,6 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
-      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : fr_specific_access_approver_ctsc_v1");
 end;
