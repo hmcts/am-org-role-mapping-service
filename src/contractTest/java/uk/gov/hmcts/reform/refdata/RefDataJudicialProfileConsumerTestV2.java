@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.refdata;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.DslPart;
+import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -33,8 +34,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 
 import java.util.Map;
 import java.util.Set;
-
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
@@ -135,7 +134,8 @@ public class RefDataJudicialProfileConsumerTestV2 {
     }
 
     private DslPart createJrdProfilesResponse() {
-        return newJsonArray(o -> o.object(ob -> ob
+        return new PactDslJsonArray()
+                .object()
                 .stringType("sidam_id", SIDAM_ID)
                 .stringType("full_name", "testFullName")
                 .stringType("known_as", "testKnownAs")
@@ -145,41 +145,40 @@ public class RefDataJudicialProfileConsumerTestV2 {
                 .stringType("personal_code", "1234")
                 .stringType("post_nominals", "Mr")
                 .stringType("initials", "I N")
-                .minArrayLike("appointments", 1, r -> r
-                        .stringType("base_location_id")
-                        .stringType("epimms_id")
-                        .stringType("cft_region_id")
-                        .stringType("cft_region")
-                        .stringType("is_principal_appointment")
-                        .date("start_date", "yyyy-MM-dd")
-                        .date("end_date", "yyyy-MM-dd")
-                        .stringType("appointment")
-                        .stringType("appointment_type")
-                        .array("service_codes", (s) -> {
-                            s.stringType("BFA1");
-                        })
-                        .stringType("appointment_id")
-                )
-                .minArrayLike("authorisations", 1, r -> r
-                        .stringType("jurisdiction")
-                        .stringType("ticket_description")
-                        .date("start_date", "yyyy-MM-dd")
-                        .minArrayLike("service_codes", 0, (s) -> {
-                            s.stringType("BFA1");
-                        })
-                        .stringType("ticket_code")
-                        .date("end_date", "yyyy-MM-dd")
-                        .stringType("appointment_id")
-                        .stringType("authorisation_id")
-                        .stringType("jurisdiction_id")
-                )
-                .minArrayLike("roles", 1, r -> r
-                        .stringType("jurisdiction_role_name")
-                        .stringType("jurisdiction_role_id")
-                        .stringType("start_date")
-                        .stringType("end_date")
-                )
-        )).build();
+                .minArrayLike("appointments", 1)
+                    .stringType("base_location_id")
+                    .stringType("epimms_id")
+                    .stringType("cft_region_id")
+                    .stringType("cft_region")
+                    .stringType("is_principal_appointment")
+                    .date("start_date", "yyyy-MM-dd")
+                    .date("end_date", "yyyy-MM-dd")
+                    .stringType("appointment")
+                    .stringType("appointment_type")
+                    .array("service_codes")
+                        .stringType("BFA1")
+                    .stringType("appointment_id")
+                    .closeArray()
+                .closeObject()
+                .minArrayLike("authorisations", 1)
+                    .stringType("jurisdiction")
+                    .stringType("ticket_description")
+                    .date("start_date", "yyyy-MM-dd")
+                    .minArrayLike("service_codes", 0)
+                        .stringType("BFA1")
+                    .stringType("ticket_code")
+                    .date("end_date", "yyyy-MM-dd")
+                    .stringType("appointment_id")
+                    .stringType("authorisation_id")
+                    .stringType("jurisdiction_id")
+                .closeObject()
+                .minArrayLike("roles", 1)
+                    .stringType("jurisdiction_role_name")
+                    .stringType("jurisdiction_role_id")
+                    .stringType("start_date")
+                    .stringType("end_date")
+                .closeObject()
+                .closeObject();
     }
 
     @NotNull

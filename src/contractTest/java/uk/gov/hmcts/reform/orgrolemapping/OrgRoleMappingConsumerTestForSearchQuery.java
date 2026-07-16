@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.orgrolemapping;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.DslPart;
+import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
+import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -25,7 +27,6 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Map;
 
-import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -319,94 +320,105 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
     }
 
     private DslPart createRoleAssignmentResponseSearchQuery() {
-        return newJsonBody(o -> o.minArrayLike("roleAssignmentResponse", 1, 1,
-            roleAssignmentResponse -> roleAssignmentResponse
-                                .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
-                                .stringValue("actorIdType", "IDAM")
-                                .stringValue("actorId", ACTOR_ID)
-                                .stringValue("roleType", "ORGANISATION")
-                                .stringValue("roleName", "senior-tribunal-caseworker")
-                                .stringValue("classification", "PRIVATE")
-                                .stringValue("grantType", "STANDARD")
-                                .stringValue("roleCategory", "LEGAL_OPERATIONS")
-                                .booleanValue("readOnly", false)
-                                .object("attributes", attribute -> attribute
-                                        .stringType("jurisdiction", "IA")
-                                        .stringType("primaryLocation", "500A2S"))
-                )).build();
+        PactDslJsonBody response = new PactDslJsonBody();
+        PactDslJsonBody roleAssignmentResponse = response.minArrayLike("roleAssignmentResponse", 1);
+        roleAssignmentResponse.object()
+                .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
+                .stringValue("actorIdType", "IDAM")
+                .stringValue("actorId", ACTOR_ID)
+                .stringValue("roleType", "ORGANISATION")
+                .stringValue("roleName", "senior-tribunal-caseworker")
+                .stringValue("classification", "PRIVATE")
+                .stringValue("grantType", "STANDARD")
+                .stringValue("roleCategory", "LEGAL_OPERATIONS")
+                .booleanValue("readOnly", false)
+                .object("attributes")
+                .stringType("jurisdiction", "IA")
+                .stringType("primaryLocation", "500A2S")
+                .closeObject()
+                .closeObject()
+                .closeArray();
+        return response;
     }
 
     private DslPart createRoleAssignmentResponseAdvancedSearchQuery() {
-        return newJsonBody(o -> o.array("roleAssignmentResponse", rar -> rar
-                .object(ob -> ob
-                        .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
-                        .stringValue("actorIdType", "IDAM")
-                        .stringValue("actorId", ACTOR_ID_ADV)
-                        .stringValue("roleType", "ORGANISATION")
-                        .stringValue("roleName", "senior-tribunal-caseworker")
-                        .stringValue("classification", "PRIVATE")
-                        .stringValue("grantType", "STANDARD")
-                        .stringValue("roleCategory", "LEGAL_OPERATIONS")
-                        .booleanValue("readOnly", false)
-                        .object("attributes", attribute -> attribute
-                                .stringType("jurisdiction", "IA")
-                                .stringType("primaryLocation", "500A2S"))
-                ).object(obj -> obj
-                        .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
-                        .stringValue("actorIdType", "IDAM")
-                        .stringValue("actorId", ACTOR_ID_ADV)
-                        .stringValue("roleType", "ORGANISATION")
-                        .stringValue("roleName", TRIBUNAL_CASEWORKER)
-                        .stringValue("classification", "PRIVATE")
-                        .stringValue("grantType", "STANDARD")
-                        .stringValue("roleCategory", "LEGAL_OPERATIONS")
-                        .booleanValue("readOnly", false)
-                        .object("attributes", attribute -> attribute
-                                .stringType("jurisdiction", "IA")
-                                .stringType("primaryLocation", "500A2S"))
-                )))
-                .build();
+        PactDslJsonBody response = new PactDslJsonBody();
+        PactDslJsonArray roleAssignmentResponse = response.array("roleAssignmentResponse");
+        roleAssignmentResponse.object()
+                .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
+                .stringValue("actorIdType", "IDAM")
+                .stringValue("actorId", ACTOR_ID_ADV)
+                .stringValue("roleType", "ORGANISATION")
+                .stringValue("roleName", "senior-tribunal-caseworker")
+                .stringValue("classification", "PRIVATE")
+                .stringValue("grantType", "STANDARD")
+                .stringValue("roleCategory", "LEGAL_OPERATIONS")
+                .booleanValue("readOnly", false)
+                .object("attributes")
+                .stringType("jurisdiction", "IA")
+                .stringType("primaryLocation", "500A2S")
+                .closeObject()
+                .closeObject();
+        roleAssignmentResponse.object()
+                .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
+                .stringValue("actorIdType", "IDAM")
+                .stringValue("actorId", ACTOR_ID_ADV)
+                .stringValue("roleType", "ORGANISATION")
+                .stringValue("roleName", TRIBUNAL_CASEWORKER)
+                .stringValue("classification", "PRIVATE")
+                .stringValue("grantType", "STANDARD")
+                .stringValue("roleCategory", "LEGAL_OPERATIONS")
+                .booleanValue("readOnly", false)
+                .object("attributes")
+                .stringType("jurisdiction", "IA")
+                .stringType("primaryLocation", "500A2S")
+                .closeObject()
+                .closeObject();
+        roleAssignmentResponse.closeArray();
+        return response;
     }
 
     private DslPart createRoleAssignmentResponseSearchQueryMultipleRoleAssignments() {
-        return newJsonBody(o -> o.minArrayLike("roleAssignmentResponse", 2, 2,
-            roleAssignmentResponse -> roleAssignmentResponse
-                    .stringType("id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e")
-                    .stringValue("actorIdType", "IDAM")
-                    .stringValue("actorId", "ca93ea54-c219-4c6d-add6-e687a0f1f5f7")
-                    .stringValue("roleType", "ORGANISATION")
-                    .stringValue("roleName", "senior-tribunal-caseworker")
-                    .stringValue("classification", "PRIVATE")
-                    .stringValue("grantType", "STANDARD")
-                    .stringValue("roleCategory", "LEGAL_OPERATIONS")
-                    .booleanValue("readOnly", false)
-                    .object("attributes", attribute -> attribute
-                            .stringType("jurisdiction", "IA")
-                            .stringType("primaryLocation", "219ASA"))
-                )
-                .minArrayLike("roleAssignmentResponse", 2, 2,
-                    roleAssignmentResponse -> roleAssignmentResponse
-                            .stringType("id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e")
-                            .stringValue("actorIdType", "IDAM")
-                            .stringValue("actorId", "ca93ea54-c219-4c6d-add6-e687a0f1f5f7")
-                            .stringValue("roleType", "ORGANISATION")
-                            .stringValue("roleName", "senior-tribunal-caseworker")
-                            .stringValue("classification", "PRIVATE")
-                            .stringValue("grantType", "STANDARD")
-                            .stringValue("roleCategory", "LEGAL_OPERATIONS")
-                            .booleanValue("readOnly", false)
-                            .object("attributes", attribute -> attribute
-                                    .stringType("jurisdiction", "IA")
-                                    .stringType("primaryLocation", "219ASA"))
-                )
-        ).build();
+        PactDslJsonBody response = new PactDslJsonBody();
+        PactDslJsonBody roleAssignmentResponse = response.minArrayLike("roleAssignmentResponse", 2);
+        roleAssignmentResponse.object()
+                .stringType("id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e")
+                .stringValue("actorIdType", "IDAM")
+                .stringValue("actorId", "ca93ea54-c219-4c6d-add6-e687a0f1f5f7")
+                .stringValue("roleType", "ORGANISATION")
+                .stringValue("roleName", "senior-tribunal-caseworker")
+                .stringValue("classification", "PRIVATE")
+                .stringValue("grantType", "STANDARD")
+                .stringValue("roleCategory", "LEGAL_OPERATIONS")
+                .booleanValue("readOnly", false)
+                .object("attributes")
+                .stringType("jurisdiction", "IA")
+                .stringType("primaryLocation", "219ASA")
+                .closeObject()
+                .closeObject();
+        roleAssignmentResponse.object()
+                .stringType("id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e")
+                .stringValue("actorIdType", "IDAM")
+                .stringValue("actorId", "ca93ea54-c219-4c6d-add6-e687a0f1f5f7")
+                .stringValue("roleType", "ORGANISATION")
+                .stringValue("roleName", "senior-tribunal-caseworker")
+                .stringValue("classification", "PRIVATE")
+                .stringValue("grantType", "STANDARD")
+                .stringValue("roleCategory", "LEGAL_OPERATIONS")
+                .booleanValue("readOnly", false)
+                .object("attributes")
+                .stringType("jurisdiction", "IA")
+                .stringType("primaryLocation", "219ASA")
+                .closeObject()
+                .closeObject()
+                .closeArray();
+        return response;
     }
 
     private DslPart createRoleAssignmentResponseSearchQueryEmptyCollection() {
-        return newJsonBody(o -> o
-                .minArrayLike("roleAssignmentResponse", 0, 0, ar -> {
-                })
-        ).build();
+        PactDslJsonBody response = new PactDslJsonBody();
+        response.array("roleAssignmentResponse").closeArray();
+        return response;
     }
 
     @NotNull

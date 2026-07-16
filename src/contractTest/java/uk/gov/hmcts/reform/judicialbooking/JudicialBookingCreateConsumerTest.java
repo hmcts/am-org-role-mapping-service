@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.judicialbooking;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.DslPart;
+import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -29,8 +30,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.Map;
-
-import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
 
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -66,16 +65,17 @@ public class JudicialBookingCreateConsumerTest {
     }
 
     private DslPart createJudicialBookingsResponse() {
-        return newJsonBody(o -> o
-                .object("bookingResponse", br -> br
-                                .stringType("id", "fcb4f03c-4b3f-4c3c-bf3a-662b4557b470")
-                                .stringType("userId", USER_ID)
-                                .stringType("locationId", "south-east")
-                                .stringType("regionId", "BFA1")
-                                .stringType("beginTime", "3031-01-01T00:00:00Z")
-                                .stringType("endTime", "3031-09-01T00:00:00Z")
-                                .stringType("created", "2021-02-23T06:37:58Z")
-                )).build();
+        PactDslJsonBody response = new PactDslJsonBody();
+        response.object("bookingResponse")
+                .stringType("id", "fcb4f03c-4b3f-4c3c-bf3a-662b4557b470")
+                .stringType("userId", USER_ID)
+                .stringType("locationId", "south-east")
+                .stringType("regionId", "BFA1")
+                .stringType("beginTime", "3031-01-01T00:00:00Z")
+                .stringType("endTime", "3031-09-01T00:00:00Z")
+                .stringType("created", "2021-02-23T06:37:58Z")
+                .closeObject();
+        return response;
     }
 
     private String createJudicialBookingsCreateRequest() {

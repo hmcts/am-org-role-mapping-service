@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
+import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.annotations.PactFolder;
@@ -23,8 +24,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
-
-import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonArray;
 
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
@@ -58,23 +57,25 @@ public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
         var label = "label";
         var description = "description";
         var category = "category";
-        return newJsonArray(o -> o
-                .object(role -> role
-                        .stringType(name, "judge")
-                        .stringType(label, "Judge - Sample role (Only for Testing)")
-                        .stringType(description, "Judicial office holder able to do judicial case work")
-                        .stringType(category, "JUDICIAL"))
-                .object(role -> role
-                        .stringType(name, "tribunal-caseworker")
-                        .stringType(label, "Tribunal Caseworker")
-                        .stringType(description, "Tribunal caseworker")
-                        .stringType(category, "LEGAL_OPERATIONS"))
-                .object(role -> role
-                        .stringType(name, "senior-tribunal-caseworker")
-                        .stringType(label, "Senior Tribunal Caseworker")
-                        .stringType(description, "Senior Tribunal caseworker")
-                        .stringType(category, "LEGAL_OPERATIONS"))
-        ).build();
+        return new PactDslJsonArray()
+                .object()
+                .stringType(name, "judge")
+                .stringType(label, "Judge - Sample role (Only for Testing)")
+                .stringType(description, "Judicial office holder able to do judicial case work")
+                .stringType(category, "JUDICIAL")
+                .closeObject()
+                .object()
+                .stringType(name, "tribunal-caseworker")
+                .stringType(label, "Tribunal Caseworker")
+                .stringType(description, "Tribunal caseworker")
+                .stringType(category, "LEGAL_OPERATIONS")
+                .closeObject()
+                .object()
+                .stringType(name, "senior-tribunal-caseworker")
+                .stringType(label, "Senior Tribunal Caseworker")
+                .stringType(description, "Senior Tribunal caseworker")
+                .stringType(category, "LEGAL_OPERATIONS")
+                .closeObject();
     }
 
     private HttpHeaders getHttpHeaders() {

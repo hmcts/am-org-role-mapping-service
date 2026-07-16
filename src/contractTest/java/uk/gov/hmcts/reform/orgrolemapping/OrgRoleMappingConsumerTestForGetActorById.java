@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.DslPart;
+import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -24,7 +25,6 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Map;
 
-import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -74,22 +74,25 @@ public class OrgRoleMappingConsumerTestForGetActorById extends BaseTestContract 
     }
 
     private DslPart createResponse() {
-        return newJsonBody(o -> o
-                .minArrayLike("roleAssignmentResponse", 1, 1,
-                    roleAssignmentResponse -> roleAssignmentResponse
-                        .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
-                        .stringValue("actorIdType", "IDAM")
-                        .stringValue("actorId", ACTOR_ID)
-                        .stringValue("roleType", "ORGANISATION")
-                        .stringValue("roleName", "senior-tribunal-caseworker")
-                        .stringValue("classification", "PRIVATE")
-                        .stringValue("grantType", "STANDARD")
-                        .stringType("roleCategory", "LEGAL_OPERATIONS")
-                        .booleanValue("readOnly", false)
-                        .object("attributes", attribute -> attribute
-                                .stringType("jurisdiction", "IA")
-                                .stringType("primaryLocation", "123456"))
-                )).build();
+        PactDslJsonBody response = new PactDslJsonBody();
+        PactDslJsonBody roleAssignmentResponse = response.minArrayLike("roleAssignmentResponse", 1);
+        roleAssignmentResponse.object()
+                .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
+                .stringValue("actorIdType", "IDAM")
+                .stringValue("actorId", ACTOR_ID)
+                .stringValue("roleType", "ORGANISATION")
+                .stringValue("roleName", "senior-tribunal-caseworker")
+                .stringValue("classification", "PRIVATE")
+                .stringValue("grantType", "STANDARD")
+                .stringType("roleCategory", "LEGAL_OPERATIONS")
+                .booleanValue("readOnly", false)
+                .object("attributes")
+                .stringType("jurisdiction", "IA")
+                .stringType("primaryLocation", "123456")
+                .closeObject()
+                .closeObject()
+                .closeArray();
+        return response;
     }
 
     @NotNull

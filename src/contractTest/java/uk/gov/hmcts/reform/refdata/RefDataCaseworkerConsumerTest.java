@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.refdata;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
+import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -35,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCaseWorkerProfile;
@@ -130,60 +130,55 @@ public class RefDataCaseworkerConsumerTest {
     }
 
     private DslPart buildCaseworkerListResponsePactDsl() {
-
-        return newJsonArray(o -> {
-            o.object(ob -> ob
-                .stringType("first_name",
-                    "Sam")
-                .stringType("last_name",
-                    "Manuel")
+        return new PactDslJsonArray()
+                .object()
+                .stringType("first_name", "Sam")
+                .stringType("last_name", "Manuel")
                 .stringType("email_id", "sam.manuel@gmail.com")
                 .numberType("region_id", 1)
                 .stringType("region", "National")
                 .numberType("user_type_id", 1)
                 .stringType("user_type", "HMCTS")
                 .stringMatcher("suspended", "true|false", "true")
-                .minArrayLike("role", 1, r -> r
+                .minArrayLike("role", 1)
                     .stringType("role_id", "1")
                     .stringType("role", "senior-tribunal-caseworker")
                     .booleanType("is_primary", true)
-                )
-                .minArrayLike("base_location", 1, r -> r
+                .closeObject()
+                .minArrayLike("base_location", 1)
                     .numberType("location_id", 1)
                     .stringType("location", "Aberdeen Tribunal Hearing Centre")
                     .booleanType("is_primary", true)
-                )
-                .minArrayLike("work_area", 1, r -> r
+                .closeObject()
+                .minArrayLike("work_area", 1)
                     .stringType("area_of_work", "1")
                     .stringType("service_code", "BFA1")
-                )
-            );
-        }).build();
+                .closeObject()
+                .closeObject();
     }
 
     private DslPart buildCaseworkerListWithService() {
-
-        return newJsonArray(o -> {
-            o.object(ob -> ob
-                    .stringType("ccd_service_name", "IA")
-                    .object("staff_profile", s -> s
-                            .stringType("first_name","Sam")
-                            .stringType("last_name","Manuel")
-                            .stringType("email_id", "sam.manuel@gmail.com")
-                            .numberType("region_id", 1)
-                            .stringType("region", "National")
-                            .stringType("user_type", "HMCTS")
-                            .stringMatcher("suspended", "true|false", "true")
-                            .numberType("user_type_id", 1)
-                            .minArrayLike("role", 1, r -> r
-                                    .stringType("role_id", "1")
-                                    .stringType("role", "senior-tribunal-caseworker")
-                                    .booleanType("is_primary", true)
-                            )
-                            .minArrayLike("work_area", 1, r -> r
-                                    .stringType("service_code", "BFA1")
-                            )
-                    ));
-        }).build();
+        return new PactDslJsonArray()
+                .object()
+                .stringType("ccd_service_name", "IA")
+                .object("staff_profile")
+                    .stringType("first_name", "Sam")
+                    .stringType("last_name", "Manuel")
+                    .stringType("email_id", "sam.manuel@gmail.com")
+                    .numberType("region_id", 1)
+                    .stringType("region", "National")
+                    .stringType("user_type", "HMCTS")
+                    .stringMatcher("suspended", "true|false", "true")
+                    .numberType("user_type_id", 1)
+                    .minArrayLike("role", 1)
+                        .stringType("role_id", "1")
+                        .stringType("role", "senior-tribunal-caseworker")
+                        .booleanType("is_primary", true)
+                    .closeObject()
+                    .minArrayLike("work_area", 1)
+                        .stringType("service_code", "BFA1")
+                    .closeObject()
+                .closeObject()
+                .closeObject();
     }
 }

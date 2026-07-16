@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.refdata;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
+import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -28,7 +29,6 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 
 import java.util.List;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
@@ -132,27 +132,32 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
     }
 
     private DslPart buildOrganisationUsersResponsePactDsl() {
-        return newJsonBody((o) -> {
-            o.minArrayLike("organisationInfo", 1, orgInfo -> orgInfo
-                    .stringType("organisationIdentifier", "0Z64OR3")
-                    .stringType("status", "PENDING")
-                    .array("organisationProfileIds", arr -> arr.stringType("SOLICITOR_PROFILE"))
-                    .minArrayLike("users", 1, user -> user
-                            .stringType("userIdentifier", "0Z64OR3")
-                            .stringType("firstName", "John")
-                            .stringType("lastName", "Smith")
-                            .stringType("email", "test@test.com")
-                            .stringType("lastUpdated", "2020-10-20T10:00:00")
-                            .minArrayLike("userAccessTypes", 1, userAccessType -> userAccessType
-                                    .stringType("jurisdictionId", "SSCS")
-                                    .stringType("organisationProfileId", "SOLICITOR")
-                                    .stringType("accessTypeId", "1")
-                                    .booleanType("enabled", true)))
-            );
-            o.stringType("lastOrgInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b");
-            o.stringType("lastUserInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b");
-            o.booleanType("moreAvailable", false);
-        }).build();
+        PactDslJsonBody response = new PactDslJsonBody();
+        PactDslJsonBody organisation = response.minArrayLike("organisationInfo", 1)
+                .stringType("organisationIdentifier", "0Z64OR3")
+                .stringType("status", "PENDING");
+        organisation.array("organisationProfileIds")
+                .stringType("SOLICITOR_PROFILE")
+                .closeArray();
+        PactDslJsonBody users = organisation.minArrayLike("users", 1)
+                .stringType("userIdentifier", "0Z64OR3")
+                .stringType("firstName", "John")
+                .stringType("lastName", "Smith")
+                .stringType("email", "test@test.com")
+                .stringType("lastUpdated", "2020-10-20T10:00:00")
+                .minArrayLike("userAccessTypes", 1);
+        users.object()
+                .stringType("jurisdictionId", "SSCS")
+                .stringType("organisationProfileId", "SOLICITOR")
+                .stringType("accessTypeId", "1")
+                .booleanType("enabled", true)
+                .closeObject()
+                .closeArray();
+        organisation.closeObject().closeArray();
+        response.stringType("lastOrgInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b");
+        response.stringType("lastUserInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b");
+        response.booleanType("moreAvailable", false);
+        return response;
     }
 
 }

@@ -21,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
+import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
@@ -34,8 +35,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 
 import java.util.Map;
 import java.util.Set;
-
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
@@ -136,17 +135,18 @@ public class RefDataJudicialProfileConsumerTest {
     }
 
     private DslPart createJrdProfilesResponse() {
-        return newJsonArray(o -> o.object(ob -> ob
+        return new PactDslJsonArray()
+                .object()
                 .stringType("sidam_id", SIDAM_ID)
                 .stringType("object_id", "fcb4f03c-4b3f-4c3c-bf3a-662b4557b470")
                 .stringType("email_id", "e@mail.com")
-                .minArrayLike("appointments", 1, r -> r
-                        .stringType("location_id", "1")
-                )
-                .minArrayLike("authorisations", 1, r -> r
-                        .stringType("jurisdiction", "IA")
-                )
-        )).build();
+                .minArrayLike("appointments", 1)
+                    .stringType("location_id", "1")
+                .closeObject()
+                .minArrayLike("authorisations", 1)
+                    .stringType("jurisdiction", "IA")
+                .closeObject()
+                .closeObject();
     }
 
     @NotNull

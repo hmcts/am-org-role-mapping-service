@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.refdata;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
+import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -29,7 +30,6 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 
 import java.util.List;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
@@ -161,25 +161,35 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
     }
 
     private DslPart buildOrganisationResponsePactDsl() {
-        return newJsonBody((o) -> {
-            o.minArrayLike("organisationInfo", 1, orgInfo -> orgInfo
-                    .stringType("organisationIdentifier", "0Z64OR3")
-                    .stringType("status", "PENDING")
-                    .stringType("lastUpdated", "2024-01-25T12:52:30.770894")
-                    .array("organisationProfileIds", arr -> arr.stringType("SOLICITOR_PROFILE")));
-            o.stringType("lastRecordInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b");
-            o.booleanType("moreAvailable", false);
-        }).build();
+        PactDslJsonBody response = new PactDslJsonBody();
+        PactDslJsonBody organisationInfo = response.minArrayLike("organisationInfo", 1);
+        organisationInfo.object()
+                .stringType("organisationIdentifier", "0Z64OR3")
+                .stringType("status", "PENDING")
+                .stringType("lastUpdated", "2024-01-25T12:52:30.770894")
+                .array("organisationProfileIds")
+                .stringType("SOLICITOR_PROFILE")
+                .closeArray()
+                .closeObject()
+                .closeArray();
+        response.stringType("lastRecordInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b");
+        response.booleanType("moreAvailable", false);
+        return response;
     }
 
     private DslPart buildOrganisationProfileResponsePactDsl() {
-        return newJsonBody((o) -> {
-            o.minArrayLike("organisations", 1, orgInfo -> orgInfo
-                    .stringType("organisationIdentifier", "0Z64OR3")
-                    .stringType("status", "PENDING")
-                    .stringType("lastUpdated", "2024-01-01T12:34:56.789012")
-                    .array("organisationProfileIds", arr -> arr.stringType("SOLICITOR_PROFILE")));
-            o.booleanType("moreAvailable", false);
-        }).build();
+        PactDslJsonBody response = new PactDslJsonBody();
+        PactDslJsonBody organisations = response.minArrayLike("organisations", 1);
+        organisations.object()
+                .stringType("organisationIdentifier", "0Z64OR3")
+                .stringType("status", "PENDING")
+                .stringType("lastUpdated", "2024-01-01T12:34:56.789012")
+                .array("organisationProfileIds")
+                .stringType("SOLICITOR_PROFILE")
+                .closeArray()
+                .closeObject()
+                .closeArray();
+        response.booleanType("moreAvailable", false);
+        return response;
     }
 }
