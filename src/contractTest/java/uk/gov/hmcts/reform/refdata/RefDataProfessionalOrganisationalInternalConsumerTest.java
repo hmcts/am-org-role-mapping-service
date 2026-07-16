@@ -167,11 +167,10 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
                 .stringType("organisationIdentifier", "0Z64OR3")
                 .stringType("status", "PENDING")
                 .stringType("lastUpdated", "2024-01-25T12:52:30.770894")
-                .array("organisationProfileIds")
-                .stringType("SOLICITOR_PROFILE")
+                .minArrayLike("organisationProfileIds", 1)
+                    .stringType("SOLICITOR_PROFILE")
                 .closeArray()
-                .closeObject()
-                .closeArray();
+                .closeObject();
         response.stringType("lastRecordInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b");
         response.booleanType("moreAvailable", false);
         return response;

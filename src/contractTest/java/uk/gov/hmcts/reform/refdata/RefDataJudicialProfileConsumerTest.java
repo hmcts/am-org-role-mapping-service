@@ -148,11 +148,9 @@ public class RefDataJudicialProfileConsumerTest {
                 .stringType("email_id", "e@mail.com")
                 .minArrayLike("appointments", 1)
                     .stringType("location_id", "1")
-                .closeObject()
                 .closeArray()
                 .minArrayLike("authorisations", 1)
                     .stringType("jurisdiction", "IA")
-                .closeObject()
                 .closeArray()
                 .closeObject();
     }
