@@ -4,6 +4,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import uk.gov.hmcts.reform.idam.client.IdamApi;
 import uk.gov.hmcts.reform.idam.client.IdamClient;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.IdamRepository;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.OIdcAdminConfiguration;
@@ -12,6 +13,11 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 @SpringBootApplication
 @EnableFeignClients(basePackages = {"uk.gov.hmcts.reform.orgrolemapping.feignclients"})
 public class RefDataConsumerApplication {
+
+    @Bean
+    public IdamApi idamApi() {
+        return Mockito.mock(IdamApi.class);
+    }
 
     @Bean
     public IdamClient idamClient() {
