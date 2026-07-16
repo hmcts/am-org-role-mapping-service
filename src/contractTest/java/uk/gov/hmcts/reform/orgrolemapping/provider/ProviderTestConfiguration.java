@@ -149,9 +149,10 @@ public class ProviderTestConfiguration {
 
     @Bean
     @Primary
-    public ProfessionalRefreshOrchestrator professionalRefreshOrchestrator() {
+    public ProfessionalRefreshOrchestrator professionalRefreshOrchestrator(
+            UserRefreshQueueRepository userRefreshQueueRepository) {
         return new ProfessionalRefreshOrchestrator(
-            userRefreshQueueRepository(),
+            userRefreshQueueRepository,
             prdService(),
             professionalRefreshOrchestrationHelper(),
             processEventTracker()
