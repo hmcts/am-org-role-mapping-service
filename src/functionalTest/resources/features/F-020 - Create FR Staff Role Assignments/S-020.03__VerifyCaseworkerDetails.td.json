@@ -24,6 +24,15 @@
               "_extends_": "CaseworkerRole_03_HC_TL"
             }
           ],
+          "skills": [
+            {
+              "__ordering__": "UNORDERED",
+              "__elementId__": "skill_code"
+            },
+            {
+              "_extends_": "Skill_ABA2_CheckingHWF"
+            }
+          ],
           "work_area": [
             {
               "_extends_": "WorkArea_ABA2_FinancialRemedy"
