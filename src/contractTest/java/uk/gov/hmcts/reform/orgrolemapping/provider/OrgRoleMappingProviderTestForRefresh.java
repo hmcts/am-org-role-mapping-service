@@ -39,7 +39,9 @@ import java.util.List;
 @Provider("am_orgRoleMapping_refresh")
 @PactBroker(scheme = "${PACT_BROKER_SCHEME:http}",
         host = "${PACT_BROKER_URL:localhost}", port = "${PACT_BROKER_PORT:9292}",
-        consumerVersionSelectors = {@VersionSelector(tag = "master")})
+        consumerVersionSelectors = {@VersionSelector(tag = "master")},
+        providerTags = "${pactbroker.providerTags:master}",
+        enablePendingPacts = "${pactbroker.enablePending:true}")
 @TestPropertySource(properties = {"spring.cache.type=none", "orm.environment=pr"})
 @Import(ProviderTestConfiguration.class)
 @IgnoreNoPactsToVerify
