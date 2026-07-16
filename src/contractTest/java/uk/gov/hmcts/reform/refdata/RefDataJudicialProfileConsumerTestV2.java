@@ -43,7 +43,13 @@ import java.util.Set;
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
-    "feign.client.config.prdClient.url=http://localhost:8090"
+    "feign.client.config.prdClient.url=http://localhost:8090",
+    "feign.client.config.jrdClient.url=http://localhost:8091",
+    "feign.client.config.roleAssignmentApp.url=http://localhost:8092",
+    "feign.client.config.ccdClient.url=http://localhost:8093",
+    "feign.client.config.jbsClient.url=http://localhost:8094",
+    "idam.api.url=http://localhost:5000",
+    "spring.cache.type=simple"
 })
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class RefDataJudicialProfileConsumerTestV2 {
@@ -160,6 +166,7 @@ public class RefDataJudicialProfileConsumerTestV2 {
                     .stringType("appointment_id")
                     .closeArray()
                 .closeObject()
+                .closeArray()
                 .minArrayLike("authorisations", 1)
                     .stringType("jurisdiction")
                     .stringType("ticket_description")
@@ -178,6 +185,7 @@ public class RefDataJudicialProfileConsumerTestV2 {
                     .stringType("start_date")
                     .stringType("end_date")
                 .closeObject()
+                .closeArray()
                 .closeObject();
     }
 
