@@ -380,7 +380,8 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
                     .stringType("primaryLocation", "500A2S")
                 .closeArray()
                 .closeObject()
-                .closeArray();
+                .closeArray()
+                .closeObject();
     }
 
     private DslPart createRoleAssignmentResponseSearchQueryMultipleRoleAssignments() {

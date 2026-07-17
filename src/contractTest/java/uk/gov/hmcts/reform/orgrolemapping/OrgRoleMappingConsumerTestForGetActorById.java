@@ -79,7 +79,7 @@ public class OrgRoleMappingConsumerTestForGetActorById extends BaseTestContract 
     }
 
     private DslPart createResponse() {
-        return new PactDslJsonArray()
+        return new PactDslJsonArray().object()
                 .minArrayLike("roleAssignmentResponse", 1)
                     .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
                     .stringValue("actorIdType", "IDAM")
@@ -94,7 +94,8 @@ public class OrgRoleMappingConsumerTestForGetActorById extends BaseTestContract 
                         .stringType("jurisdiction", "IA")
                         .stringType("primaryLocation", "123456")
                     .closeArray()
-                .closeArray();
+                .closeArray()
+                .closeObject();
     }
 
     @NotNull
