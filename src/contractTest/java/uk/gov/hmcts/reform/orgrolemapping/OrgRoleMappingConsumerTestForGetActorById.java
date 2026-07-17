@@ -90,10 +90,10 @@ public class OrgRoleMappingConsumerTestForGetActorById extends BaseTestContract 
                     .stringValue("grantType", "STANDARD")
                     .stringType("roleCategory", "LEGAL_OPERATIONS")
                     .booleanValue("readOnly", false)
-                    .object("attributes")
+                    .minArrayLike("attributes", 1)
                         .stringType("jurisdiction", "IA")
                         .stringType("primaryLocation", "123456")
-                    .closeObject()
+                    .closeArray()
                 .closeObject();
     }
 

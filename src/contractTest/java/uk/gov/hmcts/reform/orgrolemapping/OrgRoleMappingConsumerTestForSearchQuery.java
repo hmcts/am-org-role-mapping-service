@@ -346,7 +346,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
 
     private DslPart createRoleAssignmentResponseAdvancedSearchQuery() {
         return new PactDslJsonBody().object()
-                .array("roleAssignmentResponse")
+                .minArrayLike("roleAssignmentResponse", 2)
                 .object()
                 .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
                 .stringValue("actorIdType", "IDAM")
@@ -357,10 +357,10 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
                 .stringValue("grantType", "STANDARD")
                 .stringValue("roleCategory", "LEGAL_OPERATIONS")
                 .booleanValue("readOnly", false)
-                .object("attributes")
+                .minArrayLike("attributes", 1)
                     .stringType("jurisdiction", "IA")
                     .stringType("primaryLocation", "500A2S")
-                .closeObject()
+                .closeArray()
                 .closeObject()
                 .object()
                 .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
@@ -372,10 +372,10 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
                 .stringValue("grantType", "STANDARD")
                 .stringValue("roleCategory", "LEGAL_OPERATIONS")
                 .booleanValue("readOnly", false)
-                .object("attributes")
+                .minArrayLike("attributes", 1)
                     .stringType("jurisdiction", "IA")
                     .stringType("primaryLocation", "500A2S")
-                .closeObject()
+                .closeArray()
                 .closeObject()
                 .closeArray();
     }
