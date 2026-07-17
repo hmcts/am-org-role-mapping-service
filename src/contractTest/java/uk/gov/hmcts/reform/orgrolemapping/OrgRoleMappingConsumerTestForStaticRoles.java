@@ -4,6 +4,7 @@ import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
+import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import groovy.util.logging.Slf4j;
@@ -29,7 +30,7 @@ import java.util.Properties;
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_roleAssignment_getRoles")
+@PactTestFor(providerName = "am_roleAssignment_getRoles", pactVersion = PactSpecVersion.V3)
 @PactFolder("pacts")
 @TestPropertySource(properties = {
     "idam.api.url=http://localhost:5000",
