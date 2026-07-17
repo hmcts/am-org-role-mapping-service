@@ -44,7 +44,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
     "feign.client.config.jrdClient.url=http://localhost:8091",
     "feign.client.config.roleAssignmentApp.url=http://localhost:8092",
     "feign.client.config.ccdClient.url=http://localhost:8093",
-    "feign.client.config.jbsClient.url=http://localhost:8094"
+    "feign.client.config.jbsClient.url=http://localhost:8094",
+    "idam.api.url=http://localhost:5000",
+    "spring.cache.type=simple"
 })
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class RefDataProfessionalOrganisationalInternalConsumerTest {

@@ -44,7 +44,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
     "feign.client.config.jrdClient.url=http://localhost:8091",
     "feign.client.config.roleAssignmentApp.url=http://localhost:8092",
     "feign.client.config.ccdClient.url=http://localhost:8093",
-    "feign.client.config.jbsClient.url=http://localhost:8094"
+    "feign.client.config.jbsClient.url=http://localhost:8094",
+    "idam.api.url=http://localhost:5000",
+    "spring.cache.type=simple"
 })
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class RefDataProfessionalUserInternalConsumerTestV2 {
@@ -142,25 +144,25 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
                     .stringType("status", "PENDING")
                     .array("organisationProfileIds")
                         .stringType("SOLICITOR_PROFILE")
-                    .closeArray()
-                    .minArrayLike("users", 1)
-                        .stringType("userIdentifier", "0Z64OR3")
-                        .stringType("firstName", "John")
-                        .stringType("lastName", "Smith")
-                        .stringType("email", "test@test.com")
-                        .stringType("lastUpdated", "2020-10-20T10:00:00")
-                        .minArrayLike("userAccessTypes", 1)
-                            .stringType("jurisdictionId", "SSCS")
-                            .stringType("organisationProfileId", "SOLICITOR")
-                            .stringType("accessTypeId", "1")
-                            .booleanType("enabled", true)
+                        .minArrayLike("users", 1)
+                            .stringType("userIdentifier", "0Z64OR3")
+                            .stringType("firstName", "John")
+                            .stringType("lastName", "Smith")
+                            .stringType("email", "test@test.com")
+                            .stringType("lastUpdated", "2020-10-20T10:00:00")
+                            .minArrayLike("userAccessTypes", 1)
+                                .stringType("jurisdictionId", "SSCS")
+                                .stringType("organisationProfileId", "SOLICITOR")
+                                .stringType("accessTypeId", "1")
+                                .booleanType("enabled", true)
+                            .closeArray()
                         .closeArray()
+                        .object()
+                            .stringType("lastOrgInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b")
+                            .stringType("lastUserInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b")
+                            .booleanType("moreAvailable", false)
+                        .closeObject()
                     .closeArray()
-                    .object()
-                        .stringType("lastOrgInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b")
-                        .stringType("lastUserInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b")
-                        .booleanType("moreAvailable", false)
-                    .closeObject()
                 .closeObject();
     }
 
