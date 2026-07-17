@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.DslPart;
-import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
+import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -145,21 +145,19 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
     }
 
     private DslPart createRoleAssignmentResponse(boolean replaceExisting) {
-        return  new PactDslJsonBody().object("roleAssignmentResponse")
+        return  new PactDslJsonArray().object("roleAssignmentResponse")
                 .object("roleRequest")
-                    .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
-                    .stringType("authenticatedUserId", "14a21569-eb80-4681-b62c-6ae2ed069e2f")
-                    .stringType("correlationId", "14a21569-eb80-4681-b62c-6ae2ed069e3f")
-                    .stringType("assignerId", "14a21569-eb80-4681-b62c-6ae2ed069e4f")
-                    .stringValue("requestType", "CREATE")
-                    .stringValue("process", "staff-organisational-role-mapping")
-                    .stringValue("reference", "14a21569-eb80-4681-b62c-6ae2ed069e5f")
-                    .booleanValue("replaceExisting", replaceExisting)
-                    .stringValue("status", "APPROVED")
-                    .stringType("log", "Request has been Approved")
-                .closeObject()
+                .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
+                .stringType("authenticatedUserId", "14a21569-eb80-4681-b62c-6ae2ed069e2f")
+                .stringType("correlationId", "14a21569-eb80-4681-b62c-6ae2ed069e3f")
+                .stringType("assignerId", "14a21569-eb80-4681-b62c-6ae2ed069e4f")
+                .stringValue("requestType", "CREATE")
+                .stringValue("process", "staff-organisational-role-mapping")
+                .stringValue("reference", "14a21569-eb80-4681-b62c-6ae2ed069e5f")
+                .booleanValue("replaceExisting", replaceExisting)
+                .stringValue("status", "APPROVED")
+                .stringType("log", "Request has been Approved")
                 .minArrayLike("requestedRoles", 1)
-                    .object()
                     .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
                     .stringValue("actorIdType", "IDAM")
                     .stringType("actorId", "14a21569-eb80-4681-b62c-6ae2ed069e5f")
@@ -177,15 +175,16 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
                                     + "nApproved "
                                     + ": validate_role_assignment_against_patterns")
                     .object("attributes")
-                    .stringType("jurisdiction", "IA")
-                    .stringType("region", "south-east")
+                        .stringType("jurisdiction", "IA")
+                        .stringType("region", "south-east")
                     .closeObject()
                 .closeArray()
+                .closeObject()
                 .closeObject();
     }
 
     private DslPart createRoleAssignmentResponseZeroRole() {
-        return new PactDslJsonBody()
+        return new PactDslJsonArray()
                 .object("roleAssignmentResponse")
                     .object("roleRequest")
                         .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
