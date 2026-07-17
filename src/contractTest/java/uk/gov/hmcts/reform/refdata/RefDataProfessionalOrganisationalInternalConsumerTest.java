@@ -161,19 +161,20 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
     }
 
     private DslPart buildOrganisationResponsePactDsl() {
-        PactDslJsonBody response = new PactDslJsonBody();
-        PactDslJsonBody organisationInfo = response.minArrayLike("organisationInfo", 1);
-        organisationInfo.object()
-                .stringType("organisationIdentifier", "0Z64OR3")
-                .stringType("status", "PENDING")
-                .stringType("lastUpdated", "2024-01-25T12:52:30.770894")
-                .minArrayLike("organisationProfileIds", 1)
-                    .stringType("SOLICITOR_PROFILE")
+        return new PactDslJsonBody().object()
+                .minArrayLike("organisationInfo", 1)
+                    .stringType("organisationIdentifier", "0Z64OR3")
+                    .stringType("status", "PENDING")
+                    .stringType("lastUpdated", "2024-01-25T12:52:30.770894")
+                    .array("organisationProfileIds")
+                        .stringType("SOLICITOR_PROFILE")
+                    .closeArray()
                 .closeArray()
+                .object()
+                    .stringType("lastRecordInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b")
+                    .booleanType("moreAvailable", false)
+                .closeObject()
                 .closeObject();
-        response.stringType("lastRecordInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b");
-        response.booleanType("moreAvailable", false);
-        return response;
     }
 
     private DslPart buildOrganisationProfileResponsePactDsl() {
