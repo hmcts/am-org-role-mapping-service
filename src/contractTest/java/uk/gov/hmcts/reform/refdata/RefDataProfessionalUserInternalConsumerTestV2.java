@@ -132,32 +132,32 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
     }
 
     private DslPart buildOrganisationUsersResponsePactDsl() {
-        PactDslJsonBody response = new PactDslJsonBody();
-        PactDslJsonBody organisation = response.minArrayLike("organisationInfo", 1)
-                .stringType("organisationIdentifier", "0Z64OR3")
-                .stringType("status", "PENDING");
-        organisation.array("organisationProfileIds")
-                .stringType("SOLICITOR_PROFILE")
-                .closeArray();
-        PactDslJsonBody users = organisation.minArrayLike("users", 1)
-                .stringType("userIdentifier", "0Z64OR3")
-                .stringType("firstName", "John")
-                .stringType("lastName", "Smith")
-                .stringType("email", "test@test.com")
-                .stringType("lastUpdated", "2020-10-20T10:00:00")
-                .minArrayLike("userAccessTypes", 1);
-        users.object()
-                .stringType("jurisdictionId", "SSCS")
-                .stringType("organisationProfileId", "SOLICITOR")
-                .stringType("accessTypeId", "1")
-                .booleanType("enabled", true)
-                .closeObject()
-                .closeArray();
-        organisation.closeObject().closeArray();
-        response.stringType("lastOrgInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b");
-        response.stringType("lastUserInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b");
-        response.booleanType("moreAvailable", false);
-        return response;
+        return new PactDslJsonBody().object()
+                .minArrayLike("organisationInfo", 1)
+                    .stringType("organisationIdentifier", "0Z64OR3")
+                    .stringType("status", "PENDING")
+                    .array("organisationProfileIds")
+                        .stringType("SOLICITOR_PROFILE")
+                    .closeArray()
+                    .minArrayLike("users", 1)
+                        .stringType("userIdentifier", "0Z64OR3")
+                        .stringType("firstName", "John")
+                        .stringType("lastName", "Smith")
+                        .stringType("email", "test@test.com")
+                        .stringType("lastUpdated", "2020-10-20T10:00:00")
+                        .minArrayLike("userAccessTypes", 1)
+                            .stringType("jurisdictionId", "SSCS")
+                            .stringType("organisationProfileId", "SOLICITOR")
+                            .stringType("accessTypeId", "1")
+                            .booleanType("enabled", true)
+                        .closeArray()
+                    .closeArray()
+                    .object()
+                        .stringType("lastOrgInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b")
+                        .stringType("lastUserInPage", "ab5b51f9-8c2e-46c8-979a-c204aef0c27b")
+                        .booleanType("moreAvailable", false)
+                    .closeObject()
+                .closeObject();
     }
 
 }

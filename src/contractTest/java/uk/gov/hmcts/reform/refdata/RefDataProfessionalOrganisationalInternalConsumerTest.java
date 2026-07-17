@@ -178,18 +178,17 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
     }
 
     private DslPart buildOrganisationProfileResponsePactDsl() {
-        PactDslJsonBody response = new PactDslJsonBody();
-        PactDslJsonBody organisations = response.minArrayLike("organisations", 1);
-        organisations.object()
-                .stringType("organisationIdentifier", "0Z64OR3")
-                .stringType("status", "PENDING")
-                .stringType("lastUpdated", "2024-01-01T12:34:56.789012")
-                .array("organisationProfileIds")
-                .stringType("SOLICITOR_PROFILE")
-                .closeArray()
+        return new PactDslJsonBody().object()
+                .minArrayLike("organisations", 1)
+                    .stringType("organisationIdentifier", "0Z64OR3")
+                    .stringType("status", "PENDING")
+                    .stringType("lastUpdated", "2024-01-01T12:34:56.789012")
+                    .array("organisationProfileIds")
+                        .stringType("SOLICITOR_PROFILE")
+                    .closeArray()
+                .object()
+                .booleanType("moreAvailable", false)
                 .closeObject()
-                .closeArray();
-        response.booleanType("moreAvailable", false);
-        return response;
+                .closeObject();
     }
 }
