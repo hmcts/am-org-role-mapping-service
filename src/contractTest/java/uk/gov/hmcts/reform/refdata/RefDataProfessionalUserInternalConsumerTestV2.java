@@ -40,7 +40,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
-    "feign.client.config.prdClient.url=http://localhost:8090"
+    "feign.client.config.prdClient.url=http://localhost:8090",
+    "feign.client.config.jrdClient.url=http://localhost:8091",
+    "feign.client.config.roleAssignmentApp.url=http://localhost:8092",
+    "feign.client.config.ccdClient.url=http://localhost:8093",
+    "feign.client.config.jbsClient.url=http://localhost:8094"
 })
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class RefDataProfessionalUserInternalConsumerTestV2 {
