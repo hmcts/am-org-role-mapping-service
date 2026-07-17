@@ -38,13 +38,15 @@ then
    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
-   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+   if ($up.hasSkillMatching(ctscConsentedSkillPattern())) {
+      attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                                                             WorkType.HEARING_WORK,
                                                             WorkType.ROUTINE_WORK,
                                                             WorkType.DECISION_MAKING_WORK,
                                                             WorkType.APPLICATIONS,
                                                             WorkType.REVIEW_CASE,
                                                             WorkType.EVIDENCE)));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -74,12 +76,14 @@ then
    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
-   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+   if ($up.hasSkillMatching(ctscConsentedSkillPattern())) {
+      attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
                                                             WorkType.HEARING_WORK,
                                                             WorkType.ROUTINE_WORK,
                                                             WorkType.APPLICATIONS,
                                                             WorkType.REVIEW_CASE,
                                                             WorkType.EVIDENCE)));
+   }
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -145,7 +149,6 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
-      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : fr_task_supervisor_v1");
 end;
@@ -174,7 +177,6 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
-      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : fr_case_allocator_v1");
 end;
@@ -190,8 +192,10 @@ when
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.FR.getName()));
-   attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-   attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(WorkType.ACCESS_REQUESTS.getValue()));
+   if ($up.hasSkillMatching(ctscConsentedSkillPattern())) {
+      attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode(
+              WorkType.ACCESS_REQUESTS.getValue()));
+   }
    attribute.put(Attributes.Name.CASE_TYPE, JacksonUtils.convertObjectIntoJsonNode("FinancialRemedyMVP2"));
   insert(
       RoleAssignment.builder()
@@ -204,7 +208,6 @@ then
       .classification(Classification.PUBLIC)
       .readOnly(false)
       .attributes(attribute)
-      .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : fr_specific_access_approver_ctsc_v1");
 end;
