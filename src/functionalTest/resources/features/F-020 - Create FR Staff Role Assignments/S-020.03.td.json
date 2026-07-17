@@ -53,7 +53,10 @@
             "caseType" : "FinancialRemedyMVP2",
             "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "routine_work, review_case"
-          }
+          },
+          "authorisations": [
+            "SKILL:ABA2:CheckingHWF"
+          ]
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
@@ -73,7 +76,10 @@
             "caseType" : "FinancialRemedyMVP2",
             "region": "[[ANYTHING_PRESENT]]",
             "workTypes": "routine_work, review_case"
-          }
+          },
+          "authorisations": [
+            "SKILL:ABA2:CheckingHWF"
+          ]
         },
         {
           "id": "[[ANYTHING_PRESENT]]",

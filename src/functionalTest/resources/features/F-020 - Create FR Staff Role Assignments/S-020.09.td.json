@@ -52,7 +52,10 @@
             "jurisdiction": "DIVORCE",
             "caseType" : "FinancialRemedyMVP2",
             "workTypes": "hearing_work, routine_work, decision_making_work, applications, review_case, evidence"
-          }
+          },
+          "authorisations": [
+            "SKILL:ABA2:CheckingHWF"
+          ]
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
@@ -71,7 +74,10 @@
             "jurisdiction": "DIVORCE",
             "caseType" : "FinancialRemedyMVP2",
             "workTypes": "hearing_work, routine_work, applications, review_case, evidence"
-          }
+          },
+          "authorisations": [
+            "SKILL:ABA2:CheckingHWF"
+          ]
         },
         {
           "id": "[[ANYTHING_PRESENT]]",
