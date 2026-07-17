@@ -92,7 +92,6 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
             "workTypes": "access_requests",
             "caseType" : "FinancialRemedyMVP2"

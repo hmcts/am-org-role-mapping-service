@@ -86,7 +86,6 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
             "caseType" : "FinancialRemedyMVP2",
             "region": "[[ANYTHING_PRESENT]]"
@@ -105,7 +104,6 @@
           "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
             "substantive": "N",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "DIVORCE",
             "caseType" : "FinancialRemedyMVP2",
             "region": "[[ANYTHING_PRESENT]]"
