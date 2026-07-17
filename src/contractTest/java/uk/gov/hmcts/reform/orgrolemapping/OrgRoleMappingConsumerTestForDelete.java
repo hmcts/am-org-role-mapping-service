@@ -16,6 +16,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
 
@@ -25,6 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactTestFor(providerName = "am_roleAssignment_deleteAssignment", pactVersion = PactSpecVersion.V3)
 @PactFolder("pacts")
+@TestPropertySource(properties = {
+    "idam.api.url=http://localhost:5000",
+    "spring.cache.type=simple"
+})
 public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
 
     private static final String ACTOR_ID = "704c8b1c-e89b-436a-90f6-953b1dc40157";

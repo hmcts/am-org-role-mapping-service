@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.test.context.TestPropertySource;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -30,6 +31,10 @@ import java.util.Properties;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactTestFor(providerName = "am_roleAssignment_getRoles")
 @PactFolder("pacts")
+@TestPropertySource(properties = {
+    "idam.api.url=http://localhost:5000",
+    "spring.cache.type=simple"
+})
 public class OrgRoleMappingConsumerTestForStaticRoles extends BaseTestContract {
 
     @BeforeEach
