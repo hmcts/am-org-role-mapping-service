@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.DslPart;
-import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
+import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -145,7 +145,7 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
     }
 
     private DslPart createRoleAssignmentResponse(boolean replaceExisting) {
-        return  new PactDslJsonArray().object("roleAssignmentResponse")
+        return  new PactDslJsonBody().object("roleAssignmentResponse")
                 .object("roleRequest")
                 .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
                 .stringType("authenticatedUserId", "14a21569-eb80-4681-b62c-6ae2ed069e2f")
@@ -174,17 +174,17 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
                                     + "judicial_organisational_role_mapping_service_create\\"
                                     + "nApproved "
                                     + ": validate_role_assignment_against_patterns")
-                    .object("attributes")
+                    .minArrayLike("attributes", 1)
                         .stringType("jurisdiction", "IA")
                         .stringType("region", "south-east")
-                    .closeObject()
+                    .closeArray()
                 .closeArray()
                 .closeObject()
                 .closeObject();
     }
 
     private DslPart createRoleAssignmentResponseZeroRole() {
-        return new PactDslJsonArray()
+        return new PactDslJsonBody()
                 .object("roleAssignmentResponse")
                     .object("roleRequest")
                         .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")

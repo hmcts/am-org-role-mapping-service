@@ -325,31 +325,29 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
     }
 
     private DslPart createRoleAssignmentResponseSearchQuery() {
-        PactDslJsonBody response = new PactDslJsonBody();
-        PactDslJsonBody roleAssignmentResponse = response.minArrayLike("roleAssignmentResponse", 1);
-        roleAssignmentResponse.object()
-                .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
-                .stringValue("actorIdType", "IDAM")
-                .stringValue("actorId", ACTOR_ID)
-                .stringValue("roleType", "ORGANISATION")
-                .stringValue("roleName", "senior-tribunal-caseworker")
-                .stringValue("classification", "PRIVATE")
-                .stringValue("grantType", "STANDARD")
-                .stringValue("roleCategory", "LEGAL_OPERATIONS")
-                .booleanValue("readOnly", false)
-                .object("attributes")
-                .stringType("jurisdiction", "IA")
-                .stringType("primaryLocation", "500A2S")
-                .closeObject()
-                .closeObject()
-                .closeArray();
-        return response;
+        return new PactDslJsonBody().object()
+                .minArrayLike("roleAssignmentResponse", 1)
+                    .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
+                    .stringValue("actorIdType", "IDAM")
+                    .stringValue("actorId", ACTOR_ID)
+                    .stringValue("roleType", "ORGANISATION")
+                    .stringValue("roleName", "senior-tribunal-caseworker")
+                    .stringValue("classification", "PRIVATE")
+                    .stringValue("grantType", "STANDARD")
+                    .stringValue("roleCategory", "LEGAL_OPERATIONS")
+                    .booleanValue("readOnly", false)
+                    .object("attributes")
+                        .stringType("jurisdiction", "IA")
+                        .stringType("primaryLocation", "500A2S")
+                    .closeObject()
+                .closeArray()
+                .closeObject();
     }
 
     private DslPart createRoleAssignmentResponseAdvancedSearchQuery() {
-        PactDslJsonBody response = new PactDslJsonBody();
-        PactDslJsonArray roleAssignmentResponse = response.array("roleAssignmentResponse");
-        roleAssignmentResponse.object()
+        return new PactDslJsonBody().object()
+                .array("roleAssignmentResponse")
+                .object()
                 .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
                 .stringValue("actorIdType", "IDAM")
                 .stringValue("actorId", ACTOR_ID_ADV)
@@ -360,11 +358,11 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
                 .stringValue("roleCategory", "LEGAL_OPERATIONS")
                 .booleanValue("readOnly", false)
                 .object("attributes")
-                .stringType("jurisdiction", "IA")
-                .stringType("primaryLocation", "500A2S")
+                    .stringType("jurisdiction", "IA")
+                    .stringType("primaryLocation", "500A2S")
                 .closeObject()
-                .closeObject();
-        roleAssignmentResponse.object()
+                .closeObject()
+                .object()
                 .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
                 .stringValue("actorIdType", "IDAM")
                 .stringValue("actorId", ACTOR_ID_ADV)
@@ -375,12 +373,11 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
                 .stringValue("roleCategory", "LEGAL_OPERATIONS")
                 .booleanValue("readOnly", false)
                 .object("attributes")
-                .stringType("jurisdiction", "IA")
-                .stringType("primaryLocation", "500A2S")
+                    .stringType("jurisdiction", "IA")
+                    .stringType("primaryLocation", "500A2S")
                 .closeObject()
-                .closeObject();
-        roleAssignmentResponse.closeArray();
-        return response;
+                .closeObject()
+                .closeArray();
     }
 
     private DslPart createRoleAssignmentResponseSearchQueryMultipleRoleAssignments() {
