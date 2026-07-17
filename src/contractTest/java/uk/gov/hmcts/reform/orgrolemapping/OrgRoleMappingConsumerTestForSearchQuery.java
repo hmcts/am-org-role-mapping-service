@@ -384,46 +384,46 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
     }
 
     private DslPart createRoleAssignmentResponseSearchQueryMultipleRoleAssignments() {
-        PactDslJsonBody response = new PactDslJsonBody();
-        PactDslJsonBody roleAssignmentResponse = response.minArrayLike("roleAssignmentResponse", 2);
-        roleAssignmentResponse.object()
-                .stringType("id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e")
-                .stringValue("actorIdType", "IDAM")
-                .stringValue("actorId", "ca93ea54-c219-4c6d-add6-e687a0f1f5f7")
-                .stringValue("roleType", "ORGANISATION")
-                .stringValue("roleName", "senior-tribunal-caseworker")
-                .stringValue("classification", "PRIVATE")
-                .stringValue("grantType", "STANDARD")
-                .stringValue("roleCategory", "LEGAL_OPERATIONS")
-                .booleanValue("readOnly", false)
-                .object("attributes")
-                .stringType("jurisdiction", "IA")
-                .stringType("primaryLocation", "219ASA")
+        return new PactDslJsonBody().object()
+                .minArrayLike("roleAssignmentResponse", 2)
+                .object()
+                    .stringType("id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e")
+                    .stringValue("actorIdType", "IDAM")
+                    .stringValue("actorId", "ca93ea54-c219-4c6d-add6-e687a0f1f5f7")
+                    .stringValue("roleType", "ORGANISATION")
+                    .stringValue("roleName", "senior-tribunal-caseworker")
+                    .stringValue("classification", "PRIVATE")
+                    .stringValue("grantType", "STANDARD")
+                    .stringValue("roleCategory", "LEGAL_OPERATIONS")
+                    .booleanValue("readOnly", false)
+                    .object("attributes")
+                        .stringType("jurisdiction", "IA")
+                        .stringType("primaryLocation", "219ASA")
+                    .closeObject()
                 .closeObject()
+                .object()
+                    .stringType("id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e")
+                    .stringValue("actorIdType", "IDAM")
+                    .stringValue("actorId", "ca93ea54-c219-4c6d-add6-e687a0f1f5f7")
+                    .stringValue("roleType", "ORGANISATION")
+                    .stringValue("roleName", "senior-tribunal-caseworker")
+                    .stringValue("classification", "PRIVATE")
+                    .stringValue("grantType", "STANDARD")
+                    .stringValue("roleCategory", "LEGAL_OPERATIONS")
+                    .booleanValue("readOnly", false)
+                    .object("attributes")
+                        .stringType("jurisdiction", "IA")
+                        .stringType("primaryLocation", "219ASA")
+                    .closeObject()
+                .closeObject()
+                .closeArray()
                 .closeObject();
-        roleAssignmentResponse.object()
-                .stringType("id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e")
-                .stringValue("actorIdType", "IDAM")
-                .stringValue("actorId", "ca93ea54-c219-4c6d-add6-e687a0f1f5f7")
-                .stringValue("roleType", "ORGANISATION")
-                .stringValue("roleName", "senior-tribunal-caseworker")
-                .stringValue("classification", "PRIVATE")
-                .stringValue("grantType", "STANDARD")
-                .stringValue("roleCategory", "LEGAL_OPERATIONS")
-                .booleanValue("readOnly", false)
-                .object("attributes")
-                .stringType("jurisdiction", "IA")
-                .stringType("primaryLocation", "219ASA")
-                .closeObject()
-                .closeObject()
-                .closeArray();
-        return response;
     }
 
     private DslPart createRoleAssignmentResponseSearchQueryEmptyCollection() {
-        PactDslJsonBody response = new PactDslJsonBody();
-        response.array("roleAssignmentResponse").closeArray();
-        return response;
+        return new PactDslJsonBody().object()
+                .array("roleAssignmentResponse").closeArray()
+                .closeObject();
     }
 
     @NotNull

@@ -145,66 +145,63 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
     }
 
     private DslPart createRoleAssignmentResponse(boolean replaceExisting) {
-        PactDslJsonBody response = new PactDslJsonBody();
-        PactDslJsonBody roleAssignmentResponse = response.object("roleAssignmentResponse");
-        roleAssignmentResponse.object("roleRequest")
-                .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
-                .stringType("authenticatedUserId", "14a21569-eb80-4681-b62c-6ae2ed069e2f")
-                .stringType("correlationId", "14a21569-eb80-4681-b62c-6ae2ed069e3f")
-                .stringType("assignerId", "14a21569-eb80-4681-b62c-6ae2ed069e4f")
-                .stringValue("requestType", "CREATE")
-                .stringValue("process", "staff-organisational-role-mapping")
-                .stringValue("reference", "14a21569-eb80-4681-b62c-6ae2ed069e5f")
-                .booleanValue("replaceExisting", replaceExisting)
-                .stringValue("status", "APPROVED")
-                .stringType("log", "Request has been Approved")
+        return  new PactDslJsonBody().object("roleAssignmentResponse")
+                .object("roleRequest")
+                    .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
+                    .stringType("authenticatedUserId", "14a21569-eb80-4681-b62c-6ae2ed069e2f")
+                    .stringType("correlationId", "14a21569-eb80-4681-b62c-6ae2ed069e3f")
+                    .stringType("assignerId", "14a21569-eb80-4681-b62c-6ae2ed069e4f")
+                    .stringValue("requestType", "CREATE")
+                    .stringValue("process", "staff-organisational-role-mapping")
+                    .stringValue("reference", "14a21569-eb80-4681-b62c-6ae2ed069e5f")
+                    .booleanValue("replaceExisting", replaceExisting)
+                    .stringValue("status", "APPROVED")
+                    .stringType("log", "Request has been Approved")
+                .closeObject()
+                .minArrayLike("requestedRoles", 1)
+                    .object()
+                    .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
+                    .stringValue("actorIdType", "IDAM")
+                    .stringType("actorId", "14a21569-eb80-4681-b62c-6ae2ed069e5f")
+                    .stringValue("roleType", "ORGANISATION")
+                    .stringValue("roleName", "judge")
+                    .stringValue("classification", "PUBLIC")
+                    .stringValue("grantType", "STANDARD")
+                    .stringValue("roleCategory", "JUDICIAL")
+                    .stringValue("process", "staff-organisational-role-mapping")
+                    .stringValue("reference", "14a21569-eb80-4681-b62c-6ae2ed069e5f")
+                    .stringValue("status", "LIVE")
+                    .stringType("log",
+                            "Create approved : "
+                                    + "judicial_organisational_role_mapping_service_create\\"
+                                    + "nApproved "
+                                    + ": validate_role_assignment_against_patterns")
+                    .object("attributes")
+                    .stringType("jurisdiction", "IA")
+                    .stringType("region", "south-east")
+                    .closeObject()
+                .closeArray()
                 .closeObject();
-        PactDslJsonBody requestedRoles = roleAssignmentResponse.minArrayLike("requestedRoles", 1);
-        requestedRoles.object()
-                .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
-                .stringValue("actorIdType", "IDAM")
-                .stringType("actorId", "14a21569-eb80-4681-b62c-6ae2ed069e5f")
-                .stringValue("roleType", "ORGANISATION")
-                .stringValue("roleName", "judge")
-                .stringValue("classification", "PUBLIC")
-                .stringValue("grantType", "STANDARD")
-                .stringValue("roleCategory", "JUDICIAL")
-                .stringValue("process", "staff-organisational-role-mapping")
-                .stringValue("reference", "14a21569-eb80-4681-b62c-6ae2ed069e5f")
-                .stringValue("status", "LIVE")
-                .stringType("log",
-                        "Create approved : "
-                                + "judicial_organisational_role_mapping_service_create\\"
-                                + "nApproved "
-                                + ": validate_role_assignment_against_patterns")
-                .object("attributes")
-                .stringType("jurisdiction", "IA")
-                .stringType("region", "south-east")
-                .closeObject()
-                .closeObject()
-                .closeArray();
-        roleAssignmentResponse.closeObject();
-        return response;
     }
 
     private DslPart createRoleAssignmentResponseZeroRole() {
-        PactDslJsonBody response = new PactDslJsonBody();
-        PactDslJsonBody roleAssignmentResponse = response.object("roleAssignmentResponse");
-        roleAssignmentResponse.object("roleRequest")
-                .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
-                .stringType("authenticatedUserId", "14a21569-eb80-4681-b62c-6ae2ed069e2f")
-                .stringType("correlationId", "14a21569-eb80-4681-b62c-6ae2ed069e3f")
-                .stringType("assignerId", "14a21569-eb80-4681-b62c-6ae2ed069e4f")
-                .stringValue("requestType", "CREATE")
-                .stringValue("process", "staff-organisational-role-mapping")
-                .stringValue("reference", "14a21569-eb80-4681-b62c-6ae2ed069e5f")
-                .booleanValue("replaceExisting", true)
-                .stringValue("status", "APPROVED")
-                .stringType("log", "Request has been Approved")
+        return new PactDslJsonBody()
+                .object("roleAssignmentResponse")
+                    .object("roleRequest")
+                        .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e1f")
+                        .stringType("authenticatedUserId", "14a21569-eb80-4681-b62c-6ae2ed069e2f")
+                        .stringType("correlationId", "14a21569-eb80-4681-b62c-6ae2ed069e3f")
+                        .stringType("assignerId", "14a21569-eb80-4681-b62c-6ae2ed069e4f")
+                        .stringValue("requestType", "CREATE")
+                        .stringValue("process", "staff-organisational-role-mapping")
+                        .stringValue("reference", "14a21569-eb80-4681-b62c-6ae2ed069e5f")
+                        .booleanValue("replaceExisting", true)
+                        .stringValue("status", "APPROVED")
+                        .stringType("log", "Request has been Approved")
+                    .closeObject()
+                    .array("requestedRoles")
+                    .closeArray()
                 .closeObject();
-        roleAssignmentResponse.array("requestedRoles").closeArray();
-        roleAssignmentResponse.closeObject();
-        return response;
     }
 
     @Test
