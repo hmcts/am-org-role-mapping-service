@@ -1,55 +1,35 @@
 {
   "_guid_": "S-020.10.Contested",
   "title": "must successfully create org role mapping for CTSC Admin (Financial Remedy Contested)",
-  "_extends_": "F-020_Test_Data_Base",
+  "_extends_": "VerifyOrgRoleAssignments_RasV1",
+
   "specs": [
+    "an active IDAM profile with full permissions",
     "contains the actorId of the user just published who has CTSC Admin (Financial Remedy Contested) role"
   ],
-  "method": "GET",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+
   "request": {
-    "pathVariables": {
-      "actorId": "9b8d8f0e-0cda-4f15-8a3b-7d3d3f641001"
+    "body": {
+      "actorId": [
+        "9b8d8f0e-0cda-4f15-8a3b-7d3d3f641001"
+      ]
     }
   },
+
   "expectedResponse": {
-    "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
         {
           "__ordering__": "UNORDERED",
-          "__elementId__": "roleName"
+          "__elementId__": "roleName,attributes.jurisdiction,attributes.caseType"
         },
         {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
-          "roleType": "ORGANISATION",
-          "roleName": "hmcts-ctsc",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "CTSC",
-          "readOnly": true,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N"
-          }
+          "_extends_": "S-020__role_assignment__hmcts_ctsc"
         },
         {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
-          "roleType": "ORGANISATION",
-          "roleName": "ctsc",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "CTSC",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
+          "_extends_": "S-020__role_assignment__ctsc",
+
           "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "DIVORCE",
             "caseType" : "FinancialRemedyMVP2"
           }
         }

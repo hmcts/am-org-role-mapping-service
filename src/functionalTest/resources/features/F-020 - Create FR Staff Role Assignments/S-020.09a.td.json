@@ -1,36 +1,66 @@
 {
   "_guid_": "S-020.09a",
   "title": "must successfully create org role mapping for CTSC Team Leader + Task Supervisor (Financial Remedy)",
-  "_extends_": "S-020.09",
+  "_extends_": "VerifyOrgRoleAssignments_RasV1",
+
   "specs": [
+    "an active IDAM profile with full permissions",
     "contains the actorId of the user just published who has CTSC Team Leader + Task Supervisor (Financial Remedy) role"
   ],
-  "method": "GET",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+
   "request": {
-    "pathVariables": {
-      "actorId": "f66312c4-e8bf-4c01-bf56-079d86338e5d"
+    "body": {
+      "actorId": [
+        "f66312c4-e8bf-4c01-bf56-079d86338e5d"
+      ]
     }
   },
+
   "expectedResponse": {
-    "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
         {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
-          "roleType": "ORGANISATION",
-          "roleName": "task-supervisor",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "CTSC",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName,attributes.jurisdiction,attributes.caseType"
+        },
+        {
+          "_extends_": "S-020__role_assignment__hmcts_ctsc"
+        },
+        {
+          "_extends_": "S-020__role_assignment__ctsc_team_leader",
+
           "attributes": {
-            "substantive": "N",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "DIVORCE",
+            "caseType" : "FinancialRemedyMVP2",
+            "workTypes": "hearing_work, routine_work, decision_making_work, applications, review_case, evidence"
+          },
+          "authorisations": [
+            "SKILL:ABA2:CheckingHWF"
+          ]
+        },
+        {
+          "_extends_": "S-020__role_assignment__ctsc",
+
+          "attributes": {
+            "caseType" : "FinancialRemedyMVP2",
+            "workTypes": "hearing_work, routine_work, applications, review_case, evidence"
+          },
+          "authorisations": [
+            "SKILL:ABA2:CheckingHWF"
+          ]
+        },
+        {
+          "_extends_": "S-020__role_assignment__specific_access_approver_ctsc",
+
+          "attributes": {
+            "caseType" : "FinancialRemedyMVP2",
+            "workTypes": "access_requests"
+          }
+        },
+        {
+          "_extends_": "S-020__role_assignment__task_supervisor",
+
+          "roleCategory": "CTSC",
+          "attributes": {
             "caseType" : "FinancialRemedyMVP2"
           }
         }

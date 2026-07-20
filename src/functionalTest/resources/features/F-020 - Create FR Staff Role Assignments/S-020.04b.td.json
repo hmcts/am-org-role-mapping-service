@@ -1,38 +1,48 @@
 {
   "_guid_": "S-020.04b",
   "title": "must successfully create org role mapping for Hearing Centre Administrator + Case Allocator (Financial Remedy)",
-  "_extends_": "S-020.04",
+  "_extends_": "VerifyOrgRoleAssignments_RasV1",
+
   "specs": [
+    "an active IDAM profile with full permissions",
     "contains the actorId of the user just published who has Hearing Centre Administrator + Case Allocator (Financial Remedy) role"
   ],
-  "method": "GET",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+
   "request": {
-    "pathVariables": {
-      "actorId": "3a42df61-6f8f-4471-b5bb-b84cfab5dd50"
+    "body": {
+      "actorId": [
+        "3a42df61-6f8f-4471-b5bb-b84cfab5dd50"
+      ]
     }
   },
+
   "expectedResponse": {
-    "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
         {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
-          "roleType": "ORGANISATION",
-          "roleName": "case-allocator",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName,attributes.jurisdiction,attributes.caseType"
+        },
+        {
+          "_extends_": "S-020__role_assignment__hmcts_admin"
+        },
+        {
+          "_extends_": "S-020__role_assignment__hearing_centre_admin",
+
           "attributes": {
-            "substantive": "N",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "DIVORCE",
             "caseType" : "FinancialRemedyMVP2",
-            "region": "[[ANYTHING_PRESENT]]"
+            "workTypes": "routine_work, review_case"
+          },
+          "authorisations": [
+            "SKILL:ABA2:CheckingHWF"
+          ]
+        },
+        {
+          "_extends_": "S-020__role_assignment__case_allocator",
+
+          "roleCategory": "ADMIN",
+          "attributes": {
+            "caseType" : "FinancialRemedyMVP2"
           }
         }
       ]
