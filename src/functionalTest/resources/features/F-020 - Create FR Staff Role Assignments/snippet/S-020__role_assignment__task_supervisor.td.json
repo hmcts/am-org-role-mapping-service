@@ -6,7 +6,7 @@
   "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
   "roleType": "ORGANISATION",
   "roleName": "task-supervisor",
-  "roleLabel" : "Task Supervisor",
+  "roleLabel": "Task Supervisor",
   "classification": "PUBLIC",
   "grantType": "STANDARD",
   "roleCategory": "OVERRIDE_ME",
@@ -16,7 +16,6 @@
     "substantive": "N",
     "primaryLocation": "[[ANYTHING_PRESENT]]",
     "jurisdiction": "DIVORCE",
-    "caseType": "OVERRIDE_ME",
-    "region": "[[ANYTHING_PRESENT]]"
+    "caseType": "OVERRIDE_ME"
   }
 }

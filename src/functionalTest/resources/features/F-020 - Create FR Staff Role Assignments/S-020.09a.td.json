@@ -30,7 +30,7 @@
           "_extends_": "S-020__role_assignment__ctsc_team_leader",
 
           "attributes": {
-            "caseType" : "FinancialRemedyMVP2",
+            "caseType": "FinancialRemedyMVP2",
             "workTypes": "hearing_work, routine_work, decision_making_work, applications, review_case, evidence"
           },
           "authorisations": [
@@ -41,7 +41,7 @@
           "_extends_": "S-020__role_assignment__ctsc",
 
           "attributes": {
-            "caseType" : "FinancialRemedyMVP2",
+            "caseType": "FinancialRemedyMVP2",
             "workTypes": "hearing_work, routine_work, applications, review_case, evidence"
           },
           "authorisations": [
@@ -52,7 +52,7 @@
           "_extends_": "S-020__role_assignment__specific_access_approver_ctsc",
 
           "attributes": {
-            "caseType" : "FinancialRemedyMVP2",
+            "caseType": "FinancialRemedyMVP2",
             "workTypes": "access_requests"
           }
         },
@@ -61,7 +61,7 @@
 
           "roleCategory": "CTSC",
           "attributes": {
-            "caseType" : "FinancialRemedyMVP2"
+            "caseType": "FinancialRemedyMVP2"
           }
         }
       ]

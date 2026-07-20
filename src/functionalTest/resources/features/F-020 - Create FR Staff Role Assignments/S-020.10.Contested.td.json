@@ -30,7 +30,7 @@
           "_extends_": "S-020__role_assignment__ctsc",
 
           "attributes": {
-            "caseType" : "FinancialRemedyMVP2"
+            "caseType": "FinancialRemedyMVP2"
           }
         }
       ]

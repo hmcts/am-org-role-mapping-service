@@ -30,7 +30,7 @@
           "_extends_": "S-020__role_assignment__hearing_centre_admin",
 
           "attributes": {
-            "caseType" : "FinancialRemedyMVP2",
+            "caseType": "FinancialRemedyMVP2",
             "workTypes": "routine_work, review_case"
           },
           "authorisations": [
@@ -42,7 +42,8 @@
 
           "roleCategory": "ADMIN",
           "attributes": {
-            "caseType" : "FinancialRemedyMVP2"
+            "caseType": "FinancialRemedyMVP2",
+            "region": "[[ANYTHING_PRESENT]]"
           }
         }
       ]
