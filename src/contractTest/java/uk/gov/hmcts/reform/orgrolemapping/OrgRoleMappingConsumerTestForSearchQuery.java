@@ -348,7 +348,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
     }
 
     private DslPart createRoleAssignmentResponseAdvancedSearchQuery() {
-        return new PactDslJsonBody().object()
+        return new PactDslJsonBody()
                 .minArrayLike("roleAssignmentResponse", 2)
                 .object()
                 .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
@@ -380,12 +380,11 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
                     .stringType("primaryLocation", "500A2S")
                 .closeArray()
                 .closeObject()
-                .closeArray()
-                .closeObject();
+                .closeArray();
     }
 
     private DslPart createRoleAssignmentResponseSearchQueryMultipleRoleAssignments() {
-        return new PactDslJsonArray().object()
+        return new PactDslJsonBody()
                 .minArrayLike("roleAssignmentResponse", 2)
                 .object()
                     .stringType("id", "da3c7ad9-0be1-4f72-8224-b73e3c61d22e")
@@ -417,14 +416,12 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
                         .stringType("primaryLocation", "219ASA")
                     .closeObject()
                 .closeObject()
-                .closeArray()
-                .closeObject();
+                .closeArray();
     }
 
     private DslPart createRoleAssignmentResponseSearchQueryEmptyCollection() {
-        return new PactDslJsonBody().object()
-                .array("roleAssignmentResponse").closeArray()
-                .closeObject();
+        return new PactDslJsonBody()
+                .array("roleAssignmentResponse").closeArray();
     }
 
     @NotNull
