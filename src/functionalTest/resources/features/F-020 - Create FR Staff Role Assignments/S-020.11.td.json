@@ -1,57 +1,36 @@
 {
   "_guid_": "S-020.11",
   "title": "must successfully create org role mapping for NBC Admin (Financial Remedy)",
-  "_extends_": "F-020_Test_Data_Base",
+  "_extends_": "VerifyOrgRoleAssignments_RasV1",
+
   "specs": [
+    "an active IDAM profile with full permissions",
     "contains the actorId of the user just published who has NBC Admin (Financial Remedy) role"
   ],
-  "method": "GET",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+
   "request": {
-    "pathVariables": {
-      "actorId": "6e7ccf83-6fc2-4079-b3b1-a54a2fe7750c"
+    "body": {
+      "actorId": [
+        "6e7ccf83-6fc2-4079-b3b1-a54a2fe7750c"
+      ]
     }
   },
+
   "expectedResponse": {
-    "_extends_": "Common_200_Response",
     "body": {
       "roleAssignmentResponse": [
         {
           "__ordering__": "UNORDERED",
-          "__elementId__": "roleName"
+          "__elementId__": "roleName,attributes.jurisdiction,attributes.caseType"
         },
         {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
-          "roleType": "ORGANISATION",
-          "roleName": "hmcts-admin",
-          "classification": "PRIVATE",
-          "grantType": "BASIC",
-          "roleCategory": "ADMIN",
-          "readOnly": true,
-          "created": "[[ANYTHING_PRESENT]]",
-          "attributes": {
-            "substantive": "N"
-          }
+          "_extends_": "S-020__role_assignment__hmcts_admin"
         },
         {
-          "id": "[[ANYTHING_PRESENT]]",
-          "actorIdType": "IDAM",
-          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
-          "roleType": "ORGANISATION",
-          "roleName": "national-business-centre",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
-          "roleCategory": "ADMIN",
-          "readOnly": false,
-          "created": "[[ANYTHING_PRESENT]]",
+          "_extends_": "S-020__role_assignment__national_business_centre",
+
           "attributes": {
-            "substantive": "Y",
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "DIVORCE",
-            "caseType" : "FinancialRemedyMVP2",
-            "region": "[[ANYTHING_PRESENT]]",
+            "caseType": "FinancialRemedyMVP2",
             "workTypes": "routine_work, review_case"
           },
           "authorisations": [
