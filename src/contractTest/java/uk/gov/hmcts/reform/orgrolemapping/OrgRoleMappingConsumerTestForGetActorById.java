@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.DslPart;
-import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
+import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -79,7 +79,7 @@ public class OrgRoleMappingConsumerTestForGetActorById extends BaseTestContract 
     }
 
     private DslPart createResponse() {
-        return new PactDslJsonArray().object()
+        return new PactDslJsonBody().object()
                 .minArrayLike("roleAssignmentResponse", 1)
                     .stringType("id", "14a21569-eb80-4681-b62c-6ae2ed069e6f")
                     .stringValue("actorIdType", "IDAM")
