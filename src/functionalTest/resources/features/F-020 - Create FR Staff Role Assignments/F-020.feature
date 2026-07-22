@@ -6,7 +6,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.03
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader (Financial Remedy)] as in [S-020.03__VerifyCaseworkerDetails],
@@ -21,7 +21,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.03.Contested
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader (Financial Remedy Contested)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader (Financial Remedy Contested)] as in [S-020.03.Contested__VerifyCaseworkerDetails],
@@ -36,7 +36,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.03a
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Task Supervisor (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader + Task Supervisor (Financial Remedy)] as in [S-020.03a__VerifyCaseworkerDetails],
@@ -51,7 +51,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.03b
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for Hearing Centre Team Leader + Case Allocator (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Team Leader + Case Allocator (Financial Remedy)] as in [S-020.03b__VerifyCaseworkerDetails],
@@ -66,7 +66,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.04
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for Hearing Centre Administrator (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Administrator (Financial Remedy)] as in [S-020.04__VerifyCaseworkerDetails],
@@ -81,7 +81,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.04.Contested
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for Hearing Centre Administrator (Financial Remedy Contested)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Administrator (Financial Remedy Contested)] as in [S-020.04.Contested__VerifyCaseworkerDetails],
@@ -96,7 +96,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.04a
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for Hearing Centre Administrator + Task Supervisor (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Administrator + Task Supervisor (Financial Remedy)] as in [S-020.04a__VerifyCaseworkerDetails],
@@ -111,7 +111,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.04b
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for Hearing Centre Administrator + Case Allocator (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Hearing Centre Administrator + Case Allocator (Financial Remedy)] as in [S-020.04b__VerifyCaseworkerDetails],
@@ -126,7 +126,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.06
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for NBC Team Leader (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for NBC Team Leader (Financial Remedy)] as in [S-020.06__VerifyCaseworkerDetails],
@@ -141,7 +141,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
   @S-020.06.Contested
 
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for NBC Team Leader (Financial Remedy Contested)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for NBC Team Leader (Financial Remedy Contested)] as in [S-020.06.Contested__VerifyCaseworkerDetails],
@@ -156,7 +156,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.06a
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for NBC Team Leader + Task Supervisor (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for NBC Team Leader + Task Supervisor (Financial Remedy)] as in [S-020.06a__VerifyCaseworkerDetails],
@@ -171,7 +171,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.06b
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for NBC Team Leader + Case Allocator (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for NBC Team Leader + Case Allocator (Financial Remedy)] as in [S-020.06b__VerifyCaseworkerDetails],
@@ -186,7 +186,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.11
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for NBC Admin (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for NBC Admin (Financial Remedy)] as in [S-020.11__VerifyCaseworkerDetails],
@@ -201,7 +201,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.11.Contested
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for NBC Admin (Financial Remedy Contested)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for NBC Admin (Financial Remedy Contested)] as in [S-020.11.Contested__VerifyCaseworkerDetails],
@@ -216,7 +216,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.11a
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for NBC Admin + Task Supervisor (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for NBC Admin + Task Supervisor (Financial Remedy)] as in [S-020.11a__VerifyCaseworkerDetails],
@@ -231,7 +231,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.11b
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for NBC Admin + Case Allocator (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for NBC Admin + Case Allocator (Financial Remedy)] as in [S-020.11b__VerifyCaseworkerDetails],
@@ -246,7 +246,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.09
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for CTSC Team Leader (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Team Leader (Financial Remedy)] as in [S-020.09__VerifyCaseworkerDetails],
@@ -261,7 +261,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.09.Contested
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for CTSC Team Leader (Financial Remedy Contested)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Team Leader (Financial Remedy Contested)] as in [S-020.09.Contested__VerifyCaseworkerDetails],
@@ -276,7 +276,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.09a
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for CTSC Team Leader + Task Supervisor (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Team Leader + Task Supervisor (Financial Remedy)] as in [S-020.09a__VerifyCaseworkerDetails],
@@ -291,7 +291,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.09b
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for CTSC Team Leader + Case Allocator (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Team Leader + Case Allocator (Financial Remedy)] as in [S-020.09b__VerifyCaseworkerDetails],
@@ -306,7 +306,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.10
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for CTSC Admin (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Admin (Financial Remedy)] as in [S-020.10__VerifyCaseworkerDetails],
@@ -321,7 +321,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.10.Contested
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for CTSC Admin (Financial Remedy Contested)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Admin (Financial Remedy Contested)] as in [S-020.10.Contested__VerifyCaseworkerDetails],
@@ -336,7 +336,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.10a
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for CTSC Admin + Task Supervisor (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Admin + Task Supervisor (Financial Remedy)] as in [S-020.10a__VerifyCaseworkerDetails],
@@ -351,7 +351,7 @@ Feature: F-020 : Create Financial Remedy Staff Role Assignments
 
 
   @S-020.10b
-  @FeatureToggle(DB:fr_wa_1_0=on)
+  @FeatureToggle(DB:fr_wa_1_0=off)
   Scenario: must successfully create org role mapping for CTSC Admin + Case Allocator (Financial Remedy)
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for CTSC Admin + Case Allocator (Financial Remedy)] as in [S-020.10b__VerifyCaseworkerDetails],

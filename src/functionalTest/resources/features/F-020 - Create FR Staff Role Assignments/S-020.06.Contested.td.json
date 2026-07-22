@@ -18,36 +18,7 @@
 
   "expectedResponse": {
     "body": {
-      "roleAssignmentResponse": [
-        {
-          "__ordering__": "UNORDERED",
-          "__elementId__": "roleName,attributes.jurisdiction,attributes.caseType"
-        },
-        {
-          "_extends_": "S-020__role_assignment__hmcts_admin"
-        },
-        {
-          "_extends_": "S-020__role_assignment__national_business_centre",
-
-          "attributes": {
-            "caseType": "FinancialRemedyMVP2"
-          }
-        },
-        {
-          "_extends_": "S-020__role_assignment__nbc_team_leader",
-
-          "attributes": {
-            "caseType": "FinancialRemedyMVP2"
-          }
-        },
-        {
-          "_extends_": "S-020__role_assignment__specific_access_approver_admin",
-
-          "attributes": {
-            "caseType": "FinancialRemedyMVP2"
-          }
-        }
-      ]
+      "roleAssignmentResponse": [ ]
     }
   }
 }

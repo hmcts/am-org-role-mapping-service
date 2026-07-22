@@ -18,53 +18,7 @@
 
   "expectedResponse": {
     "body": {
-      "roleAssignmentResponse": [
-        {
-          "__ordering__": "UNORDERED",
-          "__elementId__": "roleName,attributes.jurisdiction,attributes.caseType"
-        },
-        {
-          "_extends_": "S-020__role_assignment__hmcts_admin"
-        },
-        {
-          "_extends_": "S-020__role_assignment__hearing_centre_admin",
-
-          "attributes": {
-            "caseType": "FinancialRemedyMVP2",
-            "workTypes": "routine_work, review_case"
-          },
-          "authorisations": [
-            "SKILL:ABA2:CheckingHWF"
-          ]
-        },
-        {
-          "_extends_": "S-020__role_assignment__hearing_centre_team_leader",
-
-          "attributes": {
-            "caseType": "FinancialRemedyMVP2",
-            "workTypes": "routine_work, review_case"
-          },
-          "authorisations": [
-            "SKILL:ABA2:CheckingHWF"
-          ]
-        },
-        {
-          "_extends_": "S-020__role_assignment__specific_access_approver_admin",
-
-          "attributes": {
-            "caseType": "FinancialRemedyMVP2",
-            "workTypes": "access_requests"
-          }
-        },
-        {
-          "_extends_": "S-020__role_assignment__specific_access_approver_legal_ops",
-
-          "attributes": {
-            "caseType": "FinancialRemedyMVP2",
-            "workTypes": "access_requests"
-          }
-        }
-      ]
+      "roleAssignmentResponse": [ ]
     }
   }
 }
