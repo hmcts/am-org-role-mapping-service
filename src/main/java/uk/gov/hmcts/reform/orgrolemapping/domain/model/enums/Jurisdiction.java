@@ -10,6 +10,7 @@ public enum Jurisdiction {
     IAC("IA", List.of("BFA1")),
     PRIVATELAW("PRIVATELAW", List.of("ABA5")),
     PROBATE("PROBATE", List.of("ABA6")),
+    FR("DIVORCE", List.of("ABA2")),
     POSSESSIONS("PCS", List.of("AAA3"));
 
     private final String name;
