@@ -33,4 +33,10 @@
         <notes>https://tools.hmcts.net/jira/browse/DTSAM-1322 Jakarta Mail</notes>
         <cve>CVE-2025-7962</cve>
     </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1352 Netty</notes>
+        <cve>CVE-2026-44891</cve>
+        <cve>CVE-2026-55831</cve>
+        <cve>CVE-2026-55833</cve>
+    </suppress>
 </suppressions>
