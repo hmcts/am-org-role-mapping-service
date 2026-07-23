@@ -23,7 +23,7 @@
         "contractType": "Salaried",
         "primaryLocation": "123456",
         "jurisdiction": "PRIVATELAW",
-        "region": "[[REGION_ID]]",
+        "region": "unknown",
         "workTypes": "hearing_work,decision_making_work,applications,routine_work"
       },
       "authorisations": [
