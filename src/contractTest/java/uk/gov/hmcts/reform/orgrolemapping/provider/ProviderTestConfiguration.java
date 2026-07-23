@@ -91,9 +91,6 @@ public class ProviderTestConfiguration {
         return Mockito.mock(ProcessEventTracker.class);
     }
 
-
-    private KieServices kieServices = KieServices.Factory.get();
-
     @Bean
     @Primary
     public RetrieveDataService getRetrieveDataService() {
@@ -161,7 +158,7 @@ public class ProviderTestConfiguration {
 
     @Bean
     public KieContainer kieContainer() {
-        return kieServices.getKieClasspathContainer();
+        return KieServices.Factory.get().getKieClasspathContainer();
     }
 
     @Bean
