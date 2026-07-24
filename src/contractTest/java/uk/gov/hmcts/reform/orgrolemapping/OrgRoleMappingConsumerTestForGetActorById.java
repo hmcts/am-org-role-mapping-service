@@ -10,6 +10,7 @@ import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
+import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import net.serenitybdd.rest.SerenityRest;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -19,10 +20,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 import java.util.Map;
 
@@ -41,6 +47,28 @@ public class OrgRoleMappingConsumerTestForGetActorById extends BaseTestContract 
 
     private static final String ACTOR_ID = "23486";
     private static final String RAS_GET_ACTOR_BY_ID = "/am/role-assignments/actors/" + ACTOR_ID;
+
+    @Bean
+    JRDTopicPublisher jrdPublisher() {
+        return Mockito.mock(JRDTopicPublisher.class);
+    }
+
+    @Bean
+    CRDTopicPublisher crdPublisher() {
+        return Mockito.mock(CRDTopicPublisher.class);
+    }
+
+    @Bean
+    @Qualifier("crdPublisher")
+    ServiceBusSenderClient serviceBusSenderClient() {
+        return Mockito.mock(ServiceBusSenderClient.class);
+    }
+
+    @Bean
+    @Qualifier("jrdPublisher")
+    ServiceBusSenderClient serviceBusSenderClientJrd() {
+        return Mockito.mock(ServiceBusSenderClient.class);
+    }
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {

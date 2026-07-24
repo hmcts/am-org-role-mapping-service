@@ -8,15 +8,21 @@ import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
+import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.core5.http.HttpResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 import java.io.IOException;
 
@@ -37,6 +43,28 @@ public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
     private static final String QUERY_PARAMS = "process=p2&reference=r2";
     private static final String RAS_DELETE_ACTOR_BY_ID = AM_RAS_URL + "/" + ACTOR_ID;
     private static final String RAS_DELETE_ACTOR_BY_PR = AM_RAS_URL + "?" + QUERY_PARAMS;
+
+    @Bean
+    JRDTopicPublisher jrdPublisher() {
+        return Mockito.mock(JRDTopicPublisher.class);
+    }
+
+    @Bean
+    CRDTopicPublisher crdPublisher() {
+        return Mockito.mock(CRDTopicPublisher.class);
+    }
+
+    @Bean
+    @Qualifier("crdPublisher")
+    ServiceBusSenderClient serviceBusSenderClient() {
+        return Mockito.mock(ServiceBusSenderClient.class);
+    }
+
+    @Bean
+    @Qualifier("jrdPublisher")
+    ServiceBusSenderClient serviceBusSenderClientJrd() {
+        return Mockito.mock(ServiceBusSenderClient.class);
+    }
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
