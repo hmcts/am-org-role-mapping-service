@@ -10,6 +10,7 @@ import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
+import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import groovy.util.logging.Slf4j;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
@@ -22,11 +23,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
+import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 import java.util.Map;
 
@@ -49,18 +56,27 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
     @Autowired
     RASFeignClient rasFeignClient;
 
-    @MockitoBean
-    JRDTopicPublisher jrdPublisher;
-    @MockitoBean
-    CRDTopicPublisher crdPublisher;
+    @Bean
+    JRDTopicPublisher jrdPublisher() {
+        return Mockito.mock(JRDTopicPublisher.class);
+    }
 
-    @MockitoBean
+    @Bean
+    CRDTopicPublisher crdPublisher() {
+        return Mockito.mock(CRDTopicPublisher.class);
+    }
+
+    @Bean
     @Qualifier("crdPublisher")
-    ServiceBusSenderClient serviceBusSenderClient;
+    ServiceBusSenderClient serviceBusSenderClient() {
+        return Mockito.mock(ServiceBusSenderClient.class);
+    }
 
-    @MockitoBean
+    @Bean
     @Qualifier("jrdPublisher")
-    ServiceBusSenderClient serviceBusSenderClientJrd;
+    ServiceBusSenderClient serviceBusSenderClientJrd() {
+        return Mockito.mock(ServiceBusSenderClient.class);
+    }
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
