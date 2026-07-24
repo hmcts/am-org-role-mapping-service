@@ -34,60 +34,59 @@ import static org.mockito.Mockito.when;
 @TestConfiguration
 public class ProviderTestConfiguration {
 
-
     @Bean
-    public CRDService crdService() {
+    CRDService crdService() {
         return Mockito.mock(CRDService.class);
     }
 
     @Bean
-    public JRDService jrdService() {
+    JRDService jrdService() {
         return Mockito.mock(JRDService.class);
     }
 
     @Bean
-    public PrdService prdService() {
+    PrdService prdService() {
         return Mockito.mock(PrdService.class);
     }
 
     @Bean
     @Primary
-    public UserRefreshQueueRepository userRefreshQueueRepository() {
+    UserRefreshQueueRepository userRefreshQueueRepository() {
         return Mockito.mock(UserRefreshQueueRepository.class);
     }
 
     @Bean
-    public SecurityUtils securityUtils() {
+    SecurityUtils securityUtils() {
         return Mockito.mock(SecurityUtils.class);
     }
 
     @Bean
-    public ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper() {
+    ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper() {
         return Mockito.mock(ProfessionalRefreshOrchestrationHelper.class);
     }
 
     @Bean
-    public CacheManager cacheManager() {
+    CacheManager cacheManager() {
         return Mockito.mock(CacheManager.class);
     }
 
     @Bean
-    public JudicialBookingService judicialBookingService() {
+    JudicialBookingService judicialBookingService() {
         return Mockito.mock(JudicialBookingService.class);
     }
 
     @Bean
-    public RoleAssignmentService roleAssignmentService() {
+    RoleAssignmentService roleAssignmentService() {
         return Mockito.mock(RoleAssignmentService.class);
     }
 
     @Bean
-    public PersistenceService persistenceService() {
+    PersistenceService persistenceService() {
         return Mockito.mock(PersistenceService.class);
     }
 
     @Bean
-    public ProcessEventTracker processEventTracker() {
+    ProcessEventTracker processEventTracker() {
         return Mockito.mock(ProcessEventTracker.class);
     }
 

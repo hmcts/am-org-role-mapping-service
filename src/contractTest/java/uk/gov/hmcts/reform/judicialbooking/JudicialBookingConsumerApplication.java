@@ -18,17 +18,17 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 public class JudicialBookingConsumerApplication {
 
     @Bean
-    public IdamClient idamClient() {
+    IdamClient idamClient() {
         return Mockito.mock(IdamClient.class);
     }
 
     @Bean
-    public SecurityUtils securityUtils() {
+    SecurityUtils securityUtils() {
         return Mockito.mock(SecurityUtils.class);
     }
 
     @Bean
-    public IdamRepository idamRepository() {
+    IdamRepository idamRepository() {
         return Mockito.mock(IdamRepository.class);
     }
 
