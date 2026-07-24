@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,22 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
 
     private static final String RAS_CREATE_ROLE_ASSIGNMENT_URL = "/am/role-assignments";
+
+    @Autowired
+    RASFeignClient rasFeignClient;
+
+    @MockitoBean
+    JRDTopicPublisher jrdPublisher;
+    @MockitoBean
+    CRDTopicPublisher crdPublisher;
+
+    @MockitoBean
+    @Qualifier("crdPublisher")
+    ServiceBusSenderClient serviceBusSenderClient;
+
+    @MockitoBean
+    @Qualifier("jrdPublisher")
+    ServiceBusSenderClient serviceBusSenderClientJrd;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
