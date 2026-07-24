@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.orgrolemapping.drool;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario;
 
 import java.io.File;
@@ -198,12 +200,12 @@ public class DroolIntegrationTestSingleton  {
 
             // Get the filesInFolder
             List<String> filesInFolder = getFilesInFolder(outputLocation);
-            Map<String, String> fileInFolderMap = categoriseFiles(filesInFolder);
+            Map<String, List<String>> fileInFolderMap = categoriseFiles(filesInFolder);
             boolean testSkipped = fileInFolderMap.isEmpty()
                     || (!fileInFolderMap.containsKey(OUTPUT) && !fileInFolderMap.containsKey(OTHER));
 
             // Output the description collapsible section
-            body.append(buildContents(description + (testSkipped ? " - Skipped" : ""),
+            body.append(buildContents(description + (testSkipped ? " - <b>Skipped</b>" : ""),
                     buildContentsOfFolder(fileInFolderMap, outputPath, outputLocation), descriptionColour, error));
         }
         return body.toString();
@@ -255,44 +257,61 @@ public class DroolIntegrationTestSingleton  {
         return body.toString();
     }
 
-    private static String buildContentsOfFolder(Map<String, String> fileInFolderMap,
+    private static String buildContentsOfFolder(Map<String, List<String>> fileInFolderMap,
                                                 String outputPath, String outputLocation) {
         // Get the list of hyperlinks
-        List<String> outputHyperLinks = new ArrayList<>();
-        List<String> inputHyperLinks = new ArrayList<>();
-        List<String> otherHyperLinks = new ArrayList<>();
-        fileInFolderMap.entrySet().forEach(entry -> {
-            String category = entry.getKey();
-            String filename = entry.getValue();
-            // build the hyperlink (minus the relative path to the output folder)
-            String filePath = outputLocation.replace(outputPath,"") + filename;
-            String hyperlink = buildHyperlink(filePath, filename);
-            if (INPUT.equals(category)) {
-                inputHyperLinks.add(hyperlink);
-            } else if (OUTPUT.equals(category)) {
-                outputHyperLinks.add(hyperlink);
-            } else {
-                otherHyperLinks.add(hyperlink);
-            }
-        });
+        List<String> inputHyperLinks = buildHyperLinks(fileInFolderMap.get(INPUT), outputPath, outputLocation);
+        List<String> outputHyperLinks = buildHyperLinks(fileInFolderMap.get(OUTPUT), outputPath, outputLocation);
+        List<String> otherHyperLinks = buildHyperLinks(fileInFolderMap.get(OTHER), outputPath, outputLocation);
 
         String lineFormat = "%s - %s";
-        return buildLine(String.format(lineFormat,INPUT,buildStringList(inputHyperLinks)))
-                + buildLine(String.format(lineFormat,OUTPUT,buildStringList(outputHyperLinks)))
-                + buildLine(String.format(lineFormat,OTHER,buildStringList(otherHyperLinks)));
+        return buildLine(String.format(lineFormat, INPUT, buildStringList(inputHyperLinks)))
+                + buildLine(String.format(lineFormat, OUTPUT, buildStringList(outputHyperLinks)))
+                + buildLine(String.format(lineFormat, OTHER, buildStringList(otherHyperLinks)));
     }
 
-    private static Map<String,String> categoriseFiles(List<String> files) {
-        Map<String,String> fileInFolderMap = new HashMap<>();
+    private static List<String> buildHyperLinks(List<String> files,
+                                                String outputPath, String outputLocation) {
+
+        List<String> hyperLinks = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(files)) {
+            files.forEach(filename -> {
+                // build the hyperlink (minus the relative path to the output folder)
+                String filePath = outputLocation.replace(outputPath, "") + filename;
+                hyperLinks.add(buildHyperlink(filePath, filename));
+            });
+        }
+        return hyperLinks;
+    }
+
+    private static Map<String, List<String>> categoriseFiles(List<String> files) {
+        // Get the list of hyperlinks
+        List<String> inputFiles = new ArrayList<>();
+        List<String> outputFiles = new ArrayList<>();
+        List<String> otherFiles = new ArrayList<>();
+
         files.forEach(filename -> {
             if (isInputFileName(filename)) {
-                fileInFolderMap.put(INPUT, filename);
+                inputFiles.add(filename);
             } else if (isOutputFileName(filename)) {
-                fileInFolderMap.put(OUTPUT, filename);
+                outputFiles.add(filename);
             } else {
-                fileInFolderMap.put(OTHER, filename);
+                otherFiles.add(filename);
             }
         });
+
+        // return in a map
+        Map<String, List<String>> fileInFolderMap = new HashMap<>();
+        // skip if categories file list is empty to simplify testSkipped check in buildHtmlDescriptions
+        if (!inputFiles.isEmpty()) {
+            fileInFolderMap.put(INPUT, inputFiles);
+        }
+        if (!outputFiles.isEmpty()) {
+            fileInFolderMap.put(OUTPUT, outputFiles);
+        }
+        if (!otherFiles.isEmpty()) {
+            fileInFolderMap.put(OTHER, otherFiles);
+        }
         return fileInFolderMap;
     }
 
@@ -327,8 +346,11 @@ public class DroolIntegrationTestSingleton  {
     }
 
     private static boolean isFileValid(File file) {
-        return file != null && !file.getName().toLowerCase(Locale.getDefault())
-                .contains(EXPECTED);
+        return file != null
+            // skip RAS Expected response files as they can be confusing
+            && !file.getName().toLowerCase(Locale.getDefault()).contains(EXPECTED)
+            // skip the feature flags file as it is a duplicate at the test scenario level
+            && !Strings.CI.equals(file.getName(), FEATUREFLAGS_FILENAME);
     }
 
     private static String getTestArgumentsLocation(String outputPath, String testScenarioOutputLocation) {
