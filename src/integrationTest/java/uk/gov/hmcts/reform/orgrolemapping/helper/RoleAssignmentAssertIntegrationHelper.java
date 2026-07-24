@@ -8,6 +8,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RequestType;
+import uk.gov.hmcts.reform.orgrolemapping.drool.DroolIntegrationTestSingleton;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -81,9 +82,16 @@ public class RoleAssignmentAssertIntegrationHelper {
                 "RasRequest-Actual"
             );
 
-            assertNotNull(actualAssignmentRequest, "AssignmentRequest");
-            assertRoleRequest(expectedAssignmentRequest, actualAssignmentRequest);
-            assertRequestedRoles(expectedAssignmentRequest, actualAssignmentRequest);
+            try {
+                assertNotNull(actualAssignmentRequest, "AssignmentRequest");
+                assertRoleRequest(expectedAssignmentRequest, actualAssignmentRequest);
+                assertRequestedRoles(expectedAssignmentRequest, actualAssignmentRequest);
+            } catch (AssertionError ex) {
+                DroolIntegrationTestSingleton.getInstance()
+                        .addJudicialError(testScenario, ex);
+                throw ex;
+            }
+
         }
     }
 
