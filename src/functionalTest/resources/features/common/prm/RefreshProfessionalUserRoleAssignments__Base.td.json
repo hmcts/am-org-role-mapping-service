@@ -1,0 +1,22 @@
+{
+  "_guid_": "RefreshProfessionalUserRoleAssignments__Base",
+
+  "productName": "Organisation Role Mapping",
+  "operationName": "Refresh Professional User Role Assignments",
+
+  "method": "POST",
+  "uri": "/am/role-mapping/professional/refresh",
+
+  "specs": [
+    "to refresh a professional user's role assignments"
+  ],
+
+  "request": {
+    "headers": {
+      "_extends_": "Common_Request_Headers"
+    },
+    "queryParams": {
+      "userId": "OVERRIDE_ME"
+    }
+  }
+}

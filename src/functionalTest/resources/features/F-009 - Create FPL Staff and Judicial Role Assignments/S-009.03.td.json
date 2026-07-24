@@ -51,7 +51,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PUBLICLAW",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "routine_work"
+            "workTypes": "routine_work,hearing_work"
           }
         },
         {
@@ -70,7 +70,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PUBLICLAW",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "routine_work,access_requests"
+            "workTypes": "routine_work,access_requests,hearing_work"
           }
         },
         {

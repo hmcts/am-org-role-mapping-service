@@ -1,0 +1,41 @@
+{
+  "_guid_": "S-019.23b",
+  "title": "must successfully create org role mapping for Bailiff Administrator + Case allocator",
+  "_extends_": "S-019.23",
+
+  "specs": [
+    "contains the actorId of the user just published who has Bailiff Administrator role + Case allocator"
+  ],
+
+  "request": {
+    "pathVariables": {
+      "actorId": "2d7b9c5e-1a3f-4c8d-b6e2-9f0a7c3d5e41"
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS",
+            "region": "[[ANYTHING_PRESENT]]"
+          }
+        }
+      ]
+    }
+  }
+
+}

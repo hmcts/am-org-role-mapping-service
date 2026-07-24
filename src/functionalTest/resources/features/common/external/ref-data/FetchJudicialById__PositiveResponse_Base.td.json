@@ -1,0 +1,22 @@
+{
+  "_guid_": "FetchJudicialById__PositiveResponse_Base",
+  "_extends_": "FetchJudicialById__Base",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmJRDUser1"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "headers": {
+      "Content-Type": "application/vnd.jrd.api+json;Version=2.0",
+      "Total_records" : "1"
+    },
+    "body": {
+      "_extends_": "JudicialDetails"
+    }
+  }
+
+}

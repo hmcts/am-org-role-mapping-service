@@ -1,0 +1,185 @@
+package uk.gov.hmcts.reform.orgrolemapping.domain.service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
+import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueEntity;
+import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
+import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.service.ProcessEventTracker;
+import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
+import java.io.IOException;
+import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
+import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SUCCESS_ROLE_REFRESH;
+
+@RunWith(MockitoJUnitRunner.class)
+class ProfessionalRefreshOrchestratorTest {
+
+    private static final String USERID = "21334a2b-79ce-44eb-9168-2d49a744be9d";
+    private static final String ACCESSTYPE = """
+                [
+                  {
+                    "jurisdictionId": "1",
+                    "organisationProfileId": "1",
+                    "accessTypeId": "1",
+                    "enabled": true
+                 }
+                ]
+                """;
+    @Mock
+    private UserRefreshQueueRepository userRefreshQueueRepository;
+    @Mock
+    private PrdService prdService;
+    @Mock
+    private ObjectMapper objectMapper;
+    @Mock
+    private RoleAssignmentService roleAssignmentService;
+    @Mock
+    private SecurityUtils securityUtils;
+    @Mock
+    ProcessEventTracker processEventTracker;
+    @Mock
+    private ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
+    @InjectMocks
+    private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
+    @Captor
+    private ArgumentCaptor<ProcessMonitorDto> processMonitorDtoArgumentCaptor;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void refreshProfessionalRoleAssignmentRecordsExitStep1() throws IOException {
+
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
+                .when(prdService).getRefreshUser(any());
+
+        doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
+                .when(roleAssignmentService).createRoleAssignment(any());
+
+        doReturn(ACCESSTYPE)
+                .when(objectMapper).writeValueAsString(any());
+
+        AccessTypesEntity accessTypesEntity = new AccessTypesEntity();
+        accessTypesEntity.setVersion(1L);
+        doReturn(accessTypesEntity)
+               .when(professionalRefreshOrchestrationHelper).getLatestAccessTypes();
+
+        UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
+        userRefreshQueueEntity.setUserId(USERID);
+        userRefreshQueueEntity.setAccessTypesMinVersion(10);
+
+        doReturn(userRefreshQueueEntity)
+                .when(userRefreshQueueRepository).findByUserId(any());
+
+        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(USERID));
+    }
+
+    @Test
+    void refreshProfessionalRoleAssignmentRecordsExitStep2() throws IOException {
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
+                .when(prdService).getRefreshUser(any());
+
+        doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
+                .when(roleAssignmentService).createRoleAssignment(any());
+
+        doReturn(ACCESSTYPE)
+                .when(objectMapper).writeValueAsString(any());
+
+        AccessTypesEntity accessTypesEntity = new AccessTypesEntity();
+        accessTypesEntity.setVersion(11L);
+        doReturn(accessTypesEntity)
+            .when(professionalRefreshOrchestrationHelper).getLatestAccessTypes();
+
+        UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
+        userRefreshQueueEntity.setUserId(USERID);
+        userRefreshQueueEntity.setAccessTypesMinVersion(10);
+        userRefreshQueueEntity.setDeleted(LocalDateTime.now());
+
+        doReturn(userRefreshQueueEntity)
+                .when(userRefreshQueueRepository).findByUserId(any());
+
+        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(USERID));
+    }
+
+    @Test
+    void refreshProfessionalRoleAssignmentRecordsExitStep3() throws IOException {
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
+                .when(prdService).getRefreshUser(any());
+
+        doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
+                .when(roleAssignmentService).createRoleAssignment(any());
+
+        doReturn(ACCESSTYPE)
+                .when(objectMapper).writeValueAsString(any());
+
+        AccessTypesEntity accessTypesEntity = new AccessTypesEntity();
+        accessTypesEntity.setVersion(11L);
+        doReturn(accessTypesEntity)
+            .when(professionalRefreshOrchestrationHelper).getLatestAccessTypes();
+
+        UserRefreshQueueEntity userRefreshQueueEntity = new UserRefreshQueueEntity();
+        userRefreshQueueEntity.setUserId(USERID);
+        userRefreshQueueEntity.setAccessTypesMinVersion(10);
+        userRefreshQueueEntity.setDeleted(null);
+        userRefreshQueueEntity.setOrganisationStatus("abcdefg");
+        doReturn(userRefreshQueueEntity)
+                .when(userRefreshQueueRepository).findByUserId(any());
+
+        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(USERID));
+    }
+
+    @Test
+    void refreshProfessionalRoleAssignmentRecordsExitNormalProcess() throws IOException {
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(TestDataBuilder.buildGetRefreshUsersResponse("ID")))
+                .when(prdService).getRefreshUser(any());
+
+        doReturn(ResponseEntity.status(HttpStatus.CREATED).body("RoleAssignment"))
+                .when(roleAssignmentService).createRoleAssignment(any());
+
+        doReturn(ACCESSTYPE)
+                .when(objectMapper).writeValueAsString(any());
+
+
+        AccessTypesEntity accessTypesEntity = TestDataBuilder.buildAccessTypesEntity();
+        doReturn(accessTypesEntity)
+            .when(professionalRefreshOrchestrationHelper).getLatestAccessTypes();
+
+        doReturn(TestDataBuilder.buildUserRefreshQueueEntity(USERID))
+                .when(userRefreshQueueRepository).findByUserId(any());
+
+        assertResponse(professionalRefreshOrchestrator.refreshProfessionalUser(USERID));
+    }
+
+    private void assertResponse(ResponseEntity<Object> actualResponse) {
+        assertNotNull(actualResponse);
+        assertNotNull(actualResponse.getBody());
+        assertEquals(actualResponse.getBody(), Map.of("Message", SUCCESS_ROLE_REFRESH));
+        verify(processEventTracker).trackEventCompleted(processMonitorDtoArgumentCaptor.capture());
+        assertThat(processMonitorDtoArgumentCaptor.getValue().getEndStatus())
+            .isEqualTo(EndStatus.SUCCESS);
+    }
+}

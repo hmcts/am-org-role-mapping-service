@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-001.06a",
+  "title": "must successfully create org role mapping for National Business Centre Team leader + Task Supervisor",
+  "_extends_": "S-001.06",
+  "specs": [
+    "contains the actorId of the user just published who has National Business Centre Team leader role + Task Supervisor"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "6d5cdf2d-6cf1-438f-9ca6-1ad71e9975b6"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "task-supervisor",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "IA",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}

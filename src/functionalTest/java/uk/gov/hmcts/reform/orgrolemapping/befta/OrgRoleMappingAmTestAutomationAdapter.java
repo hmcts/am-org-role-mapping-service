@@ -74,6 +74,8 @@ public class OrgRoleMappingAmTestAutomationAdapter extends DefaultTestAutomation
                 return null;
             case ("tomorrow"):
                 return LocalDate.now().plusDays(1);
+            case ("yesterday"):
+                return LocalDate.now().minusDays(1);
             case ("generateS2STokenForOrm"):
                 return new TokenUtils().generateServiceToken(buildOrmSpecificConfig());
             case ("generateS2STokenForXui"):

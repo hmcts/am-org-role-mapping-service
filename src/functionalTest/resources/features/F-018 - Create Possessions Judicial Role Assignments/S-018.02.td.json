@@ -1,0 +1,89 @@
+{
+  "_guid_": "S-018.02",
+  "title": "must successfully create judicial role mapping for any Generic Salaried appointment in Possessions",
+  "_extends_": "F-018_Test_Data_Base",
+
+  "specs": [
+    "contains the actorId of the user just published who has any Generic Salaried appointment in Possessions"
+  ],
+
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+
+  "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC",
+      "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
+    },
+    "body": {
+      "queryRequests":[
+        {
+          "actorId": [ "7faf83c9-8924-4c26-bff3-0a51fb6c9c8f" ],
+          "roleName": [ "hmcts-judiciary" ],
+          "attributes": {
+            "contractType": [ "Salaried" ]
+          }
+        },
+        {
+          "actorId": [ "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}" ],
+          "attributes": {
+            "jurisdiction": [ "PCS" ]
+          }
+        }
+      ]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName,attributes.jurisdiction"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-judiciary",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "JUDICIAL",
+          "readOnly": true,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "contractType": "Salaried"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "contractType": "Salaried",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "region": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS",
+            "workTypes": "hearing_work,routine_work,decision_making_work,applications"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        }
+      ]
+    }
+  }
+}

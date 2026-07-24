@@ -1,0 +1,22 @@
+{
+  "_guid_": "S-013.06_VerifyUserRefreshQueueValueIsNotActive",
+  "_extends_": "FindUserRefreshQueue__PositiveResponse_Base",
+
+  "specs": [
+    "to verify the USER exists in the refresh queue and is not active"
+  ],
+
+  "request": {
+    "queryParams": {
+      "userId": "${[scenarioContext][siblingContexts][S-013.06_MakeUserRefreshQueueValueActive][testData][request][queryParams][userId]}"
+
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "active" : false
+    }
+  }
+
+}

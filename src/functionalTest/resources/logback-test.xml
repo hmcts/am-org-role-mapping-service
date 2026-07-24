@@ -11,6 +11,9 @@
     <logger name="httpclient" level="ERROR"/>
     <logger name="uk.gov.hmcts" level="DEBUG"/>
 
+    <!-- reduce additonal BEFTA-FW logging -->
+    <logger name="uk.gov.hmcts.befta" level="info"/>
+
     <root level="info">
         <appender-ref ref="STDOUT"/>
     </root>

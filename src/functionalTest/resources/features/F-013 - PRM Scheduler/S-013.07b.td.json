@@ -1,0 +1,24 @@
+{
+  "_guid_": "S-013.07b",
+  "title": "trigger PRM scheduler cleanup - organisation refresh queue",
+  "_extends_": "F-013-Base-Root",
+  "specs": [
+    "an active IDAM profile with full permissions"
+  ],
+  "method": "GET",
+  "uri": "/am/testing-support/prm/deleteInactiveOrganisationRefreshRecords",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Cleanup Organisation Refresh Queue",
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "processType": "PRM Cleanup Process - Organisation",
+      "id": "[[ANYTHING_PRESENT]]",
+      "startTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "endTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "endStatus": "SUCCESS",
+      "processSteps" : "[[ANYTHING_PRESENT]]"
+    }
+  }
+}

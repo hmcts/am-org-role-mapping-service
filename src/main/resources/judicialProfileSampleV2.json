@@ -22,8 +22,11 @@
       "start_date": "2020-04-28",
       "end_date": "2022-04-28",
       "appointment": "Employment Judge",
+      "role_name_id": "48",
       "appointment_type": "Salaried",
+      "contract_type_id": "0",
       "service_codes": ["BFA1"],
+      "type": "Tribunals",
       "appointment_id": "10001"
     },
     {
@@ -35,8 +38,11 @@
       "start_date": "2020-04-28",
       "end_date": "2022-04-28",
       "appointment": "Tribunal Judge",
+      "role_name_id": "84",
       "appointment_type": "Fee Paid",
+      "contract_type_id": "1",
       "service_codes": null,
+      "type": "Tribunals",
       "appointment_id": "10002"
     }
   ],

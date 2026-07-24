@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-001.02b",
+  "title": "must successfully create org role mapping for Tribunal Case Worker + Case allocator",
+  "_extends_": "S-001.02",
+  "specs": [
+    "contains the actorId of the user just published who has Tribunal Case Worker role + Case allocator"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "f30c5c78-3733-4e83-a155-a6a658f28d5e"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "IA",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}

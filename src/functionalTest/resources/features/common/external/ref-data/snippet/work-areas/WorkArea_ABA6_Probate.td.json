@@ -1,0 +1,7 @@
+{
+  "_guid_": "WorkArea_ABA6_Probate",
+  "_extends_": "WorkArea__Base",
+
+  "service_code": "ABA6",
+  "area_of_work": "Probate"
+}

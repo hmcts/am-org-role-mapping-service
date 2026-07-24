@@ -1,0 +1,21 @@
+{
+  "_guid_": "MakeOrganisationRefreshQueueActive__Base",
+
+  "productName": "Organisation Role Mapping",
+  "operationName": "PRM Organisation Refresh Queue makeOrganisationRefreshQueueActive",
+
+  "specs": [],
+
+  "method": "PUT",
+  "uri": "/am/testing-support/prm/makeOrganisationRefreshQueueActive",
+
+  "request": {
+    "headers": {
+      "_extends_": "Common_Request_Headers"
+    },
+    "queryParams": {
+      "organisationId": "OVERRIDE"
+    }
+  }
+
+}

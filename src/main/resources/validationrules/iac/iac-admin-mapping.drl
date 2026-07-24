@@ -42,21 +42,17 @@ then
 end;
 
 /*
- * "hearing-centre-admin" Org role mapping
- * Made obsolete in DTSAM-590 - rule will be disabled when IAC_WA_1_3 is enabled.
- * To be removed in DTSAM-594.
+ * hearing-centre-admin_caseworker Org role mapping for 1.5.
  */
-
-rule "iac_hearing-centre-admin_caseworker_v11"
+rule "v_1_5_iac_hearing-centre-admin_caseworker"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
-  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.IAC_WA_1_3.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_5.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("3","4","5"), serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, upper_tribunal, routine_work"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, upper_tribunal, routine_work, review_case, bail_work, stf_24w_hearing_work, stf_24w_upper_tribunal, stf_24w_routine_work"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -70,44 +66,18 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : iac_hearing-centre-admin_caseworker_v11");
+      logMsg("Rule : v_1_5_iac_hearing-centre-admin_caseworker");
 end;
 
-rule "iac_hearing-centre-admin_caseworker_v1_3"
+rule "v_1_5_iac_national-business-centre_caseworker"
 when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_3.getValue())
-  $up: CaseWorkerAccessProfile(roleId in ("3","4","5"), serviceCode == "BFA1", !suspended)
-then
-   Map<String,JsonNode> attribute = new HashMap<>();
-   attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
-   attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, upper_tribunal, routine_work, review_case"));
-  insert(
-      RoleAssignment.builder()
-      .actorIdType(ActorIdType.IDAM)
-      .actorId($up.getId())
-      .roleCategory(RoleCategory.ADMIN)
-      .roleType(RoleType.ORGANISATION)
-      .roleName("hearing-centre-admin")
-      .grantType(GrantType.STANDARD)
-      .classification(Classification.PUBLIC)
-      .readOnly(false)
-      .attributes(attribute)
-      .authorisations($up.getSkillCodes())
-      .build());
-      logMsg("Rule : iac_hearing-centre-admin_caseworker_v1_3");
-end;
-
-
-rule "iac_national-business-centre_caseworker_v11"
-when
-  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_1_1.getValue())
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_5.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("6","7","8"), serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
    attribute.put("jurisdiction", JacksonUtils.convertObjectIntoJsonNode("IA"));
    attribute.put("primaryLocation", JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
-   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, upper_tribunal, routine_work"));
+   attribute.put("workTypes", JacksonUtils.convertObjectIntoJsonNode("hearing_work, upper_tribunal, routine_work, stf_24w_hearing_work, stf_24w_upper_tribunal, stf_24w_routine_work"));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
@@ -121,9 +91,8 @@ then
       .attributes(attribute)
       .authorisations($up.getSkillCodes())
       .build());
-      logMsg("Rule : iac_national-business-centre_caseworker_v11");
+      logMsg("Rule : v_1_5_iac_national-business-centre_caseworker");
 end;
-
 
 rule "iac_case_allocator_admin_caseworker_v11"
 when

@@ -32,8 +32,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUT
 @ConditionalOnProperty(name = "testing.support.enabled", havingValue = "true")
 public class OrgMappingController {
 
-    private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
+    public static final String CREATE_ORG_MAPPING_URI = "/am/testing-support/createOrgMapping";
 
+    private BulkAssignmentOrchestrator bulkAssignmentOrchestrator;
 
     @Autowired
     public OrgMappingController(
@@ -42,7 +43,7 @@ public class OrgMappingController {
     }
 
     @PostMapping(
-            path = "/am/testing-support/createOrgMapping",
+            path = CREATE_ORG_MAPPING_URI,
             produces = V1.MediaType.MAP_ASSIGNMENTS,
             consumes = {"application/json"}
     )

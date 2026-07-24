@@ -1,0 +1,11 @@
+{
+  "_guid_": "DeleteDataForStaffRoleAssignments_RasV1",
+  "_extends_": "DeleteDataForRoleAssignments",
+
+  "request": {
+    "pathVariables": {
+      "process": "staff-organisational-role-mapping",
+      "reference": "${[scenarioContext][parentContext][testData][request][body][actorId][0]}"
+    }
+   }
+}

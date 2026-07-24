@@ -1,0 +1,88 @@
+{
+  "_guid_": "S-018.01",
+  "title": "must successfully create judicial role mapping for any Generic Fee Paid appointment in Possessions (without booking)",
+  "_extends_": "F-018_Test_Data_Base",
+
+  "specs": [
+    "contains the actorId of the user just published who has any Generic Fee Paid appointment in Possessions"
+  ],
+
+  "method": "POST",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+
+  "request": {
+    "headers": {
+      "sort": "roleName",
+      "direction": "ASC",
+      "Content-Type": "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0"
+    },
+    "body": {
+      "queryRequests":[
+        {
+          "actorId": [ "d85eb06c-6e1f-4485-923c-313063a32a60" ],
+          "roleName": [ "hmcts-judiciary" ],
+          "attributes": {
+            "contractType": [ "Fee-Paid" ]
+          }
+        },
+        {
+          "actorId": [ "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}" ],
+          "attributes": {
+            "jurisdiction": [ "PCS" ]
+          }
+        }
+      ]
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName,attributes.jurisdiction"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "fee-paid-judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "contractType": "Fee-Paid",
+            "bookable": "true",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-judiciary",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "JUDICIAL",
+          "readOnly": true,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime": "[[ANY_TIMESTAMP_NULLABLE]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "contractType": "Fee-Paid"
+          }
+        }
+      ]
+    }
+  }
+}

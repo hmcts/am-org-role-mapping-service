@@ -1,6 +1,6 @@
 {
   "_guid_": "S-073",
-  "title": "must successfully create judicial role mapping for Deputy Circuit Judge - fee-paid appointment",
+  "title": "must successfully create judicial role mapping for Deputy District Judge - fee-paid appointment",
   "_extends_": "F-008_Test_Data_Base",
   "specs": [
     "contains the actorIds of the user just published"

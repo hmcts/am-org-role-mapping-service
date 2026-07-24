@@ -6,8 +6,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -19,9 +21,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
+import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ForbiddenException;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.ProfessionalRefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RefreshOrchestrator;
 import uk.gov.hmcts.reform.orgrolemapping.util.ValidationUtil;
 import uk.gov.hmcts.reform.orgrolemapping.v1.V1;
@@ -33,16 +37,23 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUT
 @Slf4j
 public class RefreshController {
 
+    private final boolean refreshApiEnabled;
+
     @Autowired
     public RefreshController(RefreshOrchestrator refreshOrchestrator,
-                             JudicialRefreshOrchestrator judicialRefreshOrchestrator) {
+                             JudicialRefreshOrchestrator judicialRefreshOrchestrator,
+                             ProfessionalRefreshOrchestrator professionalRefreshOrchestrator,
+                             @Value("${professional.role.mapping.refreshApi.enabled}")
+                             Boolean refreshApiEnabled) {
         this.refreshOrchestrator = refreshOrchestrator;
         this.judicialRefreshOrchestrator = judicialRefreshOrchestrator;
+        this.professionalRefreshOrchestrator = professionalRefreshOrchestrator;
+        this.refreshApiEnabled = BooleanUtils.isTrue(refreshApiEnabled);
     }
 
     RefreshOrchestrator refreshOrchestrator;
-
     JudicialRefreshOrchestrator judicialRefreshOrchestrator;
+    ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
 
     @PostMapping(
             path = "/am/role-mapping/refresh",
@@ -62,11 +73,6 @@ public class RefreshController {
             responseCode = "202",
             description = "Accepted",
             content = @Content(schema = @Schema(implementation = Object.class))
-    )
-    @ApiResponse(
-            responseCode = "400",
-            description = V1.Error.INVALID_REQUEST,
-            content = @Content()
     )
     @ApiResponse(
             responseCode = "400",
@@ -125,6 +131,39 @@ public class RefreshController {
             ValidationUtil.validateId(Constants.UUID_PATTERN, correlationId);
         }
         return judicialRefreshOrchestrator.judicialRefresh(judicialRefreshRequest.getRefreshRequest());
+    }
+
+    @PostMapping(
+        path = "/am/role-mapping/professional/refresh",
+        produces = V1.MediaType.REFRESH_PROFESSIONAL_ASSIGNMENTS
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(summary = "refreshes professional role assignments",
+        security =
+            {
+            @SecurityRequirement(name = AUTHORIZATION),
+            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+            })
+    @ApiResponse(
+        responseCode = "200",
+        description = "Successful",
+        content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    @ApiResponse(
+        responseCode = "400",
+        description = V1.Error.INVALID_REQUEST,
+        content = @Content()
+    )
+    @ApiResponse(
+        responseCode = "404",
+        description = Constants.RESOURCE_NOT_FOUND + " " + ProfessionalRefreshOrchestrator.PRD_USER_NOT_FOUND,
+        content = @Content()
+    )
+    public ResponseEntity<Object> professionalRefresh(@RequestParam String userId) {
+        if (!refreshApiEnabled) {
+            throw new ForbiddenException("PROFESSIONAL_REFRESH_API_ENABLED is false");
+        }
+        return professionalRefreshOrchestrator.refreshProfessionalUser(userId);
     }
 
 }

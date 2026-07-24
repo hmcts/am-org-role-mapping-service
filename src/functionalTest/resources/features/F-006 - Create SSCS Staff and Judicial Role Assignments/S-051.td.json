@@ -1,6 +1,6 @@
 {
   "_guid_": "S-051",
-  "title": "must successfully create tribunal caseworker and registrar role mappings for a user",
+  "title": "must successfully create tribunal caseworker role mappings for a user",
   "_extends_": "F-006_Test_Data_Base",
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
@@ -10,8 +10,7 @@
       "direction": "ASC"
     },
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-051_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-      "roleName": ["registrar", "tribunal-caseworker"]
+      "actorId": "${[scenarioContext][childContexts][S-051_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
     }
   },
   "expectedResponse": {
@@ -19,22 +18,21 @@
     "body" : {
       "roleAssignmentResponse" : [
         {
-          "id" : "[[ANYTHING_PRESENT]]",
+          "__elementId__": "roleName"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
           "actorIdType": "IDAM",
           "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
           "roleType": "ORGANISATION",
-          "roleName": "registrar",
-          "classification": "PUBLIC",
-          "grantType": "STANDARD",
+          "roleName": "hmcts-legal-operations",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
           "roleCategory": "LEGAL_OPERATIONS",
-          "readOnly": false,
-          "created" : "[[ANYTHING_PRESENT]]",
+          "readOnly": true,
+          "created": "[[ANYTHING_PRESENT]]",
           "attributes": {
-            "primaryLocation": "[[ANYTHING_PRESENT]]",
-            "jurisdiction": "SSCS",
-            "region" : "2",
-            "workTypes": "pre_hearing,post_hearing,applications,hearing_work,routine_work,priority,decision_making_work",
-            "substantive" : "Y"
+            "substantive": "N"
           }
         },
         {
@@ -54,6 +52,40 @@
             "region" : "2",
             "workTypes": "pre_hearing,post_hearing,applications,hearing_work,routine_work,priority,decision_making_work",
             "substantive" : "Y"
+          }
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-manager",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS"
           }
         }
       ]

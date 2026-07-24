@@ -2,79 +2,111 @@
   "_guid_": "S-032",
   "title": "must successfully create judicial role mappings for User having multiple Judicial bookings",
   "_extends_": "F-004_Test_Data_Base",
+
   "specs": [
-    "contains the actorIds of the user having existing judicial role assignments",
-    "contains the actorIds of the user for which above booking is created"
+    "a judicial profile that supports judicial bookings",
+
+    "contains the actorId of the user having existing judicial role assignments",
+    "contains the actorId of the user for which above bookings are created",
+
+    "contains a bookable fee-paid-judge role-assignment",
+    "contains multiple booked judge/fee-paid role-assignments"
   ],
-  "method": "POST",
-  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
+
   "users": {
     "invokingUser": {
-      "_extends_": "AmJRDUser1"
+      "_extends_": "AmJRDUser2"
     }
   },
+
   "request": {
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-032_DeleteDataForRoleAssignments][testData][request][body][userIds]}",
-      "roleName" : ["judge"],
+      "actorId": ["${[scenarioContext][testData][users][invokingUser][id]}"],
+      "roleName" : ["judge", "fee-paid-judge"],
       "attributes": {
         "contractType": ["Fee-Paid"]
       }
     }
   },
+
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body" : {
       "roleAssignmentResponse" : [
-      {
-        "__elementId__": "roleName,attributes.jurisdiction"
-      },
-      {
-        "id" : "[[ANYTHING_PRESENT]]",
-        "actorIdType" : "IDAM",
-        "actorId" : "[[ANYTHING_PRESENT]]",
-        "roleType" : "ORGANISATION",
-        "roleName" : "judge",
-        "classification" : "PUBLIC",
-        "grantType" : "STANDARD",
-        "roleCategory" : "JUDICIAL",
-        "readOnly" : false,
-        "beginTime" : "[[ANYTHING_PRESENT]]",
-        "endTime" : "[[ANYTHING_PRESENT]]",
-        "created" : "[[ANYTHING_PRESENT]]",
-        "attributes" : {
-          "substantive" : "Y",
-          "contractType" : "Fee-Paid",
-          "primaryLocation" : "[[ANYTHING_PRESENT]]",
-          "jurisdiction" : "SSCS",
-          "region" : "[[ANYTHING_PRESENT]]",
-          "workTypes" : "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
+        {
+          "__elementId__": "roleName,attributes.jurisdiction,attributes.region"
         },
-        "authorisations" : "[[ANYTHING_PRESENT]]"
-      },
-      {
-        "id" : "[[ANYTHING_PRESENT]]",
-        "actorIdType" : "IDAM",
-        "actorId" : "[[ANYTHING_PRESENT]]",
-        "roleType" : "ORGANISATION",
-        "roleName" : "judge",
-        "classification" : "PUBLIC",
-        "grantType" : "STANDARD",
-        "roleCategory" : "JUDICIAL",
-        "readOnly" : false,
-        "beginTime" : "[[ANYTHING_PRESENT]]",
-        "endTime" : "[[ANYTHING_PRESENT]]",
-        "created" : "[[ANYTHING_PRESENT]]",
-        "attributes" : {
-          "substantive" : "Y",
-          "contractType" : "Fee-Paid",
-          "primaryLocation" : "[[ANYTHING_PRESENT]]",
-          "jurisdiction" : "SSCS",
-          "region" : "[[ANYTHING_PRESENT]]",
-          "workTypes" : "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType": "ORGANISATION",
+          "roleName": "fee-paid-judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "bookable" : "true",
+            "substantive": "N",
+            "contractType": "Fee-Paid",
+            "jurisdiction": "SSCS",
+            "region" : "2",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "workTypes": "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
         },
-        "authorisations" : "[[ANYTHING_PRESENT]]"
-      }  ]
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "judge",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "JUDICIAL",
+          "readOnly" : false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "Y",
+            "contractType" : "Fee-Paid",
+            "jurisdiction" : "SSCS",
+            "region" : "3",
+            "primaryLocation" : "13",
+            "workTypes" : "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        },
+        {
+          "id" : "[[ANYTHING_PRESENT]]",
+          "actorIdType" : "IDAM",
+          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+          "roleType" : "ORGANISATION",
+          "roleName" : "judge",
+          "classification" : "PUBLIC",
+          "grantType" : "STANDARD",
+          "roleCategory" : "JUDICIAL",
+          "readOnly" : false,
+          "beginTime" : "[[ANYTHING_PRESENT]]",
+          "endTime" : "[[ANYTHING_PRESENT]]",
+          "created" : "[[ANYTHING_PRESENT]]",
+          "attributes" : {
+            "substantive" : "Y",
+            "contractType" : "Fee-Paid",
+            "jurisdiction" : "SSCS",
+            "region" : "4",
+            "primaryLocation" : "14",
+            "workTypes" : "pre_hearing,hearing_work,post_hearing,decision_making_work,routine_work,priority"
+          },
+          "authorisations" : "[[ANYTHING_PRESENT]]"
+        }
+      ]
     }
   }
 }

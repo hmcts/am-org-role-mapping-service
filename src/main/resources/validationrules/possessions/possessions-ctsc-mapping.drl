@@ -1,0 +1,221 @@
+package validationrules.possessions;
+
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.Attributes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.RoleName;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.crd.JobTitle;
+import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import java.util.HashMap
+import java.util.Map
+
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+
+
+/*
+ * Possessions ctsc "ctsc" role mapping.
+ */
+rule "possessions_ctsc_role"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
+    $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_ADMIN,
+                                                   JobTitle.CTSC_TEAM_LEADER),
+                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
+                                  !suspended)
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("routine_work,applications,decision_making_work,error_management"));
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($cap.getId())
+            .roleCategory(RoleCategory.CTSC)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.CTSC)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
+            .build()
+    );
+
+    logMsg("Rule : possessions_ctsc_role");
+end;
+
+/*
+ * Possessions ctsc "hmcts-ctsc" role mapping.
+ */
+rule "possessions_hmcts_ctsc_role"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
+    $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_ADMIN,
+                                                   JobTitle.CTSC_TEAM_LEADER),
+                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
+                                  !suspended)
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($cap.getId())
+            .roleCategory(RoleCategory.CTSC)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.HMCTS_CTSC)
+            .grantType(GrantType.BASIC)
+            .classification(Classification.PRIVATE)
+            .readOnly(true)
+            .attributes(attribute)
+            .build()
+    );
+
+    logMsg("Rule : possessions_hmcts_ctsc_role");
+end;
+
+/*
+ * Possessions ctsc "ctsc-team-leader" role mapping.
+ */
+rule "possessions_ctsc_team_leader_role"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
+    $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER),
+                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
+                                  !suspended)
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("routine_work,applications,decision_making_work,access_requests,error_management"));
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($cap.getId())
+            .roleCategory(RoleCategory.CTSC)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.CTSC_TEAM_LEADER)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
+            .build()
+    );
+
+    logMsg("Rule : possessions_ctsc_team_leader_role");
+end;
+
+/*
+ * Possessions ctsc "task-supervisor" role mapping.
+ */
+rule "possessions_ctsc_task_supervisor_role"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
+    $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_ADMIN,
+                                                   JobTitle.CTSC_TEAM_LEADER),
+                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
+                                  isTaskSupervisor(),
+                                  !suspended)
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($cap.getId())
+            .roleCategory(RoleCategory.CTSC)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.TASK_SUPERVISOR)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
+            .build()
+    );
+
+    logMsg("Rule : possessions_ctsc_task_supervisor_role");
+end;
+
+/*
+ * Possessions ctsc "case-allocator" role mapping.
+ */
+rule "possessions_ctsc_case_allocator_role"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
+    $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_ADMIN,
+                                                   JobTitle.CTSC_TEAM_LEADER),
+                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
+                                  isCaseAllocator(),
+                                  !suspended)
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($cap.getId())
+            .roleCategory(RoleCategory.CTSC)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.CASE_ALLOCATOR)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
+            .build()
+    );
+
+    logMsg("Rule : possessions_ctsc_case_allocator_role");
+end;
+
+/*
+ * Possessions ctsc "specific-access-approver-ctsc" role mapping.
+ */
+rule "possessions_specific_access_approver_ctsc_role"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
+    $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.CTSC_TEAM_LEADER),
+                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
+                                  !suspended)
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.POSSESSIONS.getName()));
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+    attribute.put(Attributes.Name.WORK_TYPES, JacksonUtils.convertObjectIntoJsonNode("access_requests"));
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($cap.getId())
+            .roleCategory(RoleCategory.CTSC)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.SPECIFIC_ACCESS_APPROVER_CTSC)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
+            .build()
+    );
+
+    logMsg("Rule : possessions_specific_access_approver_ctsc_role");
+end;

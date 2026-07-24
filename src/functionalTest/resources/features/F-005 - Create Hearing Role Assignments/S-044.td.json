@@ -1,9 +1,9 @@
 {
   "_guid_": "S-044",
-  "title": "must successfully create organisational role mapping for SSCS admin and legal operation role assignments with multiple regions",
+  "title": "must successfully create organisational role mapping for SSCS CTSC role assignments (hearing-viewer, hearing-manager)",
   "_extends_": "F-005_Test_Data_Base",
   "specs": [
-    "contains the actorId of the user just published for admin and legal operation role assignments"
+    "contains the actorId of the user just published for CTSC role assignments"
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
@@ -13,7 +13,8 @@
       "direction": "ASC"
     },
     "body": {
-      "actorId": "${[scenarioContext][childContexts][S-044_DeleteDataForRoleAssignments][testData][request][body][userIds]}"
+      "actorId": ["c3a68d80-0451-432d-9b31-b5322e41a35b"],
+      "roleName": ["hearing-viewer", "hearing-manager", "listed-hearing-viewer"]
     }
   },
   "expectedResponse": {
@@ -31,7 +32,7 @@
           "roleName" : "hearing-manager",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
-          "roleCategory" : "LEGAL_OPERATIONS",
+          "roleCategory" : "CTSC",
           "readOnly" : false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
@@ -48,7 +49,7 @@
           "roleName" : "hearing-viewer",
           "classification" : "PUBLIC",
           "grantType" : "STANDARD",
-          "roleCategory" : "LEGAL_OPERATIONS",
+          "roleCategory" : "CTSC",
           "readOnly" : false,
           "created" : "[[ANYTHING_PRESENT]]",
           "attributes" : {
@@ -56,96 +57,8 @@
             "primaryLocation" : "[[ANYTHING_PRESENT]]",
             "jurisdiction" : "SSCS"
           }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
-          "roleType" : "ORGANISATION",
-          "roleName" : "hmcts-legal-operations",
-          "classification" : "PRIVATE",
-          "grantType" : "BASIC",
-          "roleCategory" : "LEGAL_OPERATIONS",
-          "readOnly" : true,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "N"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
-          "roleType" : "ORGANISATION",
-          "roleName" : "task-supervisor",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "LEGAL_OPERATIONS",
-          "readOnly" : false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "N",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
-          "roleType" : "ORGANISATION",
-          "roleName" : "task-supervisor",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "LEGAL_OPERATIONS",
-          "readOnly" : false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "N",
-            "primaryLocation" : "698118",
-            "jurisdiction" : "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
-          "roleType" : "ORGANISATION",
-          "roleName" : "tribunal-caseworker",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "LEGAL_OPERATIONS",
-          "readOnly" : false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "Y",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "SSCS",
-            "region" : "[[ANYTHING_PRESENT]]",
-            "workTypes" : "pre_hearing,post_hearing,applications,hearing_work,routine_work,priority,decision_making_work"
-          }
-        },
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
-          "roleType" : "ORGANISATION",
-          "roleName" : "tribunal-caseworker",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "LEGAL_OPERATIONS",
-          "readOnly" : false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "Y",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "SSCS",
-            "region" :"[[ANYTHING_PRESENT]]",
-            "workTypes" : "pre_hearing,post_hearing,applications,hearing_work,routine_work,priority,decision_making_work"
-          }
-        } ]
+        }
+      ]
     }
   }
 }
