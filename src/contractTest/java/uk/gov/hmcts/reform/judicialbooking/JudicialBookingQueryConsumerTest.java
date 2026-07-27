@@ -2,8 +2,6 @@ package uk.gov.hmcts.reform.judicialbooking;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.DslPart;
-import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
-import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -31,13 +29,17 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBookingRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
+
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
 
 import java.util.List;
 import java.util.Map;
 
 @ExtendWith(PactConsumerTestExt.class)
+@ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactTestFor(providerName = "am_judicialBooking_query", pactVersion = PactSpecVersion.V3)
 @PactFolder("pacts")
@@ -70,28 +72,25 @@ public class JudicialBookingQueryConsumerTest {
     }
 
     private DslPart createJudicialBookingsResponse() {
-        PactDslJsonBody response = new PactDslJsonBody();
-        PactDslJsonArray bookings = response.array("bookings");
-        bookings.object()
-                .stringType("id", "fcb4f03c-4b3f-4c3c-bf3a-662b4557b470")
-                .stringType("userId", USER_ID)
-                .stringType("locationId", "south-east")
-                .stringType("regionId", "BFA1")
-                .stringType("beginTime", "2031-01-01T00:00:00Z")
-                .stringType("endTime", "2031-09-01T00:00:00Z")
-                .stringType("created", "2021-02-23T06:37:58Z")
-                .closeObject();
-        bookings.object()
-                .stringType("id", "fcb4f03c-4b3f-4c3c-bf3a-662b4557b471")
-                .stringType("userId", USER_ID2)
-                .stringType("locationId", "north-west")
-                .stringType("regionId", "BFA1")
-                .stringType("beginTime", "2032-01-01T00:00:00Z")
-                .stringType("endTime", "2032-09-01T00:00:00Z")
-                .stringType("created", "2021-03-23T06:37:58Z")
-                .closeObject();
-        bookings.closeArray();
-        return response;
+        return newJsonBody(o -> o
+                .array("bookings", rar -> rar
+                        .object(ob -> ob
+                                .stringType("id", "fcb4f03c-4b3f-4c3c-bf3a-662b4557b470")
+                                .stringType("userId", USER_ID)
+                                .stringType("locationId", "south-east")
+                                .stringType("regionId", "BFA1")
+                                .stringType("beginTime", "2031-01-01T00:00:00Z")
+                                .stringType("endTime", "2031-09-01T00:00:00Z")
+                                .stringType("created", "2021-02-23T06:37:58Z"))
+                        .object(ob -> ob
+                                .stringType("id", "fcb4f03c-4b3f-4c3c-bf3a-662b4557b471")
+                                .stringType("userId", USER_ID2)
+                                .stringType("locationId", "north-west")
+                                .stringType("regionId", "BFA1")
+                                .stringType("beginTime", "2032-01-01T00:00:00Z")
+                                .stringType("endTime", "2032-09-01T00:00:00Z")
+                                .stringType("created", "2021-03-23T06:37:58Z"))))
+                .build();
     }
 
     private JudicialBookingRequest createJudicialBookingsQueryRequest() {
