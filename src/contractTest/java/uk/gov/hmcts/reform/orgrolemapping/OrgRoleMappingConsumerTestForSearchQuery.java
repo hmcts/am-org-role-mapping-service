@@ -288,7 +288,8 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentByAttributesAndGet200", pactVersion = PactSpecVersion.V1_1)
+    @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentByAttributesAndGet200",
+            pactVersion = PactSpecVersion.V1_1)
     void getSearchQueryResultsByAttributesAndGet200Test(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
