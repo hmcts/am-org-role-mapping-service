@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +31,7 @@ import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
+import javax.sql.DataSource;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -40,12 +42,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @PactTestFor(providerName = "am_roleAssignment_getAssignment", pactVersion = PactSpecVersion.V3)
 @PactFolder("pacts")
 @TestPropertySource(properties = {
-    "feign.client.config.crdclient.url=http://localhost:8991",
-    "feign.client.config.prdClient.url=http://localhost:8090",
-    "feign.client.config.jrdClient.url=http://localhost:8091",
-    "feign.client.config.roleAssignmentApp.url=http://localhost:8092",
-    "feign.client.config.ccdClient.url=http://localhost:8093",
-    "feign.client.config.jbsClient.url=http://localhost:8094",
     "idam.api.url=http://localhost:5000",
     "spring.cache.type=simple"
 })
@@ -53,6 +49,9 @@ public class OrgRoleMappingConsumerTestForGetActorById extends BaseTestContract 
 
     private static final String ACTOR_ID = "23486";
     private static final String RAS_GET_ACTOR_BY_ID = "/am/role-assignments/actors/" + ACTOR_ID;
+
+    @Autowired
+    DataSource dataSource;
 
     @Bean
     JRDTopicPublisher jrdPublisher() {

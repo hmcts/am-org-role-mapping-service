@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
@@ -32,6 +33,7 @@ import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
+import javax.sql.DataSource;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -45,12 +47,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @PactTestFor(providerName = "am_roleAssignment_queryAssignment", pactVersion = PactSpecVersion.V3)
 @PactFolder("pacts")
 @TestPropertySource(properties = {
-    "feign.client.config.crdclient.url=http://localhost:8991",
-    "feign.client.config.prdClient.url=http://localhost:8090",
-    "feign.client.config.jrdClient.url=http://localhost:8091",
-    "feign.client.config.roleAssignmentApp.url=http://localhost:8092",
-    "feign.client.config.ccdClient.url=http://localhost:8093",
-    "feign.client.config.jbsClient.url=http://localhost:8094",
     "idam.api.url=http://localhost:5000",
     "spring.cache.type=simple"
 })
@@ -63,6 +59,9 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
     public static final String SERVICE = "application/vnd.uk.gov.hmcts.role-assignment-service";
     public static final String POST_ASSIGNMENTS = SERVICE
             + ".post-assignment-query-request+json;charset=UTF-8;version=2.0";
+
+    @Autowired
+    DataSource dataSource;
 
     @Bean
     JRDTopicPublisher jrdPublisher() {

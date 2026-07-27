@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.http.HttpHeaders;
@@ -32,6 +33,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
 
+import javax.sql.DataSource;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,12 +44,6 @@ import java.util.Set;
 @PactTestFor(providerName = "referenceData_judicialv2", port = "8991", pactVersion = PactSpecVersion.V3)
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
-    "feign.client.config.crdclient.url=http://localhost:8991",
-    "feign.client.config.prdClient.url=http://localhost:8090",
-    "feign.client.config.jrdClient.url=http://localhost:8091",
-    "feign.client.config.roleAssignmentApp.url=http://localhost:8092",
-    "feign.client.config.ccdClient.url=http://localhost:8093",
-    "feign.client.config.jbsClient.url=http://localhost:8094",
     "idam.api.url=http://localhost:5000",
     "spring.cache.type=simple"
 })
@@ -58,6 +54,8 @@ public class RefDataJudicialProfileConsumerTestV2 {
 
     private static final String SIDAM_ID = "44362987-4b00-f2e7-4ff8-761b87f16bf9";
 
+    @Autowired
+    DataSource dataSource;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
