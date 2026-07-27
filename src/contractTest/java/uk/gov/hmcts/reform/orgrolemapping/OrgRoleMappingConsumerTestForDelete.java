@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_roleAssignment_deleteAssignment", pactVersion = PactSpecVersion.V2)
+@PactTestFor(providerName = "am_roleAssignment_deleteAssignment", pactVersion = PactSpecVersion.V1)
 @PactFolder("pacts")
 @TestPropertySource(properties = {
     "idam.api.url=http://localhost:5000",
@@ -86,7 +86,7 @@ public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeDeleteActorByPrAndGet204", pactVersion = PactSpecVersion.V2)
+    @PactTestFor(pactMethod = "executeDeleteActorByPrAndGet204", pactVersion = PactSpecVersion.V1)
     void deleteActorByPrAndGet204Test(MockServer mockServer) throws IOException {
         HttpResponse httpResponse =
                 Request.delete(mockServer.getUrl() + RAS_DELETE_ACTOR_BY_PR).execute().returnResponse();
@@ -107,7 +107,7 @@ public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeDeleteActorByIdAndGet204", pactVersion = PactSpecVersion.V2)
+    @PactTestFor(pactMethod = "executeDeleteActorByIdAndGet204", pactVersion = PactSpecVersion.V1)
     void deleteActorByIdAndGet204Test(MockServer mockServer) throws IOException {
         HttpResponse httpResponse =
                 Request.delete(mockServer.getUrl() + RAS_DELETE_ACTOR_BY_ID).execute().returnResponse();

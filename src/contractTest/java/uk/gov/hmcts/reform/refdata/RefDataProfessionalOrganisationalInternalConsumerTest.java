@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
-@PactTestFor(providerName = "referenceData_organisationalInternal", port = "8090", pactVersion = PactSpecVersion.V2)
+@PactTestFor(providerName = "referenceData_organisationalInternal", port = "8090", pactVersion = PactSpecVersion.V1)
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
@@ -89,7 +89,7 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
 
     @Disabled
     @Test
-    @PactTestFor(pactMethod = "getOrganisationsByProfileIdsWithPageSize", pactVersion = PactSpecVersion.V2)
+    @PactTestFor(pactMethod = "getOrganisationsByProfileIdsWithPageSize", pactVersion = PactSpecVersion.V1)
     public void verifyGetOrganisationsByProfileIdsWithPageSize() {
         ResponseEntity<OrganisationByProfileIdsResponse> response = prdFeignClient
                 .getOrganisationsByProfileIds(PAGE_SIZE, null, new OrganisationByProfileIdsRequest(
@@ -126,7 +126,7 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
     @Disabled
     @Test
     @PactTestFor(pactMethod = "getOrganisationsByProfileIdsWithPageSizeAndSearchAfter",
-            pactVersion = PactSpecVersion.V2)
+            pactVersion = PactSpecVersion.V1)
     public void verifyGetOrganisationsByProfileIdsWithPageSizeAndSearchAfter() {
         ResponseEntity<OrganisationByProfileIdsResponse> response = prdFeignClient
                 .getOrganisationsByProfileIds(PAGE_SIZE, SEARCH_AFTER, new OrganisationByProfileIdsRequest(
@@ -158,7 +158,7 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
     //@TODO temp disabled during PR build - remove at master
     @Disabled
     @Test
-    @PactTestFor(pactMethod = "retrieveOrganisations", pactVersion = PactSpecVersion.V2)
+    @PactTestFor(pactMethod = "retrieveOrganisations", pactVersion = PactSpecVersion.V1)
     public void verifyRetrieveOrganisations() {
         ResponseEntity<OrganisationsResponse> response = prdFeignClient
                 .retrieveOrganisations(null, LAST_UPDATED_SINCE, null, 1, PAGE_SIZE);

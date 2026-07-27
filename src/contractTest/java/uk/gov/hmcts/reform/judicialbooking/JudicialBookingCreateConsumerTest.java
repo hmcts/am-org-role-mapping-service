@@ -33,7 +33,7 @@ import java.util.Map;
 
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_judicialBooking_create", pactVersion = PactSpecVersion.V2)
+@PactTestFor(providerName = "am_judicialBooking_create", pactVersion = PactSpecVersion.V1)
 @PactFolder("pacts")
 @ContextConfiguration(classes = {JudicialBookingConsumerApplication.class})
 @TestPropertySource(properties = {"feign.client.config.jbsClient.url=http://localhost:4097"})
@@ -109,7 +109,7 @@ public class JudicialBookingCreateConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeCreateJudicialBooking", pactVersion = PactSpecVersion.V2)
+    @PactTestFor(pactMethod = "executeCreateJudicialBooking", pactVersion = PactSpecVersion.V1)
     void executeGetJrdProfilesListOfIds(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
