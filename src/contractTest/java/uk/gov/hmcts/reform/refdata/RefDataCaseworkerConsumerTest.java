@@ -24,9 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.hmcts.reform.idam.client.IdamApi;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerProfilesResponse;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
@@ -63,9 +61,6 @@ public class RefDataCaseworkerConsumerTest {
     private static final String CRD_GET_USERS_BY_SERVICE = "/refdata/internal/staff/usersByServiceName";
     private static final String USERS_BY_SERVICE_QUERY = "ccd_service_names=IA&page_size=20&page_number=1&"
             + "sort_direction=ASC&sort_column=caseWorkerId";
-
-    @MockitoBean
-    private IdamApi idamApi;
 
     @Autowired
     CRDFeignClient crdFeignClient;
