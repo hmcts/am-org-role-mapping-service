@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationReques
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UsersByOrganisationResponse;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -39,12 +40,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
         pactVersion = PactSpecVersion.V3)
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
-    "feign.client.config.crdclient.url=http://localhost:8991",
-    "feign.client.config.prdClient.url=http://localhost:8090",
-    "feign.client.config.jrdClient.url=http://localhost:8091",
-    "feign.client.config.roleAssignmentApp.url=http://localhost:8092",
-    "feign.client.config.ccdClient.url=http://localhost:8093",
-    "feign.client.config.jbsClient.url=http://localhost:8094",
     "idam.api.url=http://localhost:5000",
     "spring.cache.type=simple"
 })
@@ -56,6 +51,9 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
     private static final String SEARCH_AFTER_ORG = "64a7a462-33b6-49a6-9efd-39220d0ea0a8";
     private static final String SEARCH_AFTER_USER = "87cdc47e-97bd-4d68-ae14-10b152fc2e6a";
     private static final Integer PAGE_SIZE = 1;
+
+    @Autowired
+    DataSource dataSource;
 
     @Autowired
     PRDFeignClient prdFeignClient;
