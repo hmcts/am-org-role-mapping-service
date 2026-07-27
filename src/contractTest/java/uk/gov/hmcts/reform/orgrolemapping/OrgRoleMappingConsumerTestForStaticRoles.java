@@ -36,7 +36,7 @@ import java.util.Properties;
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_roleAssignment_getRoles", pactVersion = PactSpecVersion.V1)
+@PactTestFor(providerName = "am_roleAssignment_getRoles", pactVersion = PactSpecVersion.V4)
 @PactFolder("pacts")
 @TestPropertySource(properties = {
     "idam.api.url=http://localhost:5000",
