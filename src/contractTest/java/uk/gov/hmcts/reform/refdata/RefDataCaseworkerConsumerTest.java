@@ -49,6 +49,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCase
     "feign.client.config.crdclient.url=http://localhost:8991",
     "feign.client.config.prdClient.url=http://localhost:8090",
     "feign.client.config.jrdClient.url=http://localhost:8091",
+    "feign.client.config.roleAssignmentApp.url=http://localhost:8092",
     "feign.client.config.ccdClient.url=http://localhost:8093",
     "feign.client.config.jbsClient.url=http://localhost:8094",
     "idam.api.url=http://localhost:5000",
