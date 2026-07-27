@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
 @PactTestFor(providerName = "referenceData_professionalInternalUsersV2", port = "8090",
-        pactVersion = PactSpecVersion.V1_1)
+        pactVersion = PactSpecVersion.V3)
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
@@ -68,7 +68,7 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
     @Disabled
     @Test
     @PactTestFor(pactMethod = "getUsersByOrganisationIdentifiersWithPageSizeAndSearchAfter",
-            pactVersion = PactSpecVersion.V1_1)
+            pactVersion = PactSpecVersion.V3)
     public void verifyGetUsersByOrganisationIdentifiersWithPageSizeAndSearchAfter() {
         ResponseEntity<UsersByOrganisationResponse> response = prdFeignClient
                 .getUsersByOrganisation(PAGE_SIZE, SEARCH_AFTER_ORG, SEARCH_AFTER_USER,
@@ -102,7 +102,7 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
     @Disabled
     @Test
     @PactTestFor(pactMethod = "getUsersByOrganisationIdentifiersWithPageSizeAndNoSearchAfter",
-            pactVersion = PactSpecVersion.V1_1)
+            pactVersion = PactSpecVersion.V3)
     public void verifyGetUsersByOrganisationIdentifiersWithPageSizeAndNoSearchAfter() {
         ResponseEntity<UsersByOrganisationResponse> response = prdFeignClient
                 .getUsersByOrganisation(PAGE_SIZE, null, null,

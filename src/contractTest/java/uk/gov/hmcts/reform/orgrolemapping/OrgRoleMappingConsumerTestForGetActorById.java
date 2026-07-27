@@ -37,9 +37,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_roleAssignment_getAssignment", pactVersion = PactSpecVersion.V1_1)
+@PactTestFor(providerName = "am_roleAssignment_getAssignment", pactVersion = PactSpecVersion.V3)
 @PactFolder("pacts")
 @TestPropertySource(properties = {
+    "feign.client.config.crdclient.url=http://localhost:8991",
+    "feign.client.config.prdClient.url=http://localhost:8090",
+    "feign.client.config.jrdClient.url=http://localhost:8091",
+    "feign.client.config.roleAssignmentApp.url=http://localhost:8092",
+    "feign.client.config.ccdClient.url=http://localhost:8093",
+    "feign.client.config.jbsClient.url=http://localhost:8094",
     "idam.api.url=http://localhost:5000",
     "spring.cache.type=simple"
 })
@@ -91,7 +97,7 @@ public class OrgRoleMappingConsumerTestForGetActorById extends BaseTestContract 
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeGetActorByIdAndGet200", pactVersion = PactSpecVersion.V1_1)
+    @PactTestFor(pactMethod = "executeGetActorByIdAndGet200", pactVersion = PactSpecVersion.V3)
     void getActorByIdAndGet200Test(MockServer mockServer) throws JSONException {
         var actualResponseBody =
                 SerenityRest

@@ -40,7 +40,7 @@ import java.util.Set;
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
-@PactTestFor(providerName = "referenceData_judicial", port = "8991", pactVersion = PactSpecVersion.V1_1)
+@PactTestFor(providerName = "referenceData_judicial", port = "8991", pactVersion = PactSpecVersion.V3)
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
@@ -84,7 +84,7 @@ public class RefDataJudicialProfileConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "getJrdProfilesListOfIds", pactVersion = PactSpecVersion.V1_1)
+    @PactTestFor(pactMethod = "getJrdProfilesListOfIds", pactVersion = PactSpecVersion.V3)
     void executeGetJrdProfilesListOfIds(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
@@ -122,7 +122,7 @@ public class RefDataJudicialProfileConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "getJrdProfilesServiceName", pactVersion = PactSpecVersion.V1_1)
+    @PactTestFor(pactMethod = "getJrdProfilesServiceName", pactVersion = PactSpecVersion.V3)
     void executeGetJrdProfilesServiceName(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
