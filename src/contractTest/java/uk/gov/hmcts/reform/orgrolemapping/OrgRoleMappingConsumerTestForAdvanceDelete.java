@@ -27,7 +27,7 @@ import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_roleAssignment_deleteAssignment", pactVersion = PactSpecVersion.V4)
+@PactTestFor(providerName = "am_roleAssignment_deleteAssignment", pactVersion = PactSpecVersion.V1_1)
 @PactFolder("pacts")
 public class OrgRoleMappingConsumerTestForAdvanceDelete  extends BaseTestContract {
     private static final String RAS_SEARCH_QUERY_ROLE_ASSIGNMENT_URL = "/am/role-assignments/query";
@@ -91,7 +91,7 @@ public class OrgRoleMappingConsumerTestForAdvanceDelete  extends BaseTestContrac
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeAdvanceDeleteAndGet200", pactVersion = PactSpecVersion.V4)
+    @PactTestFor(pactMethod = "executeAdvanceDeleteAndGet200", pactVersion = PactSpecVersion.V1_1)
     void advancedDeleteAndGet200Test(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =

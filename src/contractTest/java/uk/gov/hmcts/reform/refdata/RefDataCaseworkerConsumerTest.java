@@ -43,7 +43,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCase
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactFolder("pacts")
-@PactTestFor(providerName = "referenceData_caseworkerRefUsers", port = "8991", pactVersion = PactSpecVersion.V4)
+@PactTestFor(providerName = "referenceData_caseworkerRefUsers", port = "8991", pactVersion = PactSpecVersion.V1_1)
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
     "feign.client.config.crdclient.url=http://localhost:8991",
@@ -101,7 +101,7 @@ public class RefDataCaseworkerConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "generatePactFragment", pactVersion = PactSpecVersion.V4)
+    @PactTestFor(pactMethod = "generatePactFragment", pactVersion = PactSpecVersion.V1_1)
     public void verifyCaseworkersFetch() {
         ResponseEntity<List<Object>> response = null;
         List<CaseWorkerProfile> caseWorkerProfiles = new ArrayList<>();
@@ -114,7 +114,7 @@ public class RefDataCaseworkerConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "getCaseworkersByServiceNamePact", pactVersion = PactSpecVersion.V4)
+    @PactTestFor(pactMethod = "getCaseworkersByServiceNamePact", pactVersion = PactSpecVersion.V1_1)
     public void verifyCaseworkersByServiceName() {
         ResponseEntity<List<CaseWorkerProfilesResponse>> caseWorkerProfiles =
                 crdFeignClient.getCaseworkerDetailsByServiceName("IA",20,1,

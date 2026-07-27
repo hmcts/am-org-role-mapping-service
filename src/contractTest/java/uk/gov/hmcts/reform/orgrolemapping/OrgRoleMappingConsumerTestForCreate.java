@@ -43,7 +43,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Slf4j
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_roleAssignment_createAssignment", pactVersion = PactSpecVersion.V4)
+@PactTestFor(providerName = "am_roleAssignment_createAssignment", pactVersion = PactSpecVersion.V1_1)
 @PactFolder("pacts")
 @TestPropertySource(properties = {
     "idam.api.url=http://localhost:5000",
@@ -238,7 +238,7 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
 
     @Test
     @PactTestFor(pactMethod = "executeCreateRoleAssignmentReplacingExistingFalseAndGet201",
-            pactVersion = PactSpecVersion.V4)
+            pactVersion = PactSpecVersion.V1_1)
     void createRoleAssignmentReplaceExistingFalseAndGet201Test(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
@@ -260,7 +260,7 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeCreateRoleAssignmentOneRoleAndGet201", pactVersion = PactSpecVersion.V4)
+    @PactTestFor(pactMethod = "executeCreateRoleAssignmentOneRoleAndGet201", pactVersion = PactSpecVersion.V1_1)
     void createRoleAssignmentOneRoleAndGet201Test(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
@@ -283,7 +283,7 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeCreateRoleAssignmentZeroRoleAndGet201", pactVersion = PactSpecVersion.V4)
+    @PactTestFor(pactMethod = "executeCreateRoleAssignmentZeroRoleAndGet201", pactVersion = PactSpecVersion.V1_1)
     void createRoleAssignmentZeroRoleAndGet201Test(MockServer mockServer) throws JSONException {
         var actualResponseBody =
                 SerenityRest

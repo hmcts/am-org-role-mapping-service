@@ -37,7 +37,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "am_roleAssignment_getAssignment", pactVersion = PactSpecVersion.V4)
+@PactTestFor(providerName = "am_roleAssignment_getAssignment", pactVersion = PactSpecVersion.V1_1)
 @PactFolder("pacts")
 @TestPropertySource(properties = {
     "idam.api.url=http://localhost:5000",
@@ -91,7 +91,7 @@ public class OrgRoleMappingConsumerTestForGetActorById extends BaseTestContract 
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeGetActorByIdAndGet200", pactVersion = PactSpecVersion.V4)
+    @PactTestFor(pactMethod = "executeGetActorByIdAndGet200", pactVersion = PactSpecVersion.V1_1)
     void getActorByIdAndGet200Test(MockServer mockServer) throws JSONException {
         var actualResponseBody =
                 SerenityRest
