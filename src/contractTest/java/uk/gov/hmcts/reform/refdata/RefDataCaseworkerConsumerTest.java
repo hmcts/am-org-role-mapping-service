@@ -52,7 +52,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCase
     "feign.client.config.ccdClient.url=http://localhost:8093",
     "feign.client.config.jbsClient.url=http://localhost:8094",
     "idam.api.url=http://localhost:5000",
-    "spring.cache.type=none"
+    "spring.cache.type=simple"
 })
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class RefDataCaseworkerConsumerTest {
