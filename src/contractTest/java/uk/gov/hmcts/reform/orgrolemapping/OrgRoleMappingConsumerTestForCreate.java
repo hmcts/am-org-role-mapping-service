@@ -23,13 +23,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
@@ -45,6 +45,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @PactTestFor(providerName = "am_roleAssignment_createAssignment", pactVersion = PactSpecVersion.V3)
 @PactFolder("pacts")
 @TestPropertySource(properties = {
+    "feign.client.config.crdclient.url=http://localhost:8991",
+    "feign.client.config.jrdClient.url=http://localhost:8091",
     "idam.api.url=http://localhost:5000",
     "spring.cache.type=simple"
 })
@@ -52,22 +54,32 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
 
     private static final String RAS_CREATE_ROLE_ASSIGNMENT_URL = "/am/role-assignments";
 
-    @Autowired
-    RASFeignClient rasFeignClient;
+    @Bean
+    RASFeignClient rasFeignClient () {
+        return Mockito.mock(RASFeignClient.class);
+    }
 
-    @MockitoBean
-    JRDTopicPublisher jrdPublisher;
+    @Bean
+    JRDTopicPublisher jrdPublisher() {
+        return Mockito.mock(JRDTopicPublisher.class);
+    }
 
-    @MockitoBean
-    CRDTopicPublisher crdPublisher;
+    @Bean
+    CRDTopicPublisher crdPublisher() {
+        return Mockito.mock(CRDTopicPublisher.class);
+    }
 
-    @MockitoBean
+    @Bean
     @Qualifier("crdPublisher")
-    ServiceBusSenderClient serviceBusSenderClient;
+    ServiceBusSenderClient serviceBusSenderClient() {
+        return Mockito.mock(ServiceBusSenderClient.class);
+    }
 
-    @MockitoBean
+    @Bean
     @Qualifier("jrdPublisher")
-    ServiceBusSenderClient serviceBusSenderClientJrd;
+    ServiceBusSenderClient serviceBusSenderClientJrd() {
+        return Mockito.mock(ServiceBusSenderClient.class);
+    }
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
