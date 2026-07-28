@@ -22,18 +22,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
-import javax.sql.DataSource;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -60,30 +57,19 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
     public static final String POST_ASSIGNMENTS = SERVICE
             + ".post-assignment-query-request+json;charset=UTF-8;version=2.0";
 
-    @Autowired
-    DataSource dataSource;
+    @MockitoBean
+    JRDTopicPublisher jrdPublisher;
 
-    @Bean
-    JRDTopicPublisher jrdPublisher() {
-        return Mockito.mock(JRDTopicPublisher.class);
-    }
+    @MockitoBean
+    CRDTopicPublisher crdPublisher;
 
-    @Bean
-    CRDTopicPublisher crdPublisher() {
-        return Mockito.mock(CRDTopicPublisher.class);
-    }
-
-    @Bean
+    @MockitoBean
     @Qualifier("crdPublisher")
-    ServiceBusSenderClient serviceBusSenderClient() {
-        return Mockito.mock(ServiceBusSenderClient.class);
-    }
+    ServiceBusSenderClient serviceBusSenderClient;
 
-    @Bean
+    @MockitoBean
     @Qualifier("jrdPublisher")
-    ServiceBusSenderClient serviceBusSenderClientJrd() {
-        return Mockito.mock(ServiceBusSenderClient.class);
-    }
+    ServiceBusSenderClient serviceBusSenderClientJrd;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
