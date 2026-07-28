@@ -49,7 +49,7 @@ import java.util.Set;
     "feign.client.config.ccdClient.url=http://localhost:8093",
     "feign.client.config.jbsClient.url=http://localhost:8094",
     "idam.api.url=http://localhost:5000",
-    "spring.cache.type=simple"
+    "spring.cache.type=none"
 })
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class RefDataJudicialProfileConsumerTestV2 {
