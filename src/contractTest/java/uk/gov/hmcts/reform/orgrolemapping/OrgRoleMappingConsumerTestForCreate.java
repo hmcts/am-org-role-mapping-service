@@ -43,7 +43,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @PactTestFor(providerName = "am_roleAssignment_createAssignment", pactVersion = PactSpecVersion.V3)
 @PactFolder("pacts")
 @TestPropertySource(properties = {
-    "feign.client.config.roleAssignmentApp.url=http://localhost:4096",
     "idam.api.url=http://localhost:5000",
     "spring.cache.type=simple"
 })
