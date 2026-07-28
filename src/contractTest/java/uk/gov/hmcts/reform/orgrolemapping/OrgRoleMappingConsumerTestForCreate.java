@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
@@ -34,6 +35,7 @@ import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
+import javax.sql.DataSource;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -45,8 +47,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @PactTestFor(providerName = "am_roleAssignment_createAssignment", pactVersion = PactSpecVersion.V3)
 @PactFolder("pacts")
 @TestPropertySource(properties = {
-    "feign.client.config.crdclient.url=http://localhost:8991",
-    "feign.client.config.jrdClient.url=http://localhost:8091",
     "idam.api.url=http://localhost:5000",
     "spring.cache.type=simple"
 })
@@ -54,10 +54,11 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
 
     private static final String RAS_CREATE_ROLE_ASSIGNMENT_URL = "/am/role-assignments";
 
-    @Bean
-    RASFeignClient rasFeignClient () {
-        return Mockito.mock(RASFeignClient.class);
-    }
+    @Autowired
+    DataSource dataSource;
+
+    @Autowired
+    RASFeignClient rasFeignClient;
 
     @Bean
     JRDTopicPublisher jrdPublisher() {
