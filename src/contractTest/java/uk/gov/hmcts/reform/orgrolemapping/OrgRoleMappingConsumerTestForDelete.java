@@ -15,12 +15,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
@@ -44,27 +43,19 @@ public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
     private static final String RAS_DELETE_ACTOR_BY_ID = AM_RAS_URL + "/" + ACTOR_ID;
     private static final String RAS_DELETE_ACTOR_BY_PR = AM_RAS_URL + "?" + QUERY_PARAMS;
 
-    @Bean
-    JRDTopicPublisher jrdPublisher() {
-        return Mockito.mock(JRDTopicPublisher.class);
-    }
+    @MockitoBean
+    JRDTopicPublisher jrdPublisher;
 
-    @Bean
-    CRDTopicPublisher crdPublisher() {
-        return Mockito.mock(CRDTopicPublisher.class);
-    }
+    @MockitoBean
+    CRDTopicPublisher crdPublisher;
 
-    @Bean
+    @MockitoBean
     @Qualifier("crdPublisher")
-    ServiceBusSenderClient serviceBusSenderClient() {
-        return Mockito.mock(ServiceBusSenderClient.class);
-    }
+    ServiceBusSenderClient serviceBusSenderClient;
 
-    @Bean
+    @MockitoBean
     @Qualifier("jrdPublisher")
-    ServiceBusSenderClient serviceBusSenderClientJrd() {
-        return Mockito.mock(ServiceBusSenderClient.class);
-    }
+    ServiceBusSenderClient serviceBusSenderClientJrd;
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
