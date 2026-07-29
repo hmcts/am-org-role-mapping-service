@@ -7,11 +7,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.azure.messaging.servicebus.ServiceBusReceiverClient;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
@@ -25,23 +27,41 @@ public abstract class BaseTest {
 
     protected static final ObjectMapper mapper = new ObjectMapper();
 
-    @MockitoBean(name = "jrdConsumer")
-    private ServiceBusReceiverClient jrdConsumer;
+    @Bean
+    @Qualifier("jrdConsumer")
+    ServiceBusReceiverClient jrdConsumer() {
+        return Mockito.mock(ServiceBusReceiverClient.class);
+    }
 
-    @MockitoBean(name = "crdConsumer")
-    private ServiceBusReceiverClient crdConsumer;
+    @Bean
+    @Qualifier("crdConsumer")
+    ServiceBusReceiverClient crdConsumer() {
+        return Mockito.mock(ServiceBusReceiverClient.class);
+    }
 
-    @MockitoBean(name = "getSubscriptionClient")
-    private ServiceBusReceiverClient getSubscriptionClient;
+    @Bean
+    @Qualifier("getSubscriptionClient")
+    ServiceBusReceiverClient getSubscriptionClient() {
+        return Mockito.mock(ServiceBusReceiverClient.class);
+    }
 
-    @MockitoBean(name = "getSubscriptionClient1")
-    private ServiceBusReceiverClient getSubscriptionClient1;
+    @Bean
+    @Qualifier("getSubscriptionClient1")
+    private ServiceBusReceiverClient getSubscriptionClient1() {
+        return Mockito.mock(ServiceBusReceiverClient.class);
+    }
 
-    @MockitoBean(name = "clientRegistrationRepository")
-    private ClientRegistrationRepository getClientRegistrationRepository;
+    @Bean
+    @Qualifier("clientRegistrationRepository")
+    private ClientRegistrationRepository getClientRegistrationRepository() {
+        return Mockito.mock(ClientRegistrationRepository.class);
+    }
 
-    @MockitoBean(name = "reactiveClientRegistrationRepository")
-    private ReactiveClientRegistrationRepository getReactiveClientRegistrationRepository;
+    @Bean
+    @Qualifier("reactiveClientRegistrationRepository")
+    private ReactiveClientRegistrationRepository getReactiveClientRegistrationRepository() {
+        return Mockito.mock(ReactiveClientRegistrationRepository.class);
+    }
 
     static {
         if (!WIRE_MOCK_SERVER.isRunning()) {
