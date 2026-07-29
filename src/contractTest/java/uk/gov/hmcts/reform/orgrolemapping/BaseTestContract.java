@@ -40,37 +40,37 @@ public abstract class BaseTestContract {
 
     @Bean
     @Qualifier("jrdConsumer")
-    private ServiceBusReceiverClient jrdConsumer() {
+    ServiceBusReceiverClient jrdConsumer() {
         return Mockito.mock(ServiceBusReceiverClient.class);
     }
 
     @Bean
     @Qualifier("crdConsumer")
-    private ServiceBusReceiverClient crdConsumer() {
+    ServiceBusReceiverClient crdConsumer() {
         return Mockito.mock(ServiceBusReceiverClient.class);
     }
 
     @Bean
     @Qualifier("getSubscriptionClient")
-    private ServiceBusReceiverClient getSubscriptionClient() {
+    ServiceBusReceiverClient getSubscriptionClient() {
         return Mockito.mock(ServiceBusReceiverClient.class);
     }
 
     @Bean
     @Qualifier("getSubscriptionClient1")
-    private ServiceBusReceiverClient getSubscriptionClient1() {
+    ServiceBusReceiverClient getSubscriptionClient1() {
         return Mockito.mock(ServiceBusReceiverClient.class);
     }
 
     @Bean
     @Qualifier("clientRegistrationRepository")
-    private ClientRegistrationRepository getClientRegistrationRepository() {
+    ClientRegistrationRepository getClientRegistrationRepository() {
         return Mockito.mock(ClientRegistrationRepository.class);
     }
 
     @Bean
     @Qualifier("reactiveClientRegistrationRepository")
-    private ReactiveClientRegistrationRepository getReactiveClientRegistrationRepository() {
+    ReactiveClientRegistrationRepository getReactiveClientRegistrationRepository() {
         return Mockito.mock(ReactiveClientRegistrationRepository.class);
     }
 
