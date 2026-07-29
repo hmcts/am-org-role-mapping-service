@@ -67,8 +67,7 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
 
     @Disabled
     @Test
-    @PactTestFor(pactMethod = "getUsersByOrganisationIdentifiersWithPageSizeAndSearchAfter",
-            pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "getUsersByOrganisationIdentifiersWithPageSizeAndSearchAfter")
     public void verifyGetUsersByOrganisationIdentifiersWithPageSizeAndSearchAfter() {
         ResponseEntity<UsersByOrganisationResponse> response = prdFeignClient
                 .getUsersByOrganisation(PAGE_SIZE, SEARCH_AFTER_ORG, SEARCH_AFTER_USER,
@@ -101,8 +100,7 @@ public class RefDataProfessionalUserInternalConsumerTestV2 {
 
     @Disabled
     @Test
-    @PactTestFor(pactMethod = "getUsersByOrganisationIdentifiersWithPageSizeAndNoSearchAfter",
-            pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "getUsersByOrganisationIdentifiersWithPageSizeAndNoSearchAfter")
     public void verifyGetUsersByOrganisationIdentifiersWithPageSizeAndNoSearchAfter() {
         ResponseEntity<UsersByOrganisationResponse> response = prdFeignClient
                 .getUsersByOrganisation(PAGE_SIZE, null, null,

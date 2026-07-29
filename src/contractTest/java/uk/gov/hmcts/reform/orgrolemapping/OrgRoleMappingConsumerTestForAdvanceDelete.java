@@ -91,7 +91,7 @@ public class OrgRoleMappingConsumerTestForAdvanceDelete  extends BaseTestContrac
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeAdvanceDeleteAndGet200", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "executeAdvanceDeleteAndGet200")
     void advancedDeleteAndGet200Test(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =

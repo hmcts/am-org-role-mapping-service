@@ -84,7 +84,7 @@ public class RefDataJudicialProfileConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "getJrdProfilesListOfIds", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "getJrdProfilesListOfIds")
     void executeGetJrdProfilesListOfIds(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
@@ -122,7 +122,7 @@ public class RefDataJudicialProfileConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "getJrdProfilesServiceName", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "getJrdProfilesServiceName")
     void executeGetJrdProfilesServiceName(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =

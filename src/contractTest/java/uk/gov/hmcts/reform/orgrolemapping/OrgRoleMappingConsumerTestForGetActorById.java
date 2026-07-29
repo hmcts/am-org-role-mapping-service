@@ -96,7 +96,7 @@ public class OrgRoleMappingConsumerTestForGetActorById extends BaseTestContract 
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeGetActorByIdAndGet200", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "executeGetActorByIdAndGet200")
     void getActorByIdAndGet200Test(MockServer mockServer) throws JSONException {
         var actualResponseBody =
                 SerenityRest

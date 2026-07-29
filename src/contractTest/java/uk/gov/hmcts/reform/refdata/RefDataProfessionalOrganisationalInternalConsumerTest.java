@@ -89,7 +89,7 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
 
     @Disabled
     @Test
-    @PactTestFor(pactMethod = "getOrganisationsByProfileIdsWithPageSize", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "getOrganisationsByProfileIdsWithPageSize")
     public void verifyGetOrganisationsByProfileIdsWithPageSize() {
         ResponseEntity<OrganisationByProfileIdsResponse> response = prdFeignClient
                 .getOrganisationsByProfileIds(PAGE_SIZE, null, new OrganisationByProfileIdsRequest(
@@ -125,8 +125,7 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
 
     @Disabled
     @Test
-    @PactTestFor(pactMethod = "getOrganisationsByProfileIdsWithPageSizeAndSearchAfter",
-            pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "getOrganisationsByProfileIdsWithPageSizeAndSearchAfter")
     public void verifyGetOrganisationsByProfileIdsWithPageSizeAndSearchAfter() {
         ResponseEntity<OrganisationByProfileIdsResponse> response = prdFeignClient
                 .getOrganisationsByProfileIds(PAGE_SIZE, SEARCH_AFTER, new OrganisationByProfileIdsRequest(
@@ -158,7 +157,7 @@ public class RefDataProfessionalOrganisationalInternalConsumerTest {
     //@TODO temp disabled during PR build - remove at master
     @Disabled
     @Test
-    @PactTestFor(pactMethod = "retrieveOrganisations", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "retrieveOrganisations")
     public void verifyRetrieveOrganisations() {
         ResponseEntity<OrganisationsResponse> response = prdFeignClient
                 .retrieveOrganisations(null, LAST_UPDATED_SINCE, null, 1, PAGE_SIZE);

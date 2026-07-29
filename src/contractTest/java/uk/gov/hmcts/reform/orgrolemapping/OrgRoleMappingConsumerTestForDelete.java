@@ -91,7 +91,7 @@ public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeDeleteActorByPrAndGet204", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "executeDeleteActorByPrAndGet204")
     void deleteActorByPrAndGet204Test(MockServer mockServer) throws IOException {
         HttpResponse httpResponse =
                 Request.delete(mockServer.getUrl() + RAS_DELETE_ACTOR_BY_PR).execute().returnResponse();
@@ -112,7 +112,7 @@ public class OrgRoleMappingConsumerTestForDelete extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeDeleteActorByIdAndGet204", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "executeDeleteActorByIdAndGet204")
     void deleteActorByIdAndGet204Test(MockServer mockServer) throws IOException {
         HttpResponse httpResponse =
                 Request.delete(mockServer.getUrl() + RAS_DELETE_ACTOR_BY_ID).execute().returnResponse();

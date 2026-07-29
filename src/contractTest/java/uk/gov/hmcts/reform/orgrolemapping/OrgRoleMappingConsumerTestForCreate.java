@@ -241,8 +241,7 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeCreateRoleAssignmentReplacingExistingFalseAndGet201",
-            pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "executeCreateRoleAssignmentReplacingExistingFalseAndGet201")
     void createRoleAssignmentReplaceExistingFalseAndGet201Test(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
@@ -264,7 +263,7 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeCreateRoleAssignmentOneRoleAndGet201", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "executeCreateRoleAssignmentOneRoleAndGet201")
     void createRoleAssignmentOneRoleAndGet201Test(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
@@ -287,7 +286,7 @@ public class OrgRoleMappingConsumerTestForCreate extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeCreateRoleAssignmentZeroRoleAndGet201", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "executeCreateRoleAssignmentZeroRoleAndGet201")
     void createRoleAssignmentZeroRoleAndGet201Test(MockServer mockServer) throws JSONException {
         var actualResponseBody =
                 SerenityRest

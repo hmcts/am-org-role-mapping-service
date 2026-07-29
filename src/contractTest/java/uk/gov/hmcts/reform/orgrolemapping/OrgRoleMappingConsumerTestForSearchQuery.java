@@ -233,7 +233,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeAdvancedSearchQueryRoleAssignmentAndGet200", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "executeAdvancedSearchQueryRoleAssignmentAndGet200")
     void getAdvancedSearchQueryResultsAndGet200Test(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
@@ -253,7 +253,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentAndGet200", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentAndGet200")
     void getSearchQueryResultsByActorIdAndGet200Test(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
@@ -273,7 +273,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentByRoleNameAndGet200", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentByRoleNameAndGet200")
     void getSearchQueryResultsByRoleNameAndGet200Test(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
@@ -293,8 +293,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentByAttributesAndGet200",
-            pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentByAttributesAndGet200")
     void getSearchQueryResultsByAttributesAndGet200Test(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
@@ -316,8 +315,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentMultipleRoleAssignmentsAndGet200",
-            pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentMultipleRoleAssignmentsAndGet200")
     void getSearchQueryResultsMultipleRoleAssignmentsAndGet200Test(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
@@ -340,8 +338,7 @@ public class OrgRoleMappingConsumerTestForSearchQuery extends BaseTestContract {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentEmptyCollectionAndGet200",
-            pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "executeSearchQueryRoleAssignmentEmptyCollectionAndGet200")
     void getSearchQueryResultsEmptyListOfRoleAssignmentsAndGet200Test(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =

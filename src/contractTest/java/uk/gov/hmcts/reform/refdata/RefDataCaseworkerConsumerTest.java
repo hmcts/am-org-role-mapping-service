@@ -101,7 +101,7 @@ public class RefDataCaseworkerConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "generatePactFragment", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "generatePactFragment")
     public void verifyCaseworkersFetch() {
         ResponseEntity<List<Object>> response = null;
         List<CaseWorkerProfile> caseWorkerProfiles = new ArrayList<>();
@@ -114,7 +114,7 @@ public class RefDataCaseworkerConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "getCaseworkersByServiceNamePact", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "getCaseworkersByServiceNamePact")
     public void verifyCaseworkersByServiceName() {
         ResponseEntity<List<CaseWorkerProfilesResponse>> caseWorkerProfiles =
                 crdFeignClient.getCaseworkerDetailsByServiceName("IA",20,1,

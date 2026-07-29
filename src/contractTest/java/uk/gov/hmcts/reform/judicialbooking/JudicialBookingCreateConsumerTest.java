@@ -109,7 +109,7 @@ public class JudicialBookingCreateConsumerTest {
     }
 
     @Test
-    @PactTestFor(pactMethod = "executeCreateJudicialBooking", pactVersion = PactSpecVersion.V3)
+    @PactTestFor(pactMethod = "executeCreateJudicialBooking")
     void executeGetJrdProfilesListOfIds(MockServer mockServer)
             throws JSONException {
         var actualResponseBody =
