@@ -27,7 +27,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
@@ -41,10 +40,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PactTestFor(providerName = "am_roleAssignment_getAssignment", pactVersion = PactSpecVersion.V3)
 @PactFolder("pacts")
-@TestPropertySource(properties = {
-    "idam.api.url=http://localhost:5000",
-    "spring.cache.type=simple"
-})
 public class OrgRoleMappingConsumerTestForGetActorById extends BaseTestContract {
 
     private static final String ACTOR_ID = "23486";
