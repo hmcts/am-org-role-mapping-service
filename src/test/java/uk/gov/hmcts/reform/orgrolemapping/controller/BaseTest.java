@@ -25,23 +25,23 @@ public abstract class BaseTest {
 
     protected static final ObjectMapper mapper = new ObjectMapper();
 
-    @MockitoBean(name = "jrdConsumer")
+    @MockitoBean
     private ServiceBusReceiverClient jrdConsumer;
 
-    @MockitoBean(name = "crdConsumer")
+    @MockitoBean
     private ServiceBusReceiverClient crdConsumer;
 
-    @MockitoBean(name = "getSubscriptionClient")
-    private ServiceBusReceiverClient getSubscriptionClient;
+    @MockitoBean
+    private ServiceBusReceiverClient subscriptionClient;
 
-    @MockitoBean(name = "getSubscriptionClient1")
-    private ServiceBusReceiverClient getSubscriptionClient1;
+    @MockitoBean
+    private ServiceBusReceiverClient subscriptionClient1;
 
-    @MockitoBean(name = "clientRegistrationRepository")
-    private ClientRegistrationRepository getClientRegistrationRepository;
+    @MockitoBean
+    private ClientRegistrationRepository clientRegistrationRepository;
 
-    @MockitoBean(name = "reactiveClientRegistrationRepository")
-    private ReactiveClientRegistrationRepository getReactiveClientRegistrationRepository;
+    @MockitoBean
+    private ReactiveClientRegistrationRepository reactiveClientRegistrationRepository;
 
     static {
         if (!WIRE_MOCK_SERVER.isRunning()) {
