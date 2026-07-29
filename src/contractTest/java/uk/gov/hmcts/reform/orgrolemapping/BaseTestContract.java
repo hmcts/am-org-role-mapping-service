@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping;
 
-import com.azure.messaging.servicebus.ServiceBusReceiverClient;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -8,17 +7,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.lang.NonNull;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -37,35 +32,6 @@ public abstract class BaseTestContract {
     public static final WireMockServer WIRE_MOCK_SERVER = new WireMockServer(options().dynamicPort());
     protected static final ObjectMapper mapper = new ObjectMapper();
 
-    @Bean
-    ServiceBusReceiverClient jrdConsumer() {
-        return Mockito.mock(ServiceBusReceiverClient.class);
-    }
-
-    @Bean
-    ServiceBusReceiverClient crdConsumer() {
-        return Mockito.mock(ServiceBusReceiverClient.class);
-    }
-
-    @Bean
-    ServiceBusReceiverClient subscriptionClient() {
-        return Mockito.mock(ServiceBusReceiverClient.class);
-    }
-
-    @Bean
-    ServiceBusReceiverClient subscriptionClient1() {
-        return Mockito.mock(ServiceBusReceiverClient.class);
-    }
-
-    @Bean
-    ClientRegistrationRepository clientRegistrationRepository() {
-        return Mockito.mock(ClientRegistrationRepository.class);
-    }
-
-    @Bean
-    ReactiveClientRegistrationRepository reactiveClientRegistrationRepository() {
-        return Mockito.mock(ReactiveClientRegistrationRepository.class);
-    }
 
     public static class WireMockServerInitializer
             implements ApplicationContextInitializer<ConfigurableApplicationContext> {
