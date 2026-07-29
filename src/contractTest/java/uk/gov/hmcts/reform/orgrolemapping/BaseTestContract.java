@@ -9,7 +9,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContextInitializer;
@@ -39,38 +38,32 @@ public abstract class BaseTestContract {
     protected static final ObjectMapper mapper = new ObjectMapper();
 
     @Bean
-    @Qualifier("jrdConsumer")
     ServiceBusReceiverClient jrdConsumer() {
         return Mockito.mock(ServiceBusReceiverClient.class);
     }
 
     @Bean
-    @Qualifier("crdConsumer")
     ServiceBusReceiverClient crdConsumer() {
         return Mockito.mock(ServiceBusReceiverClient.class);
     }
 
     @Bean
-    @Qualifier("getSubscriptionClient")
-    ServiceBusReceiverClient getSubscriptionClient() {
+    ServiceBusReceiverClient subscriptionClient() {
         return Mockito.mock(ServiceBusReceiverClient.class);
     }
 
     @Bean
-    @Qualifier("getSubscriptionClient1")
-    ServiceBusReceiverClient getSubscriptionClient1() {
+    ServiceBusReceiverClient subscriptionClient1() {
         return Mockito.mock(ServiceBusReceiverClient.class);
     }
 
     @Bean
-    @Qualifier("clientRegistrationRepository")
-    ClientRegistrationRepository getClientRegistrationRepository() {
+    ClientRegistrationRepository clientRegistrationRepository() {
         return Mockito.mock(ClientRegistrationRepository.class);
     }
 
     @Bean
-    @Qualifier("reactiveClientRegistrationRepository")
-    ReactiveClientRegistrationRepository getReactiveClientRegistrationRepository() {
+    ReactiveClientRegistrationRepository reactiveClientRegistrationRepository() {
         return Mockito.mock(ReactiveClientRegistrationRepository.class);
     }
 
