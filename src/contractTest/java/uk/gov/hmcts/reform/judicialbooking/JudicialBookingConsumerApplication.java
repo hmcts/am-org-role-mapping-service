@@ -1,8 +1,10 @@
 package uk.gov.hmcts.reform.judicialbooking;
 
 
+import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.idam.client.IdamApi;
 import uk.gov.hmcts.reform.idam.client.IdamClient;
@@ -31,4 +33,9 @@ public class JudicialBookingConsumerApplication {
 
     @MockitoBean
     OIdcAdminConfiguration oidcAdminConfiguration;
+
+    @Bean
+    public IdamApi idamApiMock() {
+        return Mockito.mock(IdamApi.class);
+    }
 }
