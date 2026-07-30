@@ -4,7 +4,6 @@ import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.idam.client.IdamApi;
 import uk.gov.hmcts.reform.idam.client.IdamClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
@@ -20,43 +19,28 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 })
 public class RefDataConsumerApplication {
 
-    @MockitoBean
-    IdamApi idamApi;
-
-    @MockitoBean
-    IdamClient idamClient;
-
-    @MockitoBean
-    SecurityUtils securityUtils;
-
-    @MockitoBean
-    IdamRepository idamRepository;
-
-    @MockitoBean
-    OIdcAdminConfiguration oidcAdminConfiguration;
-
     @Bean
-    public IdamApi idamApiMock() {
+    public IdamApi idamApi() {
         return Mockito.mock(IdamApi.class);
     }
 
     @Bean
-    public IdamClient idamClientMock() {
+    public IdamClient idamClient() {
         return Mockito.mock(IdamClient.class);
     }
 
     @Bean
-    public SecurityUtils securityUtilsMock() {
+    public SecurityUtils securityUtils() {
         return Mockito.mock(SecurityUtils.class);
     }
 
     @Bean
-    public IdamRepository idamRepositoryMock() {
+    public IdamRepository idamRepository() {
         return Mockito.mock(IdamRepository.class);
     }
 
     @Bean
-    public OIdcAdminConfiguration oidcAdminConfigurationMock() {
+    public OIdcAdminConfiguration oidcAdminConfiguration() {
         return Mockito.mock(OIdcAdminConfiguration.class);
     }
 }
