@@ -1,8 +1,11 @@
 package uk.gov.hmcts.reform.refdata;
 
+import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import uk.gov.hmcts.reform.idam.client.IdamApi;
 import uk.gov.hmcts.reform.idam.client.IdamClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
@@ -18,6 +21,9 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 public class RefDataConsumerApplication {
 
     @MockitoBean
+    IdamApi idamApi;
+
+    @MockitoBean
     IdamClient idamClient;
 
     @MockitoBean
@@ -28,4 +34,9 @@ public class RefDataConsumerApplication {
 
     @MockitoBean
     OIdcAdminConfiguration oidcAdminConfiguration;
+
+    @Bean
+    public IdamApi idamApiMock() {
+        return Mockito.mock(IdamApi.class);
+    }
 }
