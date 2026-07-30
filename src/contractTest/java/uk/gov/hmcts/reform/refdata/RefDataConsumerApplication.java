@@ -39,4 +39,24 @@ public class RefDataConsumerApplication {
     public IdamApi idamApiMock() {
         return Mockito.mock(IdamApi.class);
     }
+
+    @Bean
+    public IdamClient idamClientMock() {
+        return Mockito.mock(IdamClient.class);
+    }
+
+    @Bean
+    public SecurityUtils securityUtilsMock() {
+        return Mockito.mock(SecurityUtils.class);
+    }
+
+    @Bean
+    public IdamRepository idamRepositoryMock() {
+        return Mockito.mock(IdamRepository.class);
+    }
+
+    @Bean
+    public OIdcAdminConfiguration oidcAdminConfigurationMock() {
+        return Mockito.mock(OIdcAdminConfiguration.class);
+    }
 }
