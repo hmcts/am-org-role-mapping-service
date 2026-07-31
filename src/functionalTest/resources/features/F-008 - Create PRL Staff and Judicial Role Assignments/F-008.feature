@@ -11,6 +11,7 @@ Feature: F-008 : Create Role Assignments for PrivateLaw Caseworker and Judicial 
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-071_DeleteDataForRoleAssignments],
     And a successful call [to verify caseworker details for Senior Legal Caseworker] as in [S-071__VerifyCaseworkerDetails],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-071_PushMessageToCRDService],
+    And the request [contains the actorId of the user just published who has Legal Caseworker role],
     And the request [contains the actorId of the user just published who has Senior Legal Caseworker role],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
