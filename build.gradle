@@ -36,7 +36,7 @@ def versions = [
         testcontainers : '1.21.4',
         drools         : '9.44.0.Final',
         log4JVersion   : '2.24.3',
-        netty_version  : '4.2.15.Final',
+        netty_version  : '4.2.16.Final',
         bouncycastle   : '1.83',
         poi            : '5.5.1'
 ]
@@ -340,7 +340,7 @@ dependencies {
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE'
     implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: versions.bouncycastle
     implementation group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: versions.bouncycastle
-    implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '2.5.2'
+    implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '2.5.3'
 
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.8.17'
 
@@ -373,12 +373,12 @@ dependencies {
     //Azure service bus libraries
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '5.3.2'
     implementation group: 'com.azure', name: 'azure-core', version: '1.58.1'
-    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.18'
+    implementation group: 'com.azure', name: 'azure-messaging-servicebus', version: '7.17.19'
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.8.6'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.11.0'
     implementation group: 'com.google.guava', name: 'guava', version: '33.5.0-jre'
     implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.2.4'
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.12'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.13'
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.8'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.2'
@@ -395,7 +395,7 @@ dependencies {
     implementation group: 'io.netty', name: 'netty-all', version: versions.netty_version
 
 
-    implementation 'net.bytebuddy:byte-buddy:1.18.10'
+    implementation 'net.bytebuddy:byte-buddy:1.18.11'
 
     testImplementation('com.opentable.components:otj-pg-embedded:1.1.1')
     testImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
@@ -411,10 +411,10 @@ dependencies {
     testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
     testImplementation group: 'info.solidsoft.gradle.pitest', name:'gradle-pitest-plugin', version: '1.15.0'
     testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
-    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:4.3.3')
+    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:4.3.4')
     testImplementation group: 'org.springframework.boot', name:'spring-boot-starter-test'
     testImplementation group: 'org.springframework.security',name:'spring-security-test'
-    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '4.3.2'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '4.3.3'
 
     testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
     testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-engine', version: versions.junitPlatform
@@ -491,7 +491,7 @@ dependencyManagement {
         dependency("org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}")
         dependency("org.bouncycastle:bcpkix-jdk18on:${versions.bouncycastle}")
 
-        dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.56') {
+        dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.57') {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-el'
             entry 'tomcat-embed-websocket'
