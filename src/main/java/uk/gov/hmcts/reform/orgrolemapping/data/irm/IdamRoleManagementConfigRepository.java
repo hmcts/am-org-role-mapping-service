@@ -14,8 +14,9 @@ public interface IdamRoleManagementConfigRepository extends
         select irmc.*
         from idam_role_management_config irmc, flag_config fc
         where irmc.allow_delete_flag = fc.flag_name
+        and irmc.user_type = :userType
         and fc.status = true
         and fc.env = :env
         """, nativeQuery = true)
-    List<IdamRoleManagementConfigEntity> findAllForDeletion(String env);
+    List<IdamRoleManagementConfigEntity> findAllForDeletion(String env, String userType);
 }
