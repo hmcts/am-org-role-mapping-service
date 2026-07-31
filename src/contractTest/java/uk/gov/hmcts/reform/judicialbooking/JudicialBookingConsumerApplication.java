@@ -5,6 +5,8 @@ import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import uk.gov.hmcts.reform.idam.client.IdamApi;
 import uk.gov.hmcts.reform.idam.client.IdamClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.oidc.IdamRepository;
@@ -17,23 +19,23 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 })
 public class JudicialBookingConsumerApplication {
 
-    @Bean
-    IdamClient idamClient() {
-        return Mockito.mock(IdamClient.class);
-    }
+    @MockitoBean
+    IdamApi idamApi;
+
+    @MockitoBean
+    IdamClient idamClient;
+
+    @MockitoBean
+    SecurityUtils securityUtils;
+
+    @MockitoBean
+    IdamRepository idamRepository;
+
+    @MockitoBean
+    OIdcAdminConfiguration oidcAdminConfiguration;
 
     @Bean
-    SecurityUtils securityUtils() {
-        return Mockito.mock(SecurityUtils.class);
-    }
-
-    @Bean
-    IdamRepository idamRepository() {
-        return Mockito.mock(IdamRepository.class);
-    }
-
-    @Bean
-    OIdcAdminConfiguration oidcAdminConfiguration() {
-        return Mockito.mock(OIdcAdminConfiguration.class);
+    public IdamApi idamApiMock() {
+        return Mockito.mock(IdamApi.class);
     }
 }

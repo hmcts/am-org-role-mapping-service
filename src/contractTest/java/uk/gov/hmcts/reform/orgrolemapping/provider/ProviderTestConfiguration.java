@@ -148,10 +148,10 @@ public class ProviderTestConfiguration {
     public ProfessionalRefreshOrchestrator professionalRefreshOrchestrator(
             UserRefreshQueueRepository userRefreshQueueRepository) {
         return new ProfessionalRefreshOrchestrator(
-            userRefreshQueueRepository,
-            prdService(),
-            professionalRefreshOrchestrationHelper(),
-            processEventTracker()
+                userRefreshQueueRepository,
+                prdService(),
+                professionalRefreshOrchestrationHelper(),
+                processEventTracker()
         );
     }
 

@@ -43,6 +43,8 @@ import java.util.Set;
 @PactTestFor(providerName = "referenceData_judicial", port = "8991", pactVersion = PactSpecVersion.V3)
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
+    "idam.api.url=http://localhost:5000",
+    "spring.cache.type=none",
     "feign.client.config.crdclient.url=http://localhost:8991",
     "feign.client.config.prdClient.url=http://localhost:8090",
     "feign.client.config.jrdClient.url=http://localhost:8091",
