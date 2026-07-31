@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 
 import java.util.List;
 
@@ -29,22 +30,22 @@ public class IdamRoleManagementConfigRepositoryIntegrationTest extends BaseTestI
         "classpath:sql/irm/config/insert_idam_role_management_config.sql"})
     public void shouldFindAllForDeletion() {
         // local - All roles exist and set to true
-        findAllForDeletionTest("local", List.of(SENIOR_LEGAL_CASEWORKER, LEGAL_CASEWORKER));
+        findAllForDeletionTest("local", UserType.JUDICIAL, List.of(SENIOR_LEGAL_CASEWORKER, LEGAL_CASEWORKER));
 
         // pr - One role set to true, one set to false
-        findAllForDeletionTest("pr", List.of(SENIOR_LEGAL_CASEWORKER));
+        findAllForDeletionTest("pr", UserType.JUDICIAL, List.of(SENIOR_LEGAL_CASEWORKER));
 
         // aat - No roles (One role set to false, one role does not exist)
-        findAllForDeletionTest("aat", emptyList());
+        findAllForDeletionTest("aat", UserType.JUDICIAL, emptyList());
 
         // prod - No roles (No roles exist)
-        findAllForDeletionTest("prod", emptyList());
+        findAllForDeletionTest("prod", UserType.JUDICIAL, emptyList());
     }
 
-    private void findAllForDeletionTest(String env, List<String> roleNames) {
+    private void findAllForDeletionTest(String env, UserType userType, List<String> roleNames) {
         // WHEN
         List<IdamRoleManagementConfigEntity> idamRoleManagementQueueEntity =
-                idamRoleManagementConfigRepository.findAllForDeletion(env);
+                idamRoleManagementConfigRepository.findAllForDeletion(env, userType.name());
 
         // THEN
         assertNotNull(idamRoleManagementQueueEntity);
