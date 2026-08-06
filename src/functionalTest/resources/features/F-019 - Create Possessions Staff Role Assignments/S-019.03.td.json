@@ -1,0 +1,100 @@
+{
+  "_guid_": "S-019.03",
+  "title": "must successfully create org role mapping for Hearing Centre Team Leader",
+  "_extends_": "F-019_Test_Data_Base",
+
+  "specs": [
+    "contains the actorId of the user just published who has Hearing Centre Team Leader role"
+  ],
+
+  "request": {
+    "pathVariables": {
+      "actorId": "1f7c2a9b-4e63-4d8a-b1f0-9c6e3a2d7b11"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-centre-team-leader",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "routine_work,applications,decision_making_work,error_management,appeals"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-centre-admin",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "routine_work,applications,decision_making_work,error_management,appeals"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-admin",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "ADMIN",
+          "readOnly": true,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "specific-access-approver-admin",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "access_requests"
+          }
+        }
+      ]
+    }
+  }
+
+}

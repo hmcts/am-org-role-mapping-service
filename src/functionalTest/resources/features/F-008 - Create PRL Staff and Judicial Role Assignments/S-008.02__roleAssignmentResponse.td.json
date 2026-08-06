@@ -1,0 +1,82 @@
+{
+  "_guid_": "S-008.02__roleAssignmentResponse",
+
+  "roleAssignmentResponse": [
+    {
+      "__ordering__": "UNORDERED",
+      "__elementId__": "roleName"
+    },
+    {
+      "id": "[[ANYTHING_PRESENT]]",
+      "actorIdType": "IDAM",
+      "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+      "roleType": "ORGANISATION",
+      "roleName": "hmcts-legal-operations",
+      "roleLabel": "HMCTS Legal Operations",
+      "classification": "PRIVATE",
+      "grantType": "BASIC",
+      "roleCategory": "LEGAL_OPERATIONS",
+      "readOnly": true,
+      "created": "[[ANYTHING_PRESENT]]",
+      "attributes": {
+        "substantive": "N"
+      }
+    },
+    {
+      "id": "[[ANYTHING_PRESENT]]",
+      "actorIdType": "IDAM",
+      "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+      "roleType": "ORGANISATION",
+      "roleName": "tribunal-caseworker",
+      "roleLabel": "Tribunal Caseworker",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "LEGAL_OPERATIONS",
+      "readOnly": false,
+      "created": "[[ANYTHING_PRESENT]]",
+      "attributes": {
+        "substantive": "Y",
+        "primaryLocation": "[[ANYTHING_PRESENT]]",
+        "jurisdiction": "PRIVATELAW",
+        "region": "[[ANYTHING_PRESENT]]",
+        "workTypes": "routine_work,hearing_work,applications,decision_making_work"
+      }
+    },
+    {
+      "id" : "[[ANYTHING_PRESENT]]",
+      "actorIdType" : "IDAM",
+      "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+      "roleType" : "ORGANISATION",
+      "roleName" : "hearing-viewer",
+      "roleLabel" : "Hearing Viewer",
+      "classification" : "PUBLIC",
+      "grantType" : "STANDARD",
+      "roleCategory" : "LEGAL_OPERATIONS",
+      "readOnly" : false,
+      "created" : "[[ANYTHING_PRESENT]]",
+      "attributes" : {
+        "substantive" : "N",
+        "primaryLocation" : "[[ANYTHING_PRESENT]]",
+        "jurisdiction" : "PRIVATELAW"
+      }
+    },
+    {
+      "id": "[[ANYTHING_PRESENT]]",
+      "actorIdType": "IDAM",
+      "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+      "roleType": "ORGANISATION",
+      "roleName": "hearing-manager",
+      "roleLabel": "Hearing Manager",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "LEGAL_OPERATIONS",
+      "readOnly": false,
+      "created": "[[ANYTHING_PRESENT]]",
+      "attributes": {
+        "substantive": "N",
+        "primaryLocation": "[[ANYTHING_PRESENT]]",
+        "jurisdiction": "PRIVATELAW"
+      }
+    }
+  ]
+}

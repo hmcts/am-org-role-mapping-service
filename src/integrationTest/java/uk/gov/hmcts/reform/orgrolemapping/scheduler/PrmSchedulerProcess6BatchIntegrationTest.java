@@ -1,0 +1,146 @@
+package uk.gov.hmcts.reform.orgrolemapping.scheduler;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.jdbc.Sql;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
+import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+class PrmSchedulerProcess6BatchIntegrationTest extends BaseProcess6IntegrationTest {
+
+    @Autowired
+    private Scheduler prmScheduler;
+
+    /**
+     * No Change - Empty User Roles List.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/init_access_types.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql"
+    })
+    void testNoUserRoles() {
+        runTest(0, false, false, false, EndStatus.SUCCESS);
+    }
+
+    /**
+     *  No Update - UserRefreshQueue.accessTypeVersion >  PRM Access Version.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_version1.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql"
+    })
+    void testCreateRole_accessVersion() {
+        runTest(1, false, false, false, EndStatus.FAILED);
+    }
+
+    /**
+     *  accessDefault = Y, accessMandatory = N, groupAccessEnabled = Y, PRDenabled = N.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_yny.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_user_refresh_queue_orgstatus_pending.sql"
+    })
+    void testCreateRole_orgstatus_pending() {
+        testCreateRoleAssignment(false, false);
+    }
+
+    /**
+     *  Delete Role Assignment.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_yny.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_deleted.sql"
+    })
+    void testDeleteRole() {
+        testCreateRoleAssignment(false, false);
+    }
+
+    /**
+     *  Partial Success (1 record - correct version, 1 record - version number too high.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_version1.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_enabled.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_version1.sql"
+    })
+    void testCreateRole_partialSuccess() {
+        runTest(2, true, true, false, EndStatus.PARTIAL_SUCCESS);
+    }
+
+    /**
+     *  Retry.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_version1.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_retry.sql"
+    })
+    void testCreateRole_retry() {
+        runTest(1, false, false, false, EndStatus.FAILED);
+        assertRetry(1);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/prm/access_types/insert_accesstypes_version1.sql",
+        "classpath:sql/prm/user_refresh_queue/init_user_refresh_queue.sql",
+        "classpath:sql/prm/user_refresh_queue/insert_userrefresh_retryLimit.sql"
+    })
+    void testCreateRole_retryLimit() {
+        runTest(1, false, false, false, EndStatus.FAILED);
+        assertRetry(1);
+    }
+
+    protected void testCreateRoleAssignment(boolean orgRole, boolean groupRole) {
+        runTest(1, orgRole, groupRole, false, EndStatus.SUCCESS);
+    }
+
+    protected void testCreateRoleAssignmentAllScenarios() {
+        runTest(1, false, false, true, EndStatus.SUCCESS);
+    }
+
+    private void runTest(int expectedNumberOfRecords, boolean organisation, boolean group, boolean allScenarios,
+                         EndStatus endStatus) {
+
+        // GIVEN
+        logBeforeStatus();
+        stubRasCreateRoleAssignment(endStatus);
+
+        // WHEN
+        ProcessMonitorDto processMonitorDto = prmScheduler.processUserRefreshQueue();
+
+        // THEN
+        if (expectedNumberOfRecords != 0 && !EndStatus.FAILED.equals(endStatus)) {
+            verifyNoOfCallsToRas(1);
+        } else {
+            verifyNoOfCallsToRas(0);
+        }
+        verifyNoOfCallsToPrd(0);
+        logAfterStatus(processMonitorDto);
+
+        // verify that the process monitor reports the correct status
+        assertNotNull(processMonitorDto);
+        assertEquals(endStatus, processMonitorDto.getEndStatus());
+
+        // Verify the number of records in the user refresh queue
+        assertTotalUserRefreshQueueEntitiesInDb(expectedNumberOfRecords, endStatus);
+
+        if (expectedNumberOfRecords != 0 && !EndStatus.FAILED.equals(endStatus)) {
+            assertAssignmentRequest(organisation, group, allScenarios);
+        }
+    }
+
+}

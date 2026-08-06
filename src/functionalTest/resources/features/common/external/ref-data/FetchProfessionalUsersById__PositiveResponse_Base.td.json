@@ -1,0 +1,25 @@
+{
+  "_guid_": "FetchProfessionalUsersById__PositiveResponse_Base",
+  "_extends_": "FetchProfessionalUsersById__Base",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "users": [
+        {
+          "__ordering__": "unordered",
+          "__elementId__": "userIdentifier"
+        }
+      ],
+      "lastRecordInPage": "[[ANYTHING_PRESENT]]",
+      "moreAvailable": false
+    }
+  }
+
+}

@@ -1,0 +1,7 @@
+{
+  "_guid_": "Skill_ABA2_ListforHearing",
+  "_extends_": "Skill__Base",
+
+  "skill_code": "SKILL:ABA2:ListforHearing",
+  "description": "List for Hearing"
+}

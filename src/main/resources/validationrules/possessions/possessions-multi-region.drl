@@ -1,0 +1,49 @@
+package validationrules.possessions;
+
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.Attributes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+import function uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.cloneNewRoleAssignmentAndChangeRegion;
+
+/*
+ * POSSESSIONS "multi-region" Org role mapping. (JUDICIAL)
+ */
+
+rule "possessions_multi_region_dependency_org_role__judicial__region_1"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
+  $ra: RoleAssignment(roleCategory == RoleCategory.JUDICIAL,
+                      attributes[Attributes.Name.JURISDICTION] != null && attributes[Attributes.Name.JURISDICTION].asText() in (Jurisdiction.POSSESSIONS.getName()),
+                      attributes[Attributes.Name.CONTRACT_TYPE] != null && attributes[Attributes.Name.CONTRACT_TYPE].asText() in (Attributes.ContractType.SALARIED),
+                      attributes[Attributes.Name.REGION] != null && attributes[Attributes.Name.REGION].asText() in ("5"))
+  not RoleAssignment(actorId == $ra.getActorId(),
+                     roleName == $ra.getRoleName(),
+                     roleCategory == $ra.getRoleCategory(),
+                     attributes[Attributes.Name.JURISDICTION] != null && attributes[Attributes.Name.JURISDICTION].asText() in (Jurisdiction.POSSESSIONS.getName()),
+                     attributes[Attributes.Name.CONTRACT_TYPE] != null && attributes[Attributes.Name.CONTRACT_TYPE].asText() in (Attributes.ContractType.SALARIED),
+                     attributes[Attributes.Name.REGION] != null && attributes[Attributes.Name.REGION].asText() == "1")
+then
+   insert(cloneNewRoleAssignmentAndChangeRegion($ra, "1"));
+   logMsg("Rule : possessions_multi_region_dependency_org_role__judicial__region_1");
+end;
+
+rule "possessions_multi_region_dependency_org_role__judicial__region_5"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_0.getValue())
+  $ra: RoleAssignment(roleCategory == RoleCategory.JUDICIAL,
+                      attributes[Attributes.Name.JURISDICTION] != null && attributes[Attributes.Name.JURISDICTION].asText() in (Jurisdiction.POSSESSIONS.getName()),
+                      attributes[Attributes.Name.CONTRACT_TYPE] != null && attributes[Attributes.Name.CONTRACT_TYPE].asText() in (Attributes.ContractType.SALARIED),
+                      attributes[Attributes.Name.REGION] != null && attributes[Attributes.Name.REGION].asText() in ("1"))
+  not RoleAssignment(actorId == $ra.getActorId(),
+                     roleName == $ra.getRoleName(),
+                     roleCategory == $ra.getRoleCategory(),
+                     attributes[Attributes.Name.JURISDICTION] != null && attributes[Attributes.Name.JURISDICTION].asText() in (Jurisdiction.POSSESSIONS.getName()),
+                     attributes[Attributes.Name.CONTRACT_TYPE] != null && attributes[Attributes.Name.CONTRACT_TYPE].asText() in (Attributes.ContractType.SALARIED),
+                     attributes[Attributes.Name.REGION] != null && attributes[Attributes.Name.REGION].asText() == "5")
+then
+   insert(cloneNewRoleAssignmentAndChangeRegion($ra, "5"));
+   logMsg("Rule : possessions_multi_region_dependency_org_role__judicial__region_5");
+end;

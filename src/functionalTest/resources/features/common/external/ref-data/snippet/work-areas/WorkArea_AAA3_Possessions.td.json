@@ -1,0 +1,7 @@
+{
+  "_guid_": "WorkArea_AAA3_Possessions",
+  "_extends_": "WorkArea__Base",
+
+  "service_code": "AAA3",
+  "area_of_work": "[[ANYTHING_PRESENT]]"
+}

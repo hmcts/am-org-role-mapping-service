@@ -164,6 +164,18 @@ public class DroolJudicialTestArgumentsHelper {
                                 singleRegionFileNameSuffix
                             )
                         )
+                        .additionalRoleExpiredFallbackFileName(
+                            formatRasRequestFileNameWithSuffix(
+                                originalArgs.getAdditionalRoleExpiredFallbackFileName(),
+                                singleRegionFileNameSuffix
+                            )
+                        )
+                        .authorisationExpiredFallbackFileName(
+                            formatRasRequestFileNameWithSuffix(
+                                originalArgs.getAuthorisationExpiredFallbackFileName(),
+                                singleRegionFileNameSuffix
+                            )
+                        )
                         .overrideMapValues(
                             cloneAndOverrideMap(
                                 originalArgs.getOverrideMapValues(),
@@ -193,6 +205,18 @@ public class DroolJudicialTestArgumentsHelper {
                         .rasRequestFileNameWithoutBooking(
                             formatRasRequestFileNameWithSuffix(
                                 originalArgs.getRasRequestFileNameWithoutBooking(),
+                                multiRegionFileNameSuffix
+                            )
+                        )
+                        .additionalRoleExpiredFallbackFileName(
+                            formatRasRequestFileNameWithSuffix(
+                                originalArgs.getAdditionalRoleExpiredFallbackFileName(),
+                                multiRegionFileNameSuffix
+                            )
+                        )
+                        .authorisationExpiredFallbackFileName(
+                            formatRasRequestFileNameWithSuffix(
+                                originalArgs.getAuthorisationExpiredFallbackFileName(),
                                 multiRegionFileNameSuffix
                             )
                         )
@@ -637,7 +661,17 @@ public class DroolJudicialTestArgumentsHelper {
                     StringUtils.isEmpty(testOverride.getFindJrdResponseFileName())
                     || testOverride.getFindJrdResponseFileName().equals(argument.getJrdResponseFileName())
                 )
-                    && matchOverrideMapValues(
+                && (
+                    StringUtils.isEmpty(testOverride.getFindRasRequestFileNameWithoutBooking())
+                        || testOverride.getFindRasRequestFileNameWithoutBooking()
+                               .equals(argument.getRasRequestFileNameWithoutBooking())
+                )
+                && (
+                    StringUtils.isEmpty(testOverride.getFindRasRequestFileNameWithBooking())
+                        || testOverride.getFindRasRequestFileNameWithBooking()
+                        .equals(argument.getRasRequestFileNameWithBooking())
+                )
+                && matchOverrideMapValues(
                     argument.getOverrideMapValues(),
                     testOverride.getFindOverrideMapValues()
                 )
@@ -779,7 +813,11 @@ public class DroolJudicialTestArgumentsHelper {
         return formatFileNameWithFolder(fileName, jurisdiction + "/OutputToRas");
     }
 
-    private static String formatRasRequestFileNameWithSuffix(String fileName, String suffix) {
+    public static String formatRasRequestFileNameWithSuffix(String fileName, String suffix) {
+        if (StringUtils.isEmpty(fileName)) {
+            return null;
+        }
+
         // NB: don't apply suffix on common EMPTY_ROLE_ASSIGNMENT_TEMPLATE as this filename will not change
         return EMPTY_ROLE_ASSIGNMENT_TEMPLATE.equals(fileName)
             ? EMPTY_ROLE_ASSIGNMENT_TEMPLATE

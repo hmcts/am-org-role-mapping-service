@@ -1,0 +1,12 @@
+{
+  "userIdentifier": "[[USER_ID]]",
+  "lastUpdated": "[[USER_UPDATED]]",
+  "organisationInfo":
+  {
+    "organisationIdentifier": "[[ORG_ID]]",
+    "status": "[[ORG_STATUS]]",
+    "lastUpdated": "[[ORG_UPDATED]]",
+    "organisationProfileIds": [ "[[ORG_PROFILE_IDS]]" ]
+  },
+  "userAccessTypes": "[[USER_ACCESS_TYPES]]"
+}

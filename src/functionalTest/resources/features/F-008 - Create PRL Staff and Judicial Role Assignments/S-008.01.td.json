@@ -1,0 +1,24 @@
+{
+  "_guid_": "S-008.01",
+  "title": "must successfully create org role mapping for Senior Legal Caseworker",
+  "_extends_": "VerifyOrgRoleAssignments_RasV1",
+
+  "specs": [
+    "an active IDAM profile with full permissions",
+    "contains the actorId of the user just published who has Senior Legal Caseworker role"
+  ],
+
+  "request": {
+    "body": {
+      "actorId": [
+        "260d03c3-0480-4b4f-807d-4fcb5585ee54"
+      ]
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "_extends_": "S-008.01__roleAssignmentResponse"
+    }
+  }
+}

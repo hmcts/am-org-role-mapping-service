@@ -54,7 +54,11 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
         arguments.addAll(EmploymentJudicialIT.getTestArguments());
 
+        arguments.addAll(FrJudicialIT.getTestArguments());
+
         arguments.addAll(IacJudicialIT.getTestArguments());
+
+        arguments.addAll(PossessionsJudicialIT.getTestArguments());
 
         arguments.addAll(PrivateLawJudicialIT.getTestArguments());
 

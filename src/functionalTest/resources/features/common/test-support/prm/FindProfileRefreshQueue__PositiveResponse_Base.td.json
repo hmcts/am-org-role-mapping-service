@@ -1,0 +1,20 @@
+{
+  "_guid_": "FindProfileRefreshQueue__PositiveResponse_Base",
+  "_extends_": "FindProfileRefreshQueue__Base",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "organisationProfileId": "${[scenarioContext][testData][request][queryParams][organisationProfileId]}",
+      "accessTypesMinVersion": "[[ANY_INTEGER_NOT_NULLABLE]]",
+      "active": "OVERRIDE"
+    }
+  }
+
+}

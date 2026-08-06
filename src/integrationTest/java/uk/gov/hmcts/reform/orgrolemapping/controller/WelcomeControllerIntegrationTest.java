@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import jakarta.inject.Inject;
 import org.codehaus.plexus.util.StringUtils;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +45,6 @@ import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicConsumerNew;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicConsumerNew;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
-import jakarta.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;

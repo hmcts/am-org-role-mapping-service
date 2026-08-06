@@ -1,0 +1,21 @@
+{
+  "_guid_": "S-020__role_assignment__case_allocator",
+
+  "id": "[[ANYTHING_PRESENT]]",
+  "actorIdType": "IDAM",
+  "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+  "roleType": "ORGANISATION",
+  "roleName": "case-allocator",
+  "roleLabel": "Case Allocator",
+  "classification": "PUBLIC",
+  "grantType": "STANDARD",
+  "roleCategory": "OVERRIDE_ME",
+  "readOnly": false,
+  "created": "[[ANYTHING_PRESENT]]",
+  "attributes": {
+    "substantive": "N",
+    "primaryLocation": "[[ANYTHING_PRESENT]]",
+    "jurisdiction": "DIVORCE",
+    "caseType": "OVERRIDE_ME"
+  }
+}

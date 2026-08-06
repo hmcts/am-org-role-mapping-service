@@ -1,0 +1,21 @@
+{
+  "_guid_": "FindUserRefreshQueue__Base",
+
+  "productName": "User Role Mapping",
+  "operationName": "PRM User Refresh Queue findUserRefreshQueue",
+
+  "specs": [],
+
+  "method": "GET",
+  "uri": "/am/testing-support/prm/findUserRefreshQueue",
+
+  "request": {
+    "headers": {
+      "_extends_": "Common_Request_Headers"
+    },
+    "queryParams": {
+      "userId": "OVERRIDE"
+    }
+  }
+
+}

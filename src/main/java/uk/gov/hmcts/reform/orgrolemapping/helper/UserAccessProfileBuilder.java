@@ -89,7 +89,18 @@ public class UserAccessProfileBuilder {
                 .id(ID2)
                 .primaryLocationId(PRIMARY_LOCATION_ID)
                 .serviceCode("BFA1")
-                .roleId("2")
+                .roleId("3")
+                .suspended(true)
+                .build();
+    }
+
+    public static CaseWorkerAccessProfile buildUserAccessProfileForRoleId5() {
+
+        return CaseWorkerAccessProfile.builder()
+                .id(ID2)
+                .primaryLocationId(PRIMARY_LOCATION_ID)
+                .serviceCode("AAA3")
+                .roleId("")
                 .suspended(true)
                 .build();
     }

@@ -1,0 +1,21 @@
+{
+  "_guid_": "S-020__role_assignment__specific_access_approver_admin",
+
+  "id": "[[ANYTHING_PRESENT]]",
+  "actorIdType": "IDAM",
+  "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+  "roleType": "ORGANISATION",
+  "roleName": "specific-access-approver-admin",
+  "roleLabel": "Specific Access Approver Admin",
+  "classification": "PUBLIC",
+  "grantType": "STANDARD",
+  "roleCategory": "ADMIN",
+  "readOnly": false,
+  "created": "[[ANYTHING_PRESENT]]",
+  "attributes": {
+    "substantive": "N",
+    "jurisdiction": "DIVORCE",
+    "caseType": "OVERRIDE_ME",
+    "region": "[[ANYTHING_PRESENT]]"
+  }
+}

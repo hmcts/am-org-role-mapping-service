@@ -5,10 +5,18 @@ import java.util.List;
 public enum AdditionalRole implements AdditionalRoleEnum {
 
     // NB: for codes see:
-    //  https://tools.hmcts.net/confluence/display/DTSAM/Judicial+Reconciliation#JudicialReconciliation-AdditionalRoleCodes
+    // https://tools.hmcts.net/confluence/display/DTSAM/Judicial+Reconciliation#JudicialReconciliation-AdditionalRoleCodes
 
     ACTING_REGIONAL_EMPLOYMENT_JUDGE("Acting Regional Employment Judge", List.of("90004")),
-    ACTING_RESIDENT_JUDGE("Acting Resident Judge", List.of("90153"));
+    ACTING_RESIDENT_JUDGE("Acting Resident Judge", List.of("90153")),
+    ACTING_DESIGNATED_CIVIL_JUDGE("Acting Designated Civil Judge", List.of("90155")),
+
+    DESIGNATED_CIVIL_JUDGE("Designated Civil Judge", List.of("90001")),
+    DESIGNATED_FAMILY_JUDGE("Designated Family Judge", List.of("90066")),
+
+    LEAD_FINANCIAL_REMEDY_JUDGE("Lead Financial Remedy Judge", List.of("90164")),
+
+    PRESIDING_JUDGE("Presiding Judge", List.of("90073"));
 
     private final String name;
     private final List<String> codes; // support for multiple codes in future (i.e. different spellings for same role)

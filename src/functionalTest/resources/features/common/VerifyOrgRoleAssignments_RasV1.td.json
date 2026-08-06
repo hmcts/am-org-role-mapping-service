@@ -1,0 +1,20 @@
+{
+  "_guid_": "VerifyOrgRoleAssignments_RasV1",
+  "_extends_": "QueryRoleAssignmentsV1__PositiveResponse_Base",
+
+  "specs": [
+    "to verify role assignments are correct for test userId"
+  ],
+
+  "request": {
+    "queryParams": {
+      "includeLabels": "true"
+    },
+    "body": {
+      "actorId": [],
+      "roleType": [
+        "ORGANISATION"
+      ]
+    }
+  }
+}
