@@ -33,7 +33,7 @@ public interface IdamRoleManagementQueueRepository extends JpaRepository<IdamRol
         set active = false,
             published_as = :publishedAs,
             retry = 0,
-            retry_after = now(),
+            retry_after = null,
             last_published = now()
         where user_id = :userId and active = true
         """, nativeQuery = true)
