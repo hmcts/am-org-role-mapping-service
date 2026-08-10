@@ -100,6 +100,7 @@ public class IdamRoleManagementQueueRepositoryIntegrationTest extends BaseTestIn
         assertIdamRoleManagementQueueEntity(idamRoleManagementQueueEntity,
                 USER_ID, UserType.JUDICIAL, IdamRecordType.USER, JSON_DATA,
                 LocalDateTime.now(), 0, null, false);
+        assertNull(idamRoleManagementQueueEntity.get().getRetryAfter(), "Retry After should be null");
     }
 
     @Test
