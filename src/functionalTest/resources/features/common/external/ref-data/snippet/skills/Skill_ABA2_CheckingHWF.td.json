@@ -1,0 +1,7 @@
+{
+  "_guid_": "Skill_ABA2_CheckingHWF",
+  "_extends_": "Skill__Base",
+
+  "skill_code": "SKILL:ABA2:CheckingHWF",
+  "description": "Checking HWF"
+}
