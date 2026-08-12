@@ -100,9 +100,6 @@ spring:
     cache-names: token, userToken
     caffeine:
       spec: maximumSize=50,expireAfterWrite=3600s
-oidc:
-  issuer: ${OIDC_ISSUER_URL:}
-  issuerValidation: ${JWT_ISSUER_VALIDATION_ENABLED:false}
 
 ### dependency configuration
 idam:
@@ -122,6 +119,10 @@ idam:
       userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:}
       secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:}
       scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
+  security:
+    issuerValidation: ${JWT_ISSUER_VALIDATION_ENABLED:false}
+    allowed-issuers:
+      - http://localhost:5062/o
 
 feign:
   client:
