@@ -1,0 +1,20 @@
+{
+  "_guid_": "QueryRoleAssignmentsV1__PositiveResponse_Base",
+  "_extends_": "QueryRoleAssignmentsV1__Base",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "headers": {
+      "Content-Type" : "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;version=1.0;charset=UTF-8"
+    },
+    "body": {
+      "roleAssignmentResponse": [ ]
+    }
+  }
+}
