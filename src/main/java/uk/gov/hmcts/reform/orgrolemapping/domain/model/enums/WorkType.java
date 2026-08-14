@@ -7,6 +7,7 @@ public enum WorkType {
     BAIL_WORK("bail_work"),
     DECISION_MAKING_WORK("decision_making_work"),
     ERROR_MANAGEMENT("error_management"),
+    EVIDENCE("evidence"),
     HEARING_WORK("hearing_work"),
     INTERMEDIATE_TRACK_DECISION_MAKING_WORK("intermediate_track_decision_making_work"),
     INTERMEDIATE_TRACK_HEARING_WORK("intermediate_track_hearing_work"),
