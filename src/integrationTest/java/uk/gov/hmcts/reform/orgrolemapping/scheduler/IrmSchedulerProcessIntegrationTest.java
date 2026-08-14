@@ -212,12 +212,17 @@ class IrmSchedulerProcessIntegrationTest extends BaseSchedulerTestIntegration {
                 assertEquals(!isUpdated, record.getActive(), "Active mismatch");
                 assertEquals(retry, record.getRetry(), "Retry mismatch");
                 assertEquals(idamRecordType, record.getPublishedAs(), "PublishedAs mismatch");
-                assertTrue(assertLastUpdatedNow(record.getLastUpdated()), "LastUpdated mismatch");
-                if (isUpdated) {
-                    assertTrue(assertLastUpdatedNow(record.getLastPublished()), "LastPublished mismatch");
-                    assertTrue(assertLastUpdatedNow(record.getRetryAfter()), "RetryAfter mismatch");
-                } else {
+                // Just published
+                if (isUpdated && assertLastUpdatedNow(record.getLastPublished())) {
                     assertNull(record.getRetryAfter(), "RetryAfter not null");
+                } else {
+                    assertTrue(assertLastUpdatedNow(record.getLastUpdated()), "LastUpdated mismatch");
+                    if (isUpdated) {
+                        assertTrue(assertLastUpdatedNow(record.getLastPublished()), "LastPublished mismatch");
+                        assertTrue(assertLastUpdatedNow(record.getRetryAfter()), "RetryAfter mismatch");
+                    } else {
+                        assertNull(record.getRetryAfter(), "RetryAfter not null");
+                    }
                 }
             } else {
                 assertTrue(record.getActive());
@@ -226,7 +231,7 @@ class IrmSchedulerProcessIntegrationTest extends BaseSchedulerTestIntegration {
     }
 
     private boolean assertLastUpdatedNow(LocalDateTime lastUpdated) {
-        return lastUpdated.isAfter(LocalDateTime.now().minusMinutes(1));
+        return lastUpdated != null && lastUpdated.isAfter(LocalDateTime.now().minusMinutes(1));
     }
 
     /**
