@@ -38,6 +38,14 @@ public class CaseWorkerAccessProfile implements Serializable, UserAccessProfile 
     private List<String> skillCodes;
 
     @JsonIgnore
+    public boolean hasSkillMatching(String regex) {
+        if (skillCodes == null || skillCodes.isEmpty()) {
+            return false;
+        }
+        return skillCodes.stream().anyMatch(skill -> skill.matches(regex));
+    }
+
+    @JsonIgnore
     public boolean hasValidJobTitle(JobTitle... jobTitles) {
         return Arrays.stream(jobTitles)
             .anyMatch(jobTitle -> jobTitle.getRoleId().equals(roleId));
