@@ -61,6 +61,7 @@ java:
     # PROFESSIONAL_SCHEDULING_ENABLED should only be set via FLUX
     PROFESSIONAL_SCHEDULING_ENABLED: false
     IDAM_SECURITY_ALLOWED_ISSUERS_0: https://forgerock-am.service.core-compute-idam-{{ .Values.global.environment }}.internal:8443/openam/oauth2/realms/root/realms/hmcts
+    IDAM_SECURITY_ALLOWED_ISSUERS_1: https://forgerock-am.service.core-compute-idam-{{ .Values.global.environment }}.internal:8443/openam/oauth2/hmcts
 
 #subcharts conditions
 orm:
