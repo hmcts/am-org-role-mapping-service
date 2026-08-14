@@ -1,0 +1,45 @@
+{
+  "_guid_": "S-020.06a__VerifyCaseworkerDetails",
+  "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
+  "specs": [
+    "to verify caseworker details for NBC Team Leader + Task Supervisor (Financial Remedy)"
+  ],
+  "request": {
+    "body": {
+      "userIds": [
+        "${[scenarioContext][parentContext][testData][request][body][actorId][0]}"
+      ]
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "arrayInMap": [
+        {
+          "_extends_": "CaseworkerDetails",
+          "id": "${[scenarioContext][parentContext][testData][request][body][actorId][0]}",
+          "case_allocator": "N",
+          "task_supervisor": "Y",
+          "role": [
+            {
+              "_extends_": "CaseworkerRole_06_NBC_TL"
+            }
+          ],
+          "skills": [
+            {
+              "__ordering__": "UNORDERED",
+              "__elementId__": "skill_code"
+            },
+            {
+              "_extends_": "Skill_ABA2_CheckingHWF"
+            }
+          ],
+          "work_area": [
+            {
+              "_extends_": "WorkArea_ABA2_FinancialRemedy"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
