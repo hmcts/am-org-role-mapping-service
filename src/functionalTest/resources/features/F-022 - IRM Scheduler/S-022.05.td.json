@@ -1,21 +1,29 @@
 {
-  "_guid_": "F-020-ProcessJudicialQueue",
-  "_extends_": "F-020-Base-Root",
+  "_guid_": "S-022.05",
+  "title": "trigger IRM update user",
+  "_extends_": "F-022-Base-Root",
   "specs": [
     "an active IDAM profile with full permissions"
   ],
-  "method": "GET",
-  "uri": "/am/testing-support/irm/processJudicialQueue",
+ "method": "GET",
+  "uri": "/am/testing-support/irm/user",
   "productName": "Organisation Role Mapping",
+  "operationName": "Update IDAM user",
+
+  "request": {
+    "queryParams": {
+      "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575d"
+    }
+  },
 
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
-      "processType": "IRM Process JUDICIAL Queue",
+      "processType": "IRM Update User",
       "id": "[[ANYTHING_PRESENT]]",
       "startTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
       "endTime": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
-      "endStatus": "OVERRIDE",
+      "endStatus": "SUCCESS",
       "processSteps" : "[[ANYTHING_PRESENT]]"
     }
   }
