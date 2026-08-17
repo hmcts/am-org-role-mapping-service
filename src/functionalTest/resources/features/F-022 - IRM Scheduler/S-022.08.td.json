@@ -1,7 +1,7 @@
 {
-  "_guid_": "S-020.08",
+  "_guid_": "S-022.08",
   "title": "trigger IRM scheduler delete inactive queue entries",
-  "_extends_": "F-020-DeleteInactiveQueueEntries",
+  "_extends_": "F-022-DeleteInactiveQueueEntries",
   "operationName": "Delete inactive queue entries",
 
   "expectedResponse": {

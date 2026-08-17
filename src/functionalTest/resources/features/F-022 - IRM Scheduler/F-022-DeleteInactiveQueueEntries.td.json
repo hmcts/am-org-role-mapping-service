@@ -1,6 +1,6 @@
 {
-  "_guid_": "F-020-DeleteInactiveQueueEntries",
-  "_extends_": "F-020-Base-Root",
+  "_guid_": "F-022-DeleteInactiveQueueEntries",
+  "_extends_": "F-022-Base-Root",
   "specs": [
     "an active IDAM profile with full permissions"
   ],
