@@ -12,14 +12,14 @@
 
   "request": {
     "queryParams": {
-      "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575d"
+      "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575e"
     }
   },
 
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
-      "__plainTextValue__": "Deleted queue entity for userId: 5bd4f3a8-b6a3-4f6d-b5f9-00520015575d"
+      "__plainTextValue__": "Deleted queue entity for userId: 5bd4f3a8-b6a3-4f6d-b5f9-00520015575e"
     }
   }
 }
