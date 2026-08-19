@@ -35,7 +35,7 @@ class IdamRoleMappingServiceTest {
             new IdamRoleDataJsonBConverter();
 
     private final IdamRoleMappingService sut =
-            new IdamRoleMappingService(idamRoleManagementQueueRepository);
+            new IdamRoleMappingService(idamRoleManagementQueueRepository, "true");
 
     private static final String[] EMAILS = {"email1@test.com", "email2@test.com"};
     private static final String[] ROLES = {"Role1", "Role2", "Role3"};
