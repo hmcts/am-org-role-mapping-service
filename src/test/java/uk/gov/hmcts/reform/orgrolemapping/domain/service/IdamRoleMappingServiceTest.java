@@ -10,7 +10,6 @@ import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
@@ -48,13 +47,12 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.service.IdamRoleMappingS
 @ExtendWith(MockitoExtension.class)
 class IdamRoleMappingServiceTest {
 
+    private static final String DISABLED = "false";
+    private static final String ENABLED = "true";
     private final IdamFeignClient idamFeignClient = mock(IdamFeignClient.class);
 
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository
             = mock(IdamRoleManagementQueueRepository.class);
-
-    private final PlatformTransactionManager transactionManager
-            = mock(PlatformTransactionManager.class);
 
     private final ProcessEventTracker processEventTracker
             = mock(ProcessEventTracker.class);
@@ -63,13 +61,31 @@ class IdamRoleMappingServiceTest {
             new IdamRoleDataJsonBConverter();
 
     private final IdamRoleMappingService sut =
-            new IdamRoleMappingService(idamFeignClient, idamRoleManagementQueueRepository, transactionManager,
-                    processEventTracker, "1", "2", "3");
+            new IdamRoleMappingService(idamFeignClient, idamRoleManagementQueueRepository,
+                    processEventTracker, "1", "2", "3", ENABLED);
 
     private static final String[] EMAILS = {"email1@test.com", "email2@test.com"};
     private static final String[] OLDROLES = {"OldRole1", "Role1"};
     private static final String[] ROLES = {"Role1", "Role2", "Role3"};
     private static final String[] USERS = {"user1", "user2"};
+
+    @Test
+    void addToQueueTest_Disabled() {
+        IdamRoleMappingService disabledSut =
+                new IdamRoleMappingService(idamFeignClient, idamRoleManagementQueueRepository,
+                        processEventTracker, "1", "2", "3", DISABLED);
+        addToQueueTest(disabledSut, UserType.JUDICIAL, false);
+    }
+
+    @Test
+    void addToQueueTest_Judicial() {
+        addToQueueTest(sut, UserType.JUDICIAL, true);
+    }
+
+    @Test
+    void addToQueueTest_CaseWorker() {
+        addToQueueTest(sut, UserType.CASEWORKER, true);
+    }
 
     @Captor
     private ArgumentCaptor<String> userIdCaptor;
@@ -82,7 +98,7 @@ class IdamRoleMappingServiceTest {
 
     @ParameterizedTest
     @EnumSource(UserType.class)
-    void addToQueueTest(UserType userType) {
+    private void addToQueueTest(IdamRoleMappingService sut, UserType userType, Boolean idamRoleManagementEnabled) {
         // GIVEN
         Map<String, IdamRoleData> idamRoleList = new HashMap<>();
         idamRoleList.put(USERS[0], buildIdamRoleData(EMAILS[0],
@@ -95,19 +111,20 @@ class IdamRoleMappingServiceTest {
         sut.addToQueue(userType, idamRoleList);
 
         // THIS
-        verify(idamRoleManagementQueueRepository, times(idamRoleList.size()))
+        int noRowsExpected = idamRoleManagementEnabled ? idamRoleList.size() : 0;
+        verify(idamRoleManagementQueueRepository, times(noRowsExpected))
                 .upsert(userIdCaptor.capture(), any(),
                         dataCaptor.capture(), lastUpdatedCaptor.capture());
 
-        assertLastUpdated(startTime, idamRoleList.size());
+        assertLastUpdated(startTime, noRowsExpected);
 
         assertNotNull(userIdCaptor.getAllValues());
-        assertEquals(USERS.length, userIdCaptor.getAllValues().size());
+        assertEquals(noRowsExpected, userIdCaptor.getAllValues().size());
         userIdCaptor.getAllValues().forEach(userId ->
                 assertTrue(List.of(USERS).contains(userId)));
 
         assertNotNull(dataCaptor.getAllValues());
-        assertEquals(USERS.length, dataCaptor.getAllValues().size());
+        assertEquals(noRowsExpected, dataCaptor.getAllValues().size());
         dataCaptor.getAllValues().forEach(data ->
             assertIdamRoleData(idamRoleDataJsonBConverter.convertToEntityAttribute(data)));
     }
@@ -144,8 +161,6 @@ class IdamRoleMappingServiceTest {
                 .thenReturn(irmQueue != null && !irmQueue.isEmpty() ? irmQueue.get(0) : null)
                 .thenReturn(irmQueue != null && !irmQueue.isEmpty() ? irmQueue.get(1) : null)
                 .thenReturn(null);
-        when(transactionManager.getTransaction(any()))
-                .thenReturn(mock(org.springframework.transaction.TransactionStatus.class));
         ServiceException exception =
                 new ServiceException("Error occurred while processing idam role mapping");
         if (EndStatus.PARTIAL_SUCCESS.equals(endStatus)) {

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
@@ -47,22 +46,25 @@ public class IdamRoleMappingService {
     private final String retryOneIntervalMin;
     private final String retryTwoIntervalMin;
     private final String retryThreeIntervalMin;
+    private Boolean idamRoleManagementEnabled;
 
     @Autowired
     public IdamRoleMappingService(
             IdamFeignClient idamClient,
             IdamRoleManagementQueueRepository idamRoleManagementQueueRepository,
-            PlatformTransactionManager transactionManager,
             ProcessEventTracker processEventTracker,
             @Value("${idam.role.management.scheduling.retryOneIntervalMin}")
             String retryOneIntervalMin,
             @Value("${idam.role.management.scheduling.retryOneIntervalMin}")
             String retryTwoIntervalMin,
             @Value("${idam.role.management.scheduling.retryOneIntervalMin}")
-            String retryThreeIntervalMin) {
+            String retryThreeIntervalMin,
+            @Value("${idam.role.management.enabled}")
+            String idamRoleManagementEnabled) {
         this.idamClient = idamClient;
         this.idamRoleManagementQueueRepository = idamRoleManagementQueueRepository;
         this.idamRoleDataJsonBConverter = new IdamRoleDataJsonBConverter();
+        this.idamRoleManagementEnabled = Boolean.parseBoolean(idamRoleManagementEnabled);
         this.processEventTracker = processEventTracker;
         this.retryOneIntervalMin = retryOneIntervalMin;
         this.retryTwoIntervalMin = retryTwoIntervalMin;
@@ -71,6 +73,9 @@ public class IdamRoleMappingService {
 
     @Transactional
     public void addToQueue(UserType userType, Map<String, IdamRoleData> idamRoleList) {
+        if  (!idamRoleManagementEnabled) {
+            return;
+        }
         log.info("Adding users to idam role mapping queue, total users: {}", idamRoleList.size());
         idamRoleList.forEach((userId, idamRoleData) -> {
             idamRoleManagementQueueRepository.upsert(userId, userType.name(),
