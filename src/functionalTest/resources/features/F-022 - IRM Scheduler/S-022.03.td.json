@@ -13,7 +13,7 @@
   "request": {
     "queryParams": {
       "userType": "JUDICIAL",
-      "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575d",
+      "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575e",
       "email": "S02203@test.com",
       "roleNames": "caseworker-ras-validation"
     }
@@ -22,7 +22,7 @@
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
-      "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575d",
+      "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575e",
       "userType": "JUDICIAL",
       "data" : {
         "email_id" : "S02203@test.com",
