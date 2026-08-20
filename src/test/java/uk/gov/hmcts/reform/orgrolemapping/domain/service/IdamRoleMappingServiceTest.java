@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.service;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -40,6 +41,9 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType.JUD
 @ExtendWith(MockitoExtension.class)
 class IdamRoleMappingServiceTest {
 
+    private static final String DISABLED = "false";
+    private static final String ENABLED = "true";
+
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository
             = mock(IdamRoleManagementQueueRepository.class);
 
@@ -54,11 +58,29 @@ class IdamRoleMappingServiceTest {
 
     private final IdamRoleMappingService sut =
             new IdamRoleMappingService(idamRoleManagementQueueRepository, transactionManager,
-                    processEventTracker, "1", "2", "3");
+                    processEventTracker, "1", "2", "3", ENABLED);
 
     private static final String[] EMAILS = {"email1@test.com", "email2@test.com"};
     private static final String[] ROLES = {"Role1", "Role2", "Role3"};
     private static final String[] USERS = {"user1", "user2"};
+
+    @Test
+    void addToQueueTest_Disabled() {
+        IdamRoleMappingService disabledSut =
+                new IdamRoleMappingService(idamRoleManagementQueueRepository, transactionManager,
+                        processEventTracker, "1", "2", "3", DISABLED);
+        addToQueueTest(disabledSut, UserType.JUDICIAL, false);
+    }
+
+    @Test
+    void addToQueueTest_Judicial() {
+        addToQueueTest(sut, UserType.JUDICIAL, true);
+    }
+
+    @Test
+    void addToQueueTest_CaseWorker() {
+        addToQueueTest(sut, UserType.CASEWORKER, true);
+    }
 
     @Captor
     private ArgumentCaptor<String> userIdCaptor;
@@ -71,7 +93,7 @@ class IdamRoleMappingServiceTest {
 
     @ParameterizedTest
     @EnumSource(UserType.class)
-    void addToQueueTest(UserType userType) {
+    private void addToQueueTest(IdamRoleMappingService sut, UserType userType, Boolean idamRoleManagementEnabled) {
         // GIVEN
         Map<String, IdamRoleData> idamRoleList = new HashMap<>();
         idamRoleList.put(USERS[0], buildIdamRoleData(EMAILS[0],
@@ -84,19 +106,20 @@ class IdamRoleMappingServiceTest {
         sut.addToQueue(userType, idamRoleList);
 
         // THIS
-        verify(idamRoleManagementQueueRepository, times(idamRoleList.size()))
+        int noRowsExpected = idamRoleManagementEnabled ? idamRoleList.size() : 0;
+        verify(idamRoleManagementQueueRepository, times(noRowsExpected))
                 .upsert(userIdCaptor.capture(), any(),
                         dataCaptor.capture(), lastUpdatedCaptor.capture());
 
-        assertLastUpdated(startTime, idamRoleList.size());
+        assertLastUpdated(startTime, noRowsExpected);
 
         assertNotNull(userIdCaptor.getAllValues());
-        assertEquals(USERS.length, userIdCaptor.getAllValues().size());
+        assertEquals(noRowsExpected, userIdCaptor.getAllValues().size());
         userIdCaptor.getAllValues().forEach(userId ->
                 assertTrue(List.of(USERS).contains(userId)));
 
         assertNotNull(dataCaptor.getAllValues());
-        assertEquals(USERS.length, dataCaptor.getAllValues().size());
+        assertEquals(noRowsExpected, dataCaptor.getAllValues().size());
         dataCaptor.getAllValues().forEach(data ->
             assertIdamRoleData(idamRoleDataJsonBConverter.convertToEntityAttribute(data)));
     }
