@@ -135,6 +135,7 @@ idam:
         housekeeping:
           cron: ${CRON_IRM_HOUSEKEEPING:0 0 8 * 1-12 *}
           deleteIntervalDays: ${IRM_SCHEDULING_HOUSEKEEPING_DAYS:90}
+      enabled: ${IDAM_ROLE_MAINTENANCE_ENABLED:true}
 
 feign:
   client:
