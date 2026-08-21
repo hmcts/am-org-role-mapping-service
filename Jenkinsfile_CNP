@@ -89,6 +89,7 @@ env.CRD_TOPIC_NAME = "rd-caseworker-topic-aat"
 env.JRD_TOPIC_NAME = "rd-judicial-topic-aat"
 env.ROLE_ASSIGNMENT_URL = "http://am-role-assignment-service-aat.service.core-compute-aat.internal"
 env.JUDICIAL_BOOKING_URL = "http://am-judicial-booking-service-aat.service.core-compute-aat.internal"
+env.IDAM_ROLE_MAINTENANCE_ENABLED = "false"
 
 // Vars for Kubernetes PACT
 env.PACT_BROKER_FULL_URL = 'https://pact-broker.platform.hmcts.net'

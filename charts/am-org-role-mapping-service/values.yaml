@@ -62,6 +62,7 @@ java:
     PROFESSIONAL_SCHEDULING_ENABLED: false
     # IRM_SCHEDULING_ENABLED should only be set via FLUX
     IRM_SCHEDULING_ENABLED: false
+    IDAM_ROLE_MAINTENANCE_ENABLED: true
 
 #subcharts conditions
 orm:
