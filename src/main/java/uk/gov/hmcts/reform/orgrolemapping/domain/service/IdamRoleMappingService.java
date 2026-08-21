@@ -54,6 +54,7 @@ public class IdamRoleMappingService {
     private final String retryTwoIntervalMin;
     private final String retryThreeIntervalMin;
     private final String irmServiceName;
+    private Boolean idamRoleManagementEnabled;
 
     @Autowired
     public IdamRoleMappingService(
@@ -67,10 +68,13 @@ public class IdamRoleMappingService {
             @Value("${idam.role.management.scheduling.retryOneIntervalMin}")
             String retryThreeIntervalMin,
             @Value("${idam.client.irm.clientId}")
-            String irmServiceName) {
+            String irmServiceName,
+            @Value("${idam.role.management.enabled}")
+            String idamRoleManagementEnabled) {
         this.idamClient = idamClient;
         this.idamRoleManagementQueueRepository = idamRoleManagementQueueRepository;
         this.idamRoleDataJsonBConverter = new IdamRoleDataJsonBConverter();
+        this.idamRoleManagementEnabled = Boolean.parseBoolean(idamRoleManagementEnabled);
         this.processEventTracker = processEventTracker;
         this.retryOneIntervalMin = retryOneIntervalMin;
         this.retryTwoIntervalMin = retryTwoIntervalMin;
@@ -80,6 +84,9 @@ public class IdamRoleMappingService {
 
     @Transactional
     public void addToQueue(UserType userType, Map<String, IdamRoleData> idamRoleList) {
+        if  (!idamRoleManagementEnabled) {
+            return;
+        }
         log.info("Adding users to idam role mapping queue, total users: {}", idamRoleList.size());
         idamRoleList.forEach((userId, idamRoleData) -> {
             idamRoleManagementQueueRepository.upsert(userId, userType.name(),
