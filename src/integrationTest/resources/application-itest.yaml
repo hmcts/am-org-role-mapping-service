@@ -22,6 +22,12 @@ idam:
     irm:
       clientId: am_org_role_mapping
       secret: ${ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET:}
+  role:
+    management:
+      scheduling:
+        enabled: ${IRM_SCHEDULING_ENABLED:false}
+        housekeeping:
+          deleteIntervalDays: ${IRM_SCHEDULING_HOUSEKEEPING_DAYS:1}
 feign:
   client:
     config:
