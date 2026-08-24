@@ -122,7 +122,7 @@ idam:
       scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
   role:
     management:
-      enabled: ${IDAM_ROLE_MAINTENANCE_ENABLED:true}
+      enabled: ${IDAM_ROLE_MAINTENANCE_ENABLED:false}
 
 feign:
   client:
