@@ -2,11 +2,15 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nimbusds.jose.JOSEException;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
+import io.restassured.specification.RequestSpecification;
+import net.serenitybdd.rest.SerenityRest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -18,6 +22,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.TestPropertySourceUtils;
+import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 
 import jakarta.annotation.PreDestroy;
@@ -38,6 +43,11 @@ public abstract class BaseTestIntegration extends BaseTest {
             MediaType.APPLICATION_JSON.getSubtype(),
             StandardCharsets.UTF_8
     );
+
+    protected static final String BASEURL = "http://localhost";
+
+    @LocalServerPort
+    private int serverPort;
 
     @MockBean
     @Qualifier("crdPublisher")
@@ -76,6 +86,15 @@ public abstract class BaseTestIntegration extends BaseTest {
                 connection.close();
             }
         }
+    }
+
+    protected RequestSpecification getRequestSpecification()
+            throws JOSEException, JsonProcessingException, InterruptedException {
+        return SerenityRest.given()
+                .relaxedHTTPSValidation()
+                .baseUri(BASEURL)
+                .port(serverPort)
+                .headers(MockUtils.getHttpHeaders(MockUtils.S2S_ORM));
     }
 
     public static class WireMockServerInitializer
