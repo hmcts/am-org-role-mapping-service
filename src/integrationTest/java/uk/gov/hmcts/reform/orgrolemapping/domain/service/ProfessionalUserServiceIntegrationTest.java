@@ -119,7 +119,6 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
         SecurityContextHolder.setContext(securityContext);
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         wiremockFixtures.resetRequests();
-        wiremockFixtures.stubIdamCall();
         processMonitorDto = new ProcessMonitorDto("PRM Process 6 - Refresh users - Batch mode [Test]");
     }
 
