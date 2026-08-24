@@ -10,6 +10,8 @@ spring:
 
 idam:
   s2s-auth:
+    totp_secret: ${AM_ORG_ROLE_MAPPING_SERVICE_SECRET:test}
+    microservice: am_org_role_mapping_service
     url: http://localhost:${wiremock.server.port:4502}
   api.url: http://localhost:${wiremock.server.port:5000}
 
@@ -28,6 +30,8 @@ feign:
         url: http://localhost:${wiremock.server.port:8090}
       ccdClient:
         url: http://localhost:${wiremock.server.port:4451}
+      idamClient:
+        url: http://localhost:${wiremock.server.port:5000}
 
 professional:
   role:
