@@ -1,0 +1,21 @@
+{
+  "_guid_": "MakeIrmQueueInactive__PositiveResponse_Base",
+  "_extends_": "MakeIrmQueueActive__Base",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+
+  "request": {
+    "queryParams": {
+      "active": "false"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response"
+  }
+
+}
