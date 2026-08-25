@@ -1,22 +1,28 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
+import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestResource;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 
+import java.util.List;
 import java.util.UUID;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.OBJECT_MAPPER;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialBookingsResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialProfilesResponseV2;
@@ -31,27 +37,35 @@ public class RefreshControllerJudicialRefreshIntegrationTest extends BaseAuthori
 
     private static final String JUDICIAL_REFRESH_URL = "/am/role-mapping/judicial/refresh";
 
+    @MockBean
+    private JRDFeignClient jrdFeignClient;
+
+    @MockBean
+    private JBSFeignClient jbsFeignClient;
+
+    @MockBean
+    private RequestMappingService<UserAccessProfile> requestMappingService;
+
     @Test
     public void shouldProcessRefreshRoleAssignmentsWithJudicialProfilesV2() throws Exception {
         logger.info(" Refresh role assignments successfully with valid user profiles");
 
         // WHEN
         var uuid = UUID.randomUUID().toString();
+        doReturn(buildJudicialProfilesResponseV2(uuid)).when(jrdFeignClient).getJudicialDetailsById(any(), any());
+        doReturn(buildJudicialBookingsResponse(uuid)).when(jbsFeignClient).getJudicialBookingByUserIds(any());
+        mockRequestMappingServiceBookingParamWithStatus(HttpStatus.CREATED);
         JudicialRefreshRequest request = JudicialRefreshRequest.builder()
                 .refreshRequest(IntTestDataBuilder.buildUserRequest()).build();
 
         // THEN
-        RequestSpecification requestSpecification = getRequestSpecification();
-        // (Apply the local stubs because the getRequestSpecification resets the wiremock)
-        stubJbsGetJudicialDetailsById(uuid);
-        stubJbsGetJudicialBookingByUserIds(uuid);
-        requestSpecification
+        getRequestSpecification()
                 .body(OBJECT_MAPPER.writeValueAsString(request))
-                .when().post(JUDICIAL_REFRESH_URL);
-        //      .then().assertThat()
-        //      .statusCode(HttpStatus.OK.value())
-        //      .and()
-        //      .body(containsString(Constants.SUCCESS_ROLE_REFRESH));
+                .when().post(JUDICIAL_REFRESH_URL)
+                .then().assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .and()
+                .body(containsString(Constants.SUCCESS_ROLE_REFRESH));
         logger.info(" -- Refresh Role Assignment record updated successfully -- ");
     }
 
@@ -230,21 +244,10 @@ public class RefreshControllerJudicialRefreshIntegrationTest extends BaseAuthori
     //                .when(requestMappingService).createJudicialAssignments(any(), any());
     //  }
 
-    public void stubJbsGetJudicialDetailsById(String uuid) throws JsonProcessingException {
-        WIRE_MOCK_SERVER.stubFor(WireMock.post(urlPathMatching("/refdata/judicial/users"))
-                .willReturn(aResponse()
-                        .withStatus(OK.value())
-                        .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .withBody(mapper.writeValueAsString(buildJudicialProfilesResponseV2(uuid)))
-                ));
-    }
-
-    public void stubJbsGetJudicialBookingByUserIds(String uuid) throws JsonProcessingException {
-        WIRE_MOCK_SERVER.stubFor(WireMock.post(urlPathMatching("/am/bookings/query"))
-                .willReturn(aResponse()
-                        .withStatus(OK.value())
-                        .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .withBody(mapper.writeValueAsString(buildJudicialBookingsResponse(uuid)))
-                ));
+    private void mockRequestMappingServiceBookingParamWithStatus(HttpStatus status) {
+        doReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(ResponseEntity.status(status).body(
+                new RoleAssignmentRequestResource(AssignmentRequestBuilder.buildAssignmentRequest(
+                        false))))))
+                .when(requestMappingService).createJudicialAssignments(any(), any());
     }
 }

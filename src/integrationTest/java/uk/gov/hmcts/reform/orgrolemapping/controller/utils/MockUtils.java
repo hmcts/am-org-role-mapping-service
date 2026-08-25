@@ -57,7 +57,7 @@ public class MockUtils {
 
     private static String generateAuthToken(long ttlMillis) throws JOSEException {
         JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
-                .subject("JBS_Stub")
+                .subject("ORM_Stub")
                 .issueTime(new Date())
                 .claim(TOKEN_NAME, ACCESS_TOKEN)
                 .expirationTime(new Date(System.currentTimeMillis() + ttlMillis));
