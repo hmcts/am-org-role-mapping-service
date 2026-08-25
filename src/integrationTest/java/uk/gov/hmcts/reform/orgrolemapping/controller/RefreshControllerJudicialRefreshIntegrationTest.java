@@ -16,6 +16,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.OBJECT_MAPPER;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialBookingsResponse;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder.buildJudicialProfilesResponseV2;
 
@@ -42,7 +43,7 @@ public class RefreshControllerJudicialRefreshIntegrationTest extends BaseAuthori
 
         // THEM
         getRequestSpecification()
-                .body(mapper.writeValueAsBytes(request))
+                .body(OBJECT_MAPPER.writeValueAsString(request))
                 .when().post(JUDICIAL_REFRESH_URL);
         //      .then().assertThat()
         //      .statusCode(HttpStatus.OK.value())
