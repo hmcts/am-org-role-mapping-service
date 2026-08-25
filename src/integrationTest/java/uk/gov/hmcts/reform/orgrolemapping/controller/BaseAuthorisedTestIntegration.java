@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nimbusds.jose.JOSEException;
 import io.restassured.specification.RequestSpecification;
 import net.serenitybdd.rest.SerenityRest;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,12 +24,12 @@ public abstract class BaseAuthorisedTestIntegration extends BaseTestIntegration 
     private int serverPort;
 
     protected RequestSpecification getRequestSpecification()
-            throws JsonProcessingException, InterruptedException {
+            throws JOSEException, JsonProcessingException, InterruptedException {
         return getRequestSpecification(S2S_XUI, ACTOR_ID1);
     }
 
     protected RequestSpecification getRequestSpecification(String serviceName, String actorId)
-            throws JsonProcessingException, InterruptedException {
+            throws JOSEException, JsonProcessingException, InterruptedException {
         resetWiremockServer(serviceName, actorId);
         return SerenityRest.given()
                 .relaxedHTTPSValidation()
