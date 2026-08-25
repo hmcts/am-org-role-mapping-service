@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,13 +37,15 @@ public class RefreshControllerJudicialRefreshIntegrationTest extends BaseAuthori
 
         // WHEN
         var uuid = UUID.randomUUID().toString();
-        stubJbsGetJudicialDetailsById(uuid);
-        stubJbsGetJudicialBookingByUserIds(uuid);
         JudicialRefreshRequest request = JudicialRefreshRequest.builder()
                 .refreshRequest(IntTestDataBuilder.buildUserRequest()).build();
 
-        // THEM
-        getRequestSpecification()
+        // THEN
+        RequestSpecification requestSpecification = getRequestSpecification();
+        // (Apply the local stubs because the getRequestSpecification resets the wiremock)
+        stubJbsGetJudicialDetailsById(uuid);
+        stubJbsGetJudicialBookingByUserIds(uuid);
+        requestSpecification
                 .body(OBJECT_MAPPER.writeValueAsString(request))
                 .when().post(JUDICIAL_REFRESH_URL);
         //      .then().assertThat()
