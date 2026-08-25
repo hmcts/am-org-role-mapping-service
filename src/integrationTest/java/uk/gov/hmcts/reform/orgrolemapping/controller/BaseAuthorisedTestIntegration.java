@@ -43,6 +43,7 @@ public abstract class BaseAuthorisedTestIntegration extends BaseTestIntegration 
         WIRE_MOCK_SERVER.resetAll();
         // Recreate the stubs
         wiremockFixtures = new WiremockFixtures();
+        wiremockFixtures.stubIdamConfig();
         wiremockFixtures.stubAuthorisationDetails(serviceName);
         wiremockFixtures.stubAuthorisationUserInfo(actorId);
         // Allow some time for Wiremock to reset
