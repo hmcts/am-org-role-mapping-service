@@ -36,7 +36,7 @@ def versions = [
         rest_assured   : '5.5.7',
         cucumber       : '5.7.0',
         feign_jackson  : '13.13',
-        jacksondata    : '2.19.2',
+        jacksondata    : '2.22.1',
         testcontainers : '1.21.4',
         drools         : '10.2.0',
         log4JVersion   : '2.26.1',
@@ -499,6 +499,26 @@ dependencyManagement {
             entry 'tomcat-embed-core'
             entry 'tomcat-embed-el'
             entry 'tomcat-embed-websocket'
+        }
+        dependencySet(group: 'com.fasterxml.jackson.core', version: versions.jacksondata) {
+            entry 'jackson-core'
+            entry 'jackson-databind'
+        }
+        dependencySet(group: 'com.fasterxml.jackson.datatype', version: versions.jacksondata) {
+            entry 'jackson-datatype-jsr310'
+            entry 'jackson-datatype-jdk8'
+        }
+        dependencySet(group: 'com.fasterxml.jackson.dataformat', version: versions.jacksondata) {
+            entry 'jackson-dataformat-toml'
+            entry 'jackson-dataformat-xml'
+            entry 'jackson-dataformat-yaml'
+        }
+        dependencySet(group: 'com.fasterxml.jackson.module', version: versions.jacksondata) {
+            entry 'jackson-module-afterburner'
+            entry 'jackson-module-parameter-names'
+        }
+        dependencySet(group: 'com.fasterxml.jackson.core', version: '2.22') {
+            entry 'jackson-annotations'
         }
     }
 }
