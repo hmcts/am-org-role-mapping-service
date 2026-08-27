@@ -73,6 +73,7 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
         SecurityContextHolder.setContext(securityContext);
         MockUtils.setSecurityAuthorities(authentication, MockUtils.ROLE_CASEWORKER);
         wiremockFixtures.resetRequests();
+        wiremockFixtures.stubIdamCall();
     }
 
     @Nested
