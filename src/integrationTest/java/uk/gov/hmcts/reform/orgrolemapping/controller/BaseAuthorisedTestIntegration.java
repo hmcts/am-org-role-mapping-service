@@ -1,107 +1,60 @@
 package uk.gov.hmcts.reform.orgrolemapping.controller;
 
-import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.opentable.db.postgres.embedded.EmbeddedPostgres;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.http.MediaType;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import org.springframework.lang.NonNull;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.support.TestPropertySourceUtils;
+import com.nimbusds.jose.JOSEException;
+import io.restassured.specification.RequestSpecification;
+import net.serenitybdd.annotations.WithTag;
+import net.serenitybdd.annotations.WithTags;
+import net.serenitybdd.junit5.SerenityJUnit5Extension;
+import net.serenitybdd.rest.SerenityRest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 
-import jakarta.annotation.PreDestroy;
-import javax.sql.DataSource;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Properties;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_XUI;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.ACTOR_ID1;
 
-@ContextConfiguration(initializers = {BaseTestIntegration.WireMockServerInitializer.class})
-@ActiveProfiles("itest")
-public abstract class BaseTestIntegration extends BaseTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@ExtendWith({SerenityJUnit5Extension.class, SpringExtension.class})
+@WithTags({@WithTag("testType:Integration")})
+public abstract class BaseAuthorisedTestIntegration extends BaseTestIntegration {
 
-    protected static final MediaType JSON_CONTENT_TYPE = new MediaType(
-            MediaType.APPLICATION_JSON.getType(),
-            MediaType.APPLICATION_JSON.getSubtype(),
-            StandardCharsets.UTF_8
-    );
+    protected static final String BASEURL = "http://localhost";
+    private static final long WAIT_TIME_MS = 1000;
 
-    @MockBean
-    @Qualifier("crdPublisher")
-    ServiceBusSenderClient serviceBusSenderClient;
+    private WiremockFixtures wiremockFixtures;
 
-    @MockBean
-    @Qualifier("jrdPublisher")
-    ServiceBusSenderClient serviceBusSenderClientJrd;
+    @LocalServerPort
+    private int serverPort;
 
-    @TestConfiguration
-    static class Configuration {
-        Connection connection;
-
-        @Bean
-        public EmbeddedPostgres embeddedPostgres() throws IOException {
-            return EmbeddedPostgres
-                    .builder()
-                    .start();
-        }
-
-        @Bean
-        public DataSource dataSource(@Autowired EmbeddedPostgres pg) throws Exception {
-
-            final Properties props = new Properties();
-            // Instruct JDBC to accept JSON string for JSONB
-            props.setProperty("stringtype", "unspecified");
-            props.setProperty("user", "postgres");
-            connection = DriverManager.getConnection(pg.getJdbcUrl("postgres"), props);
-            return new SingleConnectionDataSource(connection, true);
-        }
-
-
-        @PreDestroy
-        public void contextDestroyed() throws SQLException {
-            if (connection != null) {
-                connection.close();
-            }
-        }
+    protected RequestSpecification getRequestSpecification()
+            throws JOSEException, JsonProcessingException, InterruptedException {
+        return getRequestSpecification(S2S_XUI, ACTOR_ID1);
     }
 
-    public static class WireMockServerInitializer
-            implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+    protected RequestSpecification getRequestSpecification(String serviceName, String actorId)
+            throws JOSEException, JsonProcessingException, InterruptedException {
+        resetWiremockServer(serviceName, actorId);
+        return SerenityRest.given()
+                .relaxedHTTPSValidation()
+                .baseUri(BASEURL)
+                .port(serverPort)
+                .headers(MockUtils.getHttpHeaders(serviceName));
+    }
 
-        private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
-
-        @Override
-        public void initialize(@NonNull ConfigurableApplicationContext applicationContext) {
-
-            TestPropertySourceUtils.addInlinedPropertiesToEnvironment(
-                applicationContext,
-                "wiremock.server.port=" + WIRE_MOCK_SERVER.port()
-            );
-
-            try {
-                wiremockFixtures.stubIdamConfig();
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-
-            applicationContext.addApplicationListener((ApplicationListener<ContextClosedEvent>) event -> {
-                if (WIRE_MOCK_SERVER.isRunning()) {
-                    WIRE_MOCK_SERVER.shutdown();
-                }
-            });
-        }
+    protected void resetWiremockServer(String serviceName, String actorId)
+            throws JsonProcessingException, InterruptedException {
+        // Clear the stubs and requests
+        WIRE_MOCK_SERVER.resetAll();
+        // Recreate the stubs
+        wiremockFixtures = new WiremockFixtures();
+        wiremockFixtures.stubIdamConfig();
+        wiremockFixtures.stubAuthorisationDetails(serviceName);
+        wiremockFixtures.stubAuthorisationUserInfo(actorId);
+        // Allow some time for Wiremock to reset
+        Thread.sleep(WAIT_TIME_MS);
     }
 }
