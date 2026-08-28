@@ -18,8 +18,10 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignmentRequestReso
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.CRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.PRDFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
@@ -49,6 +51,12 @@ public class RefreshControllerJudicialRefreshIntegrationTest extends BaseAuthori
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerJudicialRefreshIntegrationTest.class);
 
     private static final String JUDICIAL_REFRESH_URL = "/am/role-mapping/judicial/refresh";
+
+    @MockBean
+    private PRDFeignClient prdFeignClient;
+
+    @MockBean
+    private CRDFeignClient crdFeignClient;
 
     @MockBean
     private JRDFeignClient jrdFeignClient;
