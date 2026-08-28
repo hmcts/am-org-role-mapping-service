@@ -107,7 +107,6 @@ public class RequestMappingService<T> {
      * Apply the role assignment mapping rules to determine what the role assignments should be
      * for each user profile represented in the map.
      */
-    @SuppressWarnings("unchecked")
     private Map<String, List<RoleAssignment>> getProfileRoleAssignments(Map<String,
             Set<T>> usersAccessProfiles, List<JudicialBooking> judicialBookings, UserType userType) {
 
@@ -122,38 +121,48 @@ public class RequestMappingService<T> {
         // Add each role assignment to the results map.
         roleAssignments.forEach(ra -> usersRoleAssignments.get(ra.getActorId()).add(ra));
 
+        this.logInfo(Collections.unmodifiableMap(usersRoleAssignments), userType, usersAccessProfiles);
 
-        // if List<RoleAssignment> is empty in case of suspended false in corresponding
-        // user access profile then remove
-        // entry of userProfile from usersRoleAssignments map
-        List<String> needToRemoveUAP = new ArrayList<>();
+        return usersRoleAssignments;
+    }
+
+    /**
+     * Log information about the created RoleAssignments from Drools.
+     * Should NOT adjust the RoleAssignments of users.
+     */
+    private void logInfo(
+            Map<String, List<RoleAssignment>> usersRoleAssignments,
+            UserType userType,
+            Map<String, Set<T>> usersAccessProfiles) {
+
+        // Identify users that have no role assignments;
+        // for caseworkers also only if their first access profile is not suspended
+        List<String> usersWithoutRoleAssignments = new ArrayList<>();
 
         if (userType.equals(UserType.CASEWORKER)) {
-
-            //Identify the user with empty List<RoleAssignment> in case of suspended is false.
             usersRoleAssignments.forEach((k, v) -> {
                 if (v.isEmpty()) {
+                    // The user access profile class is based on user type so this cast is safe
+                    @SuppressWarnings("unchecked")
                     Set<CaseWorkerAccessProfile> accessProfiles = (Set<CaseWorkerAccessProfile>) usersAccessProfiles
                             .get(k);
                     if (!requireNonNull(accessProfiles.stream().findFirst().orElse(null)).isSuspended()) {
-                        needToRemoveUAP.add(k);
+                        usersWithoutRoleAssignments.add(k);
                     }
                 }
 
             });
         } else if (userType.equals(UserType.JUDICIAL)) {
-            //Identify the user with empty List<RoleAssignment> in case of suspended is false.
             usersRoleAssignments.forEach((k, v) -> {
                 if (v.isEmpty()) {
-                    needToRemoveUAP.add(k);
+                    usersWithoutRoleAssignments.add(k);
                 }
             });
-
         }
 
-        //remove the entry of user from map in case of empty if suspended is false
-        log.info("Count of expired/suspended/rejected access profiles in ORM : {} ", needToRemoveUAP.size());
-        log.info("Access profiles for empty request for RAS: {} ", needToRemoveUAP);
+        log.info("Count of expired/suspended/rejected access profiles in ORM : {} ",
+                usersWithoutRoleAssignments.size());
+        log.info("Access profiles for empty request for RAS: {} ", usersWithoutRoleAssignments);
 
         Map<String, Integer> roleAssignmentsCount = new HashMap<>();
         //print usersRoleAssignments
@@ -164,9 +173,6 @@ public class RequestMappingService<T> {
         });
 
         log.info("Count of RoleAssignments corresponding to the UserId ::{}  ", roleAssignmentsCount);
-
-
-        return usersRoleAssignments;
     }
 
     /**
