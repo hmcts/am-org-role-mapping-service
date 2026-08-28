@@ -29,7 +29,9 @@ public enum WorkType {
     STF_24W_UPPER_TRIBUNAL("stf_24w_upper_tribunal"),
     STOPPED_APPLICATIONS("stopped_applications"),
     UPPER_TRIBUNAL("upper_tribunal"),
-    WELSH_TRANSLATION_WORK("welsh_translation_work");
+    WELSH_TRANSLATION_WORK("welsh_translation_work"),
+    BAILIFF_WORK("bailiff_work"),
+    ENFORCEMENT_SUPPORT("enforcement_support");
 
     private final String value;
 
