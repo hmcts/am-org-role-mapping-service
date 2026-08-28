@@ -20,6 +20,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JBSFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.feignclients.JRDFeignClient;
+import uk.gov.hmcts.reform.orgrolemapping.feignclients.RASFeignClient;
 import uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder;
 import uk.gov.hmcts.reform.orgrolemapping.helper.IntTestDataBuilder;
 
@@ -54,6 +55,9 @@ public class RefreshControllerJudicialRefreshIntegrationTest extends BaseAuthori
 
     @MockBean
     private JBSFeignClient jbsFeignClient;
+
+    @MockBean
+    private RASFeignClient rasFeignClient;
 
     @MockBean
     private RequestMappingService<UserAccessProfile> requestMappingService;
