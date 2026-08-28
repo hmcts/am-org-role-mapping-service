@@ -27,6 +27,8 @@ public enum JobTitle {
     WLU_TEAM_LEADER("WLU Team Leader", "21"),
     HRS_TEAM_LEADER("HRS Team Leader", "22"),
     BAILIFF_ADMIN("Bailiff Administrator", "23"),
+    BAILIFF("Bailiff", "24"),
+    BAILIFF_MANAGER("Bailiff Manager", "25"),
     HRS_LISTENER("HRS Listener","26"),
     HRS_SHARER("HRS Sharer","27");
 
