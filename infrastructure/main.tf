@@ -71,7 +71,7 @@ resource "azurerm_key_vault_secret" "POSTGRES_DATABASE" {
 }
 
 module "org-role-mapping-database-v15" {
-  source = "git@github.com:hmcts/terraform-module-postgresql-flexible?ref=master"
+  source = "git@github.com:hmcts/terraform-module-postgresql-flexible?ref=DTSPO-30107-additional-postgres-admins"
 
   providers = {
     azurerm.postgres_network = azurerm.postgres_network
