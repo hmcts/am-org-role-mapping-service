@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
@@ -197,7 +197,7 @@ public class UserAccessProfileBuilder {
                                  .getResourceAsStream(resource)) {
                 assert inputStream != null;
                 ObjectMapper objectMapper = getObjectMapper();
-                objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE);
+                objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
                 JudicialBooking judicialBooking = objectMapper.readValue(inputStream, JudicialBooking.class);
                 judicialBooking.setUserId(userId);
                 judicialBookings.add(judicialBooking);
@@ -212,7 +212,7 @@ public class UserAccessProfileBuilder {
     private static ObjectMapper getObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy());
+        objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return objectMapper;
 

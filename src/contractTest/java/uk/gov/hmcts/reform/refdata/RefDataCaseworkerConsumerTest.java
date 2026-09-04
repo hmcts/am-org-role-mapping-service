@@ -47,6 +47,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.convertInCase
 @PactTestFor(providerName = "referenceData_caseworkerRefUsers", port = "8991")
 @ContextConfiguration(classes = {RefDataConsumerApplication.class})
 @TestPropertySource(properties = {
+    "idam.api.url=http://localhost:5000",
+    "spring.cache.type=none",
     "feign.client.config.crdclient.url=http://localhost:8991",
     "feign.client.config.prdClient.url=http://localhost:8090"
 })

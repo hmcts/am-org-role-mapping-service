@@ -1,5 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <suppress>
+        <notes>
+            <![CDATA[
+            Reviewed 2026-08-07
+            No remedy released:
+            CVE-2026-66299 applies to apache tomcat libraries.
+            Affected libraries reported by dependency-check are:
+            - tomcat 10.1.57
+            Versions of used libraries are their latest respectively.
+        ]]>
+        </notes>
+        <cve>CVE-2026-66299</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1319 Azure Agent</notes>
+        <cve>CVE-2025-21199</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1321 Azure Java SDK</notes>
+        <cve>CVE-2026-33117</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1323 Apache Commons Untrusted Configurations</notes>
+        <cve>CVE-2025-46392</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1324 Plex Utils</notes>
+        <cve>CVE-2025-67030</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1339 jackson-databind</notes>
+        <cve>CVE-2026-54515</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1340 JetBrains Kotlin</notes>
+        <cve>CVE-2026-53914</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1344 HttpComponents Core</notes>
+        <cve>CVE-2026-54399</cve>
+        <cve>CVE-2026-54428</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1322 Jakarta Mail</notes>
+        <cve>CVE-2025-7962</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1352 Netty</notes>
+        <cve>CVE-2026-44891</cve>
+        <cve>CVE-2026-55831</cve>
+        <cve>CVE-2026-55833</cve>
+    </suppress>
+    <suppress>
+        <notes>https://tools.hmcts.net/jira/browse/DTSAM-1361 Azure Messaging Proton-j</notes>
+        <cve>CVE-2026-66257</cve>
+        <cve>CVE-2026-66273</cve>
+        <cve>CVE-2026-66274</cve>
+        <cve>CVE-2026-66275</cve>
+        <cve>CVE-2026-66276</cve>
+        <cve>CVE-2026-66277</cve>
+    </suppress>
   <suppress>
     <notes>
       <![CDATA[
@@ -36,5 +97,10 @@
       <cve>CVE-2026-59276</cve>
       <cve>CVE-2026-59277</cve>
       <cve>CVE-2026-47877</cve> 
+  </suppress>
+  <suppress>
+      <notes>https://tools.hmcts.net/jira/browse/DTSAM-1388 Microsoft Azure Servicebus Reactor Netty</notes>
+      <cve>CVE-2026-47874</cve>
+      <cve>CVE-2026-59284</cve>
   </suppress>
 </suppressions>
