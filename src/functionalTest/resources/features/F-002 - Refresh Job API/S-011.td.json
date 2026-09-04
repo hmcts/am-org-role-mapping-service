@@ -1,6 +1,6 @@
 {
   "_guid_": "S-011",
-  "title": "must successfully refresh staff user org roles for a job",
+  "title": "must successfully refresh job for Senior Legal Caseworker",
   "_extends_": "F-002_Test_Data_Base",
 
   "specs": [

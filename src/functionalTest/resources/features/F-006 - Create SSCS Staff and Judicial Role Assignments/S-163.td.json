@@ -1,6 +1,6 @@
 {
   "_guid_": "S-163",
-  "title": "must successfully create organisational role mapping for fee-paid judge but not permit bookings when no ticketCode=368",
+  "title": "must successfully create organisational role mapping but not permit bookings when no ticketCode=368 for Employment Judge - Fee paid appointment",
   "_extends_": "F-006_Test_Data_Base",
 
   "method": "POST",

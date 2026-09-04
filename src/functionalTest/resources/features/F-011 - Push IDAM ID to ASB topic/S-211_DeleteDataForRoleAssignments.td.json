@@ -23,7 +23,7 @@
       "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
     },
     "body": {
-      "_extends_": "S-211_SingleUserMultipleCaseworkerRolesIds"
+      "_extends_": "S-211_CaseworkerIds"
     }
   },
 
