@@ -122,7 +122,9 @@ am-role-assignment-service:
 
 am-judicial-booking-service:
   java:
-    image: 'hmctsprod.azurecr.io/am/judicial-booking-service:latest'
+    # Temporary override to test hmcts/am-judicial-booking-service#1418
+    #image: 'hmctsprod.azurecr.io/am/judicial-booking-service:latest'
+    image: 'hmctsprod.azurecr.io/am/judicial-booking-service:pr-1418'
     imagePullPolicy: Always
     ingressHost: jbs-${SERVICE_FQDN}
     releaseNameOverride: "{{ .Release.Name }}-am-judicial-booking-service"
