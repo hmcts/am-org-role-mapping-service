@@ -10,14 +10,12 @@ import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
+import uk.gov.hmcts.reform.orgrolemapping.controller.BaseAuthorisedTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.data.AccessTypesEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.OrganisationProfile;
@@ -39,7 +37,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static org.mockito.Mockito.doReturn;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATION;
@@ -61,7 +58,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.writeValueAsP
     "professional.role.mapping.refreshApi.enabled=true",
     "testing.support.enabled=true"
 })
-abstract class BaseSchedulerTestIntegration extends BaseTestIntegration {
+abstract class BaseSchedulerTestIntegration extends BaseAuthorisedTestIntegration {
 
     static final String TEST_ENVIRONMENT = "local";
     static final String TEST_PAGE_SIZE = "3";
@@ -109,18 +106,6 @@ abstract class BaseSchedulerTestIntegration extends BaseTestIntegration {
 
     @MockBean
     private IdamRepository idamRepository;
-
-    @BeforeEach
-    public void setUp() throws Exception {
-
-        // NB: THis is a test for a scheduled job so there will be no SecurityContext loaded from a request
-        SecurityContextHolder.clearContext();
-
-        doReturn(DUMMY_AUTH_TOKEN).when(idamRepository).getUserToken();
-        doReturn(DUMMY_S2S_TOKEN).when(authTokenGenerator).generate();
-
-        wiremockFixtures.resetRequests();
-    }
 
     @SneakyThrows
     protected RestructuredAccessTypes extractAccessTypes(AccessTypesEntity accessTypesEntity) {
