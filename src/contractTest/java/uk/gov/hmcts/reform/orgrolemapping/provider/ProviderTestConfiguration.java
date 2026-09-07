@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.data.UserRefreshQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.CRDService;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.IdamRoleMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JRDService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialBookingService;
 import uk.gov.hmcts.reform.orgrolemapping.domain.service.JudicialRefreshOrchestrator;
@@ -56,6 +57,8 @@ public class ProviderTestConfiguration {
     PersistenceService persistenceService;
     @MockBean
     ProcessEventTracker processEventTracker;
+    @MockBean
+    IdamRoleMappingService idamRoleMappingService;
 
     private KieServices kieServices = KieServices.Factory.get();
 
@@ -69,6 +72,7 @@ public class ProviderTestConfiguration {
     @Primary
     public RequestMappingService<UserAccessProfile> getRequestMappingService() {
         return new RequestMappingService<>(persistenceService, getEnvironmentConfiguration(), roleAssignmentService,
+                idamRoleMappingService,
                 getStatelessKieSession(), securityUtils);
     }
 
