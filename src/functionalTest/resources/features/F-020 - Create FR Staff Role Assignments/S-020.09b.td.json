@@ -1,0 +1,70 @@
+{
+  "_guid_": "S-020.09b",
+  "title": "must successfully create org role mapping for CTSC Team Leader + Case Allocator (Financial Remedy)",
+  "_extends_": "VerifyOrgRoleAssignments_RasV1",
+
+  "specs": [
+    "an active IDAM profile with full permissions",
+    "contains the actorId of the user just published who has CTSC Team Leader + Case Allocator (Financial Remedy) role"
+  ],
+
+  "request": {
+    "body": {
+      "actorId": [
+        "6c40dd5f-7562-40b5-85b4-8cd4e1e17863"
+      ]
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName,attributes.jurisdiction,attributes.caseType"
+        },
+        {
+          "_extends_": "S-020__role_assignment__hmcts_ctsc"
+        },
+        {
+          "_extends_": "S-020__role_assignment__ctsc_team_leader",
+
+          "attributes": {
+            "caseType": "FinancialRemedyMVP2",
+            "workTypes": "hearing_work, routine_work, decision_making_work, applications, review_case, evidence"
+          },
+          "authorisations": [
+            "SKILL:ABA2:CheckingHWF"
+          ]
+        },
+        {
+          "_extends_": "S-020__role_assignment__ctsc",
+
+          "attributes": {
+            "caseType": "FinancialRemedyMVP2",
+            "workTypes": "hearing_work, routine_work, applications, review_case, evidence"
+          },
+          "authorisations": [
+            "SKILL:ABA2:CheckingHWF"
+          ]
+        },
+        {
+          "_extends_": "S-020__role_assignment__specific_access_approver_ctsc",
+
+          "attributes": {
+            "caseType": "FinancialRemedyMVP2",
+            "workTypes": "access_requests"
+          }
+        },
+        {
+          "_extends_": "S-020__role_assignment__case_allocator",
+
+          "roleCategory": "CTSC",
+          "attributes": {
+            "caseType": "FinancialRemedyMVP2"
+          }
+        }
+      ]
+    }
+  }
+}

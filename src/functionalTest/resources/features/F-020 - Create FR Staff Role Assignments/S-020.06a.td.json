@@ -1,0 +1,71 @@
+{
+  "_guid_": "S-020.06a",
+  "title": "must successfully create org role mapping for NBC Team Leader + Task Supervisor (Financial Remedy)",
+  "_extends_": "VerifyOrgRoleAssignments_RasV1",
+
+  "specs": [
+    "an active IDAM profile with full permissions",
+    "contains the actorId of the user just published who has NBC Team Leader + Task Supervisor (Financial Remedy) role"
+  ],
+
+  "request": {
+    "body": {
+      "actorId": [
+        "cb3f4ce8-b0b3-43c1-b323-db4800df3906"
+      ]
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName,attributes.jurisdiction,attributes.caseType"
+        },
+        {
+          "_extends_": "S-020__role_assignment__hmcts_admin"
+        },
+        {
+          "_extends_": "S-020__role_assignment__national_business_centre",
+
+          "attributes": {
+            "caseType": "FinancialRemedyMVP2",
+            "workTypes": "routine_work, review_case"
+          },
+          "authorisations": [
+            "SKILL:ABA2:CheckingHWF"
+          ]
+        },
+        {
+          "_extends_": "S-020__role_assignment__nbc_team_leader",
+
+          "attributes": {
+            "caseType": "FinancialRemedyMVP2",
+            "workTypes": "routine_work, review_case"
+          },
+          "authorisations": [
+            "SKILL:ABA2:CheckingHWF"
+          ]
+        },
+        {
+          "_extends_": "S-020__role_assignment__specific_access_approver_admin",
+
+          "attributes": {
+            "caseType": "FinancialRemedyMVP2",
+            "workTypes": "access_requests"
+          }
+        },
+        {
+          "_extends_": "S-020__role_assignment__task_supervisor",
+
+          "roleCategory": "ADMIN",
+          "attributes": {
+            "caseType": "FinancialRemedyMVP2",
+            "region": "[[ANYTHING_PRESENT]]"
+          }
+        }
+      ]
+    }
+  }
+}

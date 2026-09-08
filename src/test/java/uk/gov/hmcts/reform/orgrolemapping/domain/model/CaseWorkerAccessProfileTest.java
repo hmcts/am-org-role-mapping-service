@@ -175,6 +175,46 @@ class CaseWorkerAccessProfileTest {
     }
 
     @Nested
+    @DisplayName("HasSkillMatching Tests")
+    class HasSkillMatchingTests {
+        @Test
+        void shouldReturnTrueWhenSkillMatchesPattern() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .skillCodes(List.of("SKILL:ABA2:CheckingApplications"))
+                .build();
+
+            assertTrue(profile.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$"));
+        }
+
+        @Test
+        void shouldReturnFalseWhenSkillCodesAreNull() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .skillCodes(null)
+                .build();
+
+            assertFalse(profile.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$"));
+        }
+
+        @Test
+        void shouldReturnFalseWhenSkillCodesAreEmpty() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .skillCodes(List.of())
+                .build();
+
+            assertFalse(profile.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$"));
+        }
+
+        @Test
+        void shouldReturnFalseWhenNoSkillMatchesPattern() {
+            CaseWorkerAccessProfile profile = CaseWorkerAccessProfile.builder()
+                .skillCodes(List.of("SKILL:ABA2:CheckingApplicationsContested"))
+                .build();
+
+            assertFalse(profile.hasSkillMatching("^(SKILL:ABA2:).*(?<!Contested)$"));
+        }
+    }
+
+    @Nested
     @DisplayName("isCaseAllocator Tests")
     class IsCaseAllocatorTests {
         @Test

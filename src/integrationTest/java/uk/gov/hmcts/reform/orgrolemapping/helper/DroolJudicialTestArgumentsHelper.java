@@ -661,7 +661,17 @@ public class DroolJudicialTestArgumentsHelper {
                     StringUtils.isEmpty(testOverride.getFindJrdResponseFileName())
                     || testOverride.getFindJrdResponseFileName().equals(argument.getJrdResponseFileName())
                 )
-                    && matchOverrideMapValues(
+                && (
+                    StringUtils.isEmpty(testOverride.getFindRasRequestFileNameWithoutBooking())
+                        || testOverride.getFindRasRequestFileNameWithoutBooking()
+                               .equals(argument.getRasRequestFileNameWithoutBooking())
+                )
+                && (
+                    StringUtils.isEmpty(testOverride.getFindRasRequestFileNameWithBooking())
+                        || testOverride.getFindRasRequestFileNameWithBooking()
+                        .equals(argument.getRasRequestFileNameWithBooking())
+                )
+                && matchOverrideMapValues(
                     argument.getOverrideMapValues(),
                     testOverride.getFindOverrideMapValues()
                 )
@@ -803,7 +813,7 @@ public class DroolJudicialTestArgumentsHelper {
         return formatFileNameWithFolder(fileName, jurisdiction + "/OutputToRas");
     }
 
-    private static String formatRasRequestFileNameWithSuffix(String fileName, String suffix) {
+    public static String formatRasRequestFileNameWithSuffix(String fileName, String suffix) {
         if (StringUtils.isEmpty(fileName)) {
             return null;
         }

@@ -64,6 +64,18 @@ public final class JudicialOfficeHolder {
 
         }
 
+        @UtilityClass
+        public static final class FR {
+            // tribunal member (group)
+            public static final String FR_JUDGE_FEE_PAID
+                    = "FINANCIAL REMEDY - Fee paid";
+            public static final String FR_JUDGE_SALARIED
+                    = "FINANCIAL REMEDY - Salaried";
+            public static final String FR_LEADERSHIP_JUDGE_SALARIED
+                    = "FINANCIAL REMEDY - Leadership Judge - Salaried";
+
+        }
+
     }
 
 }

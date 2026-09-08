@@ -1,0 +1,39 @@
+{
+  "_guid_": "S-020.10.Contested",
+  "title": "must successfully create org role mapping for CTSC Admin (Financial Remedy Contested)",
+  "_extends_": "VerifyOrgRoleAssignments_RasV1",
+
+  "specs": [
+    "an active IDAM profile with full permissions",
+    "contains the actorId of the user just published who has CTSC Admin (Financial Remedy Contested) role"
+  ],
+
+  "request": {
+    "body": {
+      "actorId": [
+        "9b8d8f0e-0cda-4f15-8a3b-7d3d3f641001"
+      ]
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName,attributes.jurisdiction,attributes.caseType"
+        },
+        {
+          "_extends_": "S-020__role_assignment__hmcts_ctsc"
+        },
+        {
+          "_extends_": "S-020__role_assignment__ctsc",
+
+          "attributes": {
+            "caseType": "FinancialRemedyMVP2"
+          }
+        }
+      ]
+    }
+  }
+}

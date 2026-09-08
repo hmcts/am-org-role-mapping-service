@@ -15,6 +15,8 @@ public class DroolJudicialTestArgumentOverrides {
 
     // search criteria
     private String findJrdResponseFileName;
+    private String findRasRequestFileNameWithoutBooking;
+    private String findRasRequestFileNameWithBooking;
     private Map<String, String> findOverrideMapValues;
 
     // overrides

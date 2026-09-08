@@ -1,0 +1,7 @@
+{
+  "_guid_": "Skill_ABA2_CheckRefusedOrder",
+  "_extends_": "Skill__Base",
+
+  "skill_code": "SKILL:ABA2:CheckRefusedOrder",
+  "description": "Check Refused Order"
+}

@@ -1,0 +1,18 @@
+{
+  "_guid_": "S-020__role_assignment__hmcts_admin",
+
+  "id": "[[ANYTHING_PRESENT]]",
+  "actorIdType": "IDAM",
+  "actorId": "${[scenarioContext][testData][request][body][actorId][0]}",
+  "roleType": "ORGANISATION",
+  "roleName": "hmcts-admin",
+  "roleLabel": "HMCTS Admin",
+  "classification": "PRIVATE",
+  "grantType": "BASIC",
+  "roleCategory": "ADMIN",
+  "readOnly": true,
+  "created": "[[ANYTHING_PRESENT]]",
+  "attributes": {
+    "substantive": "N"
+  }
+}

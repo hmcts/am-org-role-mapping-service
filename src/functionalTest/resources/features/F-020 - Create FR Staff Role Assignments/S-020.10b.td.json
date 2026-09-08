@@ -1,0 +1,51 @@
+{
+  "_guid_": "S-020.10b",
+  "title": "must successfully create org role mapping for CTSC Admin + Case Allocator (Financial Remedy)",
+  "_extends_": "VerifyOrgRoleAssignments_RasV1",
+
+  "specs": [
+    "an active IDAM profile with full permissions",
+    "contains the actorId of the user just published who has CTSC Admin + Case Allocator (Financial Remedy) role"
+  ],
+
+  "request": {
+    "body": {
+      "actorId": [
+        "4b073b70-20e9-45e1-93b9-56a0fa0c2678"
+      ]
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName,attributes.jurisdiction,attributes.caseType"
+        },
+        {
+          "_extends_": "S-020__role_assignment__hmcts_ctsc"
+        },
+        {
+          "_extends_": "S-020__role_assignment__ctsc",
+
+          "attributes": {
+            "caseType": "FinancialRemedyMVP2",
+            "workTypes": "hearing_work, routine_work, applications, review_case, evidence"
+          },
+          "authorisations": [
+            "SKILL:ABA2:CheckingHWF"
+          ]
+        },
+        {
+          "_extends_": "S-020__role_assignment__case_allocator",
+
+          "roleCategory": "CTSC",
+          "attributes": {
+            "caseType": "FinancialRemedyMVP2"
+          }
+        }
+      ]
+    }
+  }
+}

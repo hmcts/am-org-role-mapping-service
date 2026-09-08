@@ -40,7 +40,7 @@ class DroolIacStaffOrgRoleMappingTest extends DroolBase {
         expectedRoleNameWorkTypesMap.put("national-business-centre", "hearing_work, upper_tribunal, routine_work, "
                 + "stf_24w_hearing_work, stf_24w_upper_tribunal, stf_24w_routine_work");
         expectedRoleNameWorkTypesMap.put("ctsc", "hearing_work, upper_tribunal, routine_work, "
-                + "stf_24w_hearing_work, stf_24w_upper_tribunal, stf_24w_routine_work");
+                + "stf_24w_hearing_work, stf_24w_upper_tribunal, stf_24w_routine_work, queries, queries_stf");
         expectedRoleNameWorkTypesMap.put("ctsc-team-leader", "hearing_work, upper_tribunal, routine_work, "
                 + "stf_24w_hearing_work, stf_24w_upper_tribunal, stf_24w_routine_work");
         expectedRoleNameWorkTypesMap.put("senior-tribunal-caseworker", "hearing_work, routine_work, "

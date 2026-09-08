@@ -38,3 +38,12 @@ Feature: F-000 : Access Organisation Role Mapping API
   Scenario: must access Role Assignment API
     Given a user with [an active caseworker profile],
 
+
+  @S-300
+  Scenario: must report feature flags API
+    Given a user with [an active IDAM profile with full permissions],
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Fetch status of feature flags] operation of [Organisation Role Mapping],
+    Then a positive response is received
+    And the response has all other details as expected,
+

@@ -1,0 +1,52 @@
+{
+  "_guid_": "S-020.04a",
+  "title": "must successfully create org role mapping for Hearing Centre Administrator + Task Supervisor (Financial Remedy)",
+  "_extends_": "VerifyOrgRoleAssignments_RasV1",
+
+  "specs": [
+    "an active IDAM profile with full permissions",
+    "contains the actorId of the user just published who has Hearing Centre Administrator + Task Supervisor (Financial Remedy) role"
+  ],
+
+  "request": {
+    "body": {
+      "actorId": [
+        "5afdc933-95da-4c78-8805-e4b0c4a0ae98"
+      ]
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName,attributes.jurisdiction,attributes.caseType"
+        },
+        {
+          "_extends_": "S-020__role_assignment__hmcts_admin"
+        },
+        {
+          "_extends_": "S-020__role_assignment__hearing_centre_admin",
+
+          "attributes": {
+            "caseType": "FinancialRemedyMVP2",
+            "workTypes": "routine_work, review_case"
+          },
+          "authorisations": [
+            "SKILL:ABA2:CheckingHWF"
+          ]
+        },
+        {
+          "_extends_": "S-020__role_assignment__task_supervisor",
+
+          "roleCategory": "ADMIN",
+          "attributes": {
+            "caseType": "FinancialRemedyMVP2",
+            "region": "[[ANYTHING_PRESENT]]"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "_guid_": "S-008.18",
+  "title": "must successfully create org role mapping for Cafcass Cymru Caseworker",
+  "_extends_": "VerifyOrgRoleAssignments_RasV1",
+
+  "specs": [
+    "an active IDAM profile with full permissions",
+    "contains the actorId of the user just published who has Cafcass Cymru Caseworker role"
+  ],
+
+  "request": {
+    "body": {
+      "actorId": [
+        "e3d26938-ad7d-49af-b040-8f7e13b31145"
+      ]
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "_extends_": "S-008.18__roleAssignmentResponse"
+    }
+  }
+}

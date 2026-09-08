@@ -1,0 +1,12 @@
+{
+  "_guid_": "PushMessageToCRDProfileProcess_RasV1",
+  "_extends_": "PushMessageToCRDProfileProcess",
+
+  "request": {
+    "body": {
+      "userIds": [
+        "${[scenarioContext][parentContext][testData][request][body][actorId][0]}"
+      ]
+    }
+  }
+}
