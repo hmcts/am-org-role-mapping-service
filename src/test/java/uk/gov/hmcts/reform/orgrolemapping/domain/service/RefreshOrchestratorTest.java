@@ -80,6 +80,9 @@ class RefreshOrchestratorTest {
     @Captor
     private ArgumentCaptor<List<String>> userIdsCaptor;
 
+    @Captor
+    private ArgumentCaptor<String> loggedError;
+
     @InjectMocks
     private final RefreshOrchestrator sut = createRefreshOrchestrator(true);
 
@@ -181,10 +184,11 @@ class RefreshOrchestratorTest {
     @Test
     void refreshRoleAssignmentRecords_profileNotFound() {
 
+        FeignException.NotFound mockFeignException = mock(FeignException.NotFound.class);
         Mockito.doNothing().when(parseRequestService).validateUserRequest(any());
 
         Mockito.when(retrieveDataService.retrieveProfiles(any(), eq(UserType.CASEWORKER)))
-                .thenThrow(FeignException.NotFound.class);
+                .thenThrow(mockFeignException);
 
         Mockito.when(requestMappingService.createCaseworkerAssignments(any()))
                 .thenReturn((ResponseEntity.status(HttpStatus.OK)
@@ -195,7 +199,8 @@ class RefreshOrchestratorTest {
         mockFetchRefreshJobById(1L, RoleCategory.LEGAL_OPERATIONS, NEW);
 
         assertNull(sut.refresh(1L, TestDataBuilder.buildUserRequest()));
-
+        // Verify that the content is not logged during the exception being thrown
+        verify(mockFeignException, Mockito.times(0)).contentUTF8();
     }
 
     @Test
@@ -588,6 +593,8 @@ class RefreshOrchestratorTest {
         verify(refreshJobEntitySpy, Mockito.times(1)).setCreated(any());
         verify(refreshJobEntitySpy, Mockito.times(1)).setLog(any());
         verify(persistenceService, Mockito.times(1)).persistRefreshJob(any());
+        // Verify that the content is not logged during the exception being thrown
+        verify(feignClientException, Mockito.times(0)).contentUTF8();
     }
 
     @Test
