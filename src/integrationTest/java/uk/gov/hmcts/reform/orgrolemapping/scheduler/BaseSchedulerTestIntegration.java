@@ -11,9 +11,9 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.mockito.InjectMocks;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseAuthorisedTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
@@ -101,10 +101,10 @@ abstract class BaseSchedulerTestIntegration extends BaseAuthorisedTestIntegratio
     @InjectMocks
     private SecurityUtils securityUtils;
 
-    @MockBean
+    @MockitoBean
     private AuthTokenGenerator authTokenGenerator;
 
-    @MockBean
+    @MockitoBean
     private IdamRepository idamRepository;
 
     @SneakyThrows
