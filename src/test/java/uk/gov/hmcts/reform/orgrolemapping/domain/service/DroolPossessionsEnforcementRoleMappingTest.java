@@ -55,7 +55,7 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
     void doesNotAssignRolesForBailiffManager_suspended() {
         CaseWorkerAccessProfile cap = createCaseWorkerAccessProfile(
                 JobTitle.BAILIFF_MANAGER, true, true, true);
-        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1);
+        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1, true);
 
         assertEquals(0, roleAssignments.size());
     }
@@ -66,7 +66,17 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
                 JobTitle.BAILIFF_MANAGER, true, true, false);
         cap.setServiceCode("AAA2");
 
-        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1);
+        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1, true);
+
+        assertEquals(0, roleAssignments.size());
+    }
+
+    @Test
+    void doesNotAssignRolesForBailiffManager_featureFlag_disabled() {
+        CaseWorkerAccessProfile cap = createCaseWorkerAccessProfile(
+                JobTitle.BAILIFF_MANAGER, true, true, false);
+
+        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1, false);
 
         assertEquals(0, roleAssignments.size());
     }
@@ -75,7 +85,7 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
     void assignsRolesForBailiffManager_TaskSupervisor_and_CaseAllocator() {
         CaseWorkerAccessProfile cap = createCaseWorkerAccessProfile(
                 JobTitle.BAILIFF_MANAGER, true, true, false);
-        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1);
+        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1, true);
 
         assertEquals(5, roleAssignments.size());
         assertThat(roleAssignments, containsInAnyOrder(
@@ -120,7 +130,7 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
     void assignsRolesForBailiffManager_CaseAllocator_not_TaskSupervisor() {
         CaseWorkerAccessProfile cap = createCaseWorkerAccessProfile(
                 JobTitle.BAILIFF_MANAGER, false, true, false);
-        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1);
+        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1, true);
 
         assertEquals(4, roleAssignments.size());
         assertThat(roleAssignments, containsInAnyOrder(
@@ -158,7 +168,7 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
     void assignsRolesForBailiffManager_TaskSupervisor_not_CaseAllocator() {
         CaseWorkerAccessProfile cap = createCaseWorkerAccessProfile(
                 JobTitle.BAILIFF_MANAGER, true, false, false);
-        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1);
+        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1, true);
 
         assertEquals(4, roleAssignments.size());
         assertThat(roleAssignments, containsInAnyOrder(
@@ -196,7 +206,7 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
     void assignsRolesForBailiffManager_not_CaseAllocator_not_TaskSupervisor() {
         CaseWorkerAccessProfile cap = createCaseWorkerAccessProfile(
                 JobTitle.BAILIFF_MANAGER, false, false, false);
-        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1);
+        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1, true);
 
         assertEquals(3, roleAssignments.size());
         assertThat(roleAssignments, containsInAnyOrder(
@@ -223,12 +233,21 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
                         Map.of())));
     }
 
+    @Test
+    void doesNotAssignRolesForBailiff_featureFlag_disabled() {
+        CaseWorkerAccessProfile cap = createCaseWorkerAccessProfile(
+                JobTitle.BAILIFF, true, true, false);
+
+        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1, false);
+
+        assertEquals(0, roleAssignments.size());
+    }
 
     @Test
     void assignsRolesForBailiff_TaskSupervisor_and_CaseAllocator() {
         CaseWorkerAccessProfile cap = createCaseWorkerAccessProfile(
                 JobTitle.BAILIFF, true, true, false);
-        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1);
+        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1, true);
 
         assertEquals(4, roleAssignments.size());
         assertThat(roleAssignments, containsInAnyOrder(
@@ -266,7 +285,7 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
     void assignsRolesForBailiff_CaseAllocator_not_TaskSupervisor() {
         CaseWorkerAccessProfile cap = createCaseWorkerAccessProfile(
                 JobTitle.BAILIFF, false, true, false);
-        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1);
+        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1, true);
 
         assertEquals(3, roleAssignments.size());
         assertThat(roleAssignments, containsInAnyOrder(
@@ -297,7 +316,7 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
     void assignsRolesForBailiff_TaskSupervisor_not_CaseAllocator() {
         CaseWorkerAccessProfile cap = createCaseWorkerAccessProfile(
                 JobTitle.BAILIFF, true, false, false);
-        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1);
+        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1, true);
 
         assertEquals(3, roleAssignments.size());
         assertThat(roleAssignments, containsInAnyOrder(
@@ -328,7 +347,7 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
     void assignsRolesForBailiff_not_CaseAllocator_not_TaskSupervisor() {
         CaseWorkerAccessProfile cap = createCaseWorkerAccessProfile(
                 JobTitle.BAILIFF, false, false, false);
-        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1);
+        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1, true);
 
         assertEquals(2, roleAssignments.size());
         assertThat(roleAssignments, containsInAnyOrder(
@@ -354,7 +373,7 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
                 JobTitle.BAILIFF, true, true, false);
         cap.setServiceCode("AAA1");
 
-        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1);
+        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1, true);
 
         assertEquals(4, roleAssignments.size());
         assertThat(roleAssignments, containsInAnyOrder(
@@ -394,7 +413,7 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
         CaseWorkerAccessProfile cap = createCaseWorkerAccessProfile(
                 JobTitle.BAILIFF_ADMIN, true, true, false);
 
-        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_0);
+        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_0, true);
 
         assertFalse(roleAssignments.isEmpty());
         assertFalse(roleAssignments.stream().anyMatch(ra ->
@@ -437,7 +456,7 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
     }
 
     private List<RoleAssignment> calculateRoleAssignments(
-            CaseWorkerAccessProfile cap, FeatureFlagEnum featureFlagEnum) {
+            CaseWorkerAccessProfile cap, FeatureFlagEnum featureFlagEnum, boolean isFeatureFlagEnabled) {
 
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
@@ -445,7 +464,7 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
 
         allProfiles.add(cap);
 
-        List<FeatureFlag> featureFlags = getFeatureFlags(featureFlagEnum.getValue(), true);
+        List<FeatureFlag> featureFlags = getFeatureFlags(featureFlagEnum.getValue(), isFeatureFlagEnabled);
 
         List<RoleAssignment> roleAssignments =
             buildExecuteKieSession(featureFlags);
