@@ -1,0 +1,97 @@
+{
+  "_guid_": "S-019.25b",
+  "title": "must successfully create org role mapping for Bailiff Manager + Case allocator",
+  "_extends_": "F-019_Test_Data_Base",
+
+  "specs": [
+    "contains the actorId of the user just published who has Bailiff Manager role + Case allocator"
+  ],
+
+  "request": {
+    "pathVariables": {
+      "actorId": "5a9c2e71-3d4f-4b8a-9c1e-6f2d7a8b0c93"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "__ordering__": "UNORDERED",
+          "__elementId__": "roleName"
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "bailiff-manager",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ENFORCEMENT",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS",
+            "region": "[[ANYTHING_PRESENT]]"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "bailiff",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ENFORCEMENT",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS",
+            "region": "[[ANYTHING_PRESENT]]",
+            "workTypes": "bailiff_work,enforcement_support,error_management"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ENFORCEMENT",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "Y",
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "PCS",
+            "region": "[[ANYTHING_PRESENT]]"
+          }
+        },
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "hmcts-enforcement",
+          "classification": "PRIVATE",
+          "grantType": "BASIC",
+          "roleCategory": "ENFORCEMENT",
+          "readOnly": true,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}
