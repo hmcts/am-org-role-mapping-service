@@ -4,10 +4,10 @@ import feign.FeignException;
 import feign.Request;
 import feign.RequestTemplate;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.GetRefreshUserResponse;
@@ -38,19 +38,19 @@ class RefreshControllerProfessionalRefreshIntegrationTest extends BaseAuthorised
 
     private static final String PROFESSIONAL_REFRESH_URL = "/am/role-mapping/professional/refresh";
 
-    @MockBean
+    @MockitoBean
     private PRDFeignClient prdFeignClient;
 
-    @MockBean
+    @MockitoBean
     private CRDFeignClient crdFeignClient;
 
-    @MockBean
+    @MockitoBean
     private JRDFeignClient jrdFeignClient;
 
-    @MockBean
+    @MockitoBean
     private JBSFeignClient jbsFeignClient;
 
-    @MockBean
+    @MockitoBean
     private RASFeignClient rasFeignClient;
 
     @Test

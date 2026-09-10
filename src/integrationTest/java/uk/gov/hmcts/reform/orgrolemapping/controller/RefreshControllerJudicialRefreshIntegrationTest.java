@@ -7,10 +7,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialRefreshRequest;
@@ -49,13 +49,13 @@ public class RefreshControllerJudicialRefreshIntegrationTest extends BaseAuthori
 
     private static final String JUDICIAL_REFRESH_URL = "/am/role-mapping/judicial/refresh";
 
-    @MockBean
+    @MockitoBean
     private JRDFeignClient jrdFeignClient;
 
-    @MockBean
+    @MockitoBean
     private JBSFeignClient jbsFeignClient;
 
-    @MockBean
+    @MockitoBean
     private RequestMappingService<UserAccessProfile> requestMappingService;
 
     @Captor

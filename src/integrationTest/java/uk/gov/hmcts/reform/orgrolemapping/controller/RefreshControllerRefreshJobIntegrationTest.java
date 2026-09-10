@@ -14,10 +14,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
@@ -94,22 +94,22 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseAuthorisedTe
     @Inject
     private WebApplicationContext wac;
 
-    @MockBean
+    @MockitoBean
     private PRDFeignClient prdFeignClient;
 
-    @MockBean
+    @MockitoBean
     private CRDFeignClient crdFeignClient;
 
-    @MockBean
+    @MockitoBean
     private JRDFeignClient jrdFeignClient;
 
-    @MockBean
+    @MockitoBean
     private JBSFeignClient jbsFeignClient;
 
-    @MockBean
+    @MockitoBean
     private RASFeignClient rasFeignClient;
 
-    @MockBean
+    @MockitoBean
     private RequestMappingService<UserAccessProfile> requestMappingService;
 
     @Captor
