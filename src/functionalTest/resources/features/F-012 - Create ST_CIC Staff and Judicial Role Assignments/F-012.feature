@@ -78,6 +78,7 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
   Scenario: must successfully create judicial role mapping for President of Tribunal - Salaried appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-126_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-126__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-126_PushMessageToJRDService],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
     And the request [contains the actorIds of the user just published],
@@ -92,6 +93,7 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
   Scenario: must successfully create judicial role mapping for Tribunal Judge - Salaried appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-127_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-127__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-127_PushMessageToJRDService],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
     And the request [contains the actorIds of the user just published],
@@ -106,6 +108,7 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
   Scenario: must successfully create judicial role mapping for Tribunal Judge - Fee Paid appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-128_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-128__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-128_PushMessageToJRDService],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
     And the request [contains the actorIds of the user just published],
@@ -120,6 +123,7 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
   Scenario: must successfully create judicial role mapping for Tribunal Member Lay - Fee Paid appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-129_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-129__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-129_PushMessageToJRDService],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
     And the request [contains the actorIds of the user just published],
@@ -134,6 +138,7 @@ Feature: F-012 : Create Role Assignments for Special Tribunals Caseworker and Ju
   Scenario: must successfully create judicial role mapping for Tribunal Member Medical - Salaried appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-130_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-130__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-130_PushMessageToJRDService],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
     And the request [contains the actorIds of the user just published],
