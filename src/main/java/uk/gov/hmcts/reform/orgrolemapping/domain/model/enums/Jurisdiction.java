@@ -11,7 +11,7 @@ public enum Jurisdiction {
     PRIVATELAW("PRIVATELAW", List.of("ABA5")),
     PROBATE("PROBATE", List.of("ABA6")),
     FR("DIVORCE", List.of("ABA2")),
-    POSSESSIONS("PCS", List.of("AAA3"));
+    POSSESSIONS("PCS", List.of("AAA3", "AAA1"));
 
     private final String name;
     private final List<String> serviceCodes;
