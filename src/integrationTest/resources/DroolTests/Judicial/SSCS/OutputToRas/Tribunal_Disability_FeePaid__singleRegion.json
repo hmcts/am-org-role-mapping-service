@@ -1,0 +1,70 @@
+{
+  "roleRequest": {
+    "clientId": "am_org_role_mapping_service",
+    "requestType": "CREATE",
+    "process": "judicial-organisational-role-mapping",
+    "reference": "[[IDAM_ID]]",
+    "replaceExisting": true
+  },
+  "requestedRoles": [
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "fee-paid-disability",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Fee-Paid",
+        "primaryLocation": "123456",
+        "jurisdiction": "SSCS",
+        "region": "[[REGION_ID]]",
+        "workTypes": "hearing_work,priority"
+      },
+      "authorisations": [
+        "357"
+      ]
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "hmcts-judiciary",
+      "classification": "PRIVATE",
+      "grantType": "BASIC",
+      "roleCategory": "JUDICIAL",
+      "readOnly": true,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "contractType": "Fee-Paid"
+      }
+    },
+    {
+      "actorIdType": "IDAM",
+      "actorId": "[[IDAM_ID]]",
+      "roleType": "ORGANISATION",
+      "roleName": "hearing-viewer",
+      "classification": "PUBLIC",
+      "grantType": "STANDARD",
+      "roleCategory": "JUDICIAL",
+      "readOnly": false,
+      "beginTime": "[[APPOINTMENT_BEGIN_TIME]]",
+      "endTime": "[[APPOINTMENT_END_TIME]]",
+      "created": "[[NOW_DATE_TIME]]",
+      "attributes": {
+        "primaryLocation": "123456",
+        "jurisdiction": "SSCS"
+      },
+      "authorisations": [
+        "357"
+      ]
+    }
+  ]
+}
