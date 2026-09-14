@@ -61,6 +61,9 @@ class IdamRepositoryTest {
     private OAuth2Configuration oauth2Configuration = mock(OAuth2Configuration.class);
 
     @Mock
+    private OIdcIdamConfiguration oidcIdamConfiguration = mock(OIdcIdamConfiguration.class);
+
+    @Mock
     private CacheManager cacheManager = mock(CacheManager.class);
 
     private RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
@@ -73,7 +76,7 @@ class IdamRepositoryTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         idamRepository = new IdamRepository(idamApi, oidcAdminConfiguration,
-                oauth2Configuration, restTemplate, cacheManager
+                oauth2Configuration, oidcIdamConfiguration, restTemplate, cacheManager
         );
         ReflectionTestUtils.setField(
                 idamRepository,
