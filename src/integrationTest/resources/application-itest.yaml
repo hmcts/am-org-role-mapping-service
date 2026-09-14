@@ -15,6 +15,10 @@ idam:
     url: http://localhost:${wiremock.server.port:4502}
   api.url: http://localhost:${wiremock.server.port:5000}
   client:
+    admin:
+      userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:}
+      secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:}
+      scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
     irm:
       clientId: am_org_role_mapping
       secret: ${ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET:}
