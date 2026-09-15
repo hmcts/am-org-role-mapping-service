@@ -34,7 +34,12 @@ public abstract class BaseTest {
     @BeforeAll
     public static void init() {
         mapper.registerModule(new JavaTimeModule());
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.setDefaultPropertyInclusion(
+                JsonInclude.Value.construct(
+                        JsonInclude.Include.NON_NULL,
+                        JsonInclude.Include.NON_NULL
+                )
+        );
     }
 
     public ServiceAuthorisationApi generateServiceAuthorisationApi(final String s2sUrl) {
