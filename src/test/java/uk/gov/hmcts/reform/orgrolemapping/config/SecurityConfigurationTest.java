@@ -28,7 +28,6 @@ import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SecurityConfigurationTest {
@@ -60,9 +59,9 @@ class SecurityConfigurationTest {
     void validIssuer() {
         OAuth2TokenValidator<Jwt> validator = config.allowedIssuersValidator(List.of(VALID_ISSUER));
         Jwt jwt = Jwt.withTokenValue("token")
-            .header("alg", "none")
-            .claim("iss", VALID_ISSUER)
-            .build();
+                .header("alg", "none")
+                .claim("iss", VALID_ISSUER)
+                .build();
 
         assertFalse(validator.validate(jwt).hasErrors());
     }
@@ -71,9 +70,9 @@ class SecurityConfigurationTest {
     void invalidIssuer() {
         OAuth2TokenValidator<Jwt> validator = config.allowedIssuersValidator(List.of(VALID_ISSUER));
         Jwt jwt = Jwt.withTokenValue("token")
-            .header("alg", "none")
-            .claim("iss", INVALID_ISSUER)
-            .build();
+                .header("alg", "none")
+                .claim("iss", INVALID_ISSUER)
+                .build();
 
         assertTrue(validator.validate(jwt).hasErrors());
     }
@@ -82,9 +81,9 @@ class SecurityConfigurationTest {
     void missingIssuer() {
         OAuth2TokenValidator<Jwt> validator = config.allowedIssuersValidator(List.of(VALID_ISSUER));
         Jwt jwt = Jwt.withTokenValue("token")
-            .header("alg", "none")
-            .claim("sub", "user")
-            .build();
+                .header("alg", "none")
+                .claim("sub", "user")
+                .build();
 
         assertTrue(validator.validate(jwt).hasErrors());
     }
@@ -92,12 +91,11 @@ class SecurityConfigurationTest {
     @Test
     void decoderCreated() {
         System.setProperty("idam.security.issuerValidation", Boolean.TRUE.toString());
-        when(securityProperties.getAllowedIssuers()).thenReturn(List.of(VALID_ISSUER));
         NimbusJwtDecoder mockDecoder = mock(NimbusJwtDecoder.class);
 
         try (MockedStatic<JwtDecoders> mocked = mockStatic(JwtDecoders.class)) {
             mocked.when(() -> JwtDecoders.fromOidcIssuerLocation(VALID_ISSUER))
-                .thenReturn(mockDecoder);
+                    .thenReturn(mockDecoder);
 
             JwtDecoder result = config.jwtDecoder(securityProperties);
 
@@ -109,12 +107,12 @@ class SecurityConfigurationTest {
     @Test
     void oneOfMultipleAllowedIssuersAccepted() {
         OAuth2TokenValidator<Jwt> validator = config.allowedIssuersValidator(
-            List.of(VALID_ISSUER, "https://other-valid.example.com")
+                List.of(VALID_ISSUER, "https://other-valid.example.com")
         );
         Jwt jwt = Jwt.withTokenValue("token")
-            .header("alg", "none")
-            .claim("iss", "https://other-valid.example.com")
-            .build();
+                .header("alg", "none")
+                .claim("iss", "https://other-valid.example.com")
+                .build();
 
         assertFalse(validator.validate(jwt).hasErrors());
     }
@@ -123,9 +121,9 @@ class SecurityConfigurationTest {
     void emptyAllowedIssuersRejectsEverything() {
         OAuth2TokenValidator<Jwt> validator = config.allowedIssuersValidator(List.of());
         Jwt jwt = Jwt.withTokenValue("token")
-            .header("alg", "none")
-            .claim("iss", VALID_ISSUER)
-            .build();
+                .header("alg", "none")
+                .claim("iss", VALID_ISSUER)
+                .build();
 
         assertTrue(validator.validate(jwt).hasErrors());
     }
