@@ -77,6 +77,8 @@ public final class RoleAssignmentConstants {
         public static final String WLU_ADMIN = "wlu-admin";
         public static final String WLU_TEAM_LEADER = "wlu-team-leader";
         public static final String BAILIFF_ADMIN = "bailiff-admin";
+        public static final String BAILIFF = "bailiff";
+        public static final String BAILIFF_MANAGER = "bailiff-manager";
 
         // OGD
         public static final String CASEWORKER_PRL_EXTERNAL_VIEWONLY = "caseworker-privatelaw-externaluser-viewonly";
@@ -89,6 +91,7 @@ public final class RoleAssignmentConstants {
         public static final String HMCTS_CTSC = "hmcts-ctsc";
         public static final String HMCTS_JUDICIARY = "hmcts-judiciary";
         public static final String HMCTS_LEGAL_OPERATIONS = "hmcts-legal-operations";
+        public static final String HMCTS_ENFORCEMENT = "hmcts-enforcement";
 
         // SPECIFIC ACCESS
         public static final String SPECIFIC_ACCESS_APPROVER_ADMIN = "specific-access-approver-admin";
