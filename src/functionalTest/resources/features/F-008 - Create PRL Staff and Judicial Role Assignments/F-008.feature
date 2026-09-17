@@ -10,6 +10,7 @@ Feature: F-008 : Create PrivateLaw Judicial Role Assignments
   Scenario: must successfully create judicial role mapping for Deputy District Judge - fee-paid appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-073_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-073__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-073_PushMessageToJRDService],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
     And the request [contains the actorIds of the user just published],
@@ -25,6 +26,7 @@ Feature: F-008 : Create PrivateLaw Judicial Role Assignments
   Scenario: must successfully create judicial role mapping for District Judge - salaried appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-074_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-074__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-074_PushMessageToJRDService],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
     And the request [contains the actorIds of the user just published],
@@ -40,6 +42,7 @@ Feature: F-008 : Create PrivateLaw Judicial Role Assignments
   Scenario: must successfully create judicial role mapping for Civil District Judge - salaried appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-075_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-075__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-075_PushMessageToJRDService],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
     And the request [contains the actorIds of the user just published],

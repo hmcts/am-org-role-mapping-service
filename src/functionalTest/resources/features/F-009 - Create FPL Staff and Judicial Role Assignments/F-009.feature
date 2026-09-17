@@ -51,6 +51,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
   Scenario: must successfully create judicial role mapping for Deputy District Judge - Fee-Paid appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-094_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-094__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-094_PushMessageToJRDService],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
     And the request [contains the actorIds of the user just published],
@@ -65,6 +66,7 @@ Feature: F-009 : Create Role Assignments for PublicLaw Caseworker and Judicial U
   Scenario: must successfully create judicial role mapping for Designated Family Judge - Salaried appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-095_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-095__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-095_PushMessageToJRDService],
     And a successful call [to provide adequate time for RAS to create records] as in [WaitForRASProcessing],
     And the request [contains the actorIds of the user just published],
