@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
@@ -44,7 +44,7 @@ public class CaseDefinitionServiceIntegrationTest extends BaseTestIntegration {
 
     @Autowired
     private AccessTypesRepository accessTypesRepository;
-    @MockBean
+    @MockitoBean
     private CCDService ccdService;
 
     @Test

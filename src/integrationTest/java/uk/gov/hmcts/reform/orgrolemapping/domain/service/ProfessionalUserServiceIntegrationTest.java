@@ -7,12 +7,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.jdbc.Sql;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.advice.exception.ServiceException;
@@ -68,19 +68,19 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Autowired
     private ProfessionalUserService professionalUserService;
 
-    @SpyBean
+    @MockitoSpyBean
     private UserRefreshQueueRepository mockUserRefreshQueueRepository;
 
-    @SpyBean
+    @MockitoSpyBean
     private AccessTypesRepository accessTypesRepository;
 
-    @MockBean
+    @MockitoBean
     private ProfessionalRefreshOrchestrationHelper professionalRefreshOrchestrationHelper;
 
-    @MockBean
+    @MockitoBean
     private PRDFeignClient prdFeignClient;
 
-    @MockBean
+    @MockitoBean
     private RASFeignClient rasFeignClient;
 
     @Autowired
@@ -92,10 +92,10 @@ public class ProfessionalUserServiceIntegrationTest extends BaseTestIntegration 
     @Autowired
     private BatchLastRunTimestampRepository batchLastRunTimestampRepository;
 
-    @MockBean
+    @MockitoBean
     private PrdService prdService;
 
-    @MockBean
+    @MockitoBean
     private ProcessEventTracker processEventTracker;
 
     @Captor
