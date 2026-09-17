@@ -1,4 +1,4 @@
-@F-013 @Ignore
+@F-013
 Feature: F-013 : PRM Scheduler
 
   Background:
