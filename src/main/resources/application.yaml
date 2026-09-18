@@ -175,6 +175,18 @@ refresh:
     sortColumn: ${REFRESH_JOB_SORT_COL:}
     authorisedServices: am_org_role_mapping_service,am_role_assignment_refresh_batch
     includeJudicialBookings: ${REFRESH_JOB_INCLUDE_BOOKINGS:false}
+    preview:
+      rasHealth:
+        count: ${REFRESH_PREVIEW_RAS_HEALTH_COUNT:10}
+        interval: ${REFRESH_PREVIEW_RAS_HEALTH_INTERVAL:10}
+      caseworker:
+        enabled: ${REFRESH_PREVIEW_CASEWORKER_ENABLED:false}
+        users: ${REFRESH_PREVIEW_CASEWORKER_USER_CSV:}
+        jurisdictions: ${REFRESH_PREVIEW_CASEWORKER_JURISDICTION_CSV:}
+      judicial:
+        enabled: ${REFRESH_PREVIEW_JUDICIAL_ENABLED:false}
+        users: ${REFRESH_PREVIEW_JUDICIAL_USER_CSV:}
+        jurisdictions: ${REFRESH_PREVIEW_JUDICIAL_JURISDICTION_CSV:}
   BulkAssignment:
     includeJudicialBookings: ${REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS:false}
   judicial:
