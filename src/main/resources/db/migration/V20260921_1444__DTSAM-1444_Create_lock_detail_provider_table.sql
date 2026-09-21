@@ -1,4 +1,4 @@
-CREATE TABLE dbjudicialdata.lock_details_provider (
+CREATE TABLE lock_details_provider (
       "name" varchar(64) NOT NULL,
       lock_until timestamp NOT NULL,
       locked_at timestamp NOT NULL,
