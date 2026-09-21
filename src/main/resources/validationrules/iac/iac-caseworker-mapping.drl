@@ -75,7 +75,9 @@ then
                                                               WorkType.STF_24W_HEARING_WORK,
                                                               WorkType.STF_24W_ROUTINE_WORK,
                                                               WorkType.STF_24W_DECISION_MAKING_WORK,
-                                                              WorkType.STF_24W_APPLICATIONS)));
+                                                              WorkType.STF_24W_APPLICATIONS,
+                                                              WorkType.QUERIES,
+                                                              WorkType.QUERIES_STF)));
 
   insert(
       RoleAssignment.builder()
@@ -146,7 +148,9 @@ then
                                                                 WorkType.STF_24W_HEARING_WORK,
                                                                 WorkType.STF_24W_ROUTINE_WORK,
                                                                 WorkType.STF_24W_DECISION_MAKING_WORK,
-                                                                WorkType.STF_24W_APPLICATIONS)));
+                                                                WorkType.STF_24W_APPLICATIONS,
+                                                                WorkType.QUERIES,
+                                                                WorkType.QUERIES_STF)));
   insert(
       RoleAssignment.builder()
       .actorIdType(ActorIdType.IDAM)
