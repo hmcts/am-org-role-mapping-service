@@ -65,7 +65,7 @@ public class Scheduler {
 
     // PRM Process 3
     @Scheduled(cron = "${professional.role.mapping.scheduling.findOrganisationChanges.cron}")
-    @SchedulerLock(name = "findOrganisationsWithStaleProfiles",
+    @SchedulerLock(name = "findOrganisationChanges",
             lockAtLeastFor = "${professional.role.mapping.scheduling.findOrganisationChanges.lockAtLeastFor}",
             lockAtMostFor = "${professional.role.mapping.scheduling.findOrganisationChanges.lockAtMostFor}")
     public ProcessMonitorDto findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess() {
