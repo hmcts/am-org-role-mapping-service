@@ -18,6 +18,6 @@ public class SchedulerConfig {
 
     @Bean
     public LockProvider getLockProvider(@Autowired JdbcTemplate jdbcTemplate) {
-        return new JdbcTemplateLockProvider(jdbcTemplate, "dbjudicialdata.lock_details_provider");
+        return new JdbcTemplateLockProvider(jdbcTemplate, "lock_details_provider");
     }
 }

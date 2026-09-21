@@ -26,7 +26,7 @@ public class Scheduler {
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.organisationRefreshCleanup.cron}")
-    @SchedulerLock(name = "organisationRefreshCleanup",
+    @SchedulerLock(name = "PRM_organisationRefreshCleanup",
             lockAtLeastFor = "${professional.role.mapping.scheduling.organisationRefreshCleanup.lockAtLeastFor}",
             lockAtMostFor = "${professional.role.mapping.scheduling.organisationRefreshCleanup.lockAtMostFor}")
     public ProcessMonitorDto deleteInactiveOrganisationRefreshRecords() {
@@ -34,7 +34,7 @@ public class Scheduler {
     }
 
     @Scheduled(cron = "${professional.role.mapping.scheduling.userRefreshCleanup.cron}")
-    @SchedulerLock(name = "userRefreshCleanup",
+    @SchedulerLock(name = "PRM_userRefreshCleanup",
             lockAtLeastFor = "${professional.role.mapping.scheduling.userRefreshCleanup.lockAtLeastFor}",
             lockAtMostFor = "${professional.role.mapping.scheduling.userRefreshCleanup.lockAtMostFor}")
     public ProcessMonitorDto deleteInactiveUserRefreshRecords() {
@@ -43,7 +43,7 @@ public class Scheduler {
 
     // PRM Process 1
     @Scheduled(cron = "${professional.role.mapping.scheduling.findAndUpdateCaseDefinitionChanges.cron}")
-    @SchedulerLock(name = "findAndUpdateCaseDefinitionChanges",
+    @SchedulerLock(name = "PRM_Process_1_findAndUpdateCaseDefinitionChanges",
             lockAtLeastFor =
                     "${professional.role.mapping.scheduling.findAndUpdateCaseDefinitionChanges.lockAtLeastFor}",
             lockAtMostFor =
@@ -54,7 +54,7 @@ public class Scheduler {
 
     // PRM Process 2
     @Scheduled(cron = "${professional.role.mapping.scheduling.findOrganisationsWithStaleProfiles.cron}")
-    @SchedulerLock(name = "findOrganisationsWithStaleProfiles",
+    @SchedulerLock(name = "PRM_Process_2_findOrganisationsWithStaleProfiles",
             lockAtLeastFor =
                     "${professional.role.mapping.scheduling.findOrganisationsWithStaleProfiles.lockAtLeastFor}",
             lockAtMostFor =
@@ -65,7 +65,7 @@ public class Scheduler {
 
     // PRM Process 3
     @Scheduled(cron = "${professional.role.mapping.scheduling.findOrganisationChanges.cron}")
-    @SchedulerLock(name = "findOrganisationChanges",
+    @SchedulerLock(name = "PRM_Process_3_findOrganisationChanges",
             lockAtLeastFor = "${professional.role.mapping.scheduling.findOrganisationChanges.lockAtLeastFor}",
             lockAtMostFor = "${professional.role.mapping.scheduling.findOrganisationChanges.lockAtMostFor}")
     public ProcessMonitorDto findOrganisationChangesAndInsertIntoOrganisationRefreshQueueProcess() {
@@ -75,7 +75,7 @@ public class Scheduler {
 
     // PRM Process 4
     @Scheduled(cron = "${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.cron}")
-    @SchedulerLock(name = "findUsersWithStaleOrganisations",
+    @SchedulerLock(name = "PRM_Process_4_findUsersWithStaleOrganisations",
             lockAtLeastFor = "${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.lockAtLeastFor}",
             lockAtMostFor = "${professional.role.mapping.scheduling.findUsersWithStaleOrganisations.lockAtMostFor}")
     public ProcessMonitorDto findUsersWithStaleOrganisationsAndInsertIntoRefreshQueueProcess() {
@@ -85,7 +85,7 @@ public class Scheduler {
 
     // PRM Process 5
     @Scheduled(cron = "${professional.role.mapping.scheduling.findUserChanges.cron}")
-    @SchedulerLock(name = "findUserChanges",
+    @SchedulerLock(name = "PRM_Process_5_findUserChanges",
             lockAtLeastFor = "${professional.role.mapping.scheduling.findUserChanges.lockAtLeastFor}",
             lockAtMostFor = "${professional.role.mapping.scheduling.findUserChanges.lockAtMostFor}")
     public ProcessMonitorDto findUserChangesAndInsertIntoUserRefreshQueue() {
@@ -95,7 +95,7 @@ public class Scheduler {
 
     // PRM Process 6
     @Scheduled(cron = "${professional.role.mapping.scheduling.userRefresh.cron}")
-    @SchedulerLock(name = "userRefresh",
+    @SchedulerLock(name = "PRM_Process_6_userRefresh",
             lockAtLeastFor = "${professional.role.mapping.scheduling.userRefresh.lockAtLeastFor}",
             lockAtMostFor = "${professional.role.mapping.scheduling.userRefresh.lockAtMostFor}")
     public ProcessMonitorDto processUserRefreshQueue() {

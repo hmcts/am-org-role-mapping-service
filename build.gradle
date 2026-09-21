@@ -38,6 +38,7 @@ def versions = [
         log4JVersion   : '2.24.3',
         netty_version  : '4.2.17.Final',
         bouncycastle   : '1.83',
+        shedlock       : '7.10.1',
         poi            : '5.5.1'
 ]
 
@@ -344,8 +345,8 @@ dependencies {
 
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.8.17'
 
-    implementation group: 'net.javacrumbs.shedlock', name: 'shedlock-provider-jdbc-template', version: '7.10.1'
-    implementation group: 'net.javacrumbs.shedlock', name: 'shedlock-spring', version: '7.10.1'
+    implementation group: 'net.javacrumbs.shedlock', name: 'shedlock-provider-jdbc-template', version: versions.shedlock
+    implementation group: 'net.javacrumbs.shedlock', name: 'shedlock-spring', version: versions.shedlock
 
     implementation group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: '2.6.4'
     implementation group: 'io.opentelemetry.instrumentation', name: 'opentelemetry-instrumentation-annotations', version: '2.31.1'
