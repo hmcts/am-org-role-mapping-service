@@ -75,7 +75,7 @@ Feature: F-001 : Create IA Staff Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-010_DeleteDataForRoleAssignments01].
 
   @S-001.01
-  @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_9=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Senior Tribunal Case Worker
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Senior Tribunal Case Worker (BFA1 IA)] as in [S-001.01__VerifyCaseworkerDetails],
@@ -89,7 +89,7 @@ Feature: F-001 : Create IA Staff Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.01a
-  @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_9=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Senior Tribunal Case Worker + Task Supervisor
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Senior Tribunal Case Worker + Task Supervisor (BFA1 IA)] as in [S-001.01a__VerifyCaseworkerDetails],
@@ -103,7 +103,7 @@ Feature: F-001 : Create IA Staff Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.01b
-  @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_9=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Senior Tribunal Case Worker + Case allocator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Senior Tribunal Case Worker + Case allocator (BFA1 IA)] as in [S-001.01b__VerifyCaseworkerDetails],
@@ -117,7 +117,7 @@ Feature: F-001 : Create IA Staff Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.02
-  @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_9=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Tribunal Case Worker
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Tribunal Case Worker (BFA1 IA)] as in [S-001.02__VerifyCaseworkerDetails],
@@ -131,7 +131,7 @@ Feature: F-001 : Create IA Staff Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.02a
-  @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_9=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Tribunal Case Worker + Task Supervisor
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Tribunal Case Worker + Task Supervisor (BFA1 IA)] as in [S-001.02a__VerifyCaseworkerDetails],
@@ -145,7 +145,7 @@ Feature: F-001 : Create IA Staff Role Assignments
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [DeleteDataForRoleAssignments].
 
   @S-001.02b
-  @FeatureToggle(DB:iac_wa_1_5=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
+  @FeatureToggle(DB:iac_wa_1_9=on) @FeatureToggle(EV:CASEWORKER_FTA_ENABLED=on)
   Scenario: must successfully create org role mapping for Tribunal Case Worker + Case allocator
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to verify caseworker details for Tribunal Case Worker + Case allocator (BFA1 IA)] as in [S-001.02b__VerifyCaseworkerDetails],
