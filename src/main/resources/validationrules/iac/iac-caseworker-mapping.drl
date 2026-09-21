@@ -1,10 +1,16 @@
 package validationrules.iac;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.Attributes;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.RoleAssignmentConstants.RoleName;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.WorkType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.crd.JobTitle;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.WorkType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.CaseWorkerAccessProfile;
 import java.util.ArrayList;
 import  uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
@@ -19,10 +25,13 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 /*
  * IAC case worker Org roles mapping rules for "senior-tribunal-caseworker", "tribunal-case-worker", "case-allocator"
  *  and "task-supervisor" as version IAC_1_1. The STCW role would be deprecated later for 1.5.
+ * Made obsolete in DTSAM-1438 - rule will be disabled when iac_wa_1_9 is enabled.
+ * To be removed in DTSAM-1443.
  */
 rule "v_1_5_iac_senior_tribunal_caseworker"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_5.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.IAC_WA_1_9.getValue())
   $up: CaseWorkerAccessProfile(roleId == "1", serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -46,12 +55,54 @@ then
 end;
 
 /*
+ * IAC case worker Org roles mapping rules for "senior-tribunal-caseworker", "tribunal-case-worker", "case-allocator" for v1.9
+ */
+rule "v_1_9_iac_senior_tribunal_caseworker"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_9.getValue())
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.SENIOR_LEGAL_CASEWORKER),
+                                 hasValidServiceCode(Jurisdiction.IAC), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+     attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.IAC.getName()));
+     attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+     attribute.put(Attributes.Name.WORK_TYPES,
+                   JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                                                              WorkType.HEARING_WORK,
+                                                              WorkType.ROUTINE_WORK,
+                                                              WorkType.DECISION_MAKING_WORK,
+                                                              WorkType.APPLICATIONS,
+                                                              WorkType.STF_24W_HEARING_WORK,
+                                                              WorkType.STF_24W_ROUTINE_WORK,
+                                                              WorkType.STF_24W_DECISION_MAKING_WORK,
+                                                              WorkType.STF_24W_APPLICATIONS)));
+
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName(RoleName.SENIOR_TRIBUNAL_CASEWORKER)
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($up.getSkillCodes())
+      .build());
+      logMsg("Rule : v_1_9_iac_senior_tribunal_caseworker");
+end;
+
+/*
 * IAC case worker Org roles mapping rules for "tribunal-caseworker"
 * for 1.5.
+* Made obsolete in DTSAM-1438 - rule will be disabled when iac_wa_1_9 is enabled.
+* To be removed in DTSAM-1443.
 */
 rule "v_1_5_iac_tribunal_caseworker"
 when
   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_5.getValue())
+  $f2: FeatureFlag(status == false && flagName == FeatureFlagEnum.IAC_WA_1_9.getValue())
   $up: CaseWorkerAccessProfile(roleId in ("1","2"), serviceCode == "BFA1", !suspended)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -72,6 +123,44 @@ then
       .authorisations($up.getSkillCodes())
       .build());
       logMsg("Rule : v_1_5_iac_tribunal_caseworker");
+end;
+
+/*
+* IAC case worker Org roles mapping rules for "tribunal-caseworker" for v1.9
+*/
+rule "v_1_9_iac_tribunal_caseworker"
+when
+  $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IAC_WA_1_9.getValue())
+  $up: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.SENIOR_LEGAL_CASEWORKER,JobTitle.LEGAL_CASEWORKER),
+                                   hasValidServiceCode(Jurisdiction.IAC), !suspended)
+then
+   Map<String,JsonNode> attribute = new HashMap<>();
+       attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.IAC.getName()));
+       attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($up.getPrimaryLocationId()));
+       attribute.put(Attributes.Name.WORK_TYPES,
+                     JacksonUtils.convertObjectIntoJsonNode(WorkType.joinValues(
+                                                                WorkType.HEARING_WORK,
+                                                                WorkType.ROUTINE_WORK,
+                                                                WorkType.DECISION_MAKING_WORK,
+                                                                WorkType.APPLICATIONS,
+                                                                WorkType.STF_24W_HEARING_WORK,
+                                                                WorkType.STF_24W_ROUTINE_WORK,
+                                                                WorkType.STF_24W_DECISION_MAKING_WORK,
+                                                                WorkType.STF_24W_APPLICATIONS)));
+  insert(
+      RoleAssignment.builder()
+      .actorIdType(ActorIdType.IDAM)
+      .actorId($up.getId())
+      .roleCategory(RoleCategory.LEGAL_OPERATIONS)
+      .roleType(RoleType.ORGANISATION)
+      .roleName(RoleName.TRIBUNAL_CASEWORKER)
+      .grantType(GrantType.STANDARD)
+      .classification(Classification.PUBLIC)
+      .readOnly(false)
+      .attributes(attribute)
+      .authorisations($up.getSkillCodes())
+      .build());
+      logMsg("Rule : v_1_9_iac_tribunal_caseworker");
 end;
 
 rule "iac_case_allocator_caseworker_v11"
