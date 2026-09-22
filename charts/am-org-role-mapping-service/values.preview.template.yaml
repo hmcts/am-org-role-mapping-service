@@ -60,14 +60,14 @@ java:
     # PROFESSIONAL_SCHEDULING_ENABLED should remain false in PREVIEW to prevent scheduling running in all PRs.
     PROFESSIONAL_SCHEDULING_ENABLED: true
     # PRM Schedules
-    CRON_PRM_P1_FIND_CASE_DEFINITION_CHANGES: "0 */10 * * * *"
-    CRON_PRM_P2_ORGS_STALE_PROFILES: "-"
-    CRON_PRM_P3_ORG_CHANGES: "-"
-    CRON_PRM_P4_USERS_STALE_ORGS: "-"
-    CRON_PRM_P5_USER_CHANGES: "-"
-    CRON_PRM_P6_USER_REFRESH: "-"
-    # CRON_PRM_REFRESH_CLEANUP_ORG: "-"
-    CRON_PRM_REFRESH_CLEANUP_USER: "0 */8 * * * *"
+    # CRON_PRM_P1_FIND_CASE_DEFINITION_CHANGES: "0 */10 * * * *"
+    # CRON_PRM_P2_ORGS_STALE_PROFILES: "-"
+    # CRON_PRM_P3_ORG_CHANGES: "-"
+    # CRON_PRM_P4_USERS_STALE_ORGS: "-"
+    # CRON_PRM_P5_USER_CHANGES: "-"
+    # CRON_PRM_P6_USER_REFRESH: "-"
+    CRON_PRM_REFRESH_CLEANUP_ORG: "0 */6 * * * *"
+    # CRON_PRM_REFRESH_CLEANUP_USER: "0 */8 * * * *"
   postgresql:
     enabled: true
     primary:
