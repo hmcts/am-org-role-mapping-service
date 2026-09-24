@@ -2,7 +2,11 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.specification.RequestSpecification;
+import net.serenitybdd.annotations.WithTag;
+import net.serenitybdd.annotations.WithTags;
+import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import net.serenitybdd.rest.SerenityRest;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +15,8 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WireMockStubs;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {"testing.support.enabled=true"})
+@ExtendWith(SerenityJUnit5Extension.class)
+@WithTags({@WithTag("testType:Integration")})
 public abstract class BaseAuthorisedTestIntegration extends BaseTestIntegration {
 
     protected static final String BASEURL = "http://localhost";
