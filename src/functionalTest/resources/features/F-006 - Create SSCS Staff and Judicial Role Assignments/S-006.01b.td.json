@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-006.01b",
+  "title": "must successfully create org role mapping for Senior Legal Caseworker + Case allocator (BBA3)",
+  "_extends_": "S-006.01",
+  "specs": [
+    "contains the actorId of the user just published who has Senior Legal Caseworker role + Case allocator (BBA3)"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "96ca8277-6bee-43c6-bfb5-31b86d4f07ac"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "LEGAL_OPERATIONS",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}
