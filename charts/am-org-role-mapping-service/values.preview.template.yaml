@@ -120,7 +120,7 @@ am-role-assignment-service:
       ENABLE_DB_MIGRATE: true
       RUN_DB_MIGRATION_ON_STARTUP: true
       JWT_ISSUER_VALIDATION_ENABLED: true
-      IDAM_SECURITY_ALLOWED_ISSUERS_0: https://idam-web-public.aat.platform.hmcts.net/o
+      IDAM_SECURITY_ALLOWED_ISSUERS_0: https://idam-api.aat.platform.hmcts.net/o
 
 am-judicial-booking-service:
   java:
