@@ -45,10 +45,10 @@ class DroolIacStaffOrgRoleMappingTest extends DroolBase {
                 + "stf_24w_hearing_work, stf_24w_upper_tribunal, stf_24w_routine_work");
         expectedRoleNameWorkTypesMap.put("senior-tribunal-caseworker", "hearing_work, routine_work, "
                 + "decision_making_work, applications, stf_24w_hearing_work, stf_24w_routine_work, "
-                + "stf_24w_decision_making_work, stf_24w_applications");
+                + "stf_24w_decision_making_work, stf_24w_applications, queries, queries_stf");
         expectedRoleNameWorkTypesMap.put("tribunal-caseworker", "hearing_work, routine_work, "
                 + "decision_making_work, applications, stf_24w_hearing_work, stf_24w_routine_work, "
-                + "stf_24w_decision_making_work, stf_24w_applications");
+                + "stf_24w_decision_making_work, stf_24w_applications, queries, queries_stf");
         expectedRoleNameWorkTypesMap.put("hmcts-ctsc", null);
         expectedRoleNameWorkTypesMap.put("hmcts-legal-operations", null);
         expectedRoleNameWorkTypesMap.put("hmcts-admin", null);
