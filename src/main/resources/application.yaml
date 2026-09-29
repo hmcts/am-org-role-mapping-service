@@ -121,6 +121,10 @@ idam:
       scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
   security:
     issuerValidation: ${JWT_ISSUER_VALIDATION_ENABLED:false}
+    allowed-issuers:
+      - ${IDAM_SECURITY_ALLOWED_ISSUER_0:http://localhost:5556/o}
+      - ${IDAM_SECURITY_ALLOWED_ISSUER_1:http://localhost:5556/o}
+      - ${IDAM_SECURITY_ALLOWED_ISSUER_2:http://localhost:5556/o}
 
 feign:
   client:
