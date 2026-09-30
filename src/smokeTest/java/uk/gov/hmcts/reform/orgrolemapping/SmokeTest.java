@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.orgrolemapping.config.EnvironmentConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.CRDMessagingConfiguration;
 import uk.gov.hmcts.reform.orgrolemapping.config.servicebus.JRDMessagingConfiguration;
@@ -35,22 +35,22 @@ class SmokeTest {
 
     UserTokenProviderConfig config;
 
-    @MockBean
+    @MockitoBean
     private CRDTopicConsumerNew crdTopicConsumerNew;
 
-    @MockBean
+    @MockitoBean
     private JRDTopicConsumerNew jrdTopicConsumerNew;
 
-    @MockBean
+    @MockitoBean
     private CRDTopicPublisher crdTopicPublisher;
 
-    @MockBean
+    @MockitoBean
     private JRDTopicPublisher jrdTopicPublisher;
 
-    @MockBean
+    @MockitoBean
     private CRDMessagingConfiguration crdMessagingConfiguration;
 
-    @MockBean
+    @MockitoBean
     private JRDMessagingConfiguration jrdMessagingConfiguration;
 
     @Rule

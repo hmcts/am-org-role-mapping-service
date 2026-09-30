@@ -21,10 +21,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.CRDTopicPublisher;
 import uk.gov.hmcts.reform.orgrolemapping.servicebus.JRDTopicPublisher;
 
@@ -43,16 +43,16 @@ public class OrgRoleMappingConsumerTestForGetActorById extends BaseTestContract 
     private static final String ACTOR_ID = "23486";
     private static final String RAS_GET_ACTOR_BY_ID = "/am/role-assignments/actors/" + ACTOR_ID;
 
-    @MockBean
+    @MockitoBean
     JRDTopicPublisher jrdPublisher;
-    @MockBean
+    @MockitoBean
     CRDTopicPublisher crdPublisher;
 
-    @MockBean
+    @MockitoBean
     @Qualifier("crdPublisher")
     ServiceBusSenderClient serviceBusSenderClient;
 
-    @MockBean
+    @MockitoBean
     @Qualifier("jrdPublisher")
     ServiceBusSenderClient serviceBusSenderClientJrd;
 

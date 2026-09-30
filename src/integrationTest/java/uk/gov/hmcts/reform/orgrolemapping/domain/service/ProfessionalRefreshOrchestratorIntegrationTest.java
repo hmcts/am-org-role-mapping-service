@@ -8,13 +8,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
@@ -50,13 +50,13 @@ class ProfessionalRefreshOrchestratorIntegrationTest extends BaseTestIntegration
     private static final String USER_ID = "1234";
     @Autowired
     private ProfessionalRefreshOrchestrator professionalRefreshOrchestrator;
-    @SpyBean
+    @MockitoSpyBean
     private UserRefreshQueueRepository userRefreshQueueRepository;
-    @SpyBean
+    @MockitoSpyBean
     private AccessTypesRepository accessTypesRepository;
-    @MockBean
+    @MockitoBean
     private PRDFeignClient prdFeignClient;
-    @MockBean
+    @MockitoBean
     private RASFeignClient rasFeignClient;
     private final WiremockFixtures wiremockFixtures = new WiremockFixtures();
     @Mock
