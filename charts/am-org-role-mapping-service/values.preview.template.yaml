@@ -57,6 +57,8 @@ java:
     REFRESH_BULK_ASSIGNMENT_INCLUDE_BOOKINGS: false
     TESTING_SUPPORT_ENABLED: true
     PROFESSIONAL_REFRESH_API_ENABLED: true
+    JWT_ISSUER_VALIDATION_ENABLED: true
+    IDAM_SECURITY_ALLOWED_ISSUERS_0: https://idam-api.aat.platform.hmcts.net/o
     # PROFESSIONAL_SCHEDULING_ENABLED should remain false in PREVIEW to prevent scheduling running in all PRs.
     PROFESSIONAL_SCHEDULING_ENABLED: false
   postgresql:
@@ -119,8 +121,6 @@ am-role-assignment-service:
       RAS_ENV: pr
       ENABLE_DB_MIGRATE: true
       RUN_DB_MIGRATION_ON_STARTUP: true
-      JWT_ISSUER_VALIDATION_ENABLED: true
-      IDAM_SECURITY_ALLOWED_ISSUERS_0: https://idam-api.aat.platform.hmcts.net/o
 
 am-judicial-booking-service:
   java:
