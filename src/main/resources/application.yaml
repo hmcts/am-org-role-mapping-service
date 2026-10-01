@@ -100,7 +100,6 @@ spring:
     cache-names: token, userToken
     caffeine:
       spec: maximumSize=50,expireAfterWrite=3600s
-oidc.issuer: ${OIDC_ISSUER_URL:https://forgerock-am.service.core-compute-idam-aat.internal:8443/openam/oauth2/hmcts}
 
 ### dependency configuration
 idam:
@@ -120,6 +119,12 @@ idam:
       userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:}
       secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:}
       scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
+  security:
+    issuerValidation: ${JWT_ISSUER_VALIDATION_ENABLED:false}
+    allowed-issuers:
+      - ${IDAM_SECURITY_ALLOWED_ISSUER_0:http://localhost:5556/o}
+      - ${IDAM_SECURITY_ALLOWED_ISSUER_1:http://localhost:5556/o}
+      - ${IDAM_SECURITY_ALLOWED_ISSUER_2:http://localhost:5556/o}
 
 feign:
   client:
