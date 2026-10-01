@@ -28,7 +28,7 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.UserAccessProfileBuilder.PRIMARY_LOCATION_ID;
 
 @Slf4j
@@ -368,58 +368,34 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
     }
 
     @Test
-    void assignsRolesForBailiff_ServiceCode_AAA1() {
+    void doesNotAssignRolesForBailiff_wrong_ServiceCode() {
         CaseWorkerAccessProfile cap = createCaseWorkerAccessProfile(
                 JobTitle.BAILIFF, true, true, false);
-        cap.setServiceCode("AAA1");
+        cap.setServiceCode("AAA3");
 
         List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1, true);
 
-        assertEquals(4, roleAssignments.size());
-        assertThat(roleAssignments, containsInAnyOrder(
-                createRoleAssignment(
-                        cap.getId(),
-                        RoleName.BAILIFF,
-                        GrantType.STANDARD,
-                        Classification.PUBLIC,
-                        false,
-                        BAILIFF_ATTRIBUTES),
-                createRoleAssignment(
-                        cap.getId(),
-                        RoleName.TASK_SUPERVISOR,
-                        GrantType.STANDARD,
-                        Classification.PUBLIC,
-                        false,
-                        STANDARD_ATTRIBUTES),
-                createRoleAssignment(
-                        cap.getId(),
-                        RoleName.CASE_ALLOCATOR,
-                        GrantType.STANDARD,
-                        Classification.PUBLIC,
-                        false,
-                        STANDARD_ATTRIBUTES),
-                createRoleAssignment(
-                        cap.getId(),
-                        RoleName.HMCTS_ENFORCEMENT,
-                        GrantType.BASIC,
-                        Classification.PRIVATE,
-                        true,
-                        Map.of())
-        ));
+        assertTrue(roleAssignments.isEmpty());
     }
 
     @Test
-    void doesNotAssignRolesForBailiff_wrong_JobTitle_and_wrong_featureFlag() {
+    void doesNotAssignRolesForBailiff_wrong_JobTitle() {
         CaseWorkerAccessProfile cap = createCaseWorkerAccessProfile(
                 JobTitle.BAILIFF_ADMIN, true, true, false);
 
+        List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_1, true);
+
+        assertTrue(roleAssignments.isEmpty());
+    }
+
+    @Test
+    void doesNotAssignRolesForBailiff_wrong_featureFlag() {
+        CaseWorkerAccessProfile cap = createCaseWorkerAccessProfile(
+                JobTitle.BAILIFF, true, true, false);
+
         List<RoleAssignment> roleAssignments = calculateRoleAssignments(cap, FeatureFlagEnum.POSSESSIONS_WA_1_0, true);
 
-        assertFalse(roleAssignments.isEmpty());
-        assertFalse(roleAssignments.stream().anyMatch(ra ->
-                ra.getRoleName().equals(RoleName.BAILIFF)
-                        || ra.getRoleName().equals(RoleName.BAILIFF_MANAGER)
-                        || ra.getRoleName().equals(RoleName.HMCTS_ENFORCEMENT)));
+        assertTrue(roleAssignments.isEmpty());
     }
 
     private CaseWorkerAccessProfile createCaseWorkerAccessProfile(
@@ -430,7 +406,7 @@ class DroolPossessionsEnforcementRoleMappingTest extends DroolBase {
         cap.setTaskSupervisorFlag(isTaskSupervisor ? "Y" : "N");
         cap.setCaseAllocatorFlag(isCaseAllocator ? "Y" : "N");
         cap.setSuspended(isSuspended);
-        cap.setServiceCode(Jurisdiction.POSSESSIONS.getServiceCodes().getFirst());
+        cap.setServiceCode(Jurisdiction.ENFORCEMENT.getServiceCodes().getFirst());
         cap.setRegionId(REGION_ID);
         return cap;
     }

@@ -29,7 +29,7 @@ rule "possessions_bailiff_manager_role"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_1.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.BAILIFF_MANAGER),
-                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
+                                  hasValidServiceCode(Jurisdiction.ENFORCEMENT),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
@@ -63,7 +63,7 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_1.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.BAILIFF,
                                                    JobTitle.BAILIFF_MANAGER),
-                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
+                                  hasValidServiceCode(Jurisdiction.ENFORCEMENT),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
@@ -100,7 +100,7 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_1.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.BAILIFF,
                                                    JobTitle.BAILIFF_MANAGER),
-                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
+                                  hasValidServiceCode(Jurisdiction.ENFORCEMENT),
                                   isTaskSupervisor(),
                                   !suspended)
 then
@@ -135,7 +135,7 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_1.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.BAILIFF,
                                                    JobTitle.BAILIFF_MANAGER),
-                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
+                                  hasValidServiceCode(Jurisdiction.ENFORCEMENT),
                                   isCaseAllocator(),
                                   !suspended)
 then
@@ -170,7 +170,7 @@ when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.POSSESSIONS_WA_1_1.getValue())
     $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.BAILIFF,
                                                    JobTitle.BAILIFF_MANAGER),
-                                  hasValidServiceCode(Jurisdiction.POSSESSIONS),
+                                  hasValidServiceCode(Jurisdiction.ENFORCEMENT),
                                   !suspended)
 then
     Map<String,JsonNode> attribute = new HashMap<>();
