@@ -1,0 +1,13 @@
+{
+  "_guid_": "S-006.09c_Region5",
+  "title": "must successfully create org role mapping for CTSC Team Leader + Region 5 (BBA3)",
+  "_extends_": "S-006.09c_Region1",
+  "specs": [
+    "contains the actorId of the user just published who has CTSC Team Leader role + Region 5 (BBA3)"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "5b3cf1cd-b131-4a43-8849-67b5bea88f8c"
+    }
+  }
+}
