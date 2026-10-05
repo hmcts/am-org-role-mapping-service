@@ -86,9 +86,7 @@ orm:
 
 am-role-assignment-service:
   java:
-    # To be reverted after https://github.com/hmcts/am-role-assignment-service/pull/2671
-    # image: 'hmctsprod.azurecr.io/am/role-assignment-service:latest'
-    image: 'hmctsprod.azurecr.io/am/role-assignment-service:pr-2671'
+    image: 'hmctsprod.azurecr.io/am/role-assignment-service:latest'
     imagePullPolicy: Always
     ingressHost: ras-${SERVICE_FQDN}
     releaseNameOverride: "{{ .Release.Name }}-am-role-assignment-service"
@@ -132,9 +130,7 @@ am-role-assignment-service:
 
 am-judicial-booking-service:
   java:
-    # To be reverted after https://github.com/hmcts/am-judicial-booking-service/pull/1420
-    # image: 'hmctsprod.azurecr.io/am/judicial-booking-service:latest'
-    image: 'hmctsprod.azurecr.io/am/judicial-booking-service:pr-1420'
+    image: 'hmctsprod.azurecr.io/am/judicial-booking-service:latest'
     imagePullPolicy: Always
     ingressHost: jbs-${SERVICE_FQDN}
     releaseNameOverride: "{{ .Release.Name }}-am-judicial-booking-service"
