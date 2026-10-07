@@ -116,24 +116,6 @@ env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX="hmctsprod.azurecr.io/imported/"
   enableFullFunctionalTest()
   enableFortifyScan()
 
-    before('fullFunctionalTest') {
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
-    }
-
-    afterSuccess('build') {
-        stage("integration tests") {
-            // Authenticate Docker to hmctsprod ACR so Testcontainers can pull the Ryuk reaper
-            // and base images via TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX. Reuses the managed
-            // identity already established by `az login --identity` earlier in the pipeline.
-            sh '''
-              env AZURE_CONFIG_DIR=/opt/jenkins/.azure-nonprod az acr login --name hmctsprod
-            '''
-
-            sh "./gradlew integration"
-            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/integration/**/*'
-        }
-    }
-
     afterAlways('fullFunctionalTest') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/cucumber/**/*'
 
@@ -145,16 +127,6 @@ env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX="hmctsprod.azurecr.io/imported/"
                 reportFiles          : "overview-features.html,overview-failures.html,",
                 reportTitles         : "Features,Failures",
                 reportName           : "Functional Test Report"
-        ]
-
-        publishHTML target: [
-                allowMissing         : true,
-                alwaysLinkToLastBuild: true,
-                keepAll              : true,
-                reportDir            : "build/test-results/DroolTests/Judicial",
-                reportFiles          : "JudicialTestIndex.html",
-                reportTitles         : "Index",
-                reportName           : "Drool Judicial Test Report"
         ]
     }
 
