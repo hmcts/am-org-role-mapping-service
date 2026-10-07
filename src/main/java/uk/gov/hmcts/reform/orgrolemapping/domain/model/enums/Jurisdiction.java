@@ -11,7 +11,9 @@ public enum Jurisdiction {
     PRIVATELAW("PRIVATELAW", List.of("ABA5")),
     PROBATE("PROBATE", List.of("ABA6")),
     FR("DIVORCE", List.of("ABA2")),
-    POSSESSIONS("PCS", List.of("AAA3"));
+    POSSESSIONS("PCS", List.of("AAA3")),
+    // not a real jurisdiction, but all enforcement job titles will have the same service code
+    ENFORCEMENT("ENFORCEMENT", List.of("AAA1"));;
 
     private final String name;
     private final List<String> serviceCodes;
