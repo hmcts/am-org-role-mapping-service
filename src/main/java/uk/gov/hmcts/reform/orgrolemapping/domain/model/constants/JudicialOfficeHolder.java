@@ -45,7 +45,6 @@ public final class JudicialOfficeHolder {
             public static final String ACTING_RESIDENT_JUDGE
                     = "IAC Acting Resident Judge";
 
-
         }
 
         @UtilityClass
@@ -76,6 +75,13 @@ public final class JudicialOfficeHolder {
 
         }
 
+        @UtilityClass
+        public static final class PrivateLaw {
+            // tribunal member (group)
+            public static final String TRIBUNAL_JUDGE_FEE_PAID
+                = "Tribunal Judge – Fee Paid";
+
+        }
     }
 
 }
