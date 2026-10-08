@@ -1,0 +1,44 @@
+{
+  "_guid_": "S-006.05a__VerifyCaseworkerDetails",
+  "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
+
+  "specs": [
+    "to verify caseworker details for Court Clerk + Task Supervisor (BBA3 SSCS)"
+  ],
+
+  "request": {
+    "body": {
+      "userIds": [
+        "${[scenarioContext][parentContext][testData][request][pathVariables][actorId]}"
+      ]
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "arrayInMap": [
+        {
+          "_extends_": "CaseworkerDetails",
+
+          "id": "${[scenarioContext][parentContext][testData][request][pathVariables][actorId]}",
+
+          "case_allocator": "N",
+          "task_supervisor": "Y",
+
+          "role": [
+            {
+              "_extends_": "CaseworkerRole_05_CC"
+            }
+          ],
+
+          "work_area": [
+            {
+              "_extends_": "WorkArea_BBA3_SSCS"
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+}
