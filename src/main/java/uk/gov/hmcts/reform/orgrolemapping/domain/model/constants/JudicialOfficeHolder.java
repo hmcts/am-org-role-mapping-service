@@ -79,7 +79,7 @@ public final class JudicialOfficeHolder {
         public static final class PrivateLaw {
             // tribunal member (group)
             public static final String TRIBUNAL_JUDGE_FEE_PAID
-                = "Tribunal Judge – Fee Paid";
+                = "PRIVATELAW Tribunal Judge – Fee Paid";
 
         }
     }
