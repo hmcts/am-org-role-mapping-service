@@ -7,10 +7,10 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import java.util.ArrayList;
 import java.util.List;
 
+import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.EMPTY_ROLE_ASSIGNMENT_TEMPLATE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.adjustTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.cloneListOfTestArgumentsForMultiRegion;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateOverrideFlagOffCatchAll;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateOverrideWhenNotSupported;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardFeePaidTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardSalariedTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardVoluntaryTestArguments;
@@ -298,9 +298,14 @@ public class PrivateLawJudicialIT {
         List<DroolJudicialTestArgumentOverrides> testOverrides = new ArrayList<>();
         FeatureFlagEnum flag = FeatureFlagEnum.PRIVATELAW_WA_2_0;
 
-        // Appointment not supported without flag
-        testOverrides.add(
-            generateOverrideWhenNotSupported("023_Tribunal_Judge__FeePaid", flag)
+        // Appointment not supported without flag - so hearing roles only
+        testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
+            .overrideDescription("NotSupported_HearingRoles_only")
+            .findJrdResponseFileName("023_Tribunal_Judge__FeePaid")
+            .overrideRasRequestFileNameWithoutBooking(HEARING_ROLES_ONLY_OUTPUT_TEMPLATE)
+            .overrideRasRequestFileNameWithBooking(HEARING_ROLES_ONLY_OUTPUT_TEMPLATE)
+            .overrideTurnOffFlags(List.of(flag))
+            .build()
         );
 
         // must use a catch-all override to run all unaffected tests with the flag off
