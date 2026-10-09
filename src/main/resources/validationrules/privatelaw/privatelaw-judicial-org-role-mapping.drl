@@ -1,6 +1,7 @@
 package validationrules.privatelaw;
 
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialOfficeHolder.Office;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
@@ -234,7 +235,8 @@ when
                                         "PRIVATELAW Deputy High Court Judge-Fee-Paid",
                                         "PRIVATELAW High Court Judge - Sitting in Retirement-Fee-Paid",
                                         "PRIVATELAW District Judge (MC) (sitting in retirement)-Fee-Paid",
-                                        "PRIVATELAW District Judge (sitting in retirement)-Fee-Paid"
+                                        "PRIVATELAW District Judge (sitting in retirement)-Fee-Paid",
+                                        Office.PrivateLaw.TRIBUNAL_JUDGE_FEE_PAID
                                         ))
 then
    Map<String,JsonNode> attribute = new HashMap<>();

@@ -2,10 +2,13 @@ package validationrules.privatelaw;
 
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.ActorIdType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialOfficeHolder.Office;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleCategory;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.RoleType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Classification;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.GrantType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.jrd.Appointment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.Jurisdiction;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.Authorisation;
@@ -657,4 +660,34 @@ then
       .contractType($jap.getAppointmentType())
       .build());
       logMsg("Rule : v1_8_privatelaw_circuit_judge_sitting_in_retirement_fee_paid_joh");
+end;
+
+
+/*
+ * "PRIVATELAW Tribunal Judge – Fee-Paid" business role mapping to JOH.
+ */
+
+rule "v2_0_privatelaw_tribunal_judge_fee_paid_joh"
+when
+   $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_2_0.getValue())
+   $jap: JudicialAccessProfile(hasAppointmentCode(Appointment.TRIBUNAL_JUDGE),
+                               isFeePaid(),
+                               hasValidAuthorisation(Jurisdiction.PRIVATELAW),
+                               hasValidEndDate())
+then
+  insert(
+      JudicialOfficeHolder.builder()
+          .userId($jap.getUserId())
+          .office(Office.PrivateLaw.TRIBUNAL_JUDGE_FEE_PAID)
+          .jurisdiction(Jurisdiction.PRIVATELAW.getName())
+          .ticketCodes($jap.getTicketCodes())
+          .beginTime($jap.getBeginTime())
+          .endTime($jap.getEndTime())
+          .regionId($jap.getRegionId())
+          .baseLocationId($jap.getBaseLocationId())
+          .primaryLocation($jap.getPrimaryLocationId())
+          .contractType($jap.getAppointmentType())
+          .build()
+  );
+  logMsg("Rule : v2_0_privatelaw_tribunal_judge_fee_paid_joh");
 end;
