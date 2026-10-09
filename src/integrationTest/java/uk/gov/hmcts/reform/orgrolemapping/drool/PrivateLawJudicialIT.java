@@ -7,9 +7,9 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import java.util.ArrayList;
 import java.util.List;
 
+import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.EMPTY_ROLE_ASSIGNMENT_TEMPLATE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.adjustTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.cloneListOfTestArgumentsForMultiRegion;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.formatRasRequestFileNameWithSuffix;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateOverrideFlagOffCatchAll;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardFeePaidTestArguments;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.generateStandardSalariedTestArguments;
@@ -242,9 +242,17 @@ public class PrivateLawJudicialIT {
             )
         );
 
+        // 023 Tribunal Judge - Fee Paid
+        arguments.addAll(
+            generateStandardFeePaidTestArguments(
+                "023_Tribunal_Judge__FeePaid",
+                FEE_PAID_JUDGE_OUTPUT_TEMPLATE
+            )
+        );
+
 
         // FlagOff Tests
-        arguments.addAll(flagOffTestsPrivateLawWa19(arguments));
+        arguments.addAll(flagOffTestsPrivateLawWa20(arguments));
 
 
         // adjust test arguments ready for use
@@ -284,83 +292,18 @@ public class PrivateLawJudicialIT {
     }
 
 
-    private static List<DroolJudicialTestArguments> flagOffTestsPrivateLawWa19(
+    private static List<DroolJudicialTestArguments> flagOffTestsPrivateLawWa20(
         List<DroolJudicialTestArguments> inputArguments
     ) {
-        String singleRegionFileNameSuffix = "singleRegion";
-        String multiRegionFileNameSuffix =
-            "multiRegion_" + String.join("_", List.of(REGION_01_LONDON, REGION_05_SOUTH_EAST));
-
         List<DroolJudicialTestArgumentOverrides> testOverrides = new ArrayList<>();
-        FeatureFlagEnum flag = FeatureFlagEnum.PRIVATELAW_WA_1_9;
+        FeatureFlagEnum flag = FeatureFlagEnum.PRIVATELAW_WA_2_0;
 
-        // no multi region when flag is off
+        // Appointment not supported without flag - so hearing roles only
         testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
-            .overrideDescription("no_multi_region")
-            .findRasRequestFileNameWithoutBooking(
-                formatRasRequestFileNameWithSuffix(
-                    LEADERSHIP_JUDGE_OUTPUT_TEMPLATE,
-                    multiRegionFileNameSuffix
-                )
-            )
-            .overrideRasRequestFileNameWithoutBooking(
-                formatRasRequestFileNameWithSuffix(
-                    LEADERSHIP_JUDGE_OUTPUT_TEMPLATE,
-                    singleRegionFileNameSuffix
-                )
-            )
-            .overrideRasRequestFileNameWithBooking(
-                formatRasRequestFileNameWithSuffix(
-                    LEADERSHIP_JUDGE_OUTPUT_TEMPLATE,
-                    singleRegionFileNameSuffix
-                )
-            )
-            .overrideTurnOffFlags(List.of(flag))
-            .build()
-        );
-        testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
-            .overrideDescription("no_multi_region")
-            .findRasRequestFileNameWithoutBooking(
-                formatRasRequestFileNameWithSuffix(
-                    SALARIED_JUDGE_OUTPUT_TEMPLATE,
-                    multiRegionFileNameSuffix
-                )
-            )
-            .overrideRasRequestFileNameWithoutBooking(
-                formatRasRequestFileNameWithSuffix(
-                    SALARIED_JUDGE_OUTPUT_TEMPLATE,
-                    singleRegionFileNameSuffix
-                )
-            )
-            .overrideRasRequestFileNameWithBooking(
-                formatRasRequestFileNameWithSuffix(
-                    SALARIED_JUDGE_OUTPUT_TEMPLATE,
-                    singleRegionFileNameSuffix
-                )
-            )
-            .overrideTurnOffFlags(List.of(flag))
-            .build()
-        );
-        testOverrides.add(DroolJudicialTestArgumentOverrides.builder()
-            .overrideDescription("no_multi_region")
-            .findRasRequestFileNameWithoutBooking(
-                formatRasRequestFileNameWithSuffix(
-                    SALARIED_CIRCUIT_JUDGE_OUTPUT_TEMPLATE,
-                    multiRegionFileNameSuffix
-                )
-            )
-            .overrideRasRequestFileNameWithoutBooking(
-                formatRasRequestFileNameWithSuffix(
-                    SALARIED_CIRCUIT_JUDGE_OUTPUT_TEMPLATE,
-                    singleRegionFileNameSuffix
-                )
-            )
-            .overrideRasRequestFileNameWithBooking(
-                formatRasRequestFileNameWithSuffix(
-                    SALARIED_CIRCUIT_JUDGE_OUTPUT_TEMPLATE,
-                    singleRegionFileNameSuffix
-                )
-            )
+            .overrideDescription("NotSupported_HearingRoles_only")
+            .findJrdResponseFileName("023_Tribunal_Judge__FeePaid")
+            .overrideRasRequestFileNameWithoutBooking(HEARING_ROLES_ONLY_OUTPUT_TEMPLATE)
+            .overrideRasRequestFileNameWithBooking(HEARING_ROLES_ONLY_OUTPUT_TEMPLATE)
             .overrideTurnOffFlags(List.of(flag))
             .build()
         );
