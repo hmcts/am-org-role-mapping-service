@@ -285,7 +285,8 @@ $joh: JudicialOfficeHolder(office in ("PRIVATELAW District Judge-Salaried", "PRI
                                       "PRIVATELAW Deputy High Court Judge-Fee-Paid",
                                       "PRIVATELAW High Court Judge - Sitting in Retirement-Fee-Paid",
                                       "PRIVATELAW District Judge (MC) (sitting in retirement)-Fee-Paid",
-                                      "PRIVATELAW District Judge (sitting in retirement)-Fee-Paid"
+                                      "PRIVATELAW District Judge (sitting in retirement)-Fee-Paid",
+                                      Office.PrivateLaw.TRIBUNAL_JUDGE_FEE_PAID
                                      ))
 then
    Map<String,JsonNode> attribute = new HashMap<>();
@@ -363,7 +364,8 @@ when
                                         "PRIVATELAW Deputy Circuit Judge-Fee-Paid",
                                         "PRIVATELAW Circuit Judge (sitting in retirement)-Fee-Paid",
                                         "PRIVATELAW District Judge (MC) (sitting in retirement)-Fee-Paid",
-                                        "PRIVATELAW District Judge (sitting in retirement)-Fee-Paid"))
+                                        "PRIVATELAW District Judge (sitting in retirement)-Fee-Paid"),
+                                        Office.PrivateLaw.TRIBUNAL_JUDGE_FEE_PAID)
   $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
