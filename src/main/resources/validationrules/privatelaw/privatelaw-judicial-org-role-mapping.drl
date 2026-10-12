@@ -364,8 +364,8 @@ when
                                         "PRIVATELAW Deputy Circuit Judge-Fee-Paid",
                                         "PRIVATELAW Circuit Judge (sitting in retirement)-Fee-Paid",
                                         "PRIVATELAW District Judge (MC) (sitting in retirement)-Fee-Paid",
-                                        "PRIVATELAW District Judge (sitting in retirement)-Fee-Paid"),
-                                        Office.PrivateLaw.TRIBUNAL_JUDGE_FEE_PAID)
+                                        "PRIVATELAW District Judge (sitting in retirement)-Fee-Paid",
+                                        Office.PrivateLaw.TRIBUNAL_JUDGE_FEE_PAID))
   $bk: JudicialBooking(userId == $joh.userId)
 then
    Map<String,JsonNode> attribute = new HashMap<>();
