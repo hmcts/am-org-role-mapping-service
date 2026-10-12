@@ -671,6 +671,7 @@ rule "v2_0_privatelaw_tribunal_judge_fee_paid_joh"
 when
    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.PRIVATELAW_WA_2_0.getValue())
    $jap: JudicialAccessProfile(hasAppointmentCode(Appointment.TRIBUNAL_JUDGE),
+                               isFeePaid(),
                                hasValidAuthorisation(Jurisdiction.PRIVATELAW),
                                hasValidEndDate())
 then
