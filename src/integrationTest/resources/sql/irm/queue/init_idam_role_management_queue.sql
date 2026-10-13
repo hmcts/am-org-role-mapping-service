@@ -1,0 +1,1 @@
+ DELETE FROM idam_role_management_queue;
