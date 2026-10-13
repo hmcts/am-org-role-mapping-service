@@ -242,6 +242,9 @@ class DroolPrivateLawJudicialRoleMappingTest extends DroolBase {
         "HIGH_COURT_JUDGE_SITTING_IN_RETIREMENT2",
         "RECORDER",
     })
+    @EnumSource(value = Appointment.class, names = {
+        "TRIBUNAL_JUDGE"
+    })
     void verifyGenericFeePaidRoles(AppointmentEnum appointment) {
         List<String> expectedRoleNamesWithBooking = List.of(
             RoleName.JUDGE, RoleName.FEE_PAID_JUDGE, RoleName.HMCTS_JUDICIARY
