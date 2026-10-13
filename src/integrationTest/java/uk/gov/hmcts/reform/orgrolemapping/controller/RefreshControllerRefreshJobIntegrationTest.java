@@ -75,7 +75,7 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseAuthorisedTe
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshControllerRefreshJobIntegrationTest.class);
 
-    private static final String AUTHORISED_JOB_SERVICE = S2S_RARB;
+    private static final String AUTHORISED_JOB_SERVICE = "xui_webapp";
     private static final String UNAUTHORISED_JOB_SERVICE = S2S_CCD_GW;
 
     private static final String ROLE_NAME_STCW = "senior-tribunal-caseworker";
@@ -127,7 +127,10 @@ public class RefreshControllerRefreshJobIntegrationTest extends BaseAuthorisedTe
         mockRequestMappingServiceWithCaseworkerStatus(HttpStatus.CREATED);
 
         getRequestSpecification(AUTHORISED_JOB_SERVICE, ACTOR_ID1)
-                .when().post(REFRESH_JOB_URL + "?jobId=" + jobId.toString())
+                .when().request().with()
+                .pathParam("jobId", jobId.toString())
+                .and()
+                .post(REFRESH_JOB_URL)
                 .then().assertThat()
                 .statusCode(HttpStatus.ACCEPTED.value());
 
