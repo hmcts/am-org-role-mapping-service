@@ -60,7 +60,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.controller.RefreshControllerRef
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_CCD_GW;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_ORM;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_RARB;
-import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.ACTOR_ID1;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.OBJECT_MAPPER;
 
 @TestPropertySource(properties = {
