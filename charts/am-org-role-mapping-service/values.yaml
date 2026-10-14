@@ -30,7 +30,7 @@ java:
           alias: AMQP_JRD_SHARED_ACCESS_KEY_VALUE
   environment:
     IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    IDAM_USER_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
+    IDAM_USER_URL: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts
     OPEN_ID_API_BASE_URI: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net/o
     S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     AM_ORG_ROLE_MAPPING_S2S_AUTHORISED_SERVICES: ccd_gw,am_org_role_mapping_service,am_role_assignment_service,xui_webapp,am_role_assignment_refresh_batch
