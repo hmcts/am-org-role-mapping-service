@@ -116,7 +116,7 @@ am-role-assignment-service:
       ROLE_ASSIGNMENT_DB_OPTIONS: "?stringtype=unspecified"
       ROLE_ASSIGNMENT_DB_PASSWORD: "{{ .Values.postgresql.auth.password}}"
       IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-      IDAM_USER_URL: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts
+      IDAM_USER_URL: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net
       OPEN_ID_API_BASE_URI: "https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net/o"
       JWT_ISSUER_VALIDATION_ENABLED: true
       IDAM_SECURITY_ALLOWED_ISSUERS_0: https://idam-web-public.aat.platform.hmcts.net/o
@@ -153,7 +153,7 @@ am-judicial-booking-service:
       JUDICIAL_BOOKING_SERVICE_POSTGRES_PASS: "{{ .Values.postgresql.auth.password}}"
       JUDICIAL_BOOKING_SERVICE_DB_OPTIONS: "?stringtype=unspecified"
       IDAM_S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-      IDAM_USER_URL: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts
+      IDAM_USER_URL: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net
       JWT_ISSUER_VALIDATION_ENABLED: true
       IDAM_SECURITY_ALLOWED_ISSUERS_0: https://idam-web-public.aat.platform.hmcts.net/o
       IDAM_SECURITY_ALLOWED_ISSUERS_1: https://hmcts-access.aat.platform.hmcts.net/o
