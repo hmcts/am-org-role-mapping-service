@@ -58,7 +58,7 @@ withNightlyPipeline(type, product, component) {
 
 // Vars needed for functional and smoke tests run against AKS
 env.IDAM_URL = "https://idam-web-public.aat.platform.hmcts.net"
-env.IDAM_API_URL_BASE = "https://idam-web-public.aat.platform.hmcts.net"
+env.IDAM_API_URL_BASE = "https://idam-api.aat.platform.hmcts.net"
 env.IDAM_TESTING_SUPPORT_URL = "https://idam-testing-support-api.aat.platform.hmcts.net"
 env.IDAM_S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
 env.BEFTA_S2S_CLIENT_ID = "am_org_role_mapping_service"

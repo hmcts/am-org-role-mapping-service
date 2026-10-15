@@ -15,10 +15,10 @@ dependencies:
     repository: 'oci://hmctsprod.azurecr.io/helm'
     condition: orm.servicebus.enabled
   - name: am-role-assignment-service
-    version: 0.0.87
+    version: 0.0.88
     repository: 'oci://hmctsprod.azurecr.io/helm'
     condition: orm.ras.enabled
   - name: am-judicial-booking-service
-    version: 0.0.68
+    version: 0.0.69
     repository: 'oci://hmctsprod.azurecr.io/helm'
     condition: orm.jbs.enabled
