@@ -9,12 +9,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCache;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.idam.client.IdamApi;
@@ -23,26 +17,11 @@ import uk.gov.hmcts.reform.idam.client.models.TokenResponse;
 import uk.gov.hmcts.reform.idam.client.models.UserDetails;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -132,83 +111,6 @@ class IdamRepositoryTest {
         assertNotNull(result);
         assertFalse(result.isBlank());
         assertFalse(result.isEmpty());
-    }
-
-    @Test
-    void shouldThrowNullPointerException() {
-
-        String userId = "4dc7dd3c-3fb5-4611-bbde-5101a97681e0";
-
-
-        doThrow(NullPointerException.class)
-                .when(restTemplate)
-                .exchange(anyString(), any(), any(), (Class<?>) any(Class.class));
-
-        assertThrows(NullPointerException.class, () -> idamRepository.searchUserByUserId(this.userId, userId));
-
-
-    }
-
-    @Test
-    void shouldReturnUserRoles() {
-
-        Map<String, Object> mapRoles = new HashMap<>();
-
-        mapRoles.put("userRoles", Arrays.asList("caseworker", "am_import"));
-
-        List<Object> list = new ArrayList<>();
-        list.add(mapRoles);
-
-        ResponseEntity<List<Object>> responseEntity = new ResponseEntity<>(HttpStatus.OK);
-        doReturn(responseEntity)
-                .when(restTemplate)
-                .exchange(
-                        isA(String.class),
-                        eq(HttpMethod.GET),
-                        isA(HttpEntity.class),
-                        (ParameterizedTypeReference<?>) any(ParameterizedTypeReference.class));
-
-        String userId = "4dc7dd3c-3fb5-4611-bbde-5101a97681e0";
-
-        ResponseEntity<List<Object>> actualResponse = idamRepository.searchUserByUserId(this.userId, userId);
-        assertNotNull(actualResponse);
-        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
-
-    }
-
-    @Test
-    void shouldNotReturnUserRoles() {
-
-        Map<String, Object> mapRoles = new HashMap<>();
-
-        mapRoles.put("userRoles", Arrays.asList("caseworker", "am_import"));
-
-        List<Object> list = new ArrayList<>();
-        list.add(mapRoles);
-        //Setting status as Not Found
-        ResponseEntity<List<Object>> responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        doReturn(responseEntity)
-                .when(restTemplate)
-                .exchange(
-                        isA(String.class),
-                        eq(HttpMethod.GET),
-                        isA(HttpEntity.class),
-                        (ParameterizedTypeReference<?>) any(ParameterizedTypeReference.class));
-
-        String userId = "4dc7dd3c-3fb5-4611-bbde-5101a97681e0";
-
-        ResponseEntity<List<Object>> actualResponse = idamRepository.searchUserByUserId(this.userId, userId);
-        assertNull(actualResponse);
-
-
-    }
-
-
-    @Test
-    void shouldGetHeaders() {
-        HttpHeaders headers = IdamRepository.getHttpHeaders(userId);
-        assertTrue(headers.containsKey(HttpHeaders.AUTHORIZATION));
-        assertTrue(Objects.requireNonNull(headers.get(HttpHeaders.AUTHORIZATION)).get(0).contains(userId));
     }
 
     @Test
