@@ -1,6 +1,6 @@
 {
   "_guid_": "S-002",
-  "title": "must successfully create org role mapping for a multiple user having single role",
+  "title": "must successfully create org role mapping against multiple users for Senior Tribunal Case Worker",
   "_extends_": "F-001_Test_Data_Base",
   "specs": [
     "contains the actorIds of the user just published"

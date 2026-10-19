@@ -1,0 +1,64 @@
+{
+  "_guid_": "S-005__VerifyCaseworkerDetails",
+  "_extends_": "FetchCaseworkersById__PositiveResponse_Base",
+
+  "specs": [
+    "to verify caseworker details for CTSC Team Leader"
+  ],
+
+  "request": {
+    "body": {
+      "userIds": [
+        "${[scenarioContext][parentContext][childContexts][S-005_DeleteDataForRoleAssignments01][testData][request][body][userIds][0]}"
+      ]
+    }
+  },
+
+  "expectedResponse": {
+    "body": {
+      "arrayInMap": [
+        {
+          "id": "${[scenarioContext][parentContext][childContexts][S-005_DeleteDataForRoleAssignments01][testData][request][body][userIds][0]}",
+
+          "case_allocator": "Y",
+          "task_supervisor": "Y",
+
+          "first_name": "[[ANYTHING_PRESENT]]",
+          "last_name": "[[ANYTHING_PRESENT]]",
+          "region_id": "[[ANY_INTEGER_NOT_NULLABLE]]",
+          "user_type": "[[ANYTHING_PRESENT]]",
+          "user_type_id": "[[ANY_INTEGER_NOT_NULLABLE]]",
+          "suspended": "false",
+          "staff_admin": "N",
+          "created_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+          "last_updated_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+          "email_id": "[[ANYTHING_PRESENT]]",
+          "region": "[[ANYTHING_PRESENT]]",
+
+          "role": [
+            {
+              "_extends_": "CaseworkerRole_09_CTSC_TL"
+            }
+          ],
+
+          "work_area": [
+            {
+              "_extends_": "WorkArea_BFA1_IA"
+            }
+          ],
+          "skills": [],
+          "base_location": [
+            {
+              "created_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+              "last_updated_time": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+              "location_id": "[[ANY_INTEGER_NOT_NULLABLE]]",
+              "location": "[[ANYTHING_PRESENT]]",
+              "is_primary": false
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+}

@@ -1,6 +1,6 @@
 {
   "_guid_": "S-012",
-  "title": "must successfully refresh judicial user org roles for a job",
+  "title": "must successfully refresh judicial user org roles on a job for Tribunal Member - fee paid appointment",
   "_extends_": "F-002_Test_Data_Base",
 
   "specs": [
