@@ -26,6 +26,7 @@ Feature: F-011 : Verify CRD and JRD service bus messages
   Scenario: must successfully create judicial role mapping for Tribunal Member - Fee Paid appointment
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-213_DeleteDataForRoleAssignments],
+    And a successful call [to snapshot judicial details] as in [S-213__SnapshotJudicialDetails],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-213_PushMessageToJRDService],
     And the request [contains the actorIds of the user just published],
     And a wait time of [5] seconds [to allow for service bus to process the request]
