@@ -1,0 +1,2 @@
+INSERT INTO idam_role_management_queue (user_id, user_type, data, published_as, active, last_updated, last_published, retry, retry_after)
+VALUES ('nintyone-day-norole-user-id', 'JUDICIAL',  '{"email_id": "nintyoneday@norole.com", "roles": []}', 'USER',false, NOW() - (interval '91 days'),  NOW() , 0, NOW() - (interval '1 days'));

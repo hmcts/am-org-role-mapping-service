@@ -106,4 +106,24 @@ public class IrmController {
         ProcessMonitorDto processMonitorDto = idamRoleMappingService.inviteUser(email, roleNames);
         return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
     }
+
+    @GetMapping(
+        path = "/am/testing-support/irm/deleteInactiveQueueEntries"
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(summary = "IRM Delete Inactive Queue Entries",
+        security =
+        {
+            @SecurityRequirement(name = AUTHORIZATION),
+            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+        })
+    @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content = @Content(schema = @Schema(implementation = Object.class))
+    )
+    public ResponseEntity<Object> deleteInactiveQueueEntries() {
+        ProcessMonitorDto processMonitorDto = irmScheduler.deleteInactiveQueueEntries();
+        return ResponseEntity.status(HttpStatus.OK).body(processMonitorDto);
+    }
 }
