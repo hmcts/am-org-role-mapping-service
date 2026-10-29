@@ -24,6 +24,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder
 public class JudicialAccessProfile implements Serializable, UserAccessProfile {
 
     private String userId;
+    private String emailId;
+    private String activeFlag;
     private ZonedDateTime beginTime;
     private ZonedDateTime endTime;
     private List<String> ticketCodes;
