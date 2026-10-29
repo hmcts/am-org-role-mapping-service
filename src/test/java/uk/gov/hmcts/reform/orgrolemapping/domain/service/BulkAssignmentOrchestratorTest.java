@@ -31,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_SJ;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.AssignmentRequestBuilder.ROLE_NAME_TCW;
 
@@ -181,7 +182,8 @@ class BulkAssignmentOrchestratorTest {
     @Test
     void createBulkAssignmentsRequestForJudicial_clientNotAvailable() {
         // GIVEN
-        doThrow(FeignException.NotFound.class).when(retrieveDataService)
+        FeignException.NotFound mockFeignException = mock(FeignException.NotFound.class);
+        doThrow(mockFeignException).when(retrieveDataService)
                 .retrieveProfiles(any(), any());
 
         UserRequest request = TestDataBuilder.buildUserRequest();
@@ -189,6 +191,8 @@ class BulkAssignmentOrchestratorTest {
         // WHEN / THEN
         assertThrows(ResourceNotFoundException.class, () ->
                 sut.createBulkAssignmentsRequest(request, UserType.JUDICIAL));
+        // Verify that the content is not logged during the exception being thrown
+        verify(mockFeignException, Mockito.times(0)).contentUTF8();
     }
 
     @SuppressWarnings("unchecked")
