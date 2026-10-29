@@ -1,0 +1,41 @@
+{
+  "_guid_": "S-022.03",
+  "title": "trigger IRM add user1 to queue",
+  "_extends_": "F-022-Base-Root",
+  "specs": [
+    "an active IDAM profile with full permissions"
+  ],
+ "method": "PUT",
+  "uri": "/am/testing-support/irm/addQueueEntity",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Add IDAM user to queue",
+
+  "request": {
+    "queryParams": {
+      "userType": "JUDICIAL",
+      "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575e",
+      "email": "S02203@test.com",
+      "roleNames": "caseworker-ras-validation"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "userId": "5bd4f3a8-b6a3-4f6d-b5f9-00520015575e",
+      "userType": "JUDICIAL",
+      "data" : {
+        "email_id" : "S02203@test.com",
+        "active_flag" : "Y",
+        "deleted_flag" : "N",
+        "roles" : [ {
+          "role_name" : "caseworker-ras-validation"
+        } ]
+      },
+      "lastUpdated": "[[ANY_TIMESTAMP_NOT_NULLABLE]]",
+      "active": true,
+      "retry": 0,
+      "retryAfter": "[[ANY_TIMESTAMP_NULLABLE]]"
+    }
+  }
+}

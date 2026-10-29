@@ -1,0 +1,22 @@
+{
+  "_guid_": "MakeIrmQueueActive__Base",
+
+  "productName": "Idam Role Management",
+  "operationName": "IRM Queue makeIrmQueueActive",
+
+  "specs": [],
+
+  "method": "POST",
+  "uri": "/am/testing-support/prm/makeQueueEntityActive",
+
+  "request": {
+    "headers": {
+      "_extends_": "Common_Request_Headers"
+    },
+    "queryParams": {
+      "userId": "OVERRIDE",
+      "active": "OVERRIDE"
+    }
+  }
+
+}
