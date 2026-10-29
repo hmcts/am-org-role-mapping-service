@@ -11,7 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.TestPropertySource;
+import uk.gov.hmcts.reform.orgrolemapping.controller.utils.TestAuthenticationUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WireMockStubs;
+
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_ORM;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {"testing.support.enabled=true"})
@@ -22,12 +25,28 @@ public abstract class BaseAuthorisedTestIntegration extends BaseTestIntegration 
     protected static final String BASEURL = "http://localhost";
     protected static final String REFRESH_URL = "/am/role-mapping/professional/refresh";
 
+    protected static final String ISSUER = "http://localhost:5062/o";
     protected static final String ACTOR_ID1 = "631d322c-eea7-4d53-bd92-e6ec51bcb390";
     protected static final String ACTOR_ID2 = "eccd490f-a40c-4a19-b063-7b107bc6480p";
     private static final long WAIT_TIME_MS = 1000;
 
     @LocalServerPort
     private int serverPort;
+
+    protected RequestSpecification getRequestSpecification()
+            throws Exception {
+        return getRequestSpecification(S2S_ORM, ACTOR_ID1);
+    }
+
+    protected RequestSpecification getRequestSpecification(String serviceName, String actorId)
+            throws Exception {
+        resetWiremockServer(serviceName, actorId);
+        return SerenityRest.given()
+                .relaxedHTTPSValidation()
+                .baseUri(BASEURL)
+                .port(serverPort)
+                .headers(TestAuthenticationUtils.getJwtHeaders(ISSUER, false));
+    }
 
     protected RequestSpecification getRequestSpecification(String serviceName,
                                                            String actorId,
