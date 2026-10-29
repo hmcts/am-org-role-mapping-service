@@ -14,6 +14,8 @@ idam:
     microservice: am_org_role_mapping_service
     url: http://localhost:${wiremock.server.port:4502}
   api.url: http://localhost:${wiremock.server.port:5000}
+  security:
+    issuerValidation: ${JWT_ISSUER_VALIDATION_ENABLED:false}
 
 feign:
   client:
