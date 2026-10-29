@@ -9,7 +9,7 @@ properties(
   ]
 )
 
-@Library("Infrastructure")
+@Library("Infrastructure@2.5.4")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.HealthChecker
@@ -59,8 +59,7 @@ def secrets = [
 def branchesToSync = ['demo', 'ithc', 'perftest']
 
 // Vars needed for functional and smoke tests run against AKS
-env.IDAM_URL = "https://idam-api.aat.platform.hmcts.net"
-env.IDAM_API_URL_BASE = "https://idam-api.aat.platform.hmcts.net"
+env.IDAM_API_URL_BASE = "https://idam-web-public.aat.platform.hmcts.net"
 env.IDAM_TESTING_SUPPORT_URL = "https://idam-testing-support-api.aat.platform.hmcts.net"
 env.IDAM_S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
 env.BEFTA_S2S_CLIENT_ID = "am_org_role_mapping_service"
@@ -69,10 +68,10 @@ env.BEFTA_RETRY_STATUS_CODES = "502,503,504"
 env.BEFTA_RETRY_MAX_DELAY = "1000"
 env.OAUTH2_REDIRECT_URI = "http://am-role-assignment-service-aat.service.core-compute-aat.internal/oauth2redirect"
 env.OAUTH2_ACCESS_TOKEN_TYPE = "OIDC"
+env.OAUTH2_SCOPE_VARIABLES = "openid profile roles authorities"
 env.BEFTA_RESPONSE_HEADER_CHECK_POLICY = "JUST_WARN"
 env.S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
 env.S2S_URL_BASE = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-env.OAUTH2_SCOPE_VARIABLES = "openid%20profile%20roles%20authorities"
 env.OPENID_SCOPE_VARIABLES = "openid+profile+roles+authorities"
 env.ORG_ROLE_MAPPING_IDAM_ADMIN_USERID = "orm.admin@hmcts.NET"
 env.MICROSERVICE_NAME = "am_org_role_mapping_service"
@@ -254,6 +253,29 @@ withPipeline(type, product, component) {
   afterAlways('smoketest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/site/serenity/**'
   }
+
+    afterAlways('smoketest:preview') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+        publishHTML target: [
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "target/site/serenity/",
+                reportFiles          : "index.html",
+                reportName           : "Serenity Test Report"
+        ]
+    }
+    afterAlways('smoketest:aat') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+        publishHTML target: [
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "target/site/serenity/",
+                reportFiles          : "index.html",
+                reportName           : "Serenity Test Report"
+        ]
+    }
 
   afterAlways('pact-consumer-tests') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/tests/**/*'

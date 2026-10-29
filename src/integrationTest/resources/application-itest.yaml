@@ -22,6 +22,9 @@ idam:
     irm:
       clientId: am_org_role_mapping
       secret: ${ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET:}
+  security:
+    issuerValidation: ${JWT_ISSUER_VALIDATION_ENABLED:false}
+
 feign:
   client:
     config:
