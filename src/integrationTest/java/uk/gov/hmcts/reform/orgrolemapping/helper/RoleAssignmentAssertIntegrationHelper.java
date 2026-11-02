@@ -3,8 +3,6 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.IrmQueueController;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
@@ -19,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.BaseTest.WIRE_MOCK_SERVER;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.IrmQueueController.FIND_QUEUE_ENTITY;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.RAS_CREATE_ASSIGNMENTS_URL;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.AM_ORG_ROLE_MAPPING_SERVICE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.IDAM_ID;
@@ -36,8 +36,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.MAPPER;
 @Slf4j
 public class RoleAssignmentAssertIntegrationHelper {
 
-    public static void assertWireMockAssignmentRequests(IrmQueueController irmQueueController,
-                                                        List<AssignmentRequest> expectedAssignmentRequests,
+    public static void assertWireMockAssignmentRequests(List<AssignmentRequest> expectedAssignmentRequests,
                                                         List<TestScenario> testScenarios,
                                                         Map<String, Boolean> featureFlags)
         throws IOException {
@@ -45,6 +44,8 @@ public class RoleAssignmentAssertIntegrationHelper {
         Map<String, AssignmentRequest> requestMap = getMapOfRasRequests();
 
         assertEquals(expectedAssignmentRequests.size(), requestMap.size(), "Count of scenarios");
+
+        Map<String, IdamRoleManagementQueueEntity> irmRequestMap = getMapOfIrmRequests();
 
         for (AssignmentRequest expectedAssignmentRequest: expectedAssignmentRequests) {
 
@@ -86,7 +87,17 @@ public class RoleAssignmentAssertIntegrationHelper {
                 "RasRequest-Actual"
             );
 
-            writeIdamQueueRequestJsonToTestScenarioOutput(irmQueueController, testScenario);
+            // find the actual request from wiremock
+            IdamRoleManagementQueueEntity irmQueueRequest =
+                    irmRequestMap.get(expectedAssignmentRequest.getRequest().getAuthenticatedUserId());
+
+            if (irmQueueRequest != null) {
+                writeJsonToTestScenarioOutput(
+                        writeValueAsPrettyJson(irmQueueRequest),
+                        testScenario,
+                        "IrmQueueRequest-Actual"
+                );
+            }
 
             try {
                 assertNotNull(actualAssignmentRequest, "AssignmentRequest");
@@ -98,21 +109,6 @@ public class RoleAssignmentAssertIntegrationHelper {
                 throw ex;
             }
 
-        }
-    }
-
-    private static void writeIdamQueueRequestJsonToTestScenarioOutput(IrmQueueController irmQueueController,
-                                                                      TestScenario testScenario)
-            throws JsonProcessingException {
-        String idamId = testScenario.getReplaceMap().get(IDAM_ID);
-        ResponseEntity<IdamRoleManagementQueueEntity> irmQueueEntityResponse =
-                irmQueueController.findQueueEntity(idamId);
-        if (irmQueueEntityResponse.getStatusCode().is2xxSuccessful()) {
-            writeJsonToTestScenarioOutput(
-                    writeValueAsPrettyJson(irmQueueEntityResponse.getBody()),
-                    testScenario,
-                    "IrmQueueRequest-Actual"
-            );
         }
     }
 
@@ -227,6 +223,18 @@ public class RoleAssignmentAssertIntegrationHelper {
         }
 
         return roleAssignmentMap;
+    }
+
+    public static Map<String, IdamRoleManagementQueueEntity> getMapOfIrmRequests()
+            throws IOException {
+        Map<String, IdamRoleManagementQueueEntity> requestMap = new HashMap<>();
+        var allLoggedRequests = WIRE_MOCK_SERVER.findAll(getRequestedFor(urlEqualTo(FIND_QUEUE_ENTITY)));
+        for (LoggedRequest allLoggedRequest : allLoggedRequests) {
+            IdamRoleManagementQueueEntity request
+                    = MAPPER.readValue(allLoggedRequest.getBody(), IdamRoleManagementQueueEntity.class);
+            requestMap.put(request.getUserId(), request);
+        }
+        return requestMap;
     }
 
     public static Map<String, AssignmentRequest> getMapOfRasRequests() throws IOException {
