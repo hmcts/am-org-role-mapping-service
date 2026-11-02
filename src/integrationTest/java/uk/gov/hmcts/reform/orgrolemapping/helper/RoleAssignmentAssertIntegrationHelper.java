@@ -3,6 +3,9 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.IrmQueueController;
+import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 
@@ -33,7 +36,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.MAPPER;
 @Slf4j
 public class RoleAssignmentAssertIntegrationHelper {
 
-    public static void assertWireMockAssignmentRequests(List<AssignmentRequest> expectedAssignmentRequests,
+    public static void assertWireMockAssignmentRequests(IrmQueueController irmQueueController,
+                                                        List<AssignmentRequest> expectedAssignmentRequests,
                                                         List<TestScenario> testScenarios,
                                                         Map<String, Boolean> featureFlags)
         throws IOException {
@@ -80,6 +84,15 @@ public class RoleAssignmentAssertIntegrationHelper {
                 writeValueAsPrettyJson(actualAssignmentRequest),
                 testScenario,
                 "RasRequest-Actual"
+            );
+
+            String idamId = testScenario.getReplaceMap().get(IDAM_ID);
+            ResponseEntity<IdamRoleManagementQueueEntity> irmQueueEntityResponse =
+                    irmQueueController.findQueueEntity(idamId);
+            writeJsonToTestScenarioOutput(
+                    writeValueAsPrettyJson(irmQueueEntityResponse.getBody()),
+                    testScenario,
+                    "IrmQueue-Actual"
             );
 
             try {

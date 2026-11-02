@@ -8,7 +8,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.IrmQueueController;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArguments;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
@@ -41,6 +43,9 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
     public static final String DROOL_JUDICIAL_TEST_OUTPUT_PATH = DROOL_TEST_OUTPUT_PATH + "Judicial/";
 
     private static final String DISPLAY_NAME = "#{index} - {0}";
+
+    @Autowired
+    private IrmQueueController irmQueueController;
 
     static Stream<Arguments> getTestArguments() {
         List<DroolJudicialTestArguments> arguments = new ArrayList<>();
@@ -171,7 +176,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
         writeFeatureFlagsToOutput(testArguments, featureFlags);
 
         // THEN
-        assertWireMockAssignmentRequests(expectedAssignmentRequests, testScenarios, featureFlags);
+        assertWireMockAssignmentRequests(irmQueueController, expectedAssignmentRequests, testScenarios, featureFlags);
     }
 
     private List<AssignmentRequest> getAssignmentRequestsFromFile(String fileName,
