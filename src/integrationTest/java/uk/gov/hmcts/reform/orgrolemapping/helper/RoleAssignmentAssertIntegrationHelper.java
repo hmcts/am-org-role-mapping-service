@@ -86,14 +86,7 @@ public class RoleAssignmentAssertIntegrationHelper {
                 "RasRequest-Actual"
             );
 
-            String idamId = testScenario.getReplaceMap().get(IDAM_ID);
-            ResponseEntity<IdamRoleManagementQueueEntity> irmQueueEntityResponse =
-                    irmQueueController.findQueueEntity(idamId);
-            writeJsonToTestScenarioOutput(
-                    writeValueAsPrettyJson(irmQueueEntityResponse.getBody()),
-                    testScenario,
-                    "IrmQueue-Actual"
-            );
+            writeIdamQueueRequestJsonToTestScenarioOutput(irmQueueController, testScenario);
 
             try {
                 assertNotNull(actualAssignmentRequest, "AssignmentRequest");
@@ -105,6 +98,21 @@ public class RoleAssignmentAssertIntegrationHelper {
                 throw ex;
             }
 
+        }
+    }
+
+    private static void writeIdamQueueRequestJsonToTestScenarioOutput(IrmQueueController irmQueueController,
+                                                                      TestScenario testScenario)
+            throws JsonProcessingException {
+        String idamId = testScenario.getReplaceMap().get(IDAM_ID);
+        ResponseEntity<IdamRoleManagementQueueEntity> irmQueueEntityResponse =
+                irmQueueController.findQueueEntity(idamId);
+        if (irmQueueEntityResponse.getStatusCode().is2xxSuccessful()) {
+            writeJsonToTestScenarioOutput(
+                    writeValueAsPrettyJson(irmQueueEntityResponse.getBody()),
+                    testScenario,
+                    "IrmQueueRequest-Actual"
+            );
         }
     }
 
