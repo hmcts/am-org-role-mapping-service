@@ -103,6 +103,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
             ),
             testArguments.getJrdResponseFileName(),
             testArguments.getRasRequestFileNameWithBooking(), // NB: with booking
+            testArguments.getIrmQueueFileName(),
             includeBookingScenario,
             testArguments
         );
@@ -124,6 +125,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
             ),
             testArguments.getJrdResponseFileName(),
             testArguments.getRasRequestFileNameWithoutBooking(), // NB: without booking
+            testArguments.getIrmQueueFileName(),
             includeBookingScenario,
             testArguments
         );
@@ -139,6 +141,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
             DroolJudicialTestArgumentsHelper.generateJudicialNegativePathScenarios(testArguments),
             testArguments.getJrdResponseFileName(),
             EMPTY_ROLE_ASSIGNMENT_TEMPLATE, // negative test so always expect empty RAS request
+            testArguments.getIrmQueueFileName(),
             true, // NB: include valid booking to prove it is ignored when other values are expired
             testArguments
         );
@@ -148,6 +151,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
     private void assertCreateOrmMappingApiForTestScenarios(List<TestScenario> testScenarios,
                                                            String jrdResponseFileName,
                                                            String rasRequestFileName,
+                                                           String irmQueueFilename,
                                                            boolean includeBookings,
                                                            DroolJudicialTestArguments testArguments) throws Exception {
         writeTestArgumentsToOutput(testArguments);

@@ -21,6 +21,7 @@ public class DroolJudicialTestArguments {
     private String jrdResponseFileName;
     private String rasRequestFileNameWithoutBooking;
     private String rasRequestFileNameWithBooking;
+    private String irmQueueFileName;
 
     // flag to use additional test scenarios for Additional Roles, i.e. tests adjusting Additional Role End Dates
     private boolean additionalRoleTest;
@@ -52,6 +53,7 @@ public class DroolJudicialTestArguments {
             .jrdResponseFileName(this.jrdResponseFileName)
             .rasRequestFileNameWithoutBooking(this.rasRequestFileNameWithoutBooking)
             .rasRequestFileNameWithBooking(this.rasRequestFileNameWithBooking)
+            .irmQueueFileName(this.irmQueueFileName)
             .additionalRoleTest(this.additionalRoleTest)
             .additionalRoleExpiredFallbackFileName(this.additionalRoleExpiredFallbackFileName)
             .authorisationExpiredFallbackFileName(this.authorisationExpiredFallbackFileName)
