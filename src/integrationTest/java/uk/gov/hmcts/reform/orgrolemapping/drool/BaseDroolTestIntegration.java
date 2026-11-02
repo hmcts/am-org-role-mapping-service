@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,10 +19,12 @@ import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfigRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
@@ -37,10 +40,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.FeatureFlagController.ALL_FEATURE_FLAG_STATUSES_URI;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.IrmQueueController.FIND_QUEUE_ENTITY;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.OrgMappingController.CREATE_ORG_MAPPING_URI;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_XUI;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.getHttpHeaders;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.TEST_ENVIRONMENT;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.EMAIL_ID;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.IDAM_ID;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.cloneAndExpandReplaceMap;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.getSidamIdsList;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.writeJsonToTestScenarioOutput;
@@ -176,6 +182,26 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
                     .userIds(getSidamIdsList(testScenarios)).build())))
             .andExpect(status().is(200))
             .andReturn();
+    }
+
+    @SuppressWarnings({
+        "SameParameterValue" // currently only triggered in Judicial tests
+    })
+    protected void triggerIrmMappingApi(List<TestScenario> testScenarios) throws Exception {
+        for (TestScenario testScenario : testScenarios) {
+            mockMvc.perform(get(FIND_QUEUE_ENTITY)
+                .contentType(JSON_CONTENT_TYPE)
+                .headers(getHttpHeaders(S2S_XUI))
+                .param("userId", testScenario.getReplaceMap().get(IDAM_ID))
+                .content(mapper.writeValueAsBytes(IdamRoleManagementQueueEntity.builder()
+                    .userId(testScenario.getReplaceMap().get(IDAM_ID))
+                    .data(IdamRoleData.builder()
+                        .emailId(testScenario.getReplaceMap().get(EMAIL_ID))
+                        .build())
+                    .build())))
+                .andExpect(status().is(HttpStatus.OK.value()))
+                .andReturn();
+        }
     }
 
     @SuppressWarnings({

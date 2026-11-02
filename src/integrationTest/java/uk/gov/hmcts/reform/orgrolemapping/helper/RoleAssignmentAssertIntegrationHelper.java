@@ -89,7 +89,7 @@ public class RoleAssignmentAssertIntegrationHelper {
 
             // find the actual request from wiremock
             IdamRoleManagementQueueEntity irmQueueRequest =
-                    irmRequestMap.get(expectedAssignmentRequest.getRequest().getAuthenticatedUserId());
+                    irmRequestMap.get(testScenario.getReplaceMap().get(IDAM_ID));
 
             if (irmQueueRequest != null) {
                 writeJsonToTestScenarioOutput(

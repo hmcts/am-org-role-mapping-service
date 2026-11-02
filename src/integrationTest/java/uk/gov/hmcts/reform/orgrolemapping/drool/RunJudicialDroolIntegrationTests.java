@@ -148,6 +148,9 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
     }
 
+    @SuppressWarnings({
+        "VariableDeclarationUsageDistance"
+    })
     private void assertCreateOrmMappingApiForTestScenarios(List<TestScenario> testScenarios,
                                                            String jrdResponseFileName,
                                                            String rasRequestFileName,
@@ -169,6 +172,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
         triggerCreateOrmMappingApi(UserType.JUDICIAL, testScenarios);
         Map<String, Boolean> featureFlags = triggerFeatureFlagApi();
         writeFeatureFlagsToOutput(testArguments, featureFlags);
+        triggerIrmMappingApi(testScenarios);
 
         // THEN
         assertWireMockAssignmentRequests(expectedAssignmentRequests, testScenarios, featureFlags);
