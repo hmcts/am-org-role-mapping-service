@@ -51,7 +51,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
         List<DroolJudicialTestArguments> arguments = new ArrayList<>();
 
         arguments.addAll(BasicJudicialIT.getTestArguments());
-        /*
+
         arguments.addAll(CivilJudicialIT.getTestArguments("AAA6"));
         arguments.addAll(CivilJudicialIT.getTestArguments("AAA7"));
 
@@ -68,7 +68,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
         arguments.addAll(PublicLawJudicialIT.getTestArguments());
 
         arguments.addAll(StcicJudicialIT.getTestArguments());
-        */
+
         return arguments.stream()
             .map(DroolJudicialTestArguments::toArguments);
     }
