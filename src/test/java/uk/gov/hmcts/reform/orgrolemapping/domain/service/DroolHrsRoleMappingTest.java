@@ -32,7 +32,7 @@ class DroolHrsRoleMappingTest extends DroolBase {
         return Stream.of(
             Arguments.of(
                 JobTitle.HRS_TEAM_LEADER,
-                null,
+                List.of(),
                 List.of(
                     RoleName.HRS_TEAM_LEADER,
                     RoleName.HRS_SHARER,
@@ -125,6 +125,11 @@ class DroolHrsRoleMappingTest extends DroolBase {
             assertEquals(Classification.PUBLIC, role.getClassification());
             assertEquals(GrantType.STANDARD, role.getGrantType());
             assertFalse(role.isReadOnly());
+            if (jobTitle == JobTitle.HRS_SHARER || jobTitle == JobTitle.HRS_LISTENER) {
+                assertNotNull(role.getAuthorisations());
+            } else {
+                assertNull(role.getAuthorisations());
+            }
         });
     }
 }
