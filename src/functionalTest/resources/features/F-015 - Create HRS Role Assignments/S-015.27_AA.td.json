@@ -1,10 +1,10 @@
 {
   "_guid_": "S-015.27_AA",
-  "title": "must successfully create org role mapping for HRS Sharer with HRS skills",
+  "title": "must not create org role mapping for HRS Sharer with HRS skills but flag off",
   "_extends_": "F-015_Test_Data_Base",
   "specs": [
     "contains the actorId of the user just published who has HRS Sharer role with HRS skills",
-    "contains the HRS Sharer role-assignment"
+    "contains no HRS role-assignments"
   ],
  "method": "GET",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
@@ -16,30 +16,7 @@
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
-      "roleAssignmentResponse": [
-        {
-          "id" : "[[ANYTHING_PRESENT]]",
-          "actorIdType" : "IDAM",
-          "actorId" : "${[scenarioContext][testData][request][pathVariables][actorId]}",
-          "roleType" : "ORGANISATION",
-          "roleName" : "hrs-sharer",
-          "classification" : "PUBLIC",
-          "grantType" : "STANDARD",
-          "roleCategory" : "ADMIN",
-          "readOnly" : false,
-          "created" : "[[ANYTHING_PRESENT]]",
-          "attributes" : {
-            "substantive" : "Y",
-            "primaryLocation" : "[[ANYTHING_PRESENT]]",
-            "jurisdiction" : "HRS"
-          },
-          "authorisations": [
-            "SKILL:HRS:AA",
-            "SKILL:AAA7:DAMAGES_CCMC_CMC_MANAGEMENT",
-            "SKILL:AAA6:MONEY_CLAIMS_CCMC_CMC_MANAGEMENT"
-          ]
-        }
-      ]
+      "roleAssignmentResponse": []
     }
   }
 }
