@@ -53,10 +53,10 @@
               "_extends_": "Skill_HRS_AA"
             },
             {
-              "_extends_": "Skill_AAA6_CIVIL_MULTI_TRACK"
+              "_extends_": "Skill_AAA6_CIVIL_CCMC"
             },
             {
-              "_extends_": "Skill_AAA7_CIVIL_MULTI_TRACK"
+              "_extends_": "Skill_AAA7_CIVIL_CCMC"
             }
           ]
         }
