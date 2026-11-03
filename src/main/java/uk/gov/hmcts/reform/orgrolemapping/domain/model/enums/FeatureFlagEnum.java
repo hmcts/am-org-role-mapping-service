@@ -76,6 +76,7 @@ public enum FeatureFlagEnum {
     PROBATE_WA_1_0("probate_wa_1_0"),
     FR_WA_1_0("fr_wa_1_0"),
     HRS_1_0("hrs_1_0"),
+    HRS_1_1("hrs_1_1"),
     POSSESSIONS_WA_1_0("possessions_wa_1_0");
 
 
