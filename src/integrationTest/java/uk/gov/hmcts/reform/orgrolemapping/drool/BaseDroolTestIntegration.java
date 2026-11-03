@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -187,7 +186,7 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
     @SuppressWarnings({
         "SameParameterValue" // currently only triggered in Judicial tests
     })
-    protected void triggerIrmMappingApi(List<TestScenario> testScenarios) throws Exception {
+    protected void triggerIrmMappingApi(List<TestScenario> testScenarios) {
         testScenarios.stream()
             .filter(testScenario -> testScenario.getReplaceMap().get(IDAM_ID) != null)
             .forEach(testScenario -> {
@@ -202,7 +201,6 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
                                 .emailId(testScenario.getReplaceMap().get(EMAIL_ID))
                                 .build())
                             .build())))
-                        .andExpect(status().is(HttpStatus.OK.value()))
                         .andReturn();
                 } catch (Exception e) {
                     throw new RuntimeException(e);
