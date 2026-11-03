@@ -33,24 +33,56 @@ class DroolHrsRoleMappingTest extends DroolBase {
         return Stream.of(
             Arguments.of(
                 JobTitle.HRS_TEAM_LEADER,
+                null,
                 List.of(
                     RoleName.HRS_TEAM_LEADER,
                     RoleName.HRS_SHARER,
                     RoleName.HRS_LISTENER
                 )
+            ),
+            Arguments.of(
+                JobTitle.HRS_SHARER,
+                List.of("SKILL:HRS:AA"),
+                List.of(
+                    RoleName.HRS_SHARER
+                )
+            ),
+            Arguments.of(
+                JobTitle.HRS_SHARER,
+                List.of("SKILL:ABA2:ManageScannedDocuments"),
+                List.of() //Empty as no HRS skill code
+            ),
+            Arguments.of(
+                JobTitle.HRS_LISTENER,
+                List.of("SKILL:HRS:AA"),
+                List.of(
+                    RoleName.HRS_LISTENER
+                )
+            ),
+            Arguments.of(
+                JobTitle.HRS_LISTENER,
+                List.of("SKILL:ABA2:ManageScannedDocuments"),
+                List.of() //Empty as no HRS skill code
             )
         );
     }
 
     @ParameterizedTest
-    @MethodSource("hrsAdminScenarios")
-    void shouldReturnHrsAdminMappings(JobTitle jobTitle, List<String> expectedRoles) {
+    @MethodSource({
+        "hrsAdminScenarios"
+    })
+    void shouldReturnHrsRoleMappings(JobTitle jobTitle, List<String> skills, List<String> expectedRoles
+    ) {
+        assertHrsMappings(jobTitle, skills, expectedRoles);
+    }
 
+    private void assertHrsMappings(JobTitle jobTitle, List<String> skills, List<String> expectedRoles) {
         judicialAccessProfiles.clear();
         judicialOfficeHolders.clear();
 
         CaseWorkerAccessProfile cap = UserAccessProfileBuilder.buildUserAccessProfileForRoleId2();
-        cap.setServiceCode(Jurisdiction.HRS.getServiceCodes().get(0)); // NB: only 1 for HRS
+
+        cap.setServiceCode(Jurisdiction.HRS.getServiceCodes().get(0));// NB: only 1 for HRS
         cap.setSuspended(false);
         cap.setRoleId(jobTitle.getRoleId());
         cap.setRoleName(jobTitle.getRoleName());
@@ -58,39 +90,42 @@ class DroolHrsRoleMappingTest extends DroolBase {
         cap.setCaseAllocatorFlag("N");
         cap.setRegionId("LDN");
 
+        cap.setSkillCodes(skills);
+
         allProfiles.add(cap);
 
-        // Execute Kie session
         List<RoleAssignment> roleAssignments =
-            buildExecuteKieSession(getAllFeatureFlagsToggleByJurisdiction(Jurisdiction.HRS.getName(), true));
+            buildExecuteKieSession(
+                getAllFeatureFlagsToggleByJurisdiction(
+                    Jurisdiction.HRS.getName(),
+                    true
+                )
+            );
 
-        // assertion
-        assertFalse(roleAssignments.isEmpty());
         assertEquals(expectedRoles.size(), roleAssignments.size());
 
-        roleAssignments.forEach(r -> {
-            assertTrue(expectedRoles.contains(r.getRoleName()));
-            assertEquals(RoleCategory.ADMIN, r.getRoleCategory());
-            assertEquals(RoleType.ORGANISATION, r.getRoleType());
-        });
+        List<String> actualRoles = roleAssignments.stream()
+            .map(RoleAssignment::getRoleName)
+            .sorted()
+            .toList();
 
-        roleAssignments.forEach(r -> {
-            assertNotNull(r.getAttributes().get(Attributes.Name.JURISDICTION));
-            assertNotNull(r.getAttributes().get(Attributes.Name.PRIMARY_LOCATION));
+        assertEquals(expectedRoles.stream().sorted().toList(), actualRoles);
 
-            // assert jurisdiction
-            assertEquals(Jurisdiction.HRS.getName(), r.getAttributes().get(Attributes.Name.JURISDICTION).asText());
-            // assert region
-            assertNull(r.getAttributes().get(Attributes.Name.REGION));
-            // assert work types
-            assertNull(r.getAttributes().get(Attributes.Name.WORK_TYPES));
-            // assert classification
-            assertEquals(Classification.PUBLIC, r.getClassification());
-            // assert grant type
-            assertEquals(GrantType.STANDARD, r.getGrantType());
-            // assert ReadOnly
-            assertFalse(r.isReadOnly());
+        roleAssignments.forEach(role -> {
+            assertEquals(RoleCategory.ADMIN, role.getRoleCategory());
+            assertEquals(RoleType.ORGANISATION, role.getRoleType());
+
+            assertNotNull(role.getAttributes().get(Attributes.Name.JURISDICTION));
+            assertNotNull(role.getAttributes().get(Attributes.Name.PRIMARY_LOCATION));
+            assertEquals(
+                Jurisdiction.HRS.getName(),
+                role.getAttributes().get(Attributes.Name.JURISDICTION).asText()
+            );
+            assertNull(role.getAttributes().get(Attributes.Name.REGION));
+            assertNull(role.getAttributes().get(Attributes.Name.WORK_TYPES));
+            assertEquals(Classification.PUBLIC, role.getClassification());
+            assertEquals(GrantType.STANDARD, role.getGrantType());
+            assertFalse(role.isReadOnly());
         });
     }
-
 }
