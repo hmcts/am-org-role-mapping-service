@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
+import uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.IrmQueueController;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfigRepository;
@@ -30,6 +32,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,11 +42,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.FeatureFlagController.ALL_FEATURE_FLAG_STATUSES_URI;
-import static uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.IrmQueueController.FIND_QUEUE_ENTITY;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.OrgMappingController.CREATE_ORG_MAPPING_URI;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_XUI;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.getHttpHeaders;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.TEST_ENVIRONMENT;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper.assertIrmQueueRequests;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.EMAIL_ID;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.IDAM_ID;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.cloneAndExpandReplaceMap;
@@ -79,6 +82,9 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
     protected final ObjectMapper mapper = JacksonUtils.MAPPER;
 
     protected MockMvc mockMvc;
+
+    @Autowired
+    private IrmQueueController irmQueueController;
 
     @Autowired
     private FlagConfigRepository flagConfigRepository;
@@ -184,29 +190,34 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
             .andReturn();
     }
 
-    @SuppressWarnings({
-        "SameParameterValue" // currently only triggered in Judicial tests
-    })
-    protected void triggerIrmMappingApi(List<TestScenario> testScenarios) {
+    protected void processIrmQueueRequests(List<TestScenario> testScenarios) {
+        Map<String,IdamRoleManagementQueueEntity> expectedIrmQueueRequests = new HashMap<>();
+        Map<String,IdamRoleManagementQueueEntity> actualIrmQueueRequests = new HashMap<>();
+
         testScenarios.stream()
             .filter(testScenario -> testScenario.getReplaceMap().get(IDAM_ID) != null)
             .forEach(testScenario -> {
-                try {
-                    mockMvc.perform(get(FIND_QUEUE_ENTITY)
-                        .contentType(JSON_CONTENT_TYPE)
-                        .headers(getHttpHeaders(S2S_XUI))
-                        .param("userId", testScenario.getReplaceMap().get(IDAM_ID))
-                        .content(mapper.writeValueAsBytes(IdamRoleManagementQueueEntity.builder()
-                            .userId(testScenario.getReplaceMap().get(IDAM_ID))
-                            .data(IdamRoleData.builder()
-                                .emailId(testScenario.getReplaceMap().get(EMAIL_ID))
-                                .build())
-                            .build())))
-                        .andReturn();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                String idamId =  testScenario.getReplaceMap().get(IDAM_ID);
+
+                // Expected
+                IdamRoleManagementQueueEntity irmQueueExpectedEntity =
+                        IdamRoleManagementQueueEntity.builder()
+                                .userId(idamId)
+                                .data(IdamRoleData.builder()
+                                    .emailId(testScenario.getReplaceMap().get(EMAIL_ID))
+                                    .build())
+                                .build();
+                expectedIrmQueueRequests.put(idamId, irmQueueExpectedEntity);
+
+                // Actual
+                ResponseEntity<IdamRoleManagementQueueEntity> irmQueueActualEntity =
+                        irmQueueController.findQueueEntity(idamId);
+                if (irmQueueActualEntity.getStatusCode().is2xxSuccessful()) {
+                    actualIrmQueueRequests.put(idamId, irmQueueActualEntity.getBody());
                 }
             });
+
+        assertIrmQueueRequests(testScenarios, expectedIrmQueueRequests, actualIrmQueueRequests);
     }
 
     @SuppressWarnings({
