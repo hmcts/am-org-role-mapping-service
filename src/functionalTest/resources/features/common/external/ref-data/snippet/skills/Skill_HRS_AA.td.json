@@ -1,0 +1,6 @@
+{
+  "_guid_": "Skill_HRS_AA",
+  "_extends_": "Skill__Base",
+
+  "skill_code": "SKILL:HRS:AA"
+}

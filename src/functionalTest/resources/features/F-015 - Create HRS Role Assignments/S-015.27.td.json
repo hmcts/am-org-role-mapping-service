@@ -1,0 +1,22 @@
+{
+  "_guid_": "S-015.27",
+  "title": "must not create org role mapping for HRS Sharer if no HRS skills",
+  "_extends_": "F-015_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published who has HRS Sharer role without HRS skills",
+    "contains no HRS role-assignments"
+  ],
+ "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "request": {
+    "pathVariables": {
+      "actorId": "e306359f-4736-4027-970c-d68dad57b19a"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": []
+    }
+  }
+}
