@@ -188,20 +188,26 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
         "SameParameterValue" // currently only triggered in Judicial tests
     })
     protected void triggerIrmMappingApi(List<TestScenario> testScenarios) throws Exception {
-        for (TestScenario testScenario : testScenarios) {
-            mockMvc.perform(get(FIND_QUEUE_ENTITY)
-                .contentType(JSON_CONTENT_TYPE)
-                .headers(getHttpHeaders(S2S_XUI))
-                .param("userId", testScenario.getReplaceMap().get(IDAM_ID))
-                .content(mapper.writeValueAsBytes(IdamRoleManagementQueueEntity.builder()
-                    .userId(testScenario.getReplaceMap().get(IDAM_ID))
-                    .data(IdamRoleData.builder()
-                        .emailId(testScenario.getReplaceMap().get(EMAIL_ID))
-                        .build())
-                    .build())))
-                .andExpect(status().is(HttpStatus.OK.value()))
-                .andReturn();
-        }
+        testScenarios.stream()
+            .filter(testScenario -> testScenario.getReplaceMap().get(IDAM_ID) != null)
+            .forEach(testScenario -> {
+                try {
+                    mockMvc.perform(get(FIND_QUEUE_ENTITY)
+                        .contentType(JSON_CONTENT_TYPE)
+                        .headers(getHttpHeaders(S2S_XUI))
+                        .param("userId", testScenario.getReplaceMap().get(IDAM_ID))
+                        .content(mapper.writeValueAsBytes(IdamRoleManagementQueueEntity.builder()
+                            .userId(testScenario.getReplaceMap().get(IDAM_ID))
+                            .data(IdamRoleData.builder()
+                                .emailId(testScenario.getReplaceMap().get(EMAIL_ID))
+                                .build())
+                            .build())))
+                        .andExpect(status().is(HttpStatus.OK.value()))
+                        .andReturn();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
     }
 
     @SuppressWarnings({
