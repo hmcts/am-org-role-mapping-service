@@ -127,6 +127,8 @@ class DroolHrsRoleMappingTest extends DroolBase {
             assertFalse(role.isReadOnly());
             if (jobTitle == JobTitle.HRS_SHARER || jobTitle == JobTitle.HRS_LISTENER) {
                 assertNotNull(role.getAuthorisations());
+            } else {
+                assertNull(role.getAuthorisations());
             }
         });
     }
