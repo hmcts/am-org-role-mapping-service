@@ -89,6 +89,39 @@ then
 end;
 
 /*
+ * 2.1: HRS admin "HRS Sharer With Skill" role mapping.
+ */
+rule "hrs_sharer_role_with_skill"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.HRS_1_1.getValue())
+    $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HRS_SHARER),
+                                  hasValidServiceCode(Jurisdiction.HRS),
+                                  !suspended,
+                                  hasSkillMatching(adminHRSSkillPattern()))
+then
+    Map<String,JsonNode> attribute = new HashMap<>();
+    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.HRS.getName()));
+    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
+
+    insert(
+        RoleAssignment.builder()
+            .actorIdType(ActorIdType.IDAM)
+            .actorId($cap.getId())
+            .roleCategory(RoleCategory.ADMIN)
+            .roleType(RoleType.ORGANISATION)
+            .roleName(RoleName.HRS_SHARER)
+            .grantType(GrantType.STANDARD)
+            .classification(Classification.PUBLIC)
+            .readOnly(false)
+            .attributes(attribute)
+            .authorisations($cap.getSkillCodes())
+            .build()
+    );
+
+    logMsg("Rule : hrs_sharer_role_with_skill");
+end;
+
+/*
  * 3: HRS admin "HRS Listener" role mapping.
  */
 rule "hrs_listener_role"
@@ -120,38 +153,7 @@ then
 end;
 
 
-/*
- * 2.1: HRS admin "HRS Sharer With Skill" role mapping.
- */
-rule "hrs_sharer_role_with_skill"
-when
-    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.HRS_1_1.getValue())
-    $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HRS_TEAM_LEADER),
-                                  hasValidServiceCode(Jurisdiction.HRS),
-                                  !suspended,
-                                  hasSkillMatching(adminHRSSkillPattern()))
-then
-    Map<String,JsonNode> attribute = new HashMap<>();
-    attribute.put(Attributes.Name.JURISDICTION, JacksonUtils.convertObjectIntoJsonNode(Jurisdiction.HRS.getName()));
-    attribute.put(Attributes.Name.PRIMARY_LOCATION, JacksonUtils.convertObjectIntoJsonNode($cap.getPrimaryLocationId()));
 
-    insert(
-        RoleAssignment.builder()
-            .actorIdType(ActorIdType.IDAM)
-            .actorId($cap.getId())
-            .roleCategory(RoleCategory.ADMIN)
-            .roleType(RoleType.ORGANISATION)
-            .roleName(RoleName.HRS_SHARER)
-            .grantType(GrantType.STANDARD)
-            .classification(Classification.PUBLIC)
-            .readOnly(false)
-            .attributes(attribute)
-            .authorisations($cap.getSkillCodes())
-            .build()
-    );
-
-    logMsg("Rule : hrs_sharer_role_with_skill");
-end;
 
 /*
  * 3.1: HRS admin "HRS Listener With Skill" role mapping.
@@ -159,7 +161,7 @@ end;
 rule "hrs_listener_role_with_skill"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.HRS_1_1.getValue())
-    $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HRS_TEAM_LEADER),
+    $cap: CaseWorkerAccessProfile(hasValidJobTitle(JobTitle.HRS_LISTENER),
                                   hasValidServiceCode(Jurisdiction.HRS),
                                   !suspended,
                                   hasSkillMatching(adminHRSSkillPattern()))
