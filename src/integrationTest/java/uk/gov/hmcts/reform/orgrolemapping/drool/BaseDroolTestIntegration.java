@@ -59,6 +59,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
     // set environment ready for flag checks
     "launchdarkly.sdk.environment=" + TEST_ENVIRONMENT,
     "orm.environment=" + TEST_ENVIRONMENT,
+    "idam.role.management.enabled=true",
     "testing.support.enabled=true"
 })
 public class BaseDroolTestIntegration extends BaseTestIntegration {
