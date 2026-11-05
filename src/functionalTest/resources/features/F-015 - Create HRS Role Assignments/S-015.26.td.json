@@ -1,0 +1,22 @@
+{
+  "_guid_": "S-015.26",
+  "title": "must not create org role mapping for HRS Listener if no HRS skills",
+  "_extends_": "F-015_Test_Data_Base",
+  "specs": [
+    "contains the actorId of the user just published who has HRS Listener role without HRS skills",
+    "contains no HRS role-assignments"
+  ],
+ "method": "GET",
+  "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/actors/{actorId}",
+  "request": {
+    "pathVariables": {
+      "actorId": "7f7e36a2-d61e-46eb-8ed7-a1356a21b752"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "roleAssignmentResponse": []
+    }
+  }
+}
