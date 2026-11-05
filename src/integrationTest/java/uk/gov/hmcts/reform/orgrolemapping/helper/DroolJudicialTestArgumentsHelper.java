@@ -273,7 +273,7 @@ public class DroolJudicialTestArgumentsHelper {
         // add extras as Map.of constructor above is full
         outputMap.put(JBS_REGION_ID, "region_jbs");
         outputMap.put(JBS_LOCATION_ID, "location_jbs");
-        outputMap.put(EMAIL_ID, "idamUser@example.com");
+        outputMap.put(EMAIL_ID, UUID.randomUUID().toString() + "@example.com");
 
         // add or override with extra values if needed
         if (MapUtils.isNotEmpty(overrideMapValues)) {
