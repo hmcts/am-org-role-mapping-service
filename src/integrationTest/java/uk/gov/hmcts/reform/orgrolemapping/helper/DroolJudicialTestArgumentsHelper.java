@@ -26,6 +26,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.drool.RunJudicialDroolIntegrati
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.DF;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.EMAIL_ID;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.IDAM_ID;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.LAST_WORKING_DATE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_02_MIDLANDS;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.addRegionOverrideMapValues;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.cloneAndOverrideMap;
@@ -274,6 +275,7 @@ public class DroolJudicialTestArgumentsHelper {
         outputMap.put(JBS_REGION_ID, "region_jbs");
         outputMap.put(JBS_LOCATION_ID, "location_jbs");
         outputMap.put(EMAIL_ID, UUID.randomUUID().toString() + "@example.com");
+        outputMap.put(LAST_WORKING_DATE, "");
 
         // add or override with extra values if needed
         if (MapUtils.isNotEmpty(overrideMapValues)) {
