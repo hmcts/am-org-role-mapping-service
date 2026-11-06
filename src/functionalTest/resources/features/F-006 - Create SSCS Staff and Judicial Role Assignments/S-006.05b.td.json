@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-006.05b",
+  "title": "must successfully create org role mapping for Court Clerk + Case allocator (BBA3)",
+  "_extends_": "S-006.05",
+  "specs": [
+    "contains the actorId of the user just published who has Court Clerk role + Case allocator (BBA3)"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "14e6a532-a1ef-4b2a-8217-9e771779e6e5"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}

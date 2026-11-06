@@ -1,0 +1,36 @@
+{
+  "_guid_": "S-006.13b",
+  "title": "must successfully create org role mapping for Regional Centre Administrator + Case allocator (BBA3)",
+  "_extends_": "S-006.13",
+  "specs": [
+    "contains the actorId of the user just published who has Regional Centre Administrator role + Case allocator (BBA3)"
+  ],
+  "request": {
+    "pathVariables": {
+      "actorId": "f40d45f8-3543-45fd-9496-628bc33fe050"
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "roleAssignmentResponse": [
+        {
+          "id": "[[ANYTHING_PRESENT]]",
+          "actorIdType": "IDAM",
+          "actorId": "${[scenarioContext][testData][request][pathVariables][actorId]}",
+          "roleType": "ORGANISATION",
+          "roleName": "case-allocator",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "ADMIN",
+          "readOnly": false,
+          "created": "[[ANYTHING_PRESENT]]",
+          "attributes": {
+            "primaryLocation": "[[ANYTHING_PRESENT]]",
+            "jurisdiction": "SSCS",
+            "substantive": "N"
+          }
+        }
+      ]
+    }
+  }
+}
