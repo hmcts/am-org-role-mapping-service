@@ -1,0 +1,17 @@
+{
+  "_guid_": "S-106__SnapshotJudicialDetails",
+  "_extends_": "FetchJudicialById__PositiveResponse_Base",
+
+  "specs": [
+    "to snapshot judicial details"
+  ],
+
+  "request": {
+    "body": {
+      "sidam_ids": [
+        "${[scenarioContext][siblingContexts][S-106_DeleteDataForRoleAssignments][testData][request][body][userIds][0]}"
+      ]
+    }
+  }
+
+}
