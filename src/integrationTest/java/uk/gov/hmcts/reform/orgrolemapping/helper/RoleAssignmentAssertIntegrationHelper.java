@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.orgrolemapping.helper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
 
@@ -238,6 +239,34 @@ public class RoleAssignmentAssertIntegrationHelper {
         return roleAssignment.getAttributes().containsKey(attributeName)
             ? roleAssignment.getAttributes().get(attributeName).asText()
             : "null";
+    }
+
+    public static void assertIrmQueueRequests(
+            List<TestScenario> testScenarios,
+            Map<String,IdamRoleManagementQueueEntity> expectedIrmQueueRequests,
+            Map<String,IdamRoleManagementQueueEntity> actualIrmQueueRequests) {
+        assertEquals(expectedIrmQueueRequests.size(), actualIrmQueueRequests.size(), "Count of irm queue scenarios");
+
+        expectedIrmQueueRequests.forEach((idamId, expectedIrmQueueRequest) -> {
+
+            try {
+                TestScenario testScenario = findTestScenarioFromIdamId(
+                        idamId,
+                        testScenarios
+                );
+
+                IdamRoleManagementQueueEntity actualIrmQueueRequest = actualIrmQueueRequests.get(idamId);
+
+                writeJsonToTestScenarioOutput(
+                        writeValueAsPrettyJson(actualIrmQueueRequest),
+                        testScenario,
+                        "IrmQueueRequest-Actual"
+                );
+
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
 }
