@@ -1,5 +1,6 @@
 {
   "sidam_id": "[[IDAM_ID]]",
+  "email_id": "[[EMAIL_ID]]",
   "object_id": "[[RANDOM_ID]]",
   "personal_code": "[[RANDOM_ID]]",
   "active_flag": "true",
