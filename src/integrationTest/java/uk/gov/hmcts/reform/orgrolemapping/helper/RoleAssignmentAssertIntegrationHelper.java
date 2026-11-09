@@ -257,16 +257,36 @@ public class RoleAssignmentAssertIntegrationHelper {
 
                 IdamRoleManagementQueueEntity actualIrmQueueRequest = actualIrmQueueRequests.get(idamId);
 
+                // Write the drool report file
                 writeJsonToTestScenarioOutput(
                         writeValueAsPrettyJson(actualIrmQueueRequest),
                         testScenario,
                         "IrmQueueRequest-Actual"
                 );
 
+                // Assert the values
+                try {
+                    assertNotNull(actualIrmQueueRequest, "IrmQueueRequest");
+                    assertIrmQueueRequest(expectedIrmQueueRequest, actualIrmQueueRequest);
+                } catch (AssertionError ex) {
+                    DroolIntegrationTestSingleton.getInstance()
+                            .addJudicialError(testScenario, ex);
+                    throw ex;
+                }
+
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    private static void assertIrmQueueRequest(IdamRoleManagementQueueEntity expectedIrmQueueRequest,
+                                              IdamRoleManagementQueueEntity irmQueueRequest) {
+        assertAll(
+                () -> assertEquals(expectedIrmQueueRequest.getUserId(), irmQueueRequest.getUserId()),
+                () -> assertEquals(expectedIrmQueueRequest.getData().getEmailId(),
+                        irmQueueRequest.getData().getEmailId(), "IrmQueueRequest.Data.EmailId")
+        );
     }
 
 }
