@@ -22,6 +22,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.Judicial
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.SALARIED;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.VOLUNTARY;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.EMPTY_ROLE_ASSIGNMENT_TEMPLATE;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.IRM_QUEUE_TEMPLATE;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.RunJudicialDroolIntegrationTests.DROOL_JUDICIAL_TEST_OUTPUT_PATH;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.DF;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.EMAIL_ID;
@@ -617,6 +618,7 @@ public class DroolJudicialTestArgumentsHelper {
                 .rasRequestFileNameWithBooking(rasRequestFileName)
                 // NB: With and Without Booking test output will match for these scenarios
                 .rasRequestFileNameWithoutBooking(rasRequestFileName)
+                .irmQueueFileName(IRM_QUEUE_TEMPLATE)
                 .additionalRoleTest(additionalRoleTest)
                 .additionalRoleExpiredFallbackFileName(additionalRoleExpiredFallbackFileName)
                 .overrideMapValues(

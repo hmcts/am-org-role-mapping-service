@@ -9,6 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
+import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.AssignmentRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArguments;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JRDUserRequest;
@@ -31,6 +32,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumen
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.formatJudicialTestOutputLocation;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper.assertWireMockAssignmentRequests;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper.writeValueAsPrettyJson;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.IDAM_ID;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.adjustMapValueToDtz;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.getSidamIdsList;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.getSidamIdsSet;
@@ -175,7 +177,7 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
         // THEN
         assertWireMockAssignmentRequests(expectedAssignmentRequests, testScenarios, featureFlags);
-        processIrmQueueRequests(testScenarios);
+        processIrmQueueRequests(getIrmQueueRequestsFromFile(irmQueueFilename, testScenarios), testScenarios);
     }
 
     private List<AssignmentRequest> getAssignmentRequestsFromFile(String fileName,
@@ -242,6 +244,29 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
                 formatJudicialTestOutputLocation(testArguments, ""),
                 "FeatureFlags"
         );
+    }
+
+    private Map<String, IdamRoleManagementQueueEntity> getIrmQueueRequestsFromFile(String fileName,
+                                                                                   List<TestScenario> testScenarios) {
+
+        Map<String, IdamRoleManagementQueueEntity> result = new HashMap<>();
+        testScenarios.stream()
+                .filter(testScenario -> testScenario.getReplaceMap().get(IDAM_ID) != null)
+                .forEach(testScenario -> {
+                    result.put(testScenario.getReplaceMap().get(IDAM_ID), getIrmQueueRequestFromFile(fileName, testScenario));
+                });
+        return result;
+    }
+
+    private IdamRoleManagementQueueEntity getIrmQueueRequestFromFile(String fileName, TestScenario testScenario) {
+        try {
+            return mapper.readValue(
+                    readJsonFromFile("DroolTests/Judicial/" + fileName, testScenario.getReplaceMap()),
+                    IdamRoleManagementQueueEntity.class
+            );
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

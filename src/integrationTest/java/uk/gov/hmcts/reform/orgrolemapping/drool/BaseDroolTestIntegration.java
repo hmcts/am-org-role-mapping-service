@@ -25,7 +25,6 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
 import uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils;
 import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 
@@ -47,7 +46,6 @@ import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.getHttpHeaders;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.TEST_ENVIRONMENT;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper.assertIrmQueueRequests;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.EMAIL_ID;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.IDAM_ID;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.cloneAndExpandReplaceMap;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.getSidamIdsList;
@@ -74,6 +72,7 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
     public static final String EMPTY_ROLE_ASSIGNMENT_TEMPLATE = "Common/Empty__RasAssignmentRequest";
 
     public static final String EMPTY_IRM_QUEUE_TEMPLATE = "Common/Empty__IRMQueueEntry";
+    public static final String IRM_QUEUE_TEMPLATE = "Common/IRMQueueEntry";
 
     public static final boolean NO_BOOKABLE_ROLES_FLAG = false;
 
@@ -190,24 +189,14 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
             .andReturn();
     }
 
-    protected void processIrmQueueRequests(List<TestScenario> testScenarios) {
-        Map<String,IdamRoleManagementQueueEntity> expectedIrmQueueRequests = new HashMap<>();
+    protected void processIrmQueueRequests(Map<String,IdamRoleManagementQueueEntity> expectedIrmQueueRequests,
+                                           List<TestScenario> testScenarios) {
         Map<String,IdamRoleManagementQueueEntity> actualIrmQueueRequests = new HashMap<>();
 
         testScenarios.stream()
             .filter(testScenario -> testScenario.getReplaceMap().get(IDAM_ID) != null)
             .forEach(testScenario -> {
                 String idamId =  testScenario.getReplaceMap().get(IDAM_ID);
-
-                // Expected
-                IdamRoleManagementQueueEntity irmQueueExpectedEntity =
-                        IdamRoleManagementQueueEntity.builder()
-                                .userId(idamId)
-                                .data(IdamRoleData.builder()
-                                    .emailId(testScenario.getReplaceMap().get(EMAIL_ID))
-                                    .build())
-                                .build();
-                expectedIrmQueueRequests.put(idamId, irmQueueExpectedEntity);
 
                 // Actual
                 ResponseEntity<IdamRoleManagementQueueEntity> irmQueueActualEntity =

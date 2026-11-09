@@ -1,6 +1,7 @@
 {
   "userId": "[[IDAM_ID]]",
   "data": {
-    "emailId": "[[EMAIL_ID]]"
+    "email_id": null,
+    "deleted_flag": "[[DELETED_FLAG]]"
   }
 }

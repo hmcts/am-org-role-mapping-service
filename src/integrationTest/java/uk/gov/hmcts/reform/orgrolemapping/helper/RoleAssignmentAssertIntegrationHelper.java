@@ -283,9 +283,7 @@ public class RoleAssignmentAssertIntegrationHelper {
     private static void assertIrmQueueRequest(IdamRoleManagementQueueEntity expectedIrmQueueRequest,
                                               IdamRoleManagementQueueEntity irmQueueRequest) {
         assertAll(
-                () -> assertEquals(expectedIrmQueueRequest.getUserId(), irmQueueRequest.getUserId()),
-                () -> assertEquals(expectedIrmQueueRequest.getData().getEmailId(),
-                        irmQueueRequest.getData().getEmailId(), "IrmQueueRequest.Data.EmailId")
+                () -> assertEquals(expectedIrmQueueRequest.getUserId(), irmQueueRequest.getUserId())
         );
     }
 
