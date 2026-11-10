@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.BaseTest.WIRE_MOCK_SERVER;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.RAS_CREATE_ASSIGNMENTS_URL;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.AM_ORG_ROLE_MAPPING_SERVICE;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.NEGATIVE_TEST;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.IDAM_ID;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.writeJsonToTestScenarioOutput;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.MAPPER;
@@ -267,7 +268,7 @@ public class RoleAssignmentAssertIntegrationHelper {
                 // Assert the values
                 try {
                     assertNotNull(actualIrmQueueRequest, "IrmQueueRequest");
-                    assertIrmQueueRequest(expectedIrmQueueRequest, actualIrmQueueRequest);
+                    assertIrmQueueRequest(expectedIrmQueueRequest, actualIrmQueueRequest, testScenario);
                 } catch (AssertionError ex) {
                     DroolIntegrationTestSingleton.getInstance()
                             .addJudicialError(testScenario, ex);
@@ -281,10 +282,13 @@ public class RoleAssignmentAssertIntegrationHelper {
     }
 
     private static void assertIrmQueueRequest(IdamRoleManagementQueueEntity expectedIrmQueueRequest,
-                                              IdamRoleManagementQueueEntity irmQueueRequest) {
-        assertAll(
-                () -> assertEquals(expectedIrmQueueRequest.getUserId(), irmQueueRequest.getUserId())
-        );
+                                              IdamRoleManagementQueueEntity irmQueueRequest,
+                                              TestScenario testScenario) {
+        assertEquals(expectedIrmQueueRequest.getUserId(), irmQueueRequest.getUserId(), "Request.IdamId");
+        if (!testScenario.getDescription().contains(NEGATIVE_TEST)) {
+            assertEquals(expectedIrmQueueRequest.getData().getEmailId(),
+                    irmQueueRequest.getData().getEmailId(), "Request.Data.EmailId");
+        }
     }
 
 }
