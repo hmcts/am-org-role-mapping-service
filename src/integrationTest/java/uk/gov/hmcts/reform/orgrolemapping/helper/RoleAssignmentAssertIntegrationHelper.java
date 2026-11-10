@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.BaseTest.WIRE_MOCK_SERVER;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.RAS_CREATE_ASSIGNMENTS_URL;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.AM_ORG_ROLE_MAPPING_SERVICE;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.NEGATIVE_TEST;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.SOFT_DELETE_FLAG_SET;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.IDAM_ID;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.writeJsonToTestScenarioOutput;

@@ -49,7 +49,7 @@ public class DroolJudicialTestArgumentsHelper {
     private static final String NO_BOOKING_END_DATE = "no booking end date";
     private static final String HAPPY_PATH_DESCRIPTION = HAPPY_PATH + " - %s - %s";
 
-    public static final String NEGATIVE_TEST = "NegativeTest";
+    private static final String NEGATIVE_TEST = "NegativeTest";
     private static final String APPOINTMENT_END_DATE_EXPIRED
         = "appointment end date expired";
     private static final String AUTHORISATION_END_DATE_EXPIRED
