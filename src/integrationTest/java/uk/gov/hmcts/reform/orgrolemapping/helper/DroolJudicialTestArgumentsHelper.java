@@ -560,6 +560,7 @@ public class DroolJudicialTestArgumentsHelper {
                 .jrdResponseFileName(jrdResponseFileName)
                 .rasRequestFileNameWithBooking(rasRequestFileName + (useWithBookings ? "__withBooking" : ""))
                 .rasRequestFileNameWithoutBooking(rasRequestFileName + (useWithBookings ? "__withoutBooking" : ""))
+                .irmQueueFileName(IRM_QUEUE_TEMPLATE)
                 .additionalRoleTest(additionalRoleTest)
                 .overrideMapValues(
                     generateCommonJudicialOverrideMapValues(FEE_PAID, REGION_02_MIDLANDS)
@@ -645,6 +646,7 @@ public class DroolJudicialTestArgumentsHelper {
                 .jrdResponseFileName(jrdResponseFileName)
                 .rasRequestFileNameWithBooking(rasRequestFileName + (useWithBookings ? "__withBooking" : ""))
                 .rasRequestFileNameWithoutBooking(rasRequestFileName + (useWithBookings ? "__withoutBooking" : ""))
+                .irmQueueFileName(IRM_QUEUE_TEMPLATE)
                 .additionalRoleTest(false)
                 .overrideMapValues(
                     generateCommonJudicialOverrideMapValues(VOLUNTARY, REGION_02_MIDLANDS)
