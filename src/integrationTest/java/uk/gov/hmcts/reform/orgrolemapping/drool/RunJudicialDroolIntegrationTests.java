@@ -253,7 +253,8 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
         testScenarios.stream()
                 .filter(testScenario -> testScenario.getReplaceMap().get(IDAM_ID) != null)
                 .forEach(testScenario -> {
-                    result.put(testScenario.getReplaceMap().get(IDAM_ID), getIrmQueueRequestFromFile(fileName, testScenario));
+                    result.put(testScenario.getReplaceMap().get(IDAM_ID), getIrmQueueRequestFromFile(fileName,
+                            testScenario));
                 });
         return result;
     }
