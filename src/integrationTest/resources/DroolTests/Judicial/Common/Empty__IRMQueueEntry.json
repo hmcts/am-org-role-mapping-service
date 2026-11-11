@@ -2,6 +2,7 @@
   "userId": "[[IDAM_ID]]",
   "data": {
     "email_id": "[[EMAIL_ID]]",
-    "deleted_flag": "[[DELETED_FLAG]]"
+    "active_flag": "true",
+    "deleted_flag": "N"
   }
 }

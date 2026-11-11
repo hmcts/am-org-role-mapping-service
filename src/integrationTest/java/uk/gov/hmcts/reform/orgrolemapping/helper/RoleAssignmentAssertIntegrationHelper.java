@@ -284,8 +284,18 @@ public class RoleAssignmentAssertIntegrationHelper {
                                               IdamRoleManagementQueueEntity irmQueueRequest) {
         assertAll(
             () -> assertEquals(expectedIrmQueueRequest.getUserId(), irmQueueRequest.getUserId(), "Request.IdamId"),
-            () -> assertEquals(expectedIrmQueueRequest.getData().getEmailId(), irmQueueRequest.getData().getEmailId(),
-                    "Request.Data.EmailId")
+            () -> assertNotNull(irmQueueRequest.getUserType(), "Request.UserType"),
+            () -> assertNotNull(irmQueueRequest.getData(), "Request.Data"),
+            () -> assertEquals(expectedIrmQueueRequest.getData().getEmailId(),
+                    irmQueueRequest.getData().getEmailId(), "Request.Data.EmailId"),
+            () -> assertEquals(expectedIrmQueueRequest.getData().getActiveFlag(),
+                    irmQueueRequest.getData().getActiveFlag(), "Request.Data.ActiveFlag"),
+            () -> assertEquals(expectedIrmQueueRequest.getData().getDeletedFlag(),
+                    irmQueueRequest.getData().getDeletedFlag(), "Request.Data.DeletedFlag"),
+            () -> assertNotNull(irmQueueRequest.getLastUpdated(), "Request.LastUpdated"),
+            () -> assertNotNull(irmQueueRequest.getActive(), "Request.Active"),
+            () -> assertNotNull(irmQueueRequest.getRetry(), "Request.Retry"),
+            () -> assertNotNull(irmQueueRequest.getRetryAfter(), "Request.RetryAfter")
         );
     }
 
