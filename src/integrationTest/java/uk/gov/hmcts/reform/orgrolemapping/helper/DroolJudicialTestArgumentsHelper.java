@@ -57,7 +57,7 @@ public class DroolJudicialTestArgumentsHelper {
         = "authorisation end date expired";
     private static final String ADDITIONAL_ROLE_END_DATE_EXPIRED
         = "additional role end date expired";
-    public static final String SOFT_DELETE_FLAG_SET = "soft delete flag set";
+    private static final String SOFT_DELETE_FLAG_SET = "soft delete flag set";
     private static final String NEGATIVE_TEST_DESCRIPTION = NEGATIVE_TEST + " - %s";
 
     public static final String SPTW_TEST_APPOINTMENT_TYPE = "SPTW-50%";
