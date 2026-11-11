@@ -71,6 +71,7 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
 
     public static final String EMPTY_ROLE_ASSIGNMENT_TEMPLATE = "Common/Empty__RasAssignmentRequest";
 
+    public static final String DELETED_IRM_QUEUE_TEMPLATE = "Common/Deleted__IRMQueueEntry";
     public static final String EMPTY_IRM_QUEUE_TEMPLATE = "Common/Empty__IRMQueueEntry";
 
     public static final boolean NO_BOOKABLE_ROLES_FLAG = false;

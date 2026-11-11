@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.orgrolemapping.drool;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.shared.utils.StringUtils;
 import org.junit.jupiter.api.AfterAll;
@@ -248,26 +249,26 @@ public class RunJudicialDroolIntegrationTests extends BaseDroolTestIntegration {
 
     private Map<String, IdamRoleManagementQueueEntity> getIrmQueueRequestsFromFile(String fileName,
                                                                                    List<TestScenario> testScenarios) {
-
         Map<String, IdamRoleManagementQueueEntity> result = new HashMap<>();
         testScenarios.stream()
                 .filter(testScenario -> testScenario.getReplaceMap().get(IDAM_ID) != null)
-                .forEach(testScenario -> {
-                    result.put(testScenario.getReplaceMap().get(IDAM_ID), getIrmQueueRequestFromFile(fileName,
-                            testScenario));
-                });
+                .forEach(testScenario -> result.put(testScenario.getReplaceMap().get(IDAM_ID),
+                        getIrmQueueRequestFromFile(fileName,
+                        testScenario)));
         return result;
     }
 
+    @SneakyThrows
     private IdamRoleManagementQueueEntity getIrmQueueRequestFromFile(String fileName, TestScenario testScenario) {
-        try {
-            return mapper.readValue(
-                    readJsonFromFile("DroolTests/Judicial/" + fileName, testScenario.getReplaceMap()),
-                    IdamRoleManagementQueueEntity.class
-            );
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        // apply IRM Queue template override if supplied
+        if (StringUtils.isNotEmpty(testScenario.getOverrideIrmQueueRequestFileName())) {
+            fileName = testScenario.getOverrideIrmQueueRequestFileName();
         }
+
+        return mapper.readValue(
+                readJsonFromFile("DroolTests/Judicial/" + fileName, testScenario.getReplaceMap()),
+                IdamRoleManagementQueueEntity.class
+        );
     }
 
 }

@@ -21,6 +21,7 @@ import java.util.UUID;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.FEE_PAID;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.SALARIED;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.VOLUNTARY;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.DELETED_IRM_QUEUE_TEMPLATE;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.EMPTY_IRM_QUEUE_TEMPLATE;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.EMPTY_ROLE_ASSIGNMENT_TEMPLATE;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.RunJudicialDroolIntegrationTests.DROOL_JUDICIAL_TEST_OUTPUT_PATH;
@@ -402,6 +403,7 @@ public class DroolJudicialTestArgumentsHelper {
             APPOINTMENT_END_DATE_EXPIRED,
             "NegativeTest/AppointmentEndDateExpired/",
             expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), APPOINTMENT_END_TIME),
+            null,
             null // no override implemented for this scenario
         ));
 
@@ -411,6 +413,7 @@ public class DroolJudicialTestArgumentsHelper {
             AUTHORISATION_END_DATE_EXPIRED,
             "NegativeTest/AuthorisationEndDateExpired/",
             expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), AUTHORISATION_END_TIME),
+            null,
             testArguments.getAuthorisationExpiredFallbackFileName()
         ));
 
@@ -421,6 +424,7 @@ public class DroolJudicialTestArgumentsHelper {
                 ADDITIONAL_ROLE_END_DATE_EXPIRED,
                 "NegativeTest/AdditionalRoleEndDateExpired/",
                 expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), ROLE_END_TIME),
+                null,
                 testArguments.getAdditionalRoleExpiredFallbackFileName()
             ));
         }
@@ -431,6 +435,7 @@ public class DroolJudicialTestArgumentsHelper {
             SOFT_DELETE_FLAG_SET,
             "NegativeTest/SoftDeleteFlagSet/",
             setBooleanInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), DELETED_FLAG, true),
+            DELETED_IRM_QUEUE_TEMPLATE,
             null // no override implemented for this scenario
         ));
 
@@ -766,6 +771,7 @@ public class DroolJudicialTestArgumentsHelper {
                                                            String testDescription,
                                                            String scenarioOutputPath,
                                                            Map<String, String> replaceMap,
+                                                           String overrideIrmQueueRequestFileName,
                                                            String rasFallbackFileName) {
 
         testDescription = String.format(NEGATIVE_TEST_DESCRIPTION, testDescription);
@@ -782,6 +788,7 @@ public class DroolJudicialTestArgumentsHelper {
             )
             .replaceMap(replaceMap)
             .overrideRasRequestFileName(rasFallbackFileName)
+            .overrideIrmQueueRequestFileName(overrideIrmQueueRequestFileName)
             .build();
     }
 

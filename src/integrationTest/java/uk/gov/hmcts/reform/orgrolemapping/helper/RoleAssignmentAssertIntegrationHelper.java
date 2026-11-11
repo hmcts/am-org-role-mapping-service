@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.BaseTest.WIRE_MOCK_SERVER;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.RAS_CREATE_ASSIGNMENTS_URL;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.AM_ORG_ROLE_MAPPING_SERVICE;
-import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.SOFT_DELETE_FLAG_SET;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.IDAM_ID;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.writeJsonToTestScenarioOutput;
 import static uk.gov.hmcts.reform.orgrolemapping.util.JacksonUtils.MAPPER;
@@ -268,7 +267,7 @@ public class RoleAssignmentAssertIntegrationHelper {
                 // Assert the values
                 try {
                     assertNotNull(actualIrmQueueRequest, "IrmQueueRequest");
-                    assertIrmQueueRequest(expectedIrmQueueRequest, actualIrmQueueRequest, testScenario);
+                    assertIrmQueueRequest(expectedIrmQueueRequest, actualIrmQueueRequest);
                 } catch (AssertionError ex) {
                     DroolIntegrationTestSingleton.getInstance()
                             .addJudicialError(testScenario, ex);
@@ -282,12 +281,10 @@ public class RoleAssignmentAssertIntegrationHelper {
     }
 
     private static void assertIrmQueueRequest(IdamRoleManagementQueueEntity expectedIrmQueueRequest,
-                                              IdamRoleManagementQueueEntity irmQueueRequest,
-                                              TestScenario testScenario) {
+                                              IdamRoleManagementQueueEntity irmQueueRequest) {
         assertAll(
             () -> assertEquals(expectedIrmQueueRequest.getUserId(), irmQueueRequest.getUserId(), "Request.IdamId"),
-            () -> assertEquals(testScenario.getDescription().contains(SOFT_DELETE_FLAG_SET) ? null :
-                    expectedIrmQueueRequest.getData().getEmailId(), irmQueueRequest.getData().getEmailId(),
+            () -> assertEquals(expectedIrmQueueRequest.getData().getEmailId(), irmQueueRequest.getData().getEmailId(),
                     "Request.Data.EmailId")
         );
     }
