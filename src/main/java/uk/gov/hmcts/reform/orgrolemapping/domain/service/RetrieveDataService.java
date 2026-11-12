@@ -209,6 +209,7 @@ public class RetrieveDataService {
                 softDeletedUsers.add(judicialProfile.getSidamId());
             }
 
+            //TODO - Filter lastWorkingDate?
             if (filterSoftDeletedUsers && isJudicialUserSoftDeleted) {
                 usersAccessProfiles.put(judicialProfile.getSidamId(), Collections.emptySet());
             } else {
