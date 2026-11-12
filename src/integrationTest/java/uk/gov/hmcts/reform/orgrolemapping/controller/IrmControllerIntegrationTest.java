@@ -4,11 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.admin.model.ServeEventQuery;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import io.restassured.specification.RequestSpecification;
+import lombok.SneakyThrows;
+import net.serenitybdd.rest.SerenityRest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
+import uk.gov.hmcts.reform.idam.client.models.TokenResponse;
+import uk.gov.hmcts.reform.idam.client.models.UserInfo;
+import uk.gov.hmcts.reform.orgrolemapping.controller.utils.TestAuthenticationUtils;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.IdamRecordType;
@@ -31,8 +37,12 @@ import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.TestAuthenticationUtils.S2S_XUI;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.OBJECT_MAPPER;
 
 @TestPropertySource(properties = {
@@ -41,7 +51,10 @@ import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtur
     "idam.role.management.scheduling.judicial.cron=0 0 0 31 12 7", // block cron schedule
     "testing.support.enabled=true" // NB: needed for access to test support URLs
 })
-class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
+class IrmControllerIntegrationTest extends BaseTestIntegration {
+
+    private static final String BASEURL = "http://localhost";
+    private static final String ISSUER = "http://localhost:5062/o";
 
     // Idam Feign Endpoints
     private static final String IDAM_DELETEINVITATIONS_URL = "/api/v2/invitations/";
@@ -60,6 +73,9 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     private static final UUID STUB_ID_GETINVITATIONS = UUID.randomUUID();
     private static final UUID STUB_ID_INVITEUSER = UUID.randomUUID();
     private static final UUID STUB_ID_UPDATEUSER = UUID.randomUUID();
+
+    @LocalServerPort
+    private int serverPort;
 
     @Autowired
     private IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
@@ -224,11 +240,12 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
 
     private void stubUpdateUser(String userId, String email, IdamUser user, HttpStatus inviteStatus)
             throws JsonProcessingException {
+        WIRE_MOCK_SERVER.resetAll();
         stubGetIdamUser(userId, user);
         if (user != null) {
             stubUpdateIdamUser(userId, user);
         }
-        stubInviteUser(userId, email, user, Collections.emptyList(), inviteStatus);
+        sharedStubs(userId, email, user, Collections.emptyList(), inviteStatus);
     }
 
     private void verifyUpdateUserStubs(int times) {
@@ -288,6 +305,17 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
     private void stubInviteUser(String userId, String email, IdamUser user, List<IdamInvitation> oldInvitations,
                                 HttpStatus inviteStatus)
             throws JsonProcessingException {
+        WIRE_MOCK_SERVER.resetAll();
+        sharedStubs(userId, email, user, oldInvitations, inviteStatus);
+    }
+
+    private void sharedStubs(String userId, String email, IdamUser user, List<IdamInvitation> oldInvitations,
+                                HttpStatus inviteStatus)
+            throws JsonProcessingException {
+        stubAuthorisationDetails();
+        stubAuthorisationUserInfo(userId);
+        stubLease();
+        stubIdamSystemUser();
         stubGetIdamUserByEmail(getUrlSafe(email), user);
         stubGetInvitations(getUrlSafe(email), oldInvitations);
         stubDeleteInviatations(oldInvitations);
@@ -374,6 +402,65 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
         });
     }
 
+    public void stubAuthorisationDetails() {
+        WIRE_MOCK_SERVER.stubFor(get(urlPathMatching("/details"))
+                .withId(UUID.fromString("d290f1ee-6c54-4b01-90e6-d701748f0851"))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(S2S_XUI)
+                ));
+    }
+
+    public void stubLease() {
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching("/lease"))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("token")
+                ));
+    }
+
+    public void stubIdamSystemUser() throws JsonProcessingException {
+        WIRE_MOCK_SERVER.stubFor(post(urlPathMatching("/o/token"))
+                .willReturn(aResponse()
+                        .withStatus(OK.value())
+                        .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                        .withBody(OBJECT_MAPPER.writeValueAsString(getTokenResponse()))
+                ));
+    }
+
+    private TokenResponse getTokenResponse() {
+        return new TokenResponse(
+                "user1",
+                "expiresInValue",
+                "idTokenValue",
+                "refreshTokenValue",
+                "scopeValue",
+                "tokenTypeValue"
+        );
+    }
+
+    public void stubAuthorisationUserInfo(String actorId)
+            throws JsonProcessingException {
+        WIRE_MOCK_SERVER.stubFor(get(urlPathMatching("/o/userinfo"))
+                .withId(UUID.fromString("9f8c7d6e-5b4a-3c2d-1e0f-9a8b7c6d5e4f"))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(OBJECT_MAPPER.writeValueAsString(getUserInfo(actorId)))
+                ));
+    }
+
+    private UserInfo getUserInfo(String actorId) {
+        return UserInfo.builder()
+                .uid(actorId)
+                .givenName("Super")
+                .familyName("User")
+                .roles(List.of("%s"))
+                .build();
+    }
+
     /**
      * Verify Data.
      */
@@ -451,5 +538,13 @@ class IrmControllerIntegrationTest extends BaseAuthorisedTestIntegration {
 
     private String getUrlSafe(String value) {
         return URLEncoder.encode(value, StandardCharsets.UTF_8);
+    }
+
+    @SneakyThrows
+    private RequestSpecification getRequestSpecification() {
+        return SerenityRest.given()
+                .baseUri(BASEURL)
+                .port(serverPort)
+                .headers(TestAuthenticationUtils.getJwtHeaders(ISSUER, false));
     }
 }
