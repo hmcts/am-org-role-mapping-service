@@ -21,10 +21,14 @@ import java.util.UUID;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.FEE_PAID;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.SALARIED;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.model.constants.JudicialAccessProfile.AppointmentType.VOLUNTARY;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.DELETED_IRM_QUEUE_TEMPLATE;
+import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.EMPTY_IRM_QUEUE_TEMPLATE;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.EMPTY_ROLE_ASSIGNMENT_TEMPLATE;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.RunJudicialDroolIntegrationTests.DROOL_JUDICIAL_TEST_OUTPUT_PATH;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.DF;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.EMAIL_ID;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.IDAM_ID;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.LAST_WORKING_DATE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.REGION_02_MIDLANDS;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.addRegionOverrideMapValues;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.cloneAndOverrideMap;
@@ -272,6 +276,8 @@ public class DroolJudicialTestArgumentsHelper {
         // add extras as Map.of constructor above is full
         outputMap.put(JBS_REGION_ID, "region_jbs");
         outputMap.put(JBS_LOCATION_ID, "location_jbs");
+        outputMap.put(EMAIL_ID, UUID.randomUUID() + "@example.com");
+        outputMap.put(LAST_WORKING_DATE, "");
 
         // add or override with extra values if needed
         if (MapUtils.isNotEmpty(overrideMapValues)) {
@@ -397,6 +403,7 @@ public class DroolJudicialTestArgumentsHelper {
             APPOINTMENT_END_DATE_EXPIRED,
             "NegativeTest/AppointmentEndDateExpired/",
             expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), APPOINTMENT_END_TIME),
+            null,
             null // no override implemented for this scenario
         ));
 
@@ -406,6 +413,7 @@ public class DroolJudicialTestArgumentsHelper {
             AUTHORISATION_END_DATE_EXPIRED,
             "NegativeTest/AuthorisationEndDateExpired/",
             expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), AUTHORISATION_END_TIME),
+            null,
             testArguments.getAuthorisationExpiredFallbackFileName()
         ));
 
@@ -416,6 +424,7 @@ public class DroolJudicialTestArgumentsHelper {
                 ADDITIONAL_ROLE_END_DATE_EXPIRED,
                 "NegativeTest/AdditionalRoleEndDateExpired/",
                 expireDateInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), ROLE_END_TIME),
+                null,
                 testArguments.getAdditionalRoleExpiredFallbackFileName()
             ));
         }
@@ -426,6 +435,7 @@ public class DroolJudicialTestArgumentsHelper {
             SOFT_DELETE_FLAG_SET,
             "NegativeTest/SoftDeleteFlagSet/",
             setBooleanInReplaceMap(createDefaultJudicialReplaceMap(overrideMapValues), DELETED_FLAG, true),
+            DELETED_IRM_QUEUE_TEMPLATE,
             null // no override implemented for this scenario
         ));
 
@@ -555,6 +565,7 @@ public class DroolJudicialTestArgumentsHelper {
                 .jrdResponseFileName(jrdResponseFileName)
                 .rasRequestFileNameWithBooking(rasRequestFileName + (useWithBookings ? "__withBooking" : ""))
                 .rasRequestFileNameWithoutBooking(rasRequestFileName + (useWithBookings ? "__withoutBooking" : ""))
+                .irmQueueFileName(EMPTY_IRM_QUEUE_TEMPLATE)
                 .additionalRoleTest(additionalRoleTest)
                 .overrideMapValues(
                     generateCommonJudicialOverrideMapValues(FEE_PAID, REGION_02_MIDLANDS)
@@ -613,6 +624,7 @@ public class DroolJudicialTestArgumentsHelper {
                 .rasRequestFileNameWithBooking(rasRequestFileName)
                 // NB: With and Without Booking test output will match for these scenarios
                 .rasRequestFileNameWithoutBooking(rasRequestFileName)
+                .irmQueueFileName(EMPTY_IRM_QUEUE_TEMPLATE)
                 .additionalRoleTest(additionalRoleTest)
                 .additionalRoleExpiredFallbackFileName(additionalRoleExpiredFallbackFileName)
                 .overrideMapValues(
@@ -639,6 +651,7 @@ public class DroolJudicialTestArgumentsHelper {
                 .jrdResponseFileName(jrdResponseFileName)
                 .rasRequestFileNameWithBooking(rasRequestFileName + (useWithBookings ? "__withBooking" : ""))
                 .rasRequestFileNameWithoutBooking(rasRequestFileName + (useWithBookings ? "__withoutBooking" : ""))
+                .irmQueueFileName(EMPTY_IRM_QUEUE_TEMPLATE)
                 .additionalRoleTest(false)
                 .overrideMapValues(
                     generateCommonJudicialOverrideMapValues(VOLUNTARY, REGION_02_MIDLANDS)
@@ -758,6 +771,7 @@ public class DroolJudicialTestArgumentsHelper {
                                                            String testDescription,
                                                            String scenarioOutputPath,
                                                            Map<String, String> replaceMap,
+                                                           String overrideIrmQueueRequestFileName,
                                                            String rasFallbackFileName) {
 
         testDescription = String.format(NEGATIVE_TEST_DESCRIPTION, testDescription);
@@ -774,6 +788,7 @@ public class DroolJudicialTestArgumentsHelper {
             )
             .replaceMap(replaceMap)
             .overrideRasRequestFileName(rasFallbackFileName)
+            .overrideIrmQueueRequestFileName(overrideIrmQueueRequestFileName)
             .build();
     }
 
