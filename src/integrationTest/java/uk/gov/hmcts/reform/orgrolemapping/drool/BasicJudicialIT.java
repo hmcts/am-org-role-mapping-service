@@ -4,6 +4,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.DroolJudicialTestArgument
 
 import java.util.List;
 
+import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.EMPTY_IRM_QUEUE_TEMPLATE;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.EMPTY_ROLE_ASSIGNMENT_TEMPLATE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.DroolJudicialTestArgumentsHelper.adjustTestArguments;
 
@@ -16,6 +17,7 @@ public class BasicJudicialIT {
                     .jrdResponseFileName("000_UnrecognisedServiceCode")
                     .rasRequestFileNameWithBooking(EMPTY_ROLE_ASSIGNMENT_TEMPLATE)
                     .rasRequestFileNameWithoutBooking(EMPTY_ROLE_ASSIGNMENT_TEMPLATE)
+                    .irmQueueFileName(EMPTY_IRM_QUEUE_TEMPLATE)
                     .additionalRoleTest(false)
                     .overrideMapValues(null)
                     .build()

@@ -24,7 +24,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueReposi
 @ConditionalOnProperty(name = "testing.support.enabled", havingValue = "true")
 public class IrmQueueController {
 
-    protected static final String FIND_QUEUE_ENTITY
+    public static final String FIND_QUEUE_ENTITY
             = "/am/testing-support/irm/findQueueEntity";
 
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;

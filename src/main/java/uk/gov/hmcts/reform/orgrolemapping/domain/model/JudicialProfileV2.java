@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -33,4 +34,5 @@ public class JudicialProfileV2 implements Serializable, UserAccessProfile {
     private List<AppointmentV2> appointments;
     private List<AuthorisationV2> authorisations;
     private List<RoleV2> roles;
+    private LocalDate lastWorkingDate;
 }
