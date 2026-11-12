@@ -119,6 +119,9 @@ idam:
       userId: ${ORG_ROLE_MAPPING_IDAM_ADMIN_USERID:}
       secret: ${ORG_ROLE_MAPPING_IDAM_ADMIN_PASSWORD:}
       scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
+  role:
+    management:
+      enabled: ${IDAM_ROLE_MAINTENANCE_ENABLED:false}
   security:
     issuerValidation: ${JWT_ISSUER_VALIDATION_ENABLED:false}
     allowed-issuers:
