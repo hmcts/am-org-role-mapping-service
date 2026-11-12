@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -26,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.BaseTest.WIRE_MOCK_SERVER;
-import static uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.IrmQueueController.FIND_QUEUE_ENTITY;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.RAS_CREATE_ASSIGNMENTS_URL;
 import static uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.AM_ORG_ROLE_MAPPING_SERVICE;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.IDAM_ID;
@@ -44,8 +42,6 @@ public class RoleAssignmentAssertIntegrationHelper {
         Map<String, AssignmentRequest> requestMap = getMapOfRasRequests();
 
         assertEquals(expectedAssignmentRequests.size(), requestMap.size(), "Count of scenarios");
-
-        Map<String, IdamRoleManagementQueueEntity> irmRequestMap = getMapOfIrmRequests();
 
         for (AssignmentRequest expectedAssignmentRequest: expectedAssignmentRequests) {
 
@@ -86,18 +82,6 @@ public class RoleAssignmentAssertIntegrationHelper {
                 testScenario,
                 "RasRequest-Actual"
             );
-
-            // find the actual request from wiremock
-            IdamRoleManagementQueueEntity irmQueueRequest =
-                    irmRequestMap.get(expectedAssignmentRequest.getRequest().getAuthenticatedUserId());
-
-            if (irmQueueRequest != null) {
-                writeJsonToTestScenarioOutput(
-                        writeValueAsPrettyJson(irmQueueRequest),
-                        testScenario,
-                        "IrmQueueRequest-Actual"
-                );
-            }
 
             try {
                 assertNotNull(actualAssignmentRequest, "AssignmentRequest");
@@ -225,18 +209,6 @@ public class RoleAssignmentAssertIntegrationHelper {
         return roleAssignmentMap;
     }
 
-    public static Map<String, IdamRoleManagementQueueEntity> getMapOfIrmRequests()
-            throws IOException {
-        Map<String, IdamRoleManagementQueueEntity> requestMap = new HashMap<>();
-        var allLoggedRequests = WIRE_MOCK_SERVER.findAll(getRequestedFor(urlEqualTo(FIND_QUEUE_ENTITY)));
-        for (LoggedRequest allLoggedRequest : allLoggedRequests) {
-            IdamRoleManagementQueueEntity request
-                    = MAPPER.readValue(allLoggedRequest.getBody(), IdamRoleManagementQueueEntity.class);
-            requestMap.put(request.getUserId(), request);
-        }
-        return requestMap;
-    }
-
     public static Map<String, AssignmentRequest> getMapOfRasRequests() throws IOException {
         Map<String, AssignmentRequest> requestMap = new HashMap<>();
 
@@ -267,6 +239,64 @@ public class RoleAssignmentAssertIntegrationHelper {
         return roleAssignment.getAttributes().containsKey(attributeName)
             ? roleAssignment.getAttributes().get(attributeName).asText()
             : "null";
+    }
+
+    public static void assertIrmQueueRequests(
+            List<TestScenario> testScenarios,
+            Map<String,IdamRoleManagementQueueEntity> expectedIrmQueueRequests,
+            Map<String,IdamRoleManagementQueueEntity> actualIrmQueueRequests) {
+        assertEquals(expectedIrmQueueRequests.size(), actualIrmQueueRequests.size(), "Count of irm queue scenarios");
+
+        expectedIrmQueueRequests.forEach((idamId, expectedIrmQueueRequest) -> {
+
+            try {
+                TestScenario testScenario = findTestScenarioFromIdamId(
+                        idamId,
+                        testScenarios
+                );
+
+                IdamRoleManagementQueueEntity actualIrmQueueRequest = actualIrmQueueRequests.get(idamId);
+
+                // Write the drool report file
+                writeJsonToTestScenarioOutput(
+                        writeValueAsPrettyJson(actualIrmQueueRequest),
+                        testScenario,
+                        "IrmQueueRequest-Actual"
+                );
+
+                // Assert the values
+                try {
+                    assertNotNull(actualIrmQueueRequest, "IrmQueueRequest");
+                    assertIrmQueueRequest(expectedIrmQueueRequest, actualIrmQueueRequest);
+                } catch (AssertionError ex) {
+                    DroolIntegrationTestSingleton.getInstance()
+                            .addJudicialError(testScenario, ex);
+                    throw ex;
+                }
+
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    private static void assertIrmQueueRequest(IdamRoleManagementQueueEntity expectedIrmQueueRequest,
+                                              IdamRoleManagementQueueEntity irmQueueRequest) {
+        assertAll(
+            () -> assertEquals(expectedIrmQueueRequest.getUserId(), irmQueueRequest.getUserId(), "Request.IdamId"),
+            () -> assertNotNull(irmQueueRequest.getUserType(), "Request.UserType"),
+            () -> assertNotNull(irmQueueRequest.getData(), "Request.Data"),
+            () -> assertEquals(expectedIrmQueueRequest.getData().getEmailId(),
+                    irmQueueRequest.getData().getEmailId(), "Request.Data.EmailId"),
+            () -> assertEquals(expectedIrmQueueRequest.getData().getActiveFlag(),
+                    irmQueueRequest.getData().getActiveFlag(), "Request.Data.ActiveFlag"),
+            () -> assertEquals(expectedIrmQueueRequest.getData().getDeletedFlag(),
+                    irmQueueRequest.getData().getDeletedFlag(), "Request.Data.DeletedFlag"),
+            () -> assertNotNull(irmQueueRequest.getLastUpdated(), "Request.LastUpdated"),
+            () -> assertNotNull(irmQueueRequest.getActive(), "Request.Active"),
+            () -> assertNotNull(irmQueueRequest.getRetry(), "Request.Retry"),
+            () -> assertNotNull(irmQueueRequest.getRetryAfter(), "Request.RetryAfter")
+        );
     }
 
 }

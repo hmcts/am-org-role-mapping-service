@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,9 +16,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.orgrolemapping.controller.BaseTestIntegration;
+import uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.IrmQueueController;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 import uk.gov.hmcts.reform.orgrolemapping.data.FlagConfigRepository;
+import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.TestScenario;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.UserRequest;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
@@ -28,6 +31,7 @@ import uk.gov.hmcts.reform.orgrolemapping.util.SecurityUtils;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,6 +45,8 @@ import static uk.gov.hmcts.reform.orgrolemapping.controller.testingsupport.OrgMa
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.S2S_XUI;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.MockUtils.getHttpHeaders;
 import static uk.gov.hmcts.reform.orgrolemapping.drool.BaseDroolTestIntegration.TEST_ENVIRONMENT;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.RoleAssignmentAssertIntegrationHelper.assertIrmQueueRequests;
+import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.IDAM_ID;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.cloneAndExpandReplaceMap;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.getSidamIdsList;
 import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationHelper.writeJsonToTestScenarioOutput;
@@ -54,6 +60,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
     // set environment ready for flag checks
     "launchdarkly.sdk.environment=" + TEST_ENVIRONMENT,
     "orm.environment=" + TEST_ENVIRONMENT,
+    "idam.role.management.enabled=true",
     "testing.support.enabled=true"
 })
 public class BaseDroolTestIntegration extends BaseTestIntegration {
@@ -64,6 +71,7 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
 
     public static final String EMPTY_ROLE_ASSIGNMENT_TEMPLATE = "Common/Empty__RasAssignmentRequest";
 
+    public static final String DELETED_IRM_QUEUE_TEMPLATE = "Common/Deleted__IRMQueueEntry";
     public static final String EMPTY_IRM_QUEUE_TEMPLATE = "Common/Empty__IRMQueueEntry";
 
     public static final boolean NO_BOOKABLE_ROLES_FLAG = false;
@@ -73,6 +81,9 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
     protected final ObjectMapper mapper = JacksonUtils.MAPPER;
 
     protected MockMvc mockMvc;
+
+    @Autowired
+    private IrmQueueController irmQueueController;
 
     @Autowired
     private FlagConfigRepository flagConfigRepository;
@@ -176,6 +187,26 @@ public class BaseDroolTestIntegration extends BaseTestIntegration {
                     .userIds(getSidamIdsList(testScenarios)).build())))
             .andExpect(status().is(200))
             .andReturn();
+    }
+
+    protected void processIrmQueueRequests(Map<String,IdamRoleManagementQueueEntity> expectedIrmQueueRequests,
+                                           List<TestScenario> testScenarios) {
+        Map<String,IdamRoleManagementQueueEntity> actualIrmQueueRequests = new HashMap<>();
+
+        testScenarios.stream()
+            .filter(testScenario -> testScenario.getReplaceMap().get(IDAM_ID) != null)
+            .forEach(testScenario -> {
+                String idamId =  testScenario.getReplaceMap().get(IDAM_ID);
+
+                // Actual
+                ResponseEntity<IdamRoleManagementQueueEntity> irmQueueActualEntity =
+                        irmQueueController.findQueueEntity(idamId);
+                if (irmQueueActualEntity.getStatusCode().is2xxSuccessful()) {
+                    actualIrmQueueRequests.put(idamId, irmQueueActualEntity.getBody());
+                }
+            });
+
+        assertIrmQueueRequests(testScenarios, expectedIrmQueueRequests, actualIrmQueueRequests);
     }
 
     @SuppressWarnings({
