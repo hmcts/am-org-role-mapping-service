@@ -48,6 +48,9 @@ class RequestMappingServiceTest {
     private RoleAssignmentService roleAssignmentService;
 
     @Mock
+    private IdamRoleMappingService idamRoleMappingService;
+
+    @Mock
     private SecurityUtils securityUtils;
 
     @Mock
@@ -68,10 +71,12 @@ class RequestMappingServiceTest {
         StatelessKieSession kieSession = kieContainer.newStatelessKieSession("org-role-mapping-validation-session");
 
         sutCaseworker = new RequestMappingService<>(
-            persistenceService, environmentConfiguration, roleAssignmentService, kieSession, securityUtils
+            persistenceService, environmentConfiguration, roleAssignmentService, idamRoleMappingService,
+                kieSession, securityUtils
         );
         sutJudicial = new RequestMappingService<>(
-            persistenceService, environmentConfiguration, roleAssignmentService, kieSession, securityUtils
+            persistenceService, environmentConfiguration, roleAssignmentService, idamRoleMappingService,
+                kieSession, securityUtils
         );
 
         setUpEnvironmentConfig(TEST_ENVIRONMENT);

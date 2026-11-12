@@ -194,6 +194,8 @@ public class AssignmentRequestBuilder {
             serviceCodes.forEach(serviceCode -> {
                 var judicialAccessProfile = JudicialAccessProfile.builder()
                     .userId(judicialProfile.getSidamId())
+                    .emailId(judicialProfile.getEmailId())
+                    .activeFlag(judicialProfile.getActiveFlag())
                     .roles(roles)
                     .additionalRoles(activeRoles)
                     .beginTime(localDateToZonedDateTime(appointment.getStartDate()))
