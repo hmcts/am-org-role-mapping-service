@@ -36,6 +36,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures.OBJECT_MAPPER;
 
 @TestPropertySource(properties = {
+    "idam.role.management.enabled=true",
     "idam.role.management.scheduling.enabled=false",
     "idam.role.management.scheduling.judicial.cron=0 0 0 31 12 7", // block cron schedule
     "testing.support.enabled=true" // NB: needed for access to test support URLs
