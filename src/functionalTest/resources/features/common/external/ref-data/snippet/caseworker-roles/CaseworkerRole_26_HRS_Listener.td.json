@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_26_HRS_Listener",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "26",
+  "role": "HRS Listener"
+}

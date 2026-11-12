@@ -1,0 +1,7 @@
+{
+  "_guid_": "CaseworkerRole_27_HRS_Sharer",
+  "_extends_": "CaseworkerRole__Base",
+
+  "role_id": "27",
+  "role": "HRS Sharer"
+}
