@@ -66,6 +66,7 @@ java:
     PROFESSIONAL_SCHEDULING_ENABLED: false
     # IRM_SCHEDULING_ENABLED should remain false in PREVIEW to prevent scheduling running in all PRs.
     IRM_SCHEDULING_ENABLED: false
+    IDAM_ROLE_MAINTENANCE_ENABLED: true
   postgresql:
     enabled: true
     primary:
@@ -130,7 +131,6 @@ am-role-assignment-service:
       BYPASS_ORG_DROOL_RULE: true
       ENABLE_DB_MIGRATE: true
       RUN_DB_MIGRATION_ON_STARTUP: true
-      IDAM_ROLE_MAINTENANCE_ENABLED: true
 
 am-judicial-booking-service:
   java:
