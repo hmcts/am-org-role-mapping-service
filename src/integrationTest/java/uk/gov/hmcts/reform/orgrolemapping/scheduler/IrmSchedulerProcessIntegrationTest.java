@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.irm.IdamRecordType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamUser;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.IdamRoleMappingService;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.EndStatus;
 import uk.gov.hmcts.reform.orgrolemapping.monitoring.models.ProcessMonitorDto;
 
@@ -40,6 +41,62 @@ class IrmSchedulerProcessIntegrationTest extends BaseSchedulerTestIntegration {
 
     @Autowired
     private IrmScheduler irmScheduler;
+
+    @Autowired
+    private IdamRoleMappingService idamRoleMappingService;
+
+
+    /**
+     * Delete Inactive Queue Entries - days not set.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql"
+    })
+    void testDeleteInactiveQueueEntries_noDaysSet() {
+        // GIVEN
+        IrmScheduler irmScheduler =  new IrmScheduler(idamRoleMappingService,"");
+
+        // WHEN
+        ProcessMonitorDto processMonitorDto = irmScheduler.deleteInactiveQueueEntries();
+
+        // THEN
+        assertNotNull(processMonitorDto);
+        assertEquals(EndStatus.FAILED, processMonitorDto.getEndStatus());
+    }
+
+    /**
+     * Delete Inactive Queue Entries.
+     */
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:sql/irm/queue/init_idam_role_management_queue.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_caseworker.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_retry4.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_inactive_89days.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_inactive_90days.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_inactive_91days.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_norole_89days.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_norole_90days.sql",
+        "classpath:sql/irm/queue/insert_idam_role_management_queue_norole_91days.sql"
+    })
+    void testDeleteInactiveQueueEntries() {
+        // GIVEN
+        Integer noOfDays = 90;
+        IrmScheduler irmScheduler =  new IrmScheduler(idamRoleMappingService,noOfDays.toString());
+
+        // WHEN
+        ProcessMonitorDto processMonitorDto = irmScheduler.deleteInactiveQueueEntries();
+
+        // THEN
+        assertNotNull(processMonitorDto);
+        assertEquals(EndStatus.SUCCESS, processMonitorDto.getEndStatus());
+        int expectedNoOfRecords = 4;
+        List<IdamRoleManagementQueueEntity> results = assertNoOfRecords(expectedNoOfRecords);
+        LocalDateTime nintyDays = LocalDateTime.now().minusDays(noOfDays);
+        results.forEach(record -> assertTrue(record.getLastUpdated().isAfter(nintyDays)));
+    }
+
 
     /**
      * Process Judicial Queue - Success.
@@ -141,10 +198,15 @@ class IrmSchedulerProcessIntegrationTest extends BaseSchedulerTestIntegration {
         assertQueueRecords(IdamRecordType.USER, expectedNoOfRecords, isUpdated, retry);
     }
 
-    private void assertQueueRecords(IdamRecordType idamRecordType, int expectedNoOfRecords,
-                                    boolean isUpdated, int retry) {
+    private List<IdamRoleManagementQueueEntity> assertNoOfRecords(int expectedNoOfRecords) {
         List<IdamRoleManagementQueueEntity> results = idamRoleManagementQueueRepository.findAll();
         assertEquals(expectedNoOfRecords, results.size());
+        return results;
+    }
+
+    private void assertQueueRecords(IdamRecordType idamRecordType, int expectedNoOfRecords,
+                                    boolean isUpdated, int retry) {
+        List<IdamRoleManagementQueueEntity> results = assertNoOfRecords(expectedNoOfRecords);
         results.forEach(record -> {
             if (JUDICIAL.equals(record.getUserType())) {
                 assertEquals(!isUpdated, record.getActive(), "Active mismatch");

@@ -83,3 +83,13 @@ Feature: F-022 : IRM Scheduler
     And it is submitted to call the [Delete IDAM user from queue] operation of [Organisation Role Mapping],
     Then a positive response is received,
     And the response has all other details as expected
+
+  @S-022.08
+  @FeatureToggle(EV:IRM_FTA_ENABLED=on)
+  Scenario: trigger IRM scheduler delete inactive queue entries
+    Given a user with [an active IDAM profile with full permissions],
+    And a successful call [to make the IRM queue value inactive] as in [F-022-MakeAllIrmQueueValuesInactive]
+    When a request is prepared with appropriate values,
+    And it is submitted to call the [Delete inactive queue entries] operation of [Organisation Role Mapping],
+    Then a positive response is received,
+    And the response has all other details as expected
