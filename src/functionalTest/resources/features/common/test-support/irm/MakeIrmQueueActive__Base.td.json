@@ -7,7 +7,7 @@
   "specs": [],
 
   "method": "POST",
-  "uri": "/am/testing-support/irm/makeQueueEntityActive",
+  "uri": "/am/testing-support/irm/makeIrmQueueInactive",
 
   "request": {
     "headers": {

@@ -31,7 +31,7 @@ public class IrmQueueController {
     public static final String FIND_QUEUE_ENTITY
             = "/am/testing-support/irm/findQueueEntity";
     public static final String MAKE_IRM_QUEUE_INACTIVE
-            = "/am/testing-support/prm/makeIrmQueueInactive";
+            = "/am/testing-support/irm/makeIrmQueueInactive";
 
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
 
