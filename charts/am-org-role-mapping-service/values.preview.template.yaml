@@ -67,6 +67,7 @@ java:
     # IRM_SCHEDULING_ENABLED should remain false in PREVIEW to prevent scheduling running in all PRs.
     IRM_SCHEDULING_ENABLED: false
     IDAM_ROLE_MAINTENANCE_ENABLED: true
+    IDAM_USER_URL: https://idam-testing-support-api.aat.platform.hmcts.net
   postgresql:
     enabled: true
     primary:
