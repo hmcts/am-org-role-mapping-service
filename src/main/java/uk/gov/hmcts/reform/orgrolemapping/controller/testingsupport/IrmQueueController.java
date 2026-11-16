@@ -5,6 +5,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.AUTHORIZATI
 import static uk.gov.hmcts.reform.orgrolemapping.apihelper.Constants.SERVICE_AUTHORIZATION;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,9 +21,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueRepository;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleDataRole;
+import uk.gov.hmcts.reform.orgrolemapping.domain.service.IdamRoleMappingService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @ConditionalOnProperty(name = "testing.support.enabled", havingValue = "true")
@@ -32,12 +39,17 @@ public class IrmQueueController {
             = "/am/testing-support/irm/findQueueEntity";
     public static final String MAKE_IRM_QUEUE_INACTIVE
             = "/am/testing-support/irm/makeIrmQueueInactive";
+    public static final String ADD_IRM_QUEUE_ENTITY
+            = "/am/testing-support/irm/addQueueEntity";
 
+    private final IdamRoleMappingService idamRoleMappingService;
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
 
     @Autowired
-    public IrmQueueController(IdamRoleManagementQueueRepository idamRoleManagementQueueRepository) {
+    public IrmQueueController(IdamRoleManagementQueueRepository idamRoleManagementQueueRepository,
+                              IdamRoleMappingService idamRoleMappingService) {
         this.idamRoleManagementQueueRepository = idamRoleManagementQueueRepository;
+        this.idamRoleMappingService = idamRoleMappingService;
     }
 
     @GetMapping(
@@ -72,7 +84,6 @@ public class IrmQueueController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
     @PutMapping(
         path = MAKE_IRM_QUEUE_INACTIVE
     )
@@ -94,8 +105,7 @@ public class IrmQueueController {
     public ResponseEntity<IdamRoleManagementQueueEntity> makeIrmQueueInactive(
             @RequestParam() String userId
     ) {
-        getIrmQueueEntities(userId).forEach(
-                idamRoleManagementQueueEntity -> setIrmInactive(idamRoleManagementQueueEntity));
+        getIrmQueueEntities(userId).forEach(this::setIrmInactive);
         return ResponseEntity.ok().build();
     }
 
@@ -119,5 +129,42 @@ public class IrmQueueController {
             idamRoleManagementQueueEntity.setActive(false);
             idamRoleManagementQueueRepository.save(idamRoleManagementQueueEntity);
         }
+    }
+
+    @PutMapping(
+            path = ADD_IRM_QUEUE_ENTITY
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(
+        summary = "Add IRM Queue entry",
+        security = {
+            @SecurityRequirement(name = AUTHORIZATION),
+            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+        })
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(
+            schema = @Schema(implementation = IdamRoleManagementQueueEntity.class),
+            mediaType = APPLICATION_JSON_VALUE
+        )
+    )
+    public ResponseEntity<IdamRoleManagementQueueEntity> addIrmQueueEntity(
+            @RequestParam() String userId,
+            @RequestParam() String userType,
+            @RequestParam("email") String email,
+            @Parameter(description = "Comma separated list of role names")
+            @RequestParam("roleNames") List<String> roleNames) {
+        List<IdamRoleDataRole> roles = new ArrayList<>();
+        roleNames.forEach( roleName -> roles.add(IdamRoleDataRole.builder().roleName(roleName).build()));
+        Map<String, IdamRoleData> idamRoleList = new HashMap<>();
+        idamRoleList.put(userId, IdamRoleData.builder()
+                        .emailId(email)
+                        .activeFlag("Y")
+                        .deletedFlag("N")
+                        .roles(roles)
+                .build());
+        idamRoleMappingService.addToQueue(UserType.valueOf(userType), idamRoleList);
+        return ResponseEntity.ok().build();
     }
 }
