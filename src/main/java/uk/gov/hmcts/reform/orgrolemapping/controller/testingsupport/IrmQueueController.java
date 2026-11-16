@@ -156,7 +156,7 @@ public class IrmQueueController {
             @Parameter(description = "Comma separated list of role names")
             @RequestParam("roleNames") List<String> roleNames) {
         List<IdamRoleDataRole> roles = new ArrayList<>();
-        roleNames.forEach( roleName -> roles.add(IdamRoleDataRole.builder().roleName(roleName).build()));
+        roleNames.forEach(roleName -> roles.add(IdamRoleDataRole.builder().roleName(roleName).build()));
         Map<String, IdamRoleData> idamRoleList = new HashMap<>();
         idamRoleList.put(userId, IdamRoleData.builder()
                         .emailId(email)
