@@ -18,6 +18,8 @@ feign:
     config:
       roleAssignmentApp:
         url: http://localhost:${wiremock.server.port:4096}
+      idamClient:
+        url: http://localhost:${wiremock.server.port:5000}
 
 amqp:
   crd:
