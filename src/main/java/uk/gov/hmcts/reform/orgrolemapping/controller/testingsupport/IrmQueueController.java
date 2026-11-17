@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,6 +42,10 @@ public class IrmQueueController {
             = "/am/testing-support/irm/makeIrmQueueInactive";
     public static final String ADD_IRM_QUEUE_ENTITY
             = "/am/testing-support/irm/addQueueEntity";
+    public static final String DELETE_IRM_QUEUE_ENTITY
+            = "/am/testing-support/irm/deleteQueueEntity";
+    private static final String DELETED_USER_MSG
+            = "Deleted queue entity for userId: %s";
 
     private final IdamRoleMappingService idamRoleMappingService;
     private final IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
@@ -165,6 +170,30 @@ public class IrmQueueController {
                         .roles(roles)
                 .build());
         idamRoleMappingService.addToQueue(UserType.valueOf(userType), idamRoleList);
-        return ResponseEntity.ok().build();
+        return findQueueEntity(userId);
+    }
+
+    @DeleteMapping(
+        path = DELETE_IRM_QUEUE_ENTITY
+    )
+    @ResponseStatus(code = HttpStatus.OK)
+    @Operation(
+        summary = "Delete IRM Queue entry",
+        security = {
+            @SecurityRequirement(name = AUTHORIZATION),
+            @SecurityRequirement(name = SERVICE_AUTHORIZATION)
+        })
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(
+            schema = @Schema(implementation = String.class),
+            mediaType = APPLICATION_JSON_VALUE
+        )
+    )
+    public ResponseEntity<String> deleteIrmQueueEntity(
+            @RequestParam() String userId) {
+        idamRoleMappingService.deleteFromQueue(userId);
+        return ResponseEntity.ok(String.format(DELETED_USER_MSG, userId));
     }
 }
