@@ -200,7 +200,7 @@ public class AssignmentRequestBuilder {
                     .additionalRoles(activeRoles)
                     .beginTime(localDateToZonedDateTime(appointment.getStartDate()))
                     .endTime(localDateToZonedDateTime(appointment.getEndDate()))
-                    .lastWorkingDate(localDateToZonedDateTime(judicialProfile.getLastWorkingDate()))
+                    .lastWorkingDate(judicialProfile.getLastWorkingDate())
                     .regionId(appointment.getCftRegionID())
                     .baseLocationId(appointment.getBaseLocationId())
                     .ticketCodes(stringListToDistinctList(ticketCodes))
