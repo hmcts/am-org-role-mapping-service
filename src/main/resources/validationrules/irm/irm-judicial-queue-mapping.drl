@@ -29,7 +29,7 @@ then
             .userId($user.getSidamId())
             .userType(UserType.JUDICIAL)
             .data(IdamRoleData.builder()
-                .emailId($user.emailId())
+                .emailId($user.getEmailId())
                 .roles(idamRoleDataRoles)
                 .build())
             .active(true)
