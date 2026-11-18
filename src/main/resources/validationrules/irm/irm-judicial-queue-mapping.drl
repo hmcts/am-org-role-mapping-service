@@ -21,7 +21,7 @@ when
 then
     // Build the list of roles
     List<IdamRoleDataRole> idamRoleDataRoles = new ArrayList<>();
-    $user.roles.forEach(role ->
+    $user.getRoles().forEach(role ->
         idamRoleDataRoles.add(IdamRoleDataRole.builder().roleName(role.jurisdictionRoleName).build()));
 
     insert(
