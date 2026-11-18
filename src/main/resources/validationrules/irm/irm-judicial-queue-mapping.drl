@@ -23,7 +23,7 @@ then
     // Build the list of roles
     List<IdamRoleDataRole> idamRoleDataRoles = new ArrayList<>();
     $user.getRoles().forEach(role ->
-        idamRoleDataRoles.add(IdamRoleDataRole.builder().roleName(role.jurisdictionRoleName).build()));
+        idamRoleDataRoles.add(IdamRoleDataRole.builder().roleName(role.getJurisdictionRoleName()).build()));
 
     insert(
         IdamRoleManagementQueueEntity.builder()
