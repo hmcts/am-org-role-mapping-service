@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialBooking;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialOfficeHolder;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleAssignment;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.RoleMapping;
 import uk.gov.hmcts.reform.orgrolemapping.helper.TestDataBuilder;
 
 import java.io.IOException;
@@ -602,7 +603,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         List<JudicialOfficeHolder> outputJoh = new ArrayList<>();
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags(), outputJoh);
+        RoleMapping roleMapping = buildExecuteKieSession(setFeatureFlags(), outputJoh);
 
         // verify region and baseLocation are blank
         outputJoh.forEach(joh -> {
@@ -611,7 +612,8 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         });
 
         // verify no region attribute in output role-assignments
-        roleAssignments.forEach(r -> assertFalse(r.getAttributes().containsKey("region")));
+        roleMapping.getRoleAssignments()
+                .forEach(r -> assertFalse(r.getAttributes().containsKey("region")));
     }
 
     @ParameterizedTest
@@ -625,7 +627,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         List<JudicialOfficeHolder> outputJoh = new ArrayList<>();
 
         //Execute Kie session
-        List<RoleAssignment> roleAssignments = buildExecuteKieSession(setFeatureFlags(), outputJoh);
+        RoleMapping roleMapping = buildExecuteKieSession(setFeatureFlags(), outputJoh);
 
         // verify region and baseLocation are blank
         outputJoh.forEach(joh -> {
@@ -636,7 +638,7 @@ class DroolSscsJudicialOfficeMappingTest extends DroolBase {
         // verify region attribute in output role-assignments
         AtomicBoolean foundAnyRegion = new AtomicBoolean(false);
         AtomicBoolean foundBookedRegion = new AtomicBoolean(false);
-        roleAssignments.forEach(r -> {
+        roleMapping.getRoleAssignments().forEach(r -> {
             if (r.getAttributes().containsKey("region")) {
                 foundAnyRegion.set(true);
                 assertEquals(regionId, r.getAttributes().get("region").asText());
