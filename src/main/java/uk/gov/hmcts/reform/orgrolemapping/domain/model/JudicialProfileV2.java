@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.orgrolemapping.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -36,9 +35,4 @@ public class JudicialProfileV2 implements Serializable, UserAccessProfile {
     private List<AuthorisationV2> authorisations;
     private List<RoleV2> roles;
     private ZonedDateTime lastWorkingDate;
-
-    @JsonIgnore
-    public boolean hasValidLastWorkingDate() {
-        return (lastWorkingDate == null || lastWorkingDate.compareTo(ZonedDateTime.now()) >= 0);
-    }
 }
