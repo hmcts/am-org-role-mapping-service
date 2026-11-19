@@ -1,16 +1,10 @@
 package validationrules.irm;
 
-import uk.gov.hmcts.reform.orgrolemapping.data.irm.IdamRoleManagementQueueEntity;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.UserType;
 import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleData;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRoleDataRole;
-import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialProfileV2;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRole;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
 
 /*
@@ -19,25 +13,12 @@ import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMapping
 rule "v1_0_irm_judicial_queue"
 when
     $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IRM_WA_1_0.getValue())
-    $user: JudicialProfileV2(hasValidLastWorkingDate())
+    $user: JudicialAccessProfile(hasValidLastWorkingDate())
 then
-    // Build the list of roles
-    List<IdamRoleDataRole> idamRoleDataRoles = new ArrayList<>();
-    $user.getRoles().forEach(role ->
-        idamRoleDataRoles.add(IdamRoleDataRole.builder().roleName(role.getJurisdictionRoleName()).build()));
-
     insert(
-        IdamRoleManagementQueueEntity.builder()
-            .userId($user.getSidamId())
-            .userType(UserType.JUDICIAL)
-            .data(IdamRoleData.builder()
-                .emailId($user.getEmailId())
-                .roles(idamRoleDataRoles)
-                .build())
-            .active(true)
-            .retry(0)
-            .retryAfter(LocalDateTime.now())
-            .lastUpdated(LocalDateTime.now())
+        IdamRole.builder()
+            .userId($user.getUserId())
+            .roleName("judiciary")
             .build()
     );
 
