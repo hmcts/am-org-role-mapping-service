@@ -80,4 +80,8 @@ public class JudicialAccessProfile implements Serializable, UserAccessProfile {
         return (endTime == null || endTime.compareTo(ZonedDateTime.now()) >= 0);
     }
 
+    @JsonIgnore
+    public boolean hasValidLastWorkingDate() {
+        return (lastWorkingDate == null || lastWorkingDate.compareTo(ZonedDateTime.now()) >= 0);
+    }
 }
