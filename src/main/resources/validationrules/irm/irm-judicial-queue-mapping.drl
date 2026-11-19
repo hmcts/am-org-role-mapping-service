@@ -18,7 +18,7 @@ then
     insert(
         IdamRole.builder()
             .userId($user.getUserId())
-            .role("judiciary")
+            .roleName("judiciary")
             .build()
     );
 
