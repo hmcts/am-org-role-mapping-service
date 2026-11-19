@@ -12,6 +12,7 @@
                     validationrules.hrs,
                     validationrules.probate,
                     validationrules.fr,
+                    validationrules.irm,
                     validationrules.possessions">
         <ksession name="org-role-mapping-validation-session" type="stateless"/>
     </kbase>
