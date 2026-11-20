@@ -33,7 +33,7 @@
 
           "work_area": [
             {
-              "_extends_": "WorkArea_AAA3_Possessions"
+              "_extends_": "WorkArea_AAA1_CivilEnforcement"
             }
           ]
         }
