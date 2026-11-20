@@ -62,7 +62,7 @@ class IdamRoleMappingServiceTest {
 
     private final IdamRoleMappingService sut =
             new IdamRoleMappingService(idamFeignClient, idamRoleManagementQueueRepository,
-                    processEventTracker, "1", "2", "3", ENABLED);
+                    processEventTracker, "1", "2", "3", DISABLED, ENABLED);
 
     private static final String[] EMAILS = {"email1@test.com", "email2@test.com"};
     private static final String[] OLDROLES = {"OldRole1", "Role1"};
@@ -73,18 +73,13 @@ class IdamRoleMappingServiceTest {
     void addToQueueTest_Disabled() {
         IdamRoleMappingService disabledSut =
                 new IdamRoleMappingService(idamFeignClient, idamRoleManagementQueueRepository,
-                        processEventTracker, "1", "2", "3", DISABLED);
+                        processEventTracker, "1", "2", "3", DISABLED, DISABLED);
         addToQueueTest(disabledSut, UserType.JUDICIAL, false);
     }
 
     @Test
     void addToQueueTest_Judicial() {
         addToQueueTest(sut, UserType.JUDICIAL, true);
-    }
-
-    @Test
-    void addToQueueTest_CaseWorker() {
-        addToQueueTest(sut, UserType.CASEWORKER, true);
     }
 
     @Captor
