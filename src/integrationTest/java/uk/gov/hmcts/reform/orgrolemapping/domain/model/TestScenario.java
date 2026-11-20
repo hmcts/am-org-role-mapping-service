@@ -18,4 +18,7 @@ public class TestScenario {
     // if test scenario needs to use an alternative Ras Request file template,
     //    e.g. Additional Role Fallback needed when role is expired but default role-assignments still generated
     private String overrideRasRequestFileName;
+
+    // if test scenario needs to use an alternative IRM Queue Request file template (ie deletion)
+    private String overrideIrmQueueRequestFileName;
 }

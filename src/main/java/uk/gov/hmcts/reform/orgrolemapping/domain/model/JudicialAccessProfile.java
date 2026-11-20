@@ -41,6 +41,7 @@ public class JudicialAccessProfile implements Serializable, UserAccessProfile {
     private List<String> roles;
     private List<RoleV2> additionalRoles;
     private String status;
+    private ZonedDateTime lastWorkingDate;
 
     @JsonIgnore
     public boolean isFeePaid() {

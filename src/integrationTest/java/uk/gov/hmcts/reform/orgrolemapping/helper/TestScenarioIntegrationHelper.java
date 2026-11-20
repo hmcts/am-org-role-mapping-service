@@ -29,6 +29,8 @@ public class TestScenarioIntegrationHelper {
 
     // COMMON replace values
     public static final String IDAM_ID = "[[IDAM_ID]]";
+    public static final String EMAIL_ID = "[[EMAIL_ID]]";
+    public static final String LAST_WORKING_DATE = "[[LAST_WORKING_DATE]]";
     public static final String ANY_UUID = "[[ANY_UUID]]";
     public static final String ANY_DATE_TIME = "[[ANY_DATE_TIME]]";
     public static final String NOW_DATE_TIME = "[[NOW_DATE_TIME]]";
