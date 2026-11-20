@@ -34,6 +34,9 @@ public class TestScenarioIntegrationHelper {
     public static final String ANY_UUID = "[[ANY_UUID]]";
     public static final String ANY_DATE_TIME = "[[ANY_DATE_TIME]]";
     public static final String NOW_DATE_TIME = "[[NOW_DATE_TIME]]";
+    public static final String TODAYS_DATE = "[[TODAYS_DATE]]";
+    public static final String TOMORROWS_DATE = "[[TOMORROWS_DATE]]";
+    public static final String YESTERDAYS_DATE = "[[YESTERDAYS_DATE]]";
     public static final String RANDOM_ID = "[[RANDOM_ID]]";
     public static final String REGION_ID = "[[REGION_ID]]";
     public static final String REGION_NAME = "[[REGION_NAME]]";
@@ -113,6 +116,9 @@ public class TestScenarioIntegrationHelper {
             ANY_UUID, UUID.randomUUID().toString(),
             RANDOM_ID, String.valueOf(RANDOM.nextInt(1000000)),
             ANY_DATE_TIME, LocalDateTime.now().minusDays(100).format(DTF),
+            TODAYS_DATE, LocalDateTime.now().format(DF),
+            TOMORROWS_DATE, LocalDateTime.now().plusDays(1).format(DF),
+            YESTERDAYS_DATE, LocalDateTime.now().minusDays(1).format(DF),
             NOW_DATE_TIME, LocalDateTime.now().format(DTF)
         ));
     }

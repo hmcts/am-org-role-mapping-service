@@ -124,6 +124,10 @@ idam:
       secret: ${ORG_ROLE_MAPPING_IDAM_CLIENT_SECRET:}
   role:
     management:
+      caseworker:
+        enabled: ${IDAM_ROLE_MAINTENANCE_CASEWORKER_ENABLED:false}
+      judicial:
+        enabled: ${IDAM_ROLE_MAINTENANCE_JUDICIAL_ENABLED:false}
       scheduling:
         enabled: ${IRM_SCHEDULING_ENABLED:false}
         retryOneIntervalMin: ${IRM_RETRY_ONE_INTERVAL_MIN:2}
@@ -134,7 +138,6 @@ idam:
         housekeeping:
           cron: ${CRON_IRM_HOUSEKEEPING:0 0 8 * 1-12 *}
           deleteIntervalDays: ${IRM_SCHEDULING_HOUSEKEEPING_DAYS:90}
-      enabled: ${IDAM_ROLE_MAINTENANCE_ENABLED:false}
   security:
     issuerValidation: ${JWT_ISSUER_VALIDATION_ENABLED:false}
     allowed-issuers:
