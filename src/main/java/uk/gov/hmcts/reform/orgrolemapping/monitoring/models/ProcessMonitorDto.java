@@ -3,12 +3,14 @@ package uk.gov.hmcts.reform.orgrolemapping.monitoring.models;
 import lombok.Getter;
 
 import jakarta.validation.constraints.Size;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Getter
+@NoArgsConstructor
 public class ProcessMonitorDto {
     private UUID id;
     private String processType;
