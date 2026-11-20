@@ -121,7 +121,10 @@ idam:
       scope: ${ORG_ROLE_MAPPING_IDAM_ADMIN_SCOPE:openid profile roles authorities}
   role:
     management:
-      enabled: ${IDAM_ROLE_MAINTENANCE_ENABLED:false}
+      caseworker:
+        enabled: ${IDAM_ROLE_MAINTENANCE_CASEWORKER_ENABLED:false}
+      judicial:
+        enabled: ${IDAM_ROLE_MAINTENANCE_JUDICIAL_ENABLED:false}
   security:
     issuerValidation: ${JWT_ISSUER_VALIDATION_ENABLED:false}
     allowed-issuers:

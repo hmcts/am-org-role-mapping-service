@@ -21,21 +21,29 @@ public class IdamRoleMappingService {
 
     private IdamRoleManagementQueueRepository idamRoleManagementQueueRepository;
     private IdamRoleDataJsonBConverter idamRoleDataJsonBConverter;
-    private Boolean idamRoleManagementEnabled;
+    private Boolean idamRoleManagementJudicialEnabled;
+    private Boolean idamRoleManagementCaseworkerEnabled;
 
     @Autowired
     public IdamRoleMappingService(
             IdamRoleManagementQueueRepository idamRoleManagementQueueRepository,
-            @Value("${idam.role.management.enabled}")
-            String idamRoleManagementEnabled) {
+            @Value("${idam.role.management.caseworker.enabled}")
+            String idamRoleManagementCaseworkerEnabled,
+            @Value("${idam.role.management.judicial.enabled}")
+            String idamRoleManagementJudicialEnabled) {
         this.idamRoleManagementQueueRepository = idamRoleManagementQueueRepository;
         this.idamRoleDataJsonBConverter = new IdamRoleDataJsonBConverter();
-        this.idamRoleManagementEnabled = Boolean.parseBoolean(idamRoleManagementEnabled);
+        this.idamRoleManagementCaseworkerEnabled = Boolean.parseBoolean(idamRoleManagementCaseworkerEnabled);
+        this.idamRoleManagementJudicialEnabled = Boolean.parseBoolean(idamRoleManagementJudicialEnabled);
     }
 
     @Transactional
     public void addToQueue(UserType userType, Map<String, IdamRoleData> idamRoleList) {
-        if  (!idamRoleManagementEnabled) {
+        if  (UserType.JUDICIAL.equals(userType) && !idamRoleManagementJudicialEnabled) {
+            log.debug("UserType JUDICIAL is disabled");
+            return;
+        } else if (UserType.CASEWORKER.equals(userType) && !idamRoleManagementCaseworkerEnabled) {
+            log.debug("UserType CASEWORKER is disabled");
             return;
         }
         log.info("Adding users to idam role mapping queue, total users: {}", idamRoleList.size());
