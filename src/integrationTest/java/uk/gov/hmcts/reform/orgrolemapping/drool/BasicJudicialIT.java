@@ -20,6 +20,30 @@ public class BasicJudicialIT {
                     .irmQueueFileName(EMPTY_IRM_QUEUE_TEMPLATE)
                     .additionalRoleTest(false)
                     .overrideMapValues(null)
+                    .build(),
+                DroolJudicialTestArguments.builder()
+                    .jrdResponseFileName("001_UnrecognisedServiceCode_LastWorkingDate_Yesterday")
+                    .rasRequestFileNameWithBooking(EMPTY_ROLE_ASSIGNMENT_TEMPLATE)
+                    .rasRequestFileNameWithoutBooking(EMPTY_ROLE_ASSIGNMENT_TEMPLATE)
+                    .irmQueueFileName(EMPTY_IRM_QUEUE_TEMPLATE)
+                    .additionalRoleTest(false)
+                    .overrideMapValues(null)
+                    .build(),
+                DroolJudicialTestArguments.builder()
+                    .jrdResponseFileName("002_UnrecognisedServiceCode_LastWorkingDate_Today")
+                    .rasRequestFileNameWithBooking(EMPTY_ROLE_ASSIGNMENT_TEMPLATE)
+                    .rasRequestFileNameWithoutBooking(EMPTY_ROLE_ASSIGNMENT_TEMPLATE)
+                    .irmQueueFileName(EMPTY_IRM_QUEUE_TEMPLATE)
+                    .additionalRoleTest(false)
+                    .overrideMapValues(null)
+                    .build(),
+                DroolJudicialTestArguments.builder()
+                    .jrdResponseFileName("003_UnrecognisedServiceCode_LastWorkingDate_Tomorrow")
+                    .rasRequestFileNameWithBooking(EMPTY_ROLE_ASSIGNMENT_TEMPLATE)
+                    .rasRequestFileNameWithoutBooking(EMPTY_ROLE_ASSIGNMENT_TEMPLATE)
+                    .irmQueueFileName(EMPTY_IRM_QUEUE_TEMPLATE)
+                    .additionalRoleTest(false)
+                    .overrideMapValues(null)
                     .build()
             ),
             "Basic"
