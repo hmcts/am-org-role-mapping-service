@@ -9,7 +9,7 @@
 
   "request": {
     "pathVariables": {
-      "actorId": "5a9c2e71-3d4f-4b8a-9c1e-6f2d7a8b0c93"
+      "actorId": "543c0b09-b36e-4f90-b391-7035942ea4b5"
     }
   },
 
@@ -37,7 +37,7 @@
             "primaryLocation": "[[ANYTHING_PRESENT]]",
             "jurisdiction": "PCS",
             "region": "[[ANYTHING_PRESENT]]",
-            "workTypes": "bailiff_work,enforcement_support,error_management"
+            "workTypes": "bailiff_work, enforcement_support, error_management"
           }
         },
         {
