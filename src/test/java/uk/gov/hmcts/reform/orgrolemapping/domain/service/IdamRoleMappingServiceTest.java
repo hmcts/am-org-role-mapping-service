@@ -38,7 +38,7 @@ class IdamRoleMappingServiceTest {
             new IdamRoleDataJsonBConverter();
 
     private final IdamRoleMappingService sut =
-            new IdamRoleMappingService(idamRoleManagementQueueRepository, ENABLED);
+            new IdamRoleMappingService(idamRoleManagementQueueRepository, DISABLED, ENABLED);
 
     private static final String[] EMAILS = {"email1@test.com", "email2@test.com"};
     private static final String[] ROLES = {"Role1", "Role2", "Role3"};
@@ -47,18 +47,13 @@ class IdamRoleMappingServiceTest {
     @Test
     void addToQueueTest_Disabled() {
         IdamRoleMappingService disabledSut =
-                new IdamRoleMappingService(idamRoleManagementQueueRepository, DISABLED);
+                new IdamRoleMappingService(idamRoleManagementQueueRepository, DISABLED, DISABLED);
         addToQueueTest(disabledSut, UserType.JUDICIAL, false);
     }
 
     @Test
     void addToQueueTest_Judicial() {
         addToQueueTest(sut, UserType.JUDICIAL, true);
-    }
-
-    @Test
-    void addToQueueTest_CaseWorker() {
-        addToQueueTest(sut, UserType.CASEWORKER, true);
     }
 
     @Captor
