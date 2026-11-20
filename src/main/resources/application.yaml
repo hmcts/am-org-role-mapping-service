@@ -125,6 +125,13 @@ idam:
         enabled: ${IDAM_ROLE_MAINTENANCE_CASEWORKER_ENABLED:false}
       judicial:
         enabled: ${IDAM_ROLE_MAINTENANCE_JUDICIAL_ENABLED:false}
+      scheduling:
+        enabled: ${IRM_SCHEDULING_ENABLED:false}
+        retryOneIntervalMin: ${IRM_RETRY_ONE_INTERVAL_MIN:2}
+        retryTwoIntervalMin: ${IRM_RETRY_TWO_INTERVAL_MIN:15}
+        retryThreeIntervalMin: ${IRM_RETRY_THREE_INTERVAL_MIN:60}
+        judicial:
+          cron: ${CRON_IRM_JUDICIAL:*/5 * * * * *}
   security:
     issuerValidation: ${JWT_ISSUER_VALIDATION_ENABLED:false}
     allowed-issuers:
