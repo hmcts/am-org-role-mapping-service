@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.orgrolemapping.controller;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
+import net.serenitybdd.junit5.SerenityJUnit5Extension;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -17,6 +19,7 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.lang.NonNull;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import uk.gov.hmcts.reform.orgrolemapping.controller.utils.WiremockFixtures;
 
@@ -31,6 +34,7 @@ import java.util.Properties;
 
 @ContextConfiguration(initializers = {BaseTestIntegration.WireMockServerInitializer.class})
 @ActiveProfiles("itest")
+@ExtendWith({SerenityJUnit5Extension.class, SpringExtension.class})
 public abstract class BaseTestIntegration extends BaseTest {
 
     protected static final MediaType JSON_CONTENT_TYPE = new MediaType(
