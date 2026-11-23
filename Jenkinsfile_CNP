@@ -105,6 +105,7 @@ env.BOOKING_FTA_ENABLED = "true"
 
 // Var to turn on IRM FTAs
 env.IRM_FTA_ENABLED = "true"
+env.IRM_JUDICIAL_FTA_ENABLED = "true"
 
 // Var to turn on PRM FTAs
 env.PRM_FTA_ENABLED = "true"
@@ -129,6 +130,7 @@ withPipeline(type, product, component) {
     env.REFRESH_FTA_ENABLED = "false"
     // Don't run IRM FTAs on AAT
     env.IRM_FTA_ENABLED = "false"
+    env.IRM_JUDICIAL_FTA_ENABLED = "false"
     // Don't run PRM FTAs on AAT
     env.PRM_FTA_ENABLED = "false"
   }
