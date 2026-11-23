@@ -1,7 +1,7 @@
 {
   "_guid_": "DeleteIRMQueueEntryForUser",
   "specs": [
-    "an active IDAM profile with full permissions"
+    "to delete user from IRM Queue"
   ],
  "method": "DELETE",
   "uri": "/am/testing-support/irm/deleteQueueEntity",
