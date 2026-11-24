@@ -1,0 +1,12 @@
+{
+  "_guid_": "S-023.01__VerifyIrmQueueEntryForUser",
+  "_extends_": "FetchIrmQueueEntry__PositiveResponse_Base",
+  "specs": [
+    "to verify user from IRM Queue"
+  ],
+  "request": {
+    "queryParams": {
+      "userId": "${[scenarioContext][parentContext][testData][request][body][actorId][0]}"
+    }
+  }
+}
