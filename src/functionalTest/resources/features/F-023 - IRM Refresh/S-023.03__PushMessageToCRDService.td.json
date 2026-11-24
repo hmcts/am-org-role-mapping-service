@@ -1,0 +1,9 @@
+{
+  "_guid_": "S-023.03__PushMessageToCRDService",
+  "_extends_": "PushMessageToSend2CrdTopic",
+  "request": {
+    "body": {
+      "_extends_": "S-023.03__SingleUserMultipleCaseworkerRolesIds"
+    }
+  }
+}

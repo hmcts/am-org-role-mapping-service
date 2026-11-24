@@ -1,0 +1,10 @@
+{
+  "_guid_": "S-023.02__PushMessageToJRDService",
+  "_extends_": "PushMessageToSend2JrdTopic",
+
+  "request": {
+    "body": {
+      "_extends_": "S-023.02__JRDTribunalMemberFeePaidUser"
+    }
+  }
+}
