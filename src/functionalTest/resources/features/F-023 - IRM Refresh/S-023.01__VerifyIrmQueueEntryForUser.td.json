@@ -17,7 +17,11 @@
         "email_id" : "[[ANYTHING_PRESENT]]",
         "active_flag" : "true",
         "deleted_flag" : "N",
-        "roles" : [ {
+        "roles" : [
+          {
+            "__elementId__": "role_name"
+          },
+          {
           "role_name" : "[[ANYTHING_PRESENT]]"
         } ]
       },
