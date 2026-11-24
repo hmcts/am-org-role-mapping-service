@@ -1,0 +1,27 @@
+{
+  "_guid_": "DeleteIRMQueueEntryForUser",
+  "specs": [
+    "an active IDAM profile with full permissions",
+    "to delete user from IRM Queue"
+  ],
+ "method": "DELETE",
+  "uri": "/am/testing-support/irm/deleteQueueEntity",
+  "productName": "Organisation Role Mapping",
+  "operationName": "Delete IDAM user from queue",
+
+  "users": {
+    "invokingUser": {
+      "_extends_": "AmBeftaUser1"
+    }
+  },
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
+      "Content-Type": "application/json"
+    }
+  },
+  "expectedResponse": {
+    "_extends_": "Common_200_Response"
+  }
+}
