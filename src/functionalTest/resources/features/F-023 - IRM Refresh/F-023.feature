@@ -25,7 +25,7 @@ Feature: F-023 : IRM Refresh
     And a successful call [to verify user from IRM Queue] as in [S-023.01__VerifyIrmQueueEntryForUser],
     And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIRMQueueEntryForUser].
 
-  @S-023.01
+  @S-023.02
   @FeatureToggle(EV:IRM_JUDICIAL_FTA_ENABLED=on)
   @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on) @FeatureToggle(DB:employment_wa_1_0=on)
   Scenario: must successfully create judicial role mapping for Tribunal Member - Fee Paid appointment

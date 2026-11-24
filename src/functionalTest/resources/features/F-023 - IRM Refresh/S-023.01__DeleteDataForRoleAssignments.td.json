@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-023.01___DeleteDataForRoleAssignments",
+  "_guid_": "S-023.01__DeleteDataForRoleAssignments",
   "_extends_": "DeleteDataForRoleAssignments",
 
   "users": {
