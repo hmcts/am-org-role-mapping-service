@@ -34,8 +34,7 @@ import static uk.gov.hmcts.reform.orgrolemapping.helper.TestScenarioIntegrationH
 
 @SuppressWarnings("unchecked")
 public class DroolIntegrationTestSingleton  {
-
-    private static final String EXPECTED = "expected";
+    
     private static final String ERROR_PREFIX = CROSS + " Error: ";
     private static final String FEATUREFLAGS_FILENAME = "FeatureFlags.json";
     private static final String HAPPY_PATH = "HappyPath";
@@ -347,8 +346,6 @@ public class DroolIntegrationTestSingleton  {
 
     private static boolean isFileValid(File file) {
         return file != null
-            // skip RAS Expected response files as they can be confusing
-            && !file.getName().toLowerCase(Locale.getDefault()).contains(EXPECTED)
             // skip the feature flags file as it is a duplicate at the test scenario level
             && !Strings.CI.equals(file.getName(), FEATUREFLAGS_FILENAME);
     }
