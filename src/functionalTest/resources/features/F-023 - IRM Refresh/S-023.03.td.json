@@ -4,7 +4,7 @@
   "_extends_": "F-023_Test_Data_Base",
   "specs": [
     "a caseworker profile that supports caseworker bookings",
-    "contains the actorId of the user just published who has Legal Caseworker role"
+    "contains the actorId of the user just published who has Senior Legal Caseworker role"
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
