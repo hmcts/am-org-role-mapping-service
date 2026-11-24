@@ -1,0 +1,26 @@
+package validationrules.irm;
+
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.enums.FeatureFlagEnum;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.FeatureFlag;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.irm.IdamRole;
+import uk.gov.hmcts.reform.orgrolemapping.domain.model.JudicialAccessProfile;
+
+import function uk.gov.hmcts.reform.orgrolemapping.domain.service.RequestMappingService.logMsg;
+
+/*
+ * "IRM hmcts-judicial queue" mapping for v1_0.
+ */
+rule "v1_0_irm_judicial_queue"
+when
+    $f:  FeatureFlag(status && flagName == FeatureFlagEnum.IRM_WA_1_0.getValue())
+    $user: JudicialAccessProfile(hasValidLastWorkingDate())
+then
+    insert(
+        IdamRole.builder()
+            .userId($user.getUserId())
+            .roleName("judiciary")
+            .build()
+    );
+
+    logMsg("Rule : v1_0_irm_judicial_queue");
+end;
