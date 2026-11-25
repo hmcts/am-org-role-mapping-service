@@ -1,0 +1,17 @@
+{
+  "_guid_": "S-023.04__DeleteIrmQueueEntryForUser",
+  "title": "to delete user from IRM Queue",
+  "_extends_": "DeleteIRMQueueEntryForUser",
+  "request": {
+    "queryParams": {
+      "userId": "${[scenarioContext][parentContext][testData][users][invokingUser][id]}"
+    }
+  },
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response",
+    "body": {
+      "__plainTextValue__": "Deleted queue entity for userId: AmJRDUser2"
+    }
+  }
+}

@@ -1,10 +1,10 @@
 {
-  "_guid_": "F-023_DeleteIRMQueueEntryForUser",
+  "_guid_": "S-023.01__DeleteIrmQueueEntryForUser",
   "title": "to delete user from IRM Queue",
   "_extends_": "DeleteIRMQueueEntryForUser",
   "request": {
     "queryParams": {
-      "userId": "AmJRDUser2"
+      "userId": "${[scenarioContext][parentContext][testData][users][invokingUser][id]}"
     }
   },
 
