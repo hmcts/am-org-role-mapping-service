@@ -4,6 +4,7 @@ Feature: F-023 : IRM Refresh
   Background:
     Given an appropriate test context as detailed in the test data source
 
+  # Copy of Judicial Booking Refresh (F-004 > S-031)
   @S-023.01
   @FeatureToggle(EV:IRM_JUDICIAL_FTA_ENABLED=on)
   Scenario: must successfully create irm queue entry based on judicial role assignments for a user having single judicial booking
@@ -25,6 +26,7 @@ Feature: F-023 : IRM Refresh
     And a successful call [to verify user from IRM Queue] as in [S-023.01__VerifyIrmQueueEntryForUser],
     And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIRMQueueEntryForUser].
 
+  # Copy of Judicial ASB (F-011 > S-213)
   @S-023.02
   @FeatureToggle(EV:IRM_JUDICIAL_FTA_ENABLED=on)
   @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on) @FeatureToggle(DB:employment_wa_1_0=on)
@@ -40,6 +42,7 @@ Feature: F-023 : IRM Refresh
     And the response has all other details as expected
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-023.02__DeleteDataForRoleAssignments].
 
+  # Copy of Caseworker ASB (F-011 > S-211)
   @S-023.03
   @FeatureToggle(EV:IRM_CASEWORKER_FTA_ENABLED=on)
   @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on) @FeatureToggle(DB:employment_wa_1_0=on)
@@ -56,6 +59,7 @@ Feature: F-023 : IRM Refresh
     And the response has all other details as expected
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-023.03__DeleteDataForRoleAssignments].
 
+  # Copy of Judicial Refresh Job (F-002 > S-012)
   @S-023.04
   @FeatureToggle(EV:IRM_JUDICIAL_FTA_ENABLED=on)
   @FeatureToggle(EV:REFRESH_FTA_ENABLED=on)
@@ -74,6 +78,7 @@ Feature: F-023 : IRM Refresh
     And a successful call [to fetch role assignments from Role Assignment Service] as in [S-023.04__FetchRoleAssignments],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-023.04__DeleteDataForRoleAssignments].
 
+  # Copy of Judicial Refresh Job (F-002 > S-011)
   @S-023.05
   @FeatureToggle(EV:IRM_CASEWORKER_FTA_ENABLED=on)
   @FeatureToggle(EV:REFRESH_FTA_ENABLED=on)
