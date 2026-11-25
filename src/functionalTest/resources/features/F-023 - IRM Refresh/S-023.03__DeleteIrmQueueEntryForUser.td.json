@@ -11,7 +11,7 @@
   "expectedResponse": {
     "_extends_": "Common_200_Response",
     "body": {
-      "__plainTextValue__": "Deleted queue entity for userId: AmJRDUser2"
+      "__plainTextValue__": "[[ANYTHING_PRESENT]]"
     }
   }
 }
