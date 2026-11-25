@@ -38,6 +38,7 @@
       "roleCategory" : "JUDICIAL",
       "jurisdiction" : "EMPLOYMENT",
       "status" : "NEW",
+      "userIds" : "[[ANYTHING_PRESENT]]",
       "linkedJobId" :"[[ANYTHING_PRESENT]]",
       "created" : "[[ANYTHING_PRESENT]]"
     }
