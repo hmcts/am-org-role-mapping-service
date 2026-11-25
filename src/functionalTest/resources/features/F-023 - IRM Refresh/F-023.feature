@@ -7,7 +7,7 @@ Feature: F-023 : IRM Refresh
   @S-023.01
   @FeatureToggle(EV:IRM_JUDICIAL_FTA_ENABLED=on)
   Scenario: must successfully create irm queue entry based on judicial role assignments for a user having single judicial booking
-    Given a user with [a judicial profile that supports judicial bookings],
+    Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIRMQueueEntryForUser]
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-023.01__DeleteDataForRoleAssignments]
     And a successful call [to delete existing bookings corresponding to the test actorId] as in [F-023_DeleteDataForBookings],
@@ -29,7 +29,7 @@ Feature: F-023 : IRM Refresh
   @FeatureToggle(EV:IRM_JUDICIAL_FTA_ENABLED=on)
   @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on) @FeatureToggle(DB:employment_wa_1_0=on)
   Scenario: must successfully create judicial role mapping for Tribunal Member - Fee Paid appointment
-    Given a user with [a judicial profile that supports judicial bookings],
+    Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-023.02__DeleteDataForRoleAssignments],
     And a successful call [to publish existing JRD user ids to endpoint] as in [S-023.02__PushMessageToJRDService],
     And the request [contains the actorIds of the user just published],
@@ -44,7 +44,7 @@ Feature: F-023 : IRM Refresh
   @FeatureToggle(EV:IRM_CASEWORKER_FTA_ENABLED=on)
   @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on) @FeatureToggle(DB:employment_wa_1_0=on)
   Scenario: must successfully create org role mapping for Legal Caseworker and Senior Legal Caseworker
-    Given a user with [a caseworker profile that supports caseworker bookings],
+    Given a user with [an active IDAM profile with full permissions],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-023.03__DeleteDataForRoleAssignments],
     And a successful call [to publish existing CRD user ids to endpoint] as in [S-023.03__PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Legal Caseworker role],
