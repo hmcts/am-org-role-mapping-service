@@ -1,7 +1,7 @@
 {
   "_guid_": "S-023.04",
   "title": "must successfully refresh judicial user org roles for a job",
-  "_extends_": "F-23_Test_Data_Base",
+  "_extends_": "F-023_Test_Data_Base",
 
   "specs": [
     "contains an existing job details"
