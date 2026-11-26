@@ -19,7 +19,7 @@
       "Content-Type": "application/json"
     },
     "pathVariables": {
-      "jobId": "${[scenarioContext][parentContext][childContexts][S-023.04__FetchJobDetailsFromORM][testData][actualResponse][body][jobId]}"
+      "jobId": "${[scenarioContext][siblingContexts][S-023.04__FetchJobDetailsFromORM][testData][actualResponse][body][jobId]}"
     }
   },
   "expectedResponse": {
