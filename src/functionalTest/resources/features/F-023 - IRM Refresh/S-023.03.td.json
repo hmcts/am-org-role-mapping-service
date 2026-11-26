@@ -8,7 +8,6 @@
   ],
   "method": "POST",
   "uri": "{{ROLE_ASSIGNMENT_URL}}/am/role-assignments/query",
-  "userIds": ["dd273dff-56f7-441c-85e5-3e2cd07245f3"],
   "request": {
     "headers": {
       "sort": "roleName",
@@ -18,11 +17,11 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": "${[scenarioContext][testData][userIds]}",
+          "actorId": ["dd273dff-56f7-441c-85e5-3e2cd07245f3"],
           "roleName": ["hmcts-legal-operations"]
         },
         {
-          "actorId": "${[scenarioContext][testData][userIds]}",
+          "actorId": ["dd273dff-56f7-441c-85e5-3e2cd07245f3"],
           "attributes": {
             "jurisdiction": ["EMPLOYMENT"]
           }

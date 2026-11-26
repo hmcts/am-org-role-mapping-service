@@ -3,7 +3,7 @@
   "_extends_": "PushMessageToSend2CrdTopic",
   "request": {
     "body": {
-      "userIds": "${[scenarioContext][parentContext][testData][userIds]}"
+      "userIds": "${[scenarioContext][parentContext][testData][request][body][queryRequests][0][actorId]}"
     }
   }
 }
