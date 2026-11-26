@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-023.02__DeleteDataForRoleAssignments",
+  "_guid_": "F-023_DeleteDataForRoleAssignments",
   "productName": "Role Assignment Service",
   "operationName": "Delete Role Assignments by Process",
   "method": "DELETE",

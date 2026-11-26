@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-023.05__DeleteIrmQueueEntryForUser",
+  "_guid_": "F-023_DeleteIrmQueueEntryForUser",
   "title": "to delete user from IRM Queue",
   "_extends_": "DeleteIRMQueueEntryForUser",
   "request": {
