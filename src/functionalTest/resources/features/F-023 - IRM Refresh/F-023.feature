@@ -69,7 +69,7 @@ Feature: F-023 : IRM Refresh
   @FeatureToggle(EV:REFRESH_FTA_ENABLED=on)
   Scenario: must successfully refresh judicial user org roles for a job
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to insert new job in ORM DB to initiate Refresh process] as in [S-023.04__InsertJobForRefreshAPI],
+    And a successful call [to insert new job in ORM DB to initiate Refresh process] as in [F-023_InsertJudicialJobForRefreshAPI],
     And a successful call [to delete user from IRM Queue] as in [S-023.04__DeleteIrmQueueEntryForUser],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-023.04__DeleteDataForRoleAssignments],
     And the request [contains an existing job details],
@@ -90,7 +90,7 @@ Feature: F-023 : IRM Refresh
   @FeatureToggle(EV:REFRESH_FTA_ENABLED=on)
   Scenario: must successfully refresh staff user org roles for a job
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to insert new job in ORM DB to initiate Refresh process] as in [S-023.05__InsertJobForRefreshAPI],
+    And a successful call [to insert new job in ORM DB to initiate Refresh process] as in [F-023_InsertCaseworkerJobForRefreshAPI],
     And a successful call [to delete user from IRM Queue] as in [S-023.05__DeleteIrmQueueEntryForUser],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [S-023.05__DeleteDataForRoleAssignments],
     And the request [contains an existing job details],

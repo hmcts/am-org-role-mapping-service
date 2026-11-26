@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-023.05__InsertJobForRefreshAPI",
+  "_guid_": "F-023_InsertJudicialJobForRefreshAPI",
   "productName": "Organisation Role Mapping",
   "operationName": "Insert New Job",
   "method": "POST",
@@ -12,6 +12,7 @@
       "_extends_": "AmBeftaUser1"
     }
   },
+
   "request": {
     "headers": {
       "Authorization": "[[DEFAULT_AUTO_VALUE]]",
@@ -19,8 +20,8 @@
       "Content-Type": "application/json"
     },
     "queryParams": {
-      "roleCategory": "LEGAL_OPERATIONS",
-      "jurisdiction": "SSCS"
+      "roleCategory": "JUDICIAL",
+      "jurisdiction": "EMPLOYMENT"
     },
     "body": {
       "userIds": "${[scenarioContext][parentContext][testData][request][body][userIds]}"
@@ -34,8 +35,8 @@
     },
     "body": {
       "jobId" : "[[ANYTHING_PRESENT]]",
-      "roleCategory" : "LEGAL_OPERATIONS",
-      "jurisdiction" : "SSCS",
+      "roleCategory" : "JUDICIAL",
+      "jurisdiction" : "EMPLOYMENT",
       "status" : "NEW",
       "userIds" : "[[ANYTHING_PRESENT]]",
       "linkedJobId" :"[[ANYTHING_PRESENT]]",

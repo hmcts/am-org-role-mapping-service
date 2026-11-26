@@ -8,7 +8,7 @@
   ],
   "request": {
     "queryParams": {
-      "jobId": "${[scenarioContext][childContexts][S-023.04__InsertJobForRefreshAPI][testData][actualResponse][body][jobId]}"
+      "jobId": "${[scenarioContext][childContexts][F-023_InsertJudicialJobForRefreshAPI][testData][actualResponse][body][jobId]}"
     },
     "body": {
       "userIds": ["d85eb06c-6e1f-4485-923c-313063a32a92"]
