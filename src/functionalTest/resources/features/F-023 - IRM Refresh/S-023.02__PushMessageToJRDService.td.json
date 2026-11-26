@@ -4,7 +4,7 @@
 
   "request": {
     "body": {
-      "_extends_": "S-023.02__JRDTribunalMemberFeePaidUser"
+      "userIds": "${[scenarioContext][parentContext][testData][request][body][actorId]}"
     }
   }
 }

@@ -3,7 +3,7 @@
   "_extends_": "PushMessageToSend2CrdTopic",
   "request": {
     "body": {
-      "_extends_": "S-023.03__SingleUserMultipleCaseworkerRolesIds"
+      "userIds": "${[scenarioContext][parentContext][testData][userIds]}"
     }
   }
 }

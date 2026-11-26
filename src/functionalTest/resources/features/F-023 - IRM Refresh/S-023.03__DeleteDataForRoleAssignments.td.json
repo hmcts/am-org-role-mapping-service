@@ -20,10 +20,10 @@
     },
     "pathVariables": {
       "process": "staff-organisational-role-mapping",
-      "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
+      "reference":"${[scenarioContext][parentContext][testData][userIds][0]}"
     },
     "body": {
-      "_extends_": "S-023.03__SingleUserMultipleCaseworkerRolesIds"
+      "userIds": "${[scenarioContext][parentContext][testData][userIds]}"
     }
   },
 

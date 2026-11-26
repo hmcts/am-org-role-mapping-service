@@ -20,10 +20,10 @@
     },
     "pathVariables": {
       "process": "judicial-organisational-role-mapping",
-      "reference":"${[scenarioContext][testData][request][body][userIds][0]}"
+      "reference":"${[scenarioContext][parentContext][testData][request][body][actorId][0]}"
     },
     "body": {
-      "_extends_": "S-023.02__JRDTribunalMemberFeePaidUser"
+      "userIds": "${[scenarioContext][parentContext][testData][request][body][actorId]}"
     }
   },
 

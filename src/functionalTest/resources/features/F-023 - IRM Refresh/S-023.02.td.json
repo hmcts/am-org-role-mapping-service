@@ -16,7 +16,7 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": "${[scenarioContext][childContexts][S-023.02__DeleteDataForRoleAssignments][testData][request][body][userIds]}",
+          "actorId": ["d85eb06c-6e1f-4485-923c-313063a32a92"],
           "attributes": {
             "jurisdiction": ["EMPLOYMENT"]
           }
