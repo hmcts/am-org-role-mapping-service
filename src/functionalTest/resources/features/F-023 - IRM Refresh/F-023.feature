@@ -42,7 +42,8 @@ Feature: F-023 : IRM Refresh
     Then a positive response is received,
     And the response has all other details as expected
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForASBRoleAssignments],
-    And a successful call [to delete user from IRM Queue] as in [S-023.02__DeleteIrmQueueEntryForUser].
+    And a successful call [to verify user from IRM Queue] as in [F-023_VerifyJudicialIrmQueueEntryForUser],
+    And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIrmQueueEntryForUser].
 
   # Copy of Caseworker ASB (F-011 > S-211)
   @S-023.03
@@ -61,6 +62,7 @@ Feature: F-023 : IRM Refresh
     Then a positive response is received,
     And the response has all other details as expected
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForASBRoleAssignments],
+    And a successful call [to verify user from IRM Queue] as in [F-023_VerifyCaseworkerIrmQueueEntryForUser],
     And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIrmQueueEntryForActor].
 
   # Copy of Judicial Refresh Job (F-002 > S-012)
@@ -82,6 +84,7 @@ Feature: F-023 : IRM Refresh
     And a successful call [to delete job details from ORM DB] as in [S-023.04__DeleteJobFromORMDB],
     And a successful call [to fetch role assignments from Role Assignment Service] as in [S-023.04__FetchRoleAssignments],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForRefreshRoleAssignments],
+    And a successful call [to verify user from IRM Queue] as in [F-023_VerifyJudicialIrmQueueEntryForUser],
     And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIrmQueueEntryForUser].
 
   # Copy of Judicial Refresh Job (F-002 > S-011)
@@ -103,4 +106,5 @@ Feature: F-023 : IRM Refresh
     And a successful call [to delete job details from ORM DB] as in [S-023.05__DeleteJobFromORMDB],
     And a successful call [to fetch role assignments from Role Assignment Service] as in [S-023.05__FetchRoleAssignments],
     And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForRefreshRoleAssignments],
+    And a successful call [to verify user from IRM Queue] as in [F-023_VerifyCaseworkerIrmQueueEntryForUser],
     And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIrmQueueEntryForUser].
