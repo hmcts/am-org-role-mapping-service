@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-023.04__DeleteJobFromORMDB",
+  "_guid_": "F-023_DeleteJudicialJobFromORMDB",
   "productName": "Organisation Role Mapping",
   "operationName": "Fetch Job Details",
   "method": "DELETE",

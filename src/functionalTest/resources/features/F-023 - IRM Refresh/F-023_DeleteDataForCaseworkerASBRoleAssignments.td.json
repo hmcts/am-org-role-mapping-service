@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-023.05__DeleteDataForRoleAssignments",
+  "_guid_": "F-023_DeleteDataForCaseworkerASBRoleAssignments",
   "productName": "Role Assignment Service",
   "operationName": "Delete Role Assignments by Process",
   "method": "DELETE",
@@ -15,12 +15,15 @@
   "request": {
     "headers": {
       "Authorization": "[[DEFAULT_AUTO_VALUE]]",
-      "ServiceAuthorization": "${[scenarioContext][customValues][generateS2STokenForOrm]}",
+      "ServiceAuthorization": "[[DEFAULT_AUTO_VALUE]]",
       "X-Correlation-ID": "003352d0-e699-48bc-b6f5-5810411e60af"
     },
     "pathVariables": {
       "process": "staff-organisational-role-mapping",
-      "reference": "${[scenarioContext][parentContext][testData][request][body][userIds][0]}"
+      "reference":"${[scenarioContext][parentContext][testData][request][body][queryRequests][0][actorId][0]}"
+    },
+    "body": {
+      "userIds": "${[scenarioContext][parentContext][testData][request][body][queryRequests][0][actorId]}"
     }
   },
 

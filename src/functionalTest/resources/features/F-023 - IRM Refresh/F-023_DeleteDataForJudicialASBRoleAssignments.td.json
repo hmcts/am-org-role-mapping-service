@@ -1,5 +1,5 @@
 {
-  "_guid_": "F-023_DeleteDataForRefreshRoleAssignments",
+  "_guid_": "F-023_DeleteDataForJudicialASBRoleAssignments",
   "productName": "Role Assignment Service",
   "operationName": "Delete Role Assignments by Process",
   "method": "DELETE",
@@ -20,10 +20,10 @@
     },
     "pathVariables": {
       "process": "judicial-organisational-role-mapping",
-      "reference":"${[scenarioContext][parentContext][testData][request][body][userIds][0]}"
+      "reference":"${[scenarioContext][parentContext][testData][request][body][queryRequests][0][actorId][0]}"
     },
     "body": {
-      "userIds": "${[scenarioContext][parentContext][testData][request][body][userIds]}"
+      "userIds": "${[scenarioContext][parentContext][testData][request][body][queryRequests][0][actorId]}"
     }
   },
 

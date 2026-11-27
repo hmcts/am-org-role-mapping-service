@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-023.02__PushMessageToJRDService",
+  "_guid_": "F-023_PushMessageToJRDService",
   "_extends_": "PushMessageToSend2JrdTopic",
 
   "request": {

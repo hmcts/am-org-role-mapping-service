@@ -32,16 +32,16 @@ Feature: F-023 : IRM Refresh
   @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on) @FeatureToggle(DB:employment_wa_1_0=on)
   Scenario: must successfully create judicial role mapping for Tribunal Member - Fee Paid appointment
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForASBRoleAssignments],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForJuddicialASBRoleAssignments],
     And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIrmQueueEntryForUser],
-    And a successful call [to publish existing JRD user ids to endpoint] as in [S-023.02__PushMessageToJRDService],
+    And a successful call [to publish existing JRD user ids to endpoint] as in [F-023_PushMessageToJRDService],
     And the request [contains the actorIds of the user just published],
     And a wait time of [5] seconds [to allow for service bus to process the request]
     When a request is prepared with appropriate values,
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForASBRoleAssignments],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForJudicialASBRoleAssignments],
     And a successful call [to verify user from IRM Queue] as in [F-023_VerifyJudicialIrmQueueEntryForUser],
     And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIrmQueueEntryForUser].
 
@@ -51,9 +51,9 @@ Feature: F-023 : IRM Refresh
   @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on) @FeatureToggle(DB:employment_wa_1_0=on)
   Scenario: must successfully create org role mapping for Legal Caseworker and Senior Legal Caseworker
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForASBRoleAssignments],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForCaseworkerASBRoleAssignments],
     And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIrmQueueEntryForUser],
-    And a successful call [to publish existing CRD user ids to endpoint] as in [S-023.03__PushMessageToCRDService],
+    And a successful call [to publish existing CRD user ids to endpoint] as in [F-023_PushMessageToCRDService],
     And the request [contains the actorId of the user just published who has Legal Caseworker role],
     And the request [contains the actorId of the user just published who has Senior Legal Caseworker role],
     And a wait time of [5] seconds [to allow for service bus to process the request]
@@ -61,7 +61,7 @@ Feature: F-023 : IRM Refresh
     And it is submitted to call the [Fetch Assignment From Role Assignment Service] operation of [Role Assignment Service],
     Then a positive response is received,
     And the response has all other details as expected
-    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForASBRoleAssignments],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForCaseworkerASBRoleAssignments],
     And a successful call [to verify user from IRM Queue] as in [F-023_VerifyCaseworkerIrmQueueEntryForUser],
     And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIrmQueueEntryForUser].
 
@@ -73,17 +73,17 @@ Feature: F-023 : IRM Refresh
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to insert new job in ORM DB to initiate Refresh process] as in [F-023_InsertJudicialJobForRefreshAPI],
     And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIrmQueueEntryForUser],
-    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForRefreshRoleAssignments],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForJudicialRefreshRoleAssignments],
     And the request [contains an existing job details],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Refresh API] operation of [Organisation Role Mapping],
     Then a positive response is received,
     And the response has all other details as expected,
     And a wait time of [10] seconds [to allow async call to process the request],
-    And a successful call [to fetch job details from ORM DB to validate Refresh process] as in [S-023.04__FetchJobDetailsFromORM],
-    And a successful call [to delete job details from ORM DB] as in [S-023.04__DeleteJobFromORMDB],
+    And a successful call [to fetch job details from ORM DB to validate Refresh process] as in [F-023_FetchJudicialJobDetailsFromORM],
+    And a successful call [to delete job details from ORM DB] as in [F-023_DeleteJudicialJobFromORMDB],
     And a successful call [to fetch role assignments from Role Assignment Service] as in [F-023_FetchJudicialRoleAssignments],
-    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForRefreshRoleAssignments],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForJudicialRefreshRoleAssignments],
     And a successful call [to verify user from IRM Queue] as in [F-023_VerifyJudicialIrmQueueEntryForUser],
     And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIrmQueueEntryForUser].
 
@@ -95,16 +95,16 @@ Feature: F-023 : IRM Refresh
     Given a user with [an active IDAM profile with full permissions],
     And a successful call [to insert new job in ORM DB to initiate Refresh process] as in [F-023_InsertCaseworkerJobForRefreshAPI],
     And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIrmQueueEntryForUser],
-    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForRefreshRoleAssignments],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForCaseworkerRefreshRoleAssignments],
     And the request [contains an existing job details],
     When a request is prepared with appropriate values,
     And it is submitted to call the [Refresh API] operation of [Organisation Role Mapping],
     Then a positive response is received,
     And the response has all other details as expected,
     And a wait time of [10] seconds [to allow async call to process the request],
-    And a successful call [to fetch job details from ORM DB to validate Refresh process] as in [S-023.05__FetchJobDetailsFromORM],
-    And a successful call [to delete job details from ORM DB] as in [S-023.05__DeleteJobFromORMDB],
+    And a successful call [to fetch job details from ORM DB to validate Refresh process] as in [F-023_FetchCaseworkerJobDetailsFromORM],
+    And a successful call [to delete job details from ORM DB] as in [F-023_DeleteCaseworkerJobFromORMDB],
     And a successful call [to fetch role assignments from Role Assignment Service] as in [F-023_FetchCaseworkerRoleAssignments],
-    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForRefreshRoleAssignments],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForCaseworkerRefreshRoleAssignments],
     And a successful call [to verify user from IRM Queue] as in [F-023_VerifyCaseworkerIrmQueueEntryForUser],
     And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIrmQueueEntryForUser].
