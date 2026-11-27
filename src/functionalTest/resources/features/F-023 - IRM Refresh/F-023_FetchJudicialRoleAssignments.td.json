@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-023.04__FetchRoleAssignments",
+  "_guid_": "F-023_FetchRoleAssignments",
   "title": "must successfully fetch role assignments from Role Assignment Service",
   "_extends_": "F-023_Test_Data_Base",
 
@@ -31,7 +31,7 @@
       "roleAssignmentResponse": [{
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
-        "actorId" : "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+        "actorId" : "${[scenarioContext][testData][request][body][userIds][0]}",
         "roleType" : "ORGANISATION",
         "roleName" : "hearing-viewer",
         "classification" : "PUBLIC",
@@ -50,7 +50,7 @@
       }, {
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
-        "actorId" : "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+        "actorId" : "${[scenarioContext][testData][request][body][userIds][0]}",
         "roleType" : "ORGANISATION",
         "roleName" : "tribunal-member",
         "classification" : "PUBLIC",

@@ -1,5 +1,5 @@
 {
-  "_guid_": "S-023.05__FetchRoleAssignments",
+  "_guid_": "F-023_FetchCaseworkerRoleAssignments",
   "title": "must successfully fetch role assignments from Role Assignment Service",
   "_extends_": "F-023_Test_Data_Base",
 
@@ -31,7 +31,7 @@
       "roleAssignmentResponse": [{
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
-        "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+        "actorId": "${[scenarioContext][testData][request][body][userIds][0]}",
         "roleType" : "ORGANISATION",
         "roleName" : "case-allocator",
         "classification" : "PUBLIC",
@@ -47,7 +47,7 @@
       }, {
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
-        "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+        "actorId": "${[scenarioContext][testData][request][body][userIds][0]}",
         "roleType" : "ORGANISATION",
         "roleName" : "hearing-manager",
         "classification" : "PUBLIC",
@@ -63,7 +63,7 @@
       }, {
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
-        "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+        "actorId": "${[scenarioContext][testData][request][body][userIds][0]}",
         "roleType" : "ORGANISATION",
         "roleName" : "hearing-viewer",
         "classification" : "PUBLIC",
@@ -79,7 +79,7 @@
       }, {
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
-        "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+        "actorId": "${[scenarioContext][testData][request][body][userIds][0]}",
         "roleType" : "ORGANISATION",
         "roleName" : "senior-tribunal-caseworker",
         "classification" : "PUBLIC",
@@ -96,7 +96,7 @@
       }, {
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
-        "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+        "actorId": "${[scenarioContext][testData][request][body][userIds][0]}",
         "roleType" : "ORGANISATION",
         "roleName" : "specific-access-approver-legal-ops",
         "classification" : "PUBLIC",
@@ -114,7 +114,7 @@
       }, {
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
-        "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+        "actorId": "${[scenarioContext][testData][request][body][userIds][0]}",
         "roleType" : "ORGANISATION",
         "roleName" : "task-supervisor",
         "classification" : "PUBLIC",
@@ -130,7 +130,7 @@
       }, {
         "id" : "[[ANYTHING_PRESENT]]",
         "actorIdType" : "IDAM",
-        "actorId": "${[scenarioContext][testData][request][body][queryRequests][0][actorId][0]}",
+        "actorId": "${[scenarioContext][testData][request][body][userIds][0]}",
         "roleType" : "ORGANISATION",
         "roleName" : "tribunal-caseworker",
         "classification" : "PUBLIC",

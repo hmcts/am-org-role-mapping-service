@@ -11,7 +11,7 @@
   "request": {
     "pathVariables": {
       "process": "judicial-organisational-role-mapping",
-      "reference": "${[scenarioContext][parentContext][testData][request][body][actorId][0]}"
+      "reference": "${[scenarioContext][parentContext][testData][users][invokingUser][id]}"
     }
   }
 
