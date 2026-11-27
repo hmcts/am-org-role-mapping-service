@@ -19,7 +19,7 @@
       "Content-Type": "application/json"
     },
     "pathVariables": {
-      "jobId": "${[scenarioContext][parentContext][testData][request][body][queryRequests][jobId]}"
+      "jobId": "${[scenarioContext][parentContext][testData][request][body][queryParams][jobId]}"
     }
   },
   "expectedResponse": {
