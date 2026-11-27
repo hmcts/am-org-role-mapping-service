@@ -19,7 +19,7 @@
       "Content-Type": "application/json"
     },
     "pathVariables": {
-      "jobId": "${[scenarioContext][parentContext][childContexts][F-023_InsertCaseworkerJobForRefreshAPI][testData][actualResponse][body][jobId]}"
+      "jobId": "${[scenarioContext][parentContext][testData][request][body][queryRequests][jobId]}"
     }
   },
   "expectedResponse": {

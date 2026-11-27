@@ -17,7 +17,7 @@
     "body": {
       "queryRequests":[
         {
-          "actorId": "${[scenarioContext][parentContext][testData][request][body][userIds][0]}",
+          "actorId": "${[scenarioContext][parentContext][testData][request][body][userIds]}",
           "attributes": {
             "jurisdiction": ["SSCS"]
           }
