@@ -32,7 +32,7 @@ Feature: F-023 : IRM Refresh
   @FeatureToggle(EV:AZURE_SERVICE_BUS_FTA_ENABLED=on) @FeatureToggle(DB:employment_wa_1_0=on)
   Scenario: must successfully create judicial role mapping for Tribunal Member - Fee Paid appointment
     Given a user with [an active IDAM profile with full permissions],
-    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForJuddicialASBRoleAssignments],
+    And a successful call [to delete existing role assignments corresponding to the test actorId] as in [F-023_DeleteDataForJudicialASBRoleAssignments],
     And a successful call [to delete user from IRM Queue] as in [F-023_DeleteIrmQueueEntryForUser],
     And a successful call [to publish existing JRD user ids to endpoint] as in [F-023_PushMessageToJRDService],
     And the request [contains the actorIds of the user just published],
