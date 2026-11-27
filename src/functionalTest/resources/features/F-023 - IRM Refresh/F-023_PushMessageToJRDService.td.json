@@ -1,0 +1,10 @@
+{
+  "_guid_": "F-023_PushMessageToJRDService",
+  "_extends_": "PushMessageToSend2JrdTopic",
+
+  "request": {
+    "body": {
+      "userIds": "${[scenarioContext][parentContext][testData][request][body][queryRequests][0][actorId]}"
+    }
+  }
+}

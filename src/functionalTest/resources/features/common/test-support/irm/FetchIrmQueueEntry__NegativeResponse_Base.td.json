@@ -1,0 +1,8 @@
+{
+  "_guid_": "FetchIrmQueueEntry__NegativeResponse_Base",
+  "_extends_": "FetchIrmQueueEntry__Base",
+
+  "expectedResponse": {
+    "_extends_": "Common_404_Response"
+  }
+}

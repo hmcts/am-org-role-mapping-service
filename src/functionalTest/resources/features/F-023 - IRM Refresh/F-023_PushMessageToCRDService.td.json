@@ -1,0 +1,9 @@
+{
+  "_guid_": "F-023_PushMessageToCRDService",
+  "_extends_": "PushMessageToSend2CrdTopic",
+  "request": {
+    "body": {
+      "userIds": "${[scenarioContext][parentContext][testData][request][body][queryRequests][0][actorId]}"
+    }
+  }
+}

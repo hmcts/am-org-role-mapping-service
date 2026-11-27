@@ -1,0 +1,8 @@
+{
+  "_guid_": "FetchIrmQueueEntry__PositiveResponse_Base",
+  "_extends_": "FetchIrmQueueEntry__Base",
+
+  "expectedResponse": {
+    "_extends_": "Common_200_Response"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "_guid_": "F-023-Base-Root",
+
+  "request": {
+    "headers": {
+      "Authorization": "[[DEFAULT_AUTO_VALUE]]",
+      "ServiceAuthorization": "${[scenarioContext][customValues][generateS2STokenForOrm]}",
+      "Content-Type": "application/json"
+    }
+  },
+
+  "expectedResponse": {
+    "headers": {
+      "Content-Length": "[[ANYTHING_PRESENT]]",
+      "Content-Type": "application/json"
+    }
+  }
+}
